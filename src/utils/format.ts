@@ -1,9 +1,9 @@
 import BN from 'bn.js'
 import { fromWei } from 'web3-utils'
 
-export function formatAmount(amount?: BN): string | null {
+export function formatAmount(amount?: BN): string {
   if (!amount) {
-    return null
+    return ''
   }
 
   return fromWei(amount).toString()
