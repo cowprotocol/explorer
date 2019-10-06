@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useReducer, Reducer } from 'react'
 import styled from 'styled-components'
 
 import { Row } from './Row'
@@ -14,6 +14,8 @@ import { useWalletConnection } from 'hooks/useWalletConnection'
 import { formatAmount, formatAmountFull } from 'utils'
 import { log } from 'utils'
 import { HIGHLIGHT_TIME, ZERO, ALLOWANCE_MAX_VALUE } from 'const'
+import { depositWidgetReducer } from './depositWidgetReducer'
+import { getBalances } from 'services/getBalances'
 
 const Wrapper = styled.section`
   font-size: 0.85rem;
@@ -80,8 +82,18 @@ const txOptionalParams: TxOptionalParams = {
 }
 
 const DepositWidget: React.FC = () => {
-  const { userAddress } = useWalletConnection()
-  const { balances, setBalances, error } = useTokenBalances()
+  const { userAddress, networkId } = useWalletConnection()
+  const [state, dispatch] = useReducer(depositWidgetReducer, { error: false, balances: null })
+  const { balances, error } = state
+
+  useEffect(() => {
+    getBalances(userAddress, networkId)
+      .then(newBalances => dispatch({ type: 'update-balances', balances: newBalances }))
+      .catch(error => {
+        console.error('Error loading balances', error)
+        dispatch({ type: 'set-error' })
+      })
+  }, [networkId, userAddress])
 
   const contractAddress = depositApi.getContractAddress()
   const mounted = useRef(true)
