@@ -47,7 +47,7 @@ export const usePlaceOrder = (): Result => {
           exchangeApi.getCurrentBatchId(),
         ])
 
-        if (sellTokenId !== 0 || buyTokenId !== 0) {
+        if (sellTokenId !== 0 && buyTokenId !== 0) {
           log('sellTokenId, buyTokenId, batchId', sellTokenId, buyTokenId, batchId, sellToken.address, buyToken.address)
 
           const validUntil = batchId + DEFAULT_ORDER_DURATION
