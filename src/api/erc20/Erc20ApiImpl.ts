@@ -26,9 +26,8 @@ export class Erc20ApiImpl implements Erc20Api {
   public async balanceOf({ tokenAddress, userAddress }: { tokenAddress: string; userAddress: string }): Promise<BN> {
     if (!userAddress || !tokenAddress) return ZERO
 
-    const erc20 = this._getERC20AtAddress(tokenAddress)
-
-    const result = await erc20.methods.balanceOf(userAddress).call()
+    const erc20Contract = this._getTokenContract(tokenAddress)
+    const result = await erc20Contract.methods.balanceOf(userAddress).call()
 
     return toBN(result)
   }
@@ -44,7 +43,7 @@ export class Erc20ApiImpl implements Erc20Api {
   }): Promise<BN> {
     if (!userAddress || !tokenAddress) return ZERO
 
-    const erc20 = this._getERC20AtAddress(tokenAddress)
+    const erc20 = this._getTokenContract(tokenAddress)
 
     const result = await erc20.methods.allowance(userAddress, spenderAddress).call()
 
@@ -60,7 +59,7 @@ export class Erc20ApiImpl implements Erc20Api {
     }: { userAddress: string; tokenAddress: string; spenderAddress: string; amount: BN },
     txOptionalParams?: TxOptionalParams,
   ): Promise<Receipt> {
-    const erc20 = this._getERC20AtAddress(tokenAddress)
+    const erc20 = this._getTokenContract(tokenAddress)
 
     // TODO: Remove temporal fix for web3. See https://github.com/gnosis/dex-react/issues/231
     const tx = erc20.methods.approve(spenderAddress, amount.toString()).send({
@@ -83,7 +82,7 @@ export class Erc20ApiImpl implements Erc20Api {
     }: { fromAddress: string; tokenAddress: string; toAddress: string; amount: BN },
     txOptionalParams?: TxOptionalParams,
   ): Promise<Receipt> {
-    const erc20 = this._getERC20AtAddress(tokenAddress)
+    const erc20 = this._getTokenContract(tokenAddress)
 
     // TODO: Remove temporal fix for web3. See https://github.com/gnosis/dex-react/issues/231
     const tx = erc20.methods.transfer(toAddress, amount.toString()).send({
@@ -107,7 +106,7 @@ export class Erc20ApiImpl implements Erc20Api {
     }: { senderAddress: string; tokenAddress: string; fromAddress: string; toAddress: string; amount: BN },
     txOptionalParams?: TxOptionalParams,
   ): Promise<Receipt> {
-    const erc20 = this._getERC20AtAddress(tokenAddress)
+    const erc20 = this._getTokenContract(tokenAddress)
 
     const tx = erc20.methods.transferFrom(senderAddress, toAddress, amount.toString()).send({
       from: fromAddress,
@@ -122,15 +121,15 @@ export class Erc20ApiImpl implements Erc20Api {
 
   /********************************    private methods   ********************************/
 
-  private _getERC20AtAddress(address: string): Erc20Contract {
+  private _getTokenContract(address: string): Erc20Contract {
     const erc20 = Erc20ApiImpl._contractsCache[address]
 
     if (erc20) return erc20
 
-    const newERC20 = this._contractPrototype.clone()
-    newERC20.options.address = address
+    const newErc20 = this._contractPrototype.clone()
+    newErc20.options.address = address
 
-    return (Erc20ApiImpl._contractsCache[address] = newERC20)
+    return (Erc20ApiImpl._contractsCache[address] = newErc20)
   }
 }
 
