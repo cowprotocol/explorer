@@ -28,7 +28,7 @@ function filterDeletedOrders(orders: AuctionElement[]): AuctionElement[] {
 }
 
 export function useOrders(): AuctionElement[] {
-  const { userAddress } = useWalletConnection()
+  const { userAddress, blockNumber } = useWalletConnection()
   const [orders, setOrders] = useSafeState<AuctionElement[]>([])
 
   useEffect(() => {
@@ -37,7 +37,8 @@ export function useOrders(): AuctionElement[] {
         .getOrders(userAddress)
         .then(filterDeletedOrders)
         .then(setOrders)
-  }, [setOrders, userAddress])
+    // updating list of orders on every block by listening on `blockNumber`
+  }, [setOrders, userAddress, blockNumber])
 
   return orders
 }
