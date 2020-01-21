@@ -141,6 +141,7 @@ function addRemoveMapItem(map: Map<number, TokenDetails>, newToken: TokenDetails
 const PoolingInterface: React.FC = () => {
   const [step, setStep] = useSafeState(1)
   const [selectedTokensMap, setSelectedTokensMap] = useSafeState<Map<number, TokenDetails>>(new Map())
+  const [spread, setSpread] = useSafeState(0.2)
 
   const { networkId } = useWalletConnection()
   // Avoid displaying an empty list of tokens when the wallet is not connected
@@ -175,8 +176,10 @@ const PoolingInterface: React.FC = () => {
       handleTokenSelect,
       tokens,
       selectedTokensMap,
+      spread,
+      setSpread,
     }),
-    [handleTokenSelect, selectedTokensMap, tokens],
+    [handleTokenSelect, selectedTokensMap, setSpread, spread, tokens],
   )
 
   return (
