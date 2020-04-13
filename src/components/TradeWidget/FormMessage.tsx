@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
+import { formatSchemaErrorMessage } from 'utils'
 
 export const FormMessageWrapper = styled.div<{ $margin?: string; $padding?: string }>`
   margin: ${({ $margin = '0' }): string => $margin};
@@ -63,11 +64,16 @@ interface FormInputErrorProps {
 
 export const FormInputError: React.FC<FormInputErrorProps> = ({
   errorMessage,
+  schemaError = true,
   visibilityHidden = true,
   wrapperMargin = '0.5rem 0',
 }) => {
   const message = useMemo(() => {
     if (errorMessage) {
+      if (schemaError) {
+        return formatSchemaErrorMessage(errorMessage)
+      }
+
       return errorMessage
     } else {
       if (visibilityHidden) {
@@ -76,7 +82,7 @@ export const FormInputError: React.FC<FormInputErrorProps> = ({
 
       return null
     }
-  }, [errorMessage, visibilityHidden])
+  }, [errorMessage, schemaError, visibilityHidden])
 
   return (
     <FormMessageWrapper $margin={wrapperMargin}>

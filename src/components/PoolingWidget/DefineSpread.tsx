@@ -24,7 +24,7 @@ const SpreadTooltip = (
 const DefineSpread: React.FC<DefineSpreadProps> = ({ isSubmitting }) => {
   const { errors, register } = useFormContext()
 
-  const errorMessage = (errors?.spread as FieldError)?.message as string
+  const errorMessage = (errors?.spread as FieldError)?.message
 
   return (
     <DefineSpreadWrapper>
