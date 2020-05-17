@@ -14,5 +14,8 @@
     "nohoist": [
       "**"
     ]
+  },
+  "devDependencies": {
+    "lerna": "^3.8.0"
   }
 }
