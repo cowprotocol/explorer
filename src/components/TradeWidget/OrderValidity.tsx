@@ -18,7 +18,7 @@ import { HelpTooltipContainer, HelpTooltip } from 'components/Tooltip'
 // TradeWidget: subcomponents
 import { TradeFormTokenId, TradeFormData } from 'components/TradeWidget'
 import { PriceInputBox } from 'components/TradeWidget/Price'
-import { FormInputError } from 'components/TradeWidget/FormMessage'
+import { FormInputError } from 'components/atoms/FormInputError'
 
 // hooks
 import useSafeState from 'hooks/useSafeState'
