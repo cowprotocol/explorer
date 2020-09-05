@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js'
 import { assert, ONE_BIG_NUMBER } from '@gnosis.pm/dex-js'
 import { parseBigNumber } from './format'
 import { TEN, UNLIMITED_ORDER_AMOUNT_BIGNUMBER, ONE_HUNDRED_BIG_NUMBER } from 'const'
+import { invertPrice } from '@gnosis.pm/dex-js'
 
 interface AdjustAmountParams {
   amount: BN
@@ -120,4 +121,14 @@ export function checkSlippageAgainstPrice(slippage: string, prePrice: BigNumber 
   const postSlippagePrice = prePrice.times(slippageAsFraction)
 
   return postSlippagePrice
+}
+
+export function invertPriceFromString(priceValue: string): string {
+  const price = parseBigNumber(priceValue)
+  if (!price) {
+    return ''
+  }
+  const invertedPrice = invertPrice(price)
+  // To avoid `Infinity` on price inputs
+  return invertedPrice.isFinite() ? invertedPrice.toString(10) : '0'
 }

@@ -16,7 +16,15 @@ import { PRICE_ESTIMATION_DEBOUNCE_TIME } from 'const'
 import { TokenDetails, Network } from 'types'
 
 // utils
-import { getToken, parseAmount, dateToBatchId, resolverFactory, logDebug, batchIdToDate } from 'utils'
+import {
+  getToken,
+  parseAmount,
+  dateToBatchId,
+  resolverFactory,
+  logDebug,
+  batchIdToDate,
+  invertPriceFromString,
+} from 'utils'
 import {
   calculateValidityTimes,
   chooseTokenWithFallback,
@@ -50,7 +58,7 @@ import TokensAdder from './TokenAdder'
 import TokenRow from 'components/TradeWidget/TokenRow'
 import OrderValidity from 'components/TradeWidget/OrderValidity'
 import { PriceSuggestionsComp as PriceSuggestions } from 'components/trade/PriceSuggestions'
-import Price, { invertPriceFromString } from 'components/trade/Price'
+import { LimitPrice } from 'components/trade/LimitPrice'
 
 // hooks
 import useURLParams from 'hooks/useURLParams'
@@ -610,7 +618,7 @@ const TradeWidget: React.FC = () => {
             tabIndex={1}
             readOnly
           />
-          <Price
+          <LimitPrice
             priceInputId={priceInputId}
             priceInverseInputId={priceInverseInputId}
             sellToken={sellToken}

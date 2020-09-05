@@ -1,11 +1,10 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { useFormContext } from 'react-hook-form'
-import { invertPrice } from '@gnosis.pm/dex-js'
 
 // types, utils
 import { TokenDetails } from 'types'
-import { parseBigNumber } from 'utils'
+import { invertPriceFromString } from 'utils'
 import { DEFAULT_PRECISION, MEDIA } from 'const'
 
 // Components
@@ -168,17 +167,7 @@ export interface Props {
   priceShown: 'INVERSE' | 'DIRECT'
 }
 
-export function invertPriceFromString(priceValue: string): string {
-  const price = parseBigNumber(priceValue)
-  if (!price) {
-    return ''
-  }
-  const invertedPrice = invertPrice(price)
-  // To avoid `Infinity` on price inputs
-  return invertedPrice.isFinite() ? invertedPrice.toString(10) : '0'
-}
-
-export const Price: React.FC<Props> = ({
+export const LimitPrice: React.FC<Props> = ({
   sellToken,
   receiveToken,
   priceInputId,
@@ -282,4 +271,4 @@ export const Price: React.FC<Props> = ({
   )
 }
 
-export default Price
+export default LimitPrice
