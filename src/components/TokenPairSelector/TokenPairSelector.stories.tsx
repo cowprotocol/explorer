@@ -4,13 +4,13 @@ import React from 'react'
 import { Meta } from '@storybook/react/types-6-0'
 
 import GlobalStyles from 'components/layout/GenericLayout/GlobalStyles'
-import { RouterDecorator } from 'storybook/RouterDecorator'
+import { Router } from 'storybook/decorators'
 import { TokenPairSelector } from 'components/TokenPairSelector'
 
 export default {
   title: 'component/TokenPairSelector',
   component: TokenPairSelector,
-  decorators: [RouterDecorator],
+  decorators: [Router],
 } as Meta
 
 export const Normal: React.FC = () => (
