@@ -12,6 +12,7 @@ import { TokenBalanceDetails, TokenDetails } from 'types'
 import { WalletInfo } from 'api/wallet/WalletApi'
 import { PendingFlux } from 'api/deposit/DepositApi'
 import { useTokenList, UseTokenListParams } from './useTokenList'
+import { FETCH_TOKENS_TIMEOUT } from 'const'
 
 interface UseBalanceResult {
   balances: TokenBalanceDetails[]
@@ -86,6 +87,7 @@ async function _getBalances(walletInfo: WalletInfo, tokens: TokenDetails[]): Pro
 
   const balancePromises: Promise<TokenBalanceDetails | null>[] = tokens.map((token) => {
     const timeoutPromise = timeout<TokenBalanceDetails | null>({
+      time: FETCH_TOKENS_TIMEOUT,
       timeoutErrorMsg: 'Timeout fetching balances for ' + token.address,
     })
 
