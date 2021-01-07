@@ -39,7 +39,8 @@ function publish_pull_request_urls_in_github {
   else
     REVIEW_FEATURE_MESSAGE="\
 {\"body\": \"Travis automatic deployment:\\n \
-  * **🎩 [Dapp]($REVIEW_FEATURE_URL)**: Testing web app\\n \
+  * **🔭 [Explorer Dapp]($REVIEW_FEATURE_URL)**: Explorer test app\\n \
+  * **📈 [Trade Dapp]($REVIEW_FEATURE_URL/trade.html)**: Trade test app\\n \
   * **📚 [Storybook](${REVIEW_FEATURE_URL}/storybook/)**: Component stories\""
 
     echo "PRaul not detected, commenting URL to repo"
