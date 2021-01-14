@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
         APP_ID: 1
+        REPO_NAME_ALPHANUMERIC: gpui
 
     steps:
       - name: Checkout code
@@ -18,8 +19,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 12
-          # always-auth: true
-          # registry-url: https://registry.npmjs.org
 
       - name: Set output of cache
         id: yarn-cache
@@ -31,13 +30,30 @@ jobs:
       - name: Coverage
         run: yarn test:coverage
 
-      - name: Coveralls GitHub Action
+      - name: Coveralls
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Web Apps
         run: yarn build
+
+      - uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            * **🔭 [Explorer Dapp](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
+            * **📈 [Trade Dapp](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
+            * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+          if: success() && steps.findPr.outputs.number
+        env:
+          REVIEW_FEATURE_URL: https://${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review.gnosisdev.com
 
       # TODO: Conditionally run integration tests
       #- if [[ $TRAVIS_TAG != "" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
@@ -64,4 +80,3 @@ jobs:
       # TODO: Push to Amazon S3 Buckets
       #- name: Push to Amazon S3 Buckets
       #  run: ...
-
