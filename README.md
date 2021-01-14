@@ -50,5 +50,9 @@ Static files will be generated inside the `./dist` dir.
 ## 🧪 Run tests
 
 ```bash
+# Unit test
 yarn test
+
+# Integration tests: GP v1 UI
+APP_ID=1 yarn build:gp-v1 && yarn test:integration
 ```
