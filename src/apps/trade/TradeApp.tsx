@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { BrowserRouter, HashRouter, Route, Switch, Link } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { MEDIA } from 'const'
@@ -90,6 +90,7 @@ export const SwapAppV1: React.FC = () => {
         <GenericLayout menu={menu} navTools={navTools}>
           <React.Suspense fallback={null}>
             <Switch>
+              <Redirect from="/trade.html" exact to="/" push={false} />
               <Route path="/" exact component={Trading} />
               <Route component={NotFound} />
             </Switch>

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
         APP_ID: 1
-        REPO_NAME_ALPHANUMERIC: gpui
+        REPO_NAME_SLUG: gpui
 
     steps:
       - name: Checkout code
@@ -53,7 +53,7 @@ jobs:
           repo-token-user-login: 'github-actions[bot]'
           if: success() && steps.findPr.outputs.number
         env:
-          REVIEW_FEATURE_URL: https://${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_ALPHANUMERIC }}.review.gnosisdev.com
+          REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
 
       # TODO: Conditionally run integration tests
       #- if [[ $TRAVIS_TAG != "" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
@@ -69,14 +69,18 @@ jobs:
       # TODO: Conditionally generate the story book: In the old web it was created only in some branches
       #       if [[ $TRAVIS_TAG != "" || $TRAVIS_PULL_REQUEST != "false" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
 
-      - name: Build Storybook
-        run: yarn build-storybook -o dist/storybook;
+      # - name: Build Storybook
+      #   run: yarn build-storybook -o dist/storybook;
 
-      # TODO: Deploy
-      - name: Deploy
-        run: 'echo "DEPLOY: Not implemented yet!"'
-      # run: ./travis/deploy_pull_request.sh
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      # TODO: Push to Amazon S3 Buckets
-      #- name: Push to Amazon S3 Buckets
-      #  run: ...
+      - name: Copy files to S3 with the AWS CLI
+        run: aws s3 sync dist s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
+
+      
+    
