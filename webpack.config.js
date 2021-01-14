@@ -12,11 +12,6 @@ const dotenv = require('dotenv')
 const loadConfig = require('./src/loadConfig')
 const overrideEnvConfig = require('./src/overrideEnvConfig')
 
-const TRADE_APP = { name: 'trade', title: 'Gnosis Protocol Exchange', filename: 'trade.html' }
-const EXPLORER_APP = { name: 'explorer', title: 'Gnosis Protocol Explorer', filename: 'index.html' }
-const SWAP_APP_V1 = { name: 'swap-v1', title: null, filename: 'swap-v1.html', disabled: true }
-const ALL_APPS = [TRADE_APP, EXPLORER_APP, SWAP_APP_V1]
-
 // Setup env vars
 dotenv.config()
 
@@ -25,6 +20,11 @@ const isProduction = process.env.NODE_ENV == 'production'
 const baseUrl = isProduction ? '' : '/'
 const config = overrideEnvConfig(loadConfig())
 const { name: appTitle } = config
+
+const TRADE_APP = { name: 'trade', title: 'Gnosis Protocol Exchange', filename: 'trade.html' }
+const EXPLORER_APP = { name: 'explorer', title: 'Gnosis Protocol Explorer', filename: 'index.html' }
+const SWAP_APP_V1 = { name: 'gp-v1', title: appTitle, filename: 'gp-v1.html', disabled: true }
+const ALL_APPS = [TRADE_APP, EXPLORER_APP, SWAP_APP_V1]
 
 function getSelectedApps() {
   const appName = process.env.APP
@@ -62,7 +62,7 @@ const htmlPlugins = apps.map((app) => {
   return new HtmlWebPackPlugin({
     template: config.templatePath,
     chunks: [name],
-    title: title || appTitle,
+    title: title,
     filename,
     ipfsHack: isProduction,
     minify: isProduction && {
