@@ -10,7 +10,6 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
-  testPathIgnorePatterns: ['/node_modules/', '/playwright/gp-v1/'],
   moduleDirectories: ['node_modules', path.resolve(__dirname, 'src')],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
