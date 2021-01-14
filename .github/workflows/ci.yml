@@ -88,8 +88,8 @@ jobs:
       # TODO: Conditionally generate the story book: In the old web it was created only in some branches
       #       if [[ $TRAVIS_TAG != "" || $TRAVIS_PULL_REQUEST != "false" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
 
-      # - name: Build Storybook
-      #   run: yarn build-storybook -o dist/storybook;
+      - name: Build Storybook
+        run: yarn build-storybook -o dist/storybook;
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
