@@ -56,7 +56,8 @@ jobs:
       - name: Build Web Apps
         run: yarn build
 
-      - uses: jwalton/gh-find-current-pr@v1
+      - name: Get PR number
+        uses: jwalton/gh-find-current-pr@v1
         id: findPr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -97,8 +98,29 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Copy files to S3 with the AWS CLI
+      - name: "Deploy to S3: PRaul"
+        if: success() && steps.findPr.outputs.number
         run: aws s3 sync dist s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
+    
+      - name: "PRaul: Comment PR with app URLs"
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            * **🔭 [Explorer Dapp](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
+            * **📈 [Trade Dapp](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
+            * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]'
+        if: success() && steps.findPr.outputs.number
+        env:
+          REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+
+      - name: "Deploy to S3: Develop"
+        if: github.ref == 'refs/heads/develop'
+        run: aws s3 sync dist s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
+
+      - name: "Deploy to S3: Staging"
+        if: github.ref == 'refs/heads/master'
+        run: aws s3 sync dist s3://${{ secrets.AWS_STAGING_BUCKET_NAME }} --delete
 
       
-    
