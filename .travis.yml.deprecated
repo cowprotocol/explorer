@@ -93,7 +93,7 @@ deploy:
 
   # add release_v*.zip file to tagged Releases on github
   - provider: releases
-    api_key: $GITHUB_RELEASE_TAG_API_TOKEN
+    api_key: $GITHUB_API_TOKEN
     release_notes_file: RELEASE_NOTES.md
     file: 
       - web_$TRAVIS_TAG.zip

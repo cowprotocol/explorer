@@ -1,0 +1,67 @@
+name: Continuous Integration
+
+# Run on every commit
+on: push
+
+jobs:
+  ci:
+    name: Continuous Integration
+    runs-on: ubuntu-latest
+    env:
+        APP_ID: 1
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+          # always-auth: true
+          # registry-url: https://registry.npmjs.org
+
+      - name: Set output of cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Coverage
+        run: yarn test:coverage
+
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v1.1.2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Web Apps
+        run: yarn build
+
+      # TODO: Conditionally run integration tests
+      #- if [[ $TRAVIS_TAG != "" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
+      #  yarn test:integration;
+      #fi
+
+      # TODO: Branch dependent conf: The Old web had PRICE_ESTIMATOR_URL injected by travis. It would be good to find a cleaner way to allow branch dependant conf
+
+      # TODO: Generate IPFS for the Dapps
+
+      # TODO: Generate RELEASE_NOTES.md
+
+      # TODO: Conditionally generate the story book: In the old web it was created only in some branches
+      #       if [[ $TRAVIS_TAG != "" || $TRAVIS_PULL_REQUEST != "false" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
+
+      - name: Build Storybook
+        run: yarn build-storybook -o dist/storybook;
+
+      # TODO: Deploy
+      - name: Deploy
+        run: 'echo "DEPLOY: Not implemented yet!"'
+      # run: ./travis/deploy_pull_request.sh
+
+      # TODO: Push to Amazon S3 Buckets
+      #- name: Push to Amazon S3 Buckets
+      #  run: ...
+

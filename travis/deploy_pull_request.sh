@@ -32,18 +32,19 @@ function publish_pull_request_urls_in_github {
   # Check GITHUB_PR_COMMENTS if `gnosis-info` exists
   # If present, do nothing as we want to reduce noise
   # Else, comment URL
-  IS_COMMENT_PRESENT=$(curl -s -H "Authorization: token ${GITHUB_GNOSIS_INFO_API_TOKEN}" $GITHUB_PR_COMMENTS | grep -q "\"login\":\s*\"$PREDICATE\"" && echo "true" || echo "false")
+  IS_COMMENT_PRESENT=$(curl -s -H "Authorization: token ${GITHUB_API_TOKEN}" $GITHUB_PR_COMMENTS | grep -q "\"login\":\s*\"$PREDICATE\"" && echo "true" || echo "false")
   if [ "$IS_COMMENT_PRESENT" = "true" ]
   then
     echo "PRaul already active - skipping"
   else
     REVIEW_FEATURE_MESSAGE="\
 {\"body\": \"Travis automatic deployment:\\n \
-  * **🎩 [Dapp]($REVIEW_FEATURE_URL)**: Testing web app\\n \
+  * **🔭 [Explorer Dapp]($REVIEW_FEATURE_URL)**: Explorer test app\\n \
+  * **📈 [Trade Dapp]($REVIEW_FEATURE_URL/trade.html)**: Trade test app\\n \
   * **📚 [Storybook](${REVIEW_FEATURE_URL}/storybook/)**: Component stories\""
 
     echo "PRaul not detected, commenting URL to repo"
-    curl -H "Authorization: token ${GITHUB_GNOSIS_INFO_API_TOKEN}" --request POST ${GITHUB_PR_COMMENTS} --data "$REVIEW_FEATURE_MESSAGE"
+    curl -H "Authorization: token ${GITHUB_API_TOKEN}" --request POST ${GITHUB_PR_COMMENTS} --data "$REVIEW_FEATURE_MESSAGE"
   fi
 }
 
