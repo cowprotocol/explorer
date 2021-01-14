@@ -5,8 +5,6 @@ Develop:
 
 # Gnosis Protocol UI
 
-<img align="right" width="350" src="./docs/screenshot.png">
-
 `Gnosis Protocol UI` contains some reusable components for [Gnosis Protocol](https://docs.gnosis.io/protocol) (`🚨 WARNING: the doc might refer still to v1 of the protocol`).
 
 Gnosis Protocol is a fully permissionless DEX that enables ring trades to maximize liquidity.
