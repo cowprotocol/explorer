@@ -173,7 +173,7 @@ jobs:
         uses: actions/download-artifact@v2
 
       - name: Move storybook inside dist
-        run: mv dist-storybook dist/storybook
+        run: mv storybook website/storybook
           
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -184,7 +184,7 @@ jobs:
 
       - name: "Deploy to S3: PRaul"
         if: success() && steps.findPr.outputs.number
-        run: aws s3 sync dist s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
     
       - name: "PRaul: Comment PR with app URLs"
         uses: mshick/add-pr-comment@v1
@@ -201,9 +201,9 @@ jobs:
 
       - name: "Deploy to S3: Develop"
         if: github.ref == 'refs/heads/develop'
-        run: aws s3 sync dist s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
 
       - name: "Deploy to S3: Staging"
         if: github.ref == 'refs/heads/master'
-        run: aws s3 sync dist s3://${{ secrets.AWS_STAGING_BUCKET_NAME }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }} --delete
 
