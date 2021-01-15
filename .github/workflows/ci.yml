@@ -9,7 +9,7 @@ env:
 
 jobs:
   setup:
-    name: Continuous Integration
+    name: Setup
     runs-on: ubuntu-latest    
 
     steps:
@@ -47,8 +47,8 @@ jobs:
         run: yarn install --frozen-lockfile
 
 
-  build:
-    name: Build
+  test:
+    name: Test
     needs: setup
     runs-on: ubuntu-latest    
 
@@ -77,6 +77,30 @@ jobs:
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+  build:
+    name: Build
+    needs: setup
+    runs-on: ubuntu-latest    
+
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Build Web Apps
         run: yarn build
