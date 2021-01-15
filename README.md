@@ -12,7 +12,7 @@ Gnosis Protocol is a fully permissionless DEX that enables ring trades to maximi
 `Gnosis Protocol UI` contains:
 
 - **Explorer**: Gnosis Protocol explorer. Allows to explore the protocol orders, trades. For now is a WIP 👷‍♀️.
-- **Trade**: Classical trading interface. For now is just a WIP 👷‍♀️. 
+- **Trade**: Classical trading interface. For now it is just a WIP 👷‍♀️. 
 - **Legacy GP v1 UI**: Trading interface for Gnosis Protocol v1. It's the only app that is not generated automatically, but it can be run or build by following the instructions in this readme.
 - **Story Book**: Showcase with some of the components used in these apps.
 
