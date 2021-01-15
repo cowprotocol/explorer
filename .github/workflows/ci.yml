@@ -3,13 +3,14 @@ name: Continuous Integration
 # Run on every commit
 on: push
 
+env:
+  APP_ID: 1
+  REPO_NAME_SLUG: gpui
+
 jobs:
-  ci:
+  setup:
     name: Continuous Integration
-    runs-on: ubuntu-latest
-    env:
-        APP_ID: 1
-        REPO_NAME_SLUG: gpui
+    runs-on: ubuntu-latest    
 
     steps:
       - name: Checkout code
@@ -44,6 +45,28 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
+
+
+  build:
+    name: Build
+    needs: setup
+    runs-on: ubuntu-latest    
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Coverage
         run: yarn test:coverage
