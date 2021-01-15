@@ -123,7 +123,7 @@ jobs:
         env:
           REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
     
-      - name: Upload math result for job 2
+      - name: Upload websites artifact
         uses: actions/upload-artifact@v2
         with:
           name: website
@@ -153,20 +153,27 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Build Storybook
-        run: yarn build-storybook -o dist/storybook;
+        run: yarn build-storybook -o dist-storybook;
+
+      - name: Upload storybook artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: storybook
+          path: dist-storybook
 
 
       
   deploy:
     name: Deploy
-    needs: build
+    needs: [build, storybook]
     runs-on: ubuntu-latest
 
     steps: 
       - name: Download website
         uses: actions/download-artifact@v2
-        with:
-          name: website
+
+      - name: Move storybook inside dist
+        run: mv dist-storybook dist/storybook
           
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
