@@ -1,7 +1,7 @@
-[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-v1/badge.svg?branch=master)](https://coveralls.io/github/gnosis/gp-v1?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-ui/badge.svg?branch=master)](https://coveralls.io/github/gnosis/gp-ui?branch=master)
 
 Develop:
-[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-v1/badge.svg?branch=develop)](https://coveralls.io/github/gnosis/gp-v1?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-ui/badge.svg?branch=develop)](https://coveralls.io/github/gnosis/gp-ui?branch=develop)
 
 # Gnosis Protocol UI
 
