@@ -12,7 +12,7 @@ const HeaderStyled = styled.header`
   box-sizing: border-box;
   padding: 0 2rem;
   border-bottom: 0.1rem solid var(--color-border);
-  background: var(--color-primary);
+  background: ${({ theme }): string => theme.bg1};
 `
 
 const Logo = styled(Link)`

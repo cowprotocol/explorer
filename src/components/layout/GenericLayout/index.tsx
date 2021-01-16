@@ -1,7 +1,7 @@
 import React from 'react'
 import { Header } from './Header'
 import { Footer } from './Footer'
-import { StaticGlobalStyle } from 'theme'
+import ThemeProvider, { StaticGlobalStyle, ThemedGlobalStyle } from 'theme'
 export interface Props {
   menu?: React.ReactNode
   navTools?: React.ReactNode
@@ -10,9 +10,12 @@ export interface Props {
 export const GenericLayout: React.FC<Props> = ({ children, menu, navTools }) => (
   <div>
     <StaticGlobalStyle />
-    <Header menu={menu} tools={navTools} />
-    {children}
-    <Footer />
+    <ThemeProvider>
+      <ThemedGlobalStyle />
+      <Header menu={menu} tools={navTools} />
+      {children}
+      <Footer />
+    </ThemeProvider>
   </div>
 )
 
