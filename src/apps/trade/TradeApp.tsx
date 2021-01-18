@@ -60,28 +60,24 @@ const PortfolioLink = styled.li`
 `
 
 const HEADER = (
-  <Header
-    menu={
-      <Menu>
-        <li>
-          <Link to="/">Trade</Link>
-        </li>
-        <li>
-          <Link to="/swap">Swap</Link>
-        </li>
-        <li>
-          <Link to="/liquidity">Liquidity</Link>
-        </li>
-      </Menu>
-    }
-    tools={
-      <NavTools hasWallet hasNotifications hasSettings>
-        <PortfolioLink>
-          <Link to="/portfolio">Portfolio</Link>
-        </PortfolioLink>
-      </NavTools>
-    }
-  />
+  <Header>
+    <Menu>
+      <li>
+        <Link to="/">Trade</Link>
+      </li>
+      <li>
+        <Link to="/swap">Swap</Link>
+      </li>
+      <li>
+        <Link to="/liquidity">Liquidity</Link>
+      </li>
+    </Menu>
+    <NavTools hasWallet hasNotifications hasSettings>
+      <PortfolioLink>
+        <Link to="/portfolio">Portfolio</Link>
+      </PortfolioLink>
+    </NavTools>
+  </Header>
 )
 
 export const TradeApp: React.FC = () => {

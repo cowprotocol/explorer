@@ -32,21 +32,19 @@ const Home = React.lazy(
 )
 
 const HEADER = (
-  <Header
-    menu={
-      <Menu>
-        <li>
-          <Link to="/">Batches</Link>
-        </li>
-        <li>
-          <Link to="/trades">Trades</Link>
-        </li>
-        <li>
-          <Link to="/markets">Markets</Link>
-        </li>
-      </Menu>
-    }
-  />
+  <Header>
+    <Menu>
+      <li>
+        <Link to="/">Batches</Link>
+      </li>
+      <li>
+        <Link to="/trades">Trades</Link>
+      </li>
+      <li>
+        <Link to="/markets">Markets</Link>
+      </li>
+    </Menu>
+  </Header>
 )
 
 export const ExplorerApp: React.FC = () => {
