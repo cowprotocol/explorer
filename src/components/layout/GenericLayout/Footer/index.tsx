@@ -22,7 +22,7 @@ const FooterStyled = styled.footer`
   padding: 0 1rem;
   border-top: 0.1rem solid var(--color-border);
   flex: 1 1 auto;
-  background: var(--color-gradient-1);
+  background: ${({ theme }): string => theme.gradient1};
   width: 100%;
   color: var(--color-text-secondary2);
   justify-content: space-between;
@@ -70,8 +70,8 @@ export interface FooterType {
   }
 }
 
-export const Footer: React.FC<FooterType> = () => {
-  const { verifiedText, isBeta, url } = footerConfig
+export const Footer: React.FC<FooterType> = (props) => {
+  const { verifiedText = footerConfig.verifiedText, isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const { networkIdOrDefault: networkId } = useWalletConnection()
   const contractAddress = depositApi.getContractAddress(networkId)
 

@@ -16,6 +16,8 @@ interface WrapperProps {
   readonly tabTheme: TabThemeType
 }
 
+// TODO: replace with DefaultTheme and remove `var` approach
+// Make Tabs and TabItem it's own common component with theme
 const Wrapper = styled.button<WrapperProps>`
   background: ${({ isActive, tabTheme }): string =>
     `var(${

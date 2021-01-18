@@ -1,6 +1,5 @@
 export * from './styles'
 export * from './types'
-export * from './utils'
 
 import React, { useMemo } from 'react'
 import {
@@ -10,8 +9,8 @@ import {
   ThemeProvider as StyledComponentsThemeProvider,
 } from 'styled-components'
 
-import { getThemePalette } from './utils'
 import { useThemeMode } from 'hooks/useThemeManager'
+import { getFonts, getThemePalette } from './styles'
 
 // This type is all React.ReactElement & StyledComponents combined
 type ReactOrStyledNode = React.ReactElement &
@@ -26,10 +25,12 @@ const ThemeProvider: React.FC<{ componentKey?: Partial<DefaultTheme['componentKe
 
   const themeObject = useMemo(() => {
     const themePalette = getThemePalette(themeMode)
+    const fontPalette = getFonts(themeMode)
 
     const computedTheme: DefaultTheme = {
       // Compute the app colour pallette using the passed in themeMode
       ...themePalette,
+      ...fontPalette,
       mode: themeMode,
       // unfold in any extensions
       // for example to make big/small buttons -> see src/components/Button ThemeWrappedButtonBase

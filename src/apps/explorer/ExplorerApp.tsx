@@ -10,6 +10,7 @@ import { rootReducer, INITIAL_STATE } from 'reducers-actions'
 
 import { GenericLayout } from 'components/layout'
 import { Menu } from 'components/layout/GenericLayout/Menu'
+import { Header } from 'components/layout/GenericLayout/Header'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -30,11 +31,8 @@ const Home = React.lazy(
     ),
 )
 
-export const SwapAppV1: React.FC = () => {
-  // Deal with incorrect network
-  useNetworkCheck()
-
-  const menu = (
+const HEADER = (
+  <Header>
     <Menu>
       <li>
         <Link to="/">Batches</Link>
@@ -46,12 +44,17 @@ export const SwapAppV1: React.FC = () => {
         <Link to="/markets">Markets</Link>
       </li>
     </Menu>
-  )
+  </Header>
+)
+
+export const ExplorerApp: React.FC = () => {
+  // Deal with incorrect network
+  useNetworkCheck()
 
   return (
     <>
       <Router basename={process.env.BASE_URL}>
-        <GenericLayout menu={menu}>
+        <GenericLayout header={HEADER}>
           <React.Suspense fallback={null}>
             <Switch>
               <Route path="/" exact component={Home} />
@@ -68,7 +71,7 @@ export const SwapAppV1: React.FC = () => {
 
 export default hot(
   withGlobalContext(
-    SwapAppV1,
+    ExplorerApp,
     // Initial State
     INITIAL_STATE,
     rootReducer,
