@@ -14,6 +14,7 @@ import { rootReducer, INITIAL_STATE } from 'reducers-actions'
 import { GenericLayout } from 'components/layout'
 import { Menu } from 'components/layout/GenericLayout/Menu'
 import { NavTools } from 'components/layout/GenericLayout/NavTools'
+import { Header } from 'components/layout/GenericLayout/Header'
 
 import PortfolioImage from 'assets/img/portfolio.svg'
 import PortfolioImageWhite from 'assets/img/portfolio-white.svg'
@@ -58,36 +59,39 @@ const PortfolioLink = styled.li`
   }
 `
 
-export const SwapAppV1: React.FC = () => {
+const HEADER = (
+  <Header
+    menu={
+      <Menu>
+        <li>
+          <Link to="/">Trade</Link>
+        </li>
+        <li>
+          <Link to="/swap">Swap</Link>
+        </li>
+        <li>
+          <Link to="/liquidity">Liquidity</Link>
+        </li>
+      </Menu>
+    }
+    tools={
+      <NavTools hasWallet hasNotifications hasSettings>
+        <PortfolioLink>
+          <Link to="/portfolio">Portfolio</Link>
+        </PortfolioLink>
+      </NavTools>
+    }
+  />
+)
+
+export const TradeApp: React.FC = () => {
   // Deal with incorrect network
   useNetworkCheck()
-
-  const menu = (
-    <Menu>
-      <li>
-        <Link to="/">Trade</Link>
-      </li>
-      <li>
-        <Link to="/swap">Swap</Link>
-      </li>
-      <li>
-        <Link to="/liquidity">Liquidity</Link>
-      </li>
-    </Menu>
-  )
-
-  const navTools = (
-    <NavTools hasWallet hasNotifications hasSettings>
-      <PortfolioLink>
-        <Link to="/portfolio">Portfolio</Link>
-      </PortfolioLink>
-    </NavTools>
-  )
 
   return (
     <>
       <Router basename={process.env.BASE_URL}>
-        <GenericLayout menu={menu} navTools={navTools}>
+        <GenericLayout header={HEADER}>
           <React.Suspense fallback={null}>
             <Switch>
               <Redirect from="/trade.html" exact to="/" push={false} />
@@ -105,7 +109,7 @@ export const SwapAppV1: React.FC = () => {
 
 export default hot(
   withGlobalContext(
-    SwapAppV1,
+    TradeApp,
     // Initial State
     INITIAL_STATE,
     rootReducer,
