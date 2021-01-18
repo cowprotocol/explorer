@@ -151,7 +151,7 @@
     "frontmatter-markdown-loader": "^3.2.1",
     "html-webpack-plugin": "^4.0.0-beta.11",
     "husky": "^4.2.1",
-    "image-webpack-loader": "^6.0.0",
+    "image-webpack-loader": "^7.0.1",
     "jest": "^26.4.2",
     "jest-enzyme": "^7.1.2",
     "markdown-it-link-attributes": "^3.0.0",
