@@ -1,9 +1,8 @@
-import React, { PropsWithChildren } from 'react'
 import styled from 'styled-components'
 
 import { MEDIA } from 'const'
 
-export const NavStyled = styled.ol`
+export const Navigation = styled.ol`
   list-style: none;
   display: flex;
   padding: 0;
@@ -56,7 +55,3 @@ export const NavStyled = styled.ol`
     transition: width 0.3s ease-in-out, background 0.3s ease-in-out;
   }
 `
-
-type Props = PropsWithChildren<unknown>
-
-export const Menu: React.FC<Props> = ({ children }) => <NavStyled>{children}</NavStyled>

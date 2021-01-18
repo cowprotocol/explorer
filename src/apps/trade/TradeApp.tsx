@@ -12,7 +12,7 @@ import { GlobalModalInstance } from 'components/OuterModal'
 import { rootReducer, INITIAL_STATE } from 'reducers-actions'
 
 import { GenericLayout } from 'components/layout'
-import { Menu } from 'components/layout/GenericLayout/Menu'
+import { Navigation } from 'components/layout/GenericLayout/Navigation'
 import { NavTools } from 'components/layout/GenericLayout/NavTools'
 import { Header } from 'components/layout/GenericLayout/Header'
 
@@ -61,7 +61,7 @@ const PortfolioLink = styled.li`
 
 const HEADER = (
   <Header>
-    <Menu>
+    <Navigation>
       <li>
         <Link to="/">Trade</Link>
       </li>
@@ -71,7 +71,7 @@ const HEADER = (
       <li>
         <Link to="/liquidity">Liquidity</Link>
       </li>
-    </Menu>
+    </Navigation>
     <NavTools hasWallet hasNotifications hasSettings>
       <PortfolioLink>
         <Link to="/portfolio">Portfolio</Link>

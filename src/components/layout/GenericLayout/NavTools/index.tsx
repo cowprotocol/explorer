@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { MEDIA } from 'const'
-import { NavStyled } from '../Menu'
+import { Navigation } from '../Navigation'
 
 // Components
 import UserWallet from 'components/UserWallet'
@@ -48,7 +48,7 @@ const NotificationsLink = styled.li`
   }
 `
 
-const Wrapper = styled(NavStyled)`
+const Wrapper = styled(Navigation)`
   margin: 0 0 0 auto;
   padding: 0;
 

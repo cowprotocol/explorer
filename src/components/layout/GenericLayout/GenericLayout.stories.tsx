@@ -6,7 +6,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import { GenericLayout, Props } from '.'
 import { Router, ThemeToggler } from 'storybook/decorators'
 import { LoremIpsum } from 'storybook/LoremIpsum'
-import { Menu } from './Menu'
+import { Navigation } from './Navigation'
 import { Header } from './Header'
 import { Footer, FooterType } from './Footer'
 
@@ -35,12 +35,12 @@ WithCustomHeaderAndFooter.args = {
   ...ShortPage.args,
   header: (
     <Header>
-      <Menu>
+      <Navigation>
         <li>Item 1</li>
         <li>Item 2</li>
         <li>Item 3</li>
         <li>Item 4</li>
-      </Menu>
+      </Navigation>
     </Header>
   ),
   footer: <Footer {...footerProps} />,

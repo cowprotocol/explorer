@@ -9,7 +9,7 @@ import { GlobalModalInstance } from 'components/OuterModal'
 import { rootReducer, INITIAL_STATE } from 'reducers-actions'
 
 import { GenericLayout } from 'components/layout'
-import { Menu } from 'components/layout/GenericLayout/Menu'
+import { Navigation } from 'components/layout/GenericLayout/Navigation'
 import { Header } from 'components/layout/GenericLayout/Header'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -33,7 +33,7 @@ const Home = React.lazy(
 
 const HEADER = (
   <Header>
-    <Menu>
+    <Navigation>
       <li>
         <Link to="/">Batches</Link>
       </li>
@@ -43,7 +43,7 @@ const HEADER = (
       <li>
         <Link to="/markets">Markets</Link>
       </li>
-    </Menu>
+    </Navigation>
   </Header>
 )
 
