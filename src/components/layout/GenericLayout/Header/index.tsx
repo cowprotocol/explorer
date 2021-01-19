@@ -56,17 +56,11 @@ const Logo = styled(Link)`
   }
 `
 
-interface Props {
-  menu?: React.ReactNode
-  tools?: React.ReactNode
-}
-
-export const Header: React.FC<Props> = ({ menu, tools }) => (
+export const Header: React.FC = ({ children }) => (
   <HeaderStyled>
     <Logo to="/" href="#">
       <img src={LogoImage} alt="Trading interface homepage" />
     </Logo>
-    {menu}
-    {tools}
+    {children}
   </HeaderStyled>
 )

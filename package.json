@@ -1,5 +1,5 @@
 {
-  "name": "@gnosis.pm/gp-v1-ui",
+  "name": "@gnosis.pm/gp-v1",
   "version": "1.7.0",
   "description": "",
   "main": "src/index.js",
@@ -134,6 +134,7 @@
     "coveralls": "^3.0.9",
     "css-loader": "^3.4.2",
     "dotenv": "^8.2.0",
+    "enhanced-resolve": "^5.7.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.3",
@@ -151,7 +152,7 @@
     "frontmatter-markdown-loader": "^3.2.1",
     "html-webpack-plugin": "^4.0.0-beta.11",
     "husky": "^4.2.1",
-    "image-webpack-loader": "^6.0.0",
+    "image-webpack-loader": "^7.0.1",
     "jest": "^26.4.2",
     "jest-enzyme": "^7.1.2",
     "markdown-it-link-attributes": "^3.0.0",

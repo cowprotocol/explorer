@@ -3,13 +3,14 @@ name: Continuous Integration
 # Run on every commit
 on: push
 
+env:
+  APP_ID: 1
+  REPO_NAME_SLUG: gpui
+
 jobs:
-  ci:
-    name: Continuous Integration
-    runs-on: ubuntu-latest
-    env:
-        APP_ID: 1
-        REPO_NAME_SLUG: gpui
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest    
 
     steps:
       - name: Checkout code
@@ -45,6 +46,30 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+
+  test:
+    name: Test
+    needs: setup
+    runs-on: ubuntu-latest    
+
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
+
       - name: Coverage
         run: yarn test:coverage
 
@@ -52,6 +77,30 @@ jobs:
         uses: coverallsapp/github-action@v1.1.2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+  build:
+    name: Build apps
+    needs: setup
+    runs-on: ubuntu-latest    
+
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Build Web Apps
         run: yarn build
@@ -73,24 +122,59 @@ jobs:
           if: success() && steps.findPr.outputs.number
         env:
           REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+    
+      - name: Upload websites artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: website
+          path: dist
 
-      # TODO: Conditionally run integration tests
-      #- if [[ $TRAVIS_TAG != "" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
-      #  yarn test:integration;
-      #fi
+  storybook:
+    name: Build storybook
+    needs: setup
+    runs-on: ubuntu-latest
 
-      # TODO: Branch dependent conf: The Old web had PRICE_ESTIMATOR_URL injected by travis. It would be good to find a cleaner way to allow branch dependant conf
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      # TODO: Generate IPFS for the Dapps
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
 
-      # TODO: Generate RELEASE_NOTES.md
-
-      # TODO: Conditionally generate the story book: In the old web it was created only in some branches
-      #       if [[ $TRAVIS_TAG != "" || $TRAVIS_PULL_REQUEST != "false" || $TRAVIS_BRANCH = master || $TRAVIS_BRANCH = develop ]]; then
+      - name: Load dependencies
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Build Storybook
-        run: yarn build-storybook -o dist/storybook;
+        run: yarn build-storybook -o dist-storybook;
 
+      - name: Upload storybook artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: storybook
+          path: dist-storybook
+
+
+      
+  deploy:
+    name: Deploy
+    needs: [build, storybook]
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: Download website
+        uses: actions/download-artifact@v2
+
+      - name: Move storybook inside dist
+        run: mv storybook website/storybook
+          
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -100,7 +184,7 @@ jobs:
 
       - name: "Deploy to S3: PRaul"
         if: success() && steps.findPr.outputs.number
-        run: aws s3 sync dist s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
     
       - name: "PRaul: Comment PR with app URLs"
         uses: mshick/add-pr-comment@v1
@@ -117,10 +201,9 @@ jobs:
 
       - name: "Deploy to S3: Develop"
         if: github.ref == 'refs/heads/develop'
-        run: aws s3 sync dist s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
 
       - name: "Deploy to S3: Staging"
         if: github.ref == 'refs/heads/master'
-        run: aws s3 sync dist s3://${{ secrets.AWS_STAGING_BUCKET_NAME }} --delete
+        run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
 
-      

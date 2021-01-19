@@ -70,8 +70,8 @@ export interface FooterType {
   }
 }
 
-export const Footer: React.FC<FooterType> = () => {
-  const { verifiedText, isBeta, url } = footerConfig
+export const Footer: React.FC<FooterType> = (props) => {
+  const { verifiedText = footerConfig.verifiedText, isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const { networkIdOrDefault: networkId } = useWalletConnection()
   const contractAddress = depositApi.getContractAddress(networkId)
 
