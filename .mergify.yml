@@ -3,7 +3,7 @@ pull_request_rules:
     conditions:
       - "#approved-reviews-by>=2"
       - label!=["WIP", "Don't merge", "On hold"]
-      - status-success=Continuous Integration
+      - check-success=Continuous Integration
       - base=develop
     actions:
       merge:
@@ -15,7 +15,7 @@ pull_request_rules:
       - author~=^dependabot(|-preview)\[bot\]$
       - "#approved-reviews-by>=0"
       - label!=["WIP", "Don't merge", "On hold"]
-      - status-success=Continuous Integration
+      - check-success=Continuous Integration
       - base=develop
     actions:
       merge:
