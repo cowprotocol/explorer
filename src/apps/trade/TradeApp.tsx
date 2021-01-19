@@ -3,8 +3,6 @@ import styled from 'styled-components'
 import { BrowserRouter, HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
-import { MEDIA } from 'const'
-
 import { withGlobalContext } from 'hooks/useGlobalState'
 import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
@@ -18,6 +16,7 @@ import { Header } from 'components/layout/GenericLayout/Header'
 
 import PortfolioImage from 'assets/img/portfolio.svg'
 import PortfolioImageWhite from 'assets/img/portfolio-white.svg'
+import { applyMediaStyles } from 'theme'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -41,9 +40,9 @@ const Trading = React.lazy(
 const PortfolioLink = styled.li`
   margin: 0 2.4rem 0 0;
 
-  @media ${MEDIA.mediumDown} {
+  ${applyMediaStyles('upToMedium')`
     order: 2;
-  }
+  `}
 
   > a::before {
     display: block;

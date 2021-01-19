@@ -10,7 +10,15 @@ import {
 } from 'styled-components'
 
 import { useThemeMode } from 'hooks/useThemeManager'
-import { getFonts, getThemePalette } from './styles'
+import { getFonts, getThemePalette, mediaWidthTemplates as mediaQueries } from './styles'
+
+const getBaseTheme = (): Pick<DefaultTheme, 'mediaQueries' | 'mq'> => ({
+  // media queries
+  mediaQueries,
+  get mq(): DefaultTheme['mq'] {
+    return this.mediaQueries
+  },
+})
 
 // This type is all React.ReactElement & StyledComponents combined
 type ReactOrStyledNode = React.ReactElement &
@@ -21,25 +29,23 @@ const ThemeProvider: React.FC<{ componentKey?: Partial<DefaultTheme['componentKe
   children,
   componentKey,
 }) => {
-  const themeMode = useThemeMode()
+  const mode = useThemeMode()
 
   const themeObject = useMemo(() => {
-    const themePalette = getThemePalette(themeMode)
-    const fontPalette = getFonts(themeMode)
+    const themePalette = getThemePalette(mode)
+    const fontPalette = getFonts(mode)
 
     const computedTheme: DefaultTheme = {
+      mode,
+      componentKey,
       // Compute the app colour pallette using the passed in themeMode
       ...themePalette,
       ...fontPalette,
-      mode: themeMode,
-      // unfold in any extensions
-      // for example to make big/small buttons -> see src/components/Button ThemeWrappedButtonBase
-      // to see it in action
-      componentKey,
+      ...getBaseTheme(),
     }
 
     return computedTheme
-  }, [themeMode, componentKey])
+  }, [componentKey, mode])
 
   // We want to pass the ThemeProvider theme to all children implicitly, no need to manually pass it
   return (

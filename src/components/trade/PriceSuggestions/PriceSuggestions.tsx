@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { MEDIA } from 'const'
-
 import { HelpTooltip, HelpTooltipContainer } from 'components/Tooltip'
 import { SwapPrice } from 'components/common/SwapPrice'
 import { EllipsisText } from 'components/common/EllipsisText'
@@ -11,6 +9,7 @@ import { PriceSuggestionItem } from 'components/trade/PriceSuggestions/PriceSugg
 import BigNumber from 'bignumber.js'
 import { TokenDex } from '@gnosis.pm/dex-js'
 import { isNonZeroNumber } from 'utils'
+import { applyMediaStyles } from 'theme'
 
 export const PriceSuggestionsWrapper = styled.div`
   > div {
@@ -39,9 +38,9 @@ export const PriceSuggestionsWrapper = styled.div`
       margin-left: auto;
       font-size: 1.2rem;
 
-      @media ${MEDIA.xSmallDown} {
+      ${applyMediaStyles('upToExtraSmall')`
         display: flex;
-      }
+      `}
     }
   }
 
@@ -83,7 +82,7 @@ export const PriceSuggestionsWrapper = styled.div`
       }
     }
 
-    @media ${MEDIA.xSmallDown} {
+    ${applyMediaStyles('upToExtraSmall')`
       grid-auto-flow: row;
 
       > div {
@@ -99,7 +98,7 @@ export const PriceSuggestionsWrapper = styled.div`
           }
         }
       }
-    }
+    `}
   }
 `
 

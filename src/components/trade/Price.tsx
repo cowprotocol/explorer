@@ -6,7 +6,7 @@ import { invertPrice } from '@gnosis.pm/dex-js'
 // types, utils
 import { TokenDetails } from 'types'
 import { parseBigNumber } from 'utils'
-import { DEFAULT_PRECISION, MEDIA } from 'const'
+import { DEFAULT_PRECISION } from 'const'
 
 // Components
 import { OrderBookBtn } from 'components/OrderBookBtn'
@@ -19,6 +19,7 @@ import { FormMessage } from 'components/common/FormMessage'
 import { TradeFormData } from 'components/TradeWidget'
 import { useNumberInput } from 'components/TradeWidget/useNumberInput'
 import { SwapPrice } from 'components/common/SwapPrice'
+import { applyMediaStyles } from 'theme'
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,9 +39,9 @@ const Wrapper = styled.div`
     box-sizing: border-box;
     font-size: 1.5rem;
 
-    @media ${MEDIA.mobile} {
+    ${applyMediaStyles('upToSmall')`
       font-size: 1.3rem;
-    }
+    `}
 
     > ${FormMessage} {
       width: min-content;
@@ -70,10 +71,10 @@ const PriceInputBox = styled.div<{ hidden?: boolean }>`
   position: relative;
   outline: 0;
 
-  @media ${MEDIA.mobile} {
+  ${applyMediaStyles('upToSmall')`
     width: 100%;
     margin: 0 0 1.6rem;
-  }
+  `}
 
   label {
     display: flex;
@@ -82,9 +83,9 @@ const PriceInputBox = styled.div<{ hidden?: boolean }>`
     height: 5.6rem;
     position: relative;
 
-    @media ${MEDIA.mobile} {
+    ${applyMediaStyles('upToSmall')`
       width: 100%;
-    }
+    `}
   }
 
   label > div:not(.radio-container) {
@@ -104,10 +105,11 @@ const PriceInputBox = styled.div<{ hidden?: boolean }>`
     text-align: right;
     font-weight: var(--font-weight-bold);
 
-    @media ${MEDIA.mobile} {
+    ${applyMediaStyles('upToSmall')`
       font-size: 1rem;
       letter-spacing: 0.03rem;
-    }
+    `}
+
     > small:nth-child(2) {
       margin: 0 0.3rem;
       font-size: 1rem;
@@ -129,10 +131,10 @@ const PriceInputBox = styled.div<{ hidden?: boolean }>`
     padding: 0 15ch 0 1rem;
     outline: 0;
 
-    @media ${MEDIA.mobile} {
+    ${applyMediaStyles('upToSmall')`
       font-size: 1.3rem;
       width: 100%;
-    }
+    `}
 
     &:focus {
       border-bottom: 0.2rem solid var(--color-text-active);

@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
-import { MEDIA } from 'const'
 import useSafeState from 'hooks/useSafeState'
+import { applyMediaStyles } from 'theme'
 
 const TabsWrapper = styled.div`
   margin: 0 auto;
@@ -13,9 +13,9 @@ const TabsWrapper = styled.div`
   border-bottom: 0.1rem solid var(--color-text-secondary);
   align-items: center;
 
-  @media ${MEDIA.mobile} {
+  ${applyMediaStyles('upToSmall')`
     margin: 0 auto;
-  }
+  `}
 
   .countContainer {
     display: flex;
@@ -60,7 +60,7 @@ const TabsWrapper = styled.div`
         margin: 0 0 0 0.5rem;
       }
 
-      @media ${MEDIA.mobile} {
+      ${applyMediaStyles('upToSmall')`
         flex: 1;
         font-size: 1.2rem;
         min-height: 5.4rem;
@@ -70,15 +70,15 @@ const TabsWrapper = styled.div`
           height: 1.3rem;
           line-height: 1.36rem;
         }
-      }
+      `}
 
-      @media ${MEDIA.xSmallDown} {
+      ${applyMediaStyles('upToExtraSmall')`
         flex-flow: column nowrap;
 
         > i {
           margin: 0.3rem auto;
         }
-      }
+      `}
     }
 
     > button.selected {

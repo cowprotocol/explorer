@@ -1,15 +1,15 @@
 import styled from 'styled-components'
-
-import { MEDIA } from 'const'
+import { applyMediaStyles } from 'theme'
 
 export const Navigation = styled.ol`
   list-style: none;
   display: flex;
   padding: 0;
 
-  /* @media ${MEDIA.mediumDown} {
+  /* ${applyMediaStyles('upToMedium')`
     margin: 0 0 0 auto;
-  } */
+  `}
+   */
 
   > li {
     font-size: var(--font-size-larger);
