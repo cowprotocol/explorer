@@ -17,6 +17,7 @@ import { Header } from 'components/layout/GenericLayout/Header'
 import PortfolioImage from 'assets/img/portfolio.svg'
 import PortfolioImageWhite from 'assets/img/portfolio-white.svg'
 import { applyMediaStyles } from 'theme'
+import { ExampleSmartTable } from 'components/common/SmartTable'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -91,6 +92,7 @@ export const TradeApp: React.FC = () => {
             <Switch>
               <Redirect from="/trade.html" exact to="/" push={false} />
               <Route path="/" exact component={Trading} />
+              <Route path="/smart" exact component={ExampleSmartTable} />
               <Route component={NotFound} />
             </Switch>
           </React.Suspense>
