@@ -10,7 +10,7 @@ env:
 jobs:
   setup:
     name: Setup
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -46,13 +46,12 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
-
   test:
     name: Test
     needs: setup
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
 
-    steps: 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -78,13 +77,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-
   build:
     name: Build apps
     needs: setup
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
 
-    steps: 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -105,24 +103,6 @@ jobs:
       - name: Build Web Apps
         run: yarn build
 
-      - name: Get PR number
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: mshick/add-pr-comment@v1
-        with:
-          message: |
-            * **🔭 [Explorer Dapp](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
-            * **📈 [Trade Dapp](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
-            * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: 'github-actions[bot]'
-          if: success() && steps.findPr.outputs.number
-        env:
-          REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
-    
       - name: Upload websites artifact
         uses: actions/upload-artifact@v2
         with:
@@ -134,7 +114,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
 
-    steps: 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -161,20 +141,18 @@ jobs:
           name: storybook
           path: dist-storybook
 
-
-      
   deploy:
     name: Deploy
     needs: [build, storybook]
     runs-on: ubuntu-latest
 
-    steps: 
+    steps:
       - name: Download website
         uses: actions/download-artifact@v2
 
       - name: Move storybook inside dist
         run: mv storybook website/storybook
-          
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -182,11 +160,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: "Deploy to S3: PRaul"
+      - name: Get PR number
+        uses: jwalton/gh-find-current-pr@v1
+        id: findPr
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Deploy to S3: PRaul'
         if: success() && steps.findPr.outputs.number
         run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
-    
-      - name: "PRaul: Comment PR with app URLs"
+
+      - name: 'PRaul: Comment PR with app URLs'
         uses: mshick/add-pr-comment@v1
         with:
           message: |
@@ -199,11 +183,10 @@ jobs:
         env:
           REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
 
-      - name: "Deploy to S3: Develop"
+      - name: 'Deploy to S3: Develop'
         if: github.ref == 'refs/heads/develop'
         run: aws s3 sync website s3://${{ secrets.AWS_DEV_BUCKET_NAME }} --delete
 
-      - name: "Deploy to S3: Staging"
+      - name: 'Deploy to S3: Staging'
         if: github.ref == 'refs/heads/master'
         run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
-
