@@ -9,7 +9,7 @@ import { PriceSuggestionItem } from 'components/trade/PriceSuggestions/PriceSugg
 import BigNumber from 'bignumber.js'
 import { TokenDex } from '@gnosis.pm/dex-js'
 import { isNonZeroNumber } from 'utils'
-import { applyMediaStyles } from 'theme'
+import { MEDIA } from 'const'
 
 export const PriceSuggestionsWrapper = styled.div`
   > div {
@@ -38,9 +38,9 @@ export const PriceSuggestionsWrapper = styled.div`
       margin-left: auto;
       font-size: 1.2rem;
 
-      ${applyMediaStyles('upToExtraSmall')`
+      @media ${MEDIA.xSmallDown} {
         display: flex;
-      `}
+      }
     }
   }
 
@@ -82,7 +82,7 @@ export const PriceSuggestionsWrapper = styled.div`
       }
     }
 
-    ${applyMediaStyles('upToExtraSmall')`
+    @media ${MEDIA.xSmallDown} {
       grid-auto-flow: row;
 
       > div {
@@ -98,7 +98,7 @@ export const PriceSuggestionsWrapper = styled.div`
           }
         }
       }
-    `}
+    }
   }
 `
 

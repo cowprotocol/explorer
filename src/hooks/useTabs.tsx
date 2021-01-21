@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
 import useSafeState from 'hooks/useSafeState'
-import { applyMediaStyles } from 'theme'
+import { MEDIA } from 'const'
 
 const TabsWrapper = styled.div`
   margin: 0 auto;
@@ -13,9 +13,9 @@ const TabsWrapper = styled.div`
   border-bottom: 0.1rem solid var(--color-text-secondary);
   align-items: center;
 
-  ${applyMediaStyles('upToSmall')`
+  @media ${MEDIA.mobile} {
     margin: 0 auto;
-  `}
+  }
 
   .countContainer {
     display: flex;
@@ -60,25 +60,22 @@ const TabsWrapper = styled.div`
         margin: 0 0 0 0.5rem;
       }
 
-      ${applyMediaStyles('upToSmall')`
+      @media ${MEDIA.mobile} {
         flex: 1;
         font-size: 1.2rem;
         min-height: 5.4rem;
-
         > i {
           font-size: 0.9rem;
           height: 1.3rem;
           line-height: 1.36rem;
         }
-      `}
-
-      ${applyMediaStyles('upToExtraSmall')`
+      }
+      @media ${MEDIA.xSmallDown} {
         flex-flow: column nowrap;
-
         > i {
           margin: 0.3rem auto;
         }
-      `}
+      }
     }
 
     > button.selected {
