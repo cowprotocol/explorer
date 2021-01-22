@@ -18,7 +18,9 @@ const MockHookContext = React.createContext<Parameters>({})
  *  useYourHook: (...whatHookExpectsAsInput) => ({whatever hook should return})
  * }
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createMockHook = <T extends (...args: any) => any>(name: string, defaultValue?: ReturnType<T>): T => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return ((...args: any[]) => {
     const ctx = useContext(MockHookContext)
     const mockedHook = ctx[name]
