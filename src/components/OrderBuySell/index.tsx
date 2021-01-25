@@ -1,27 +1,31 @@
 import React from 'react'
 import styled from 'styled-components'
-import Tabs, { TabItemType, TabThemeType } from 'components/common/Tabs/Tabs'
+import Tabs, { getTabTheme, TabItemInterface } from 'components/common/Tabs/Tabs'
 
-const tabItems: TabItemType[] = [
+const tabItems: TabItemInterface[] = [
   {
     id: 1,
-    title: 'BUY',
+    tab: 'BUY',
     content: '- buy component -',
   },
   {
     id: 2,
-    title: 'SELL',
+    tab: 'SELL',
     content: '- sell component -',
   },
 ]
 
-const tabThemeConfig: TabThemeType = {
-  activeBg: '--color-long',
-  activeBgAlt: '--color-short',
-  inactiveBg: '--color-primary',
-  activeText: '--color-primary',
-  inactiveText: '--color-primary2',
-}
+const tabThemeConfig = getTabTheme({
+  activeBg: 'var(--color-long)',
+  activeBgAlt: 'var(--color-short)',
+  inactiveBg: 'var(--color-primary)',
+  activeText: 'var(--color-primary)',
+  inactiveText: 'var(--color-primary2)',
+  activeBorder: 'none',
+  fontSize: 'var(--font-size-large)',
+  fontWeight: 'var(--font-weight-bold)',
+  borderRadius: true,
+})
 
 const Wrapper = styled.div`
   display: flex;

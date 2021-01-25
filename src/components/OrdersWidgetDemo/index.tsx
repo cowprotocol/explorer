@@ -1,39 +1,37 @@
 import React from 'react'
-import Tabs, { TabItemType, TabThemeType } from 'components/common/Tabs/Tabs'
+import Tabs, { getTabTheme, TabItemInterface } from 'components/common/Tabs/Tabs'
 import { OrdersWidgetDemo as Wrapper } from './OrdersWidgetDemo.styled'
 import { ActiveOrdersContent } from './ActiveOrdersContent'
 
-const tabItems: TabItemType[] = [
+const tabItems: TabItemInterface[] = [
   {
     id: 1,
-    title: 'Active Orders',
+    tab: 'Active Orders: ' + 5,
     content: <ActiveOrdersContent />,
-    count: 5,
   },
   {
     id: 2,
-    title: 'Order History',
+    tab: 'Order History: ' + 10,
     content: <ActiveOrdersContent />,
-    count: 10,
   },
   {
     id: 3,
-    title: 'Closed Orders',
+    tab: 'Closed Orders: ' + 21,
     content: 'content',
-    count: 21,
   },
 ]
 
 // Provide a custom theme
-const tabThemeConfig: TabThemeType = {
-  activeBg: '--color-primary',
-  activeText: '--color-text-primary',
-  inactiveBg: '--color-transparent',
-  inactiveText: '--color-text-secondary2',
-  fontWeight: '--font-weight-normal',
-  fontSize: '--font-size-default',
+const tabThemeConfig = getTabTheme({
+  activeBg: 'var(--color-primary)',
+  activeText: 'var(--color-text-primary)',
+  inactiveBg: 'var(--color-transparent)',
+  inactiveText: 'var(--color-text-secondary2)',
+  activeBorder: 'none',
+  fontWeight: 'var(--font-weight-normal)',
+  fontSize: 'var(--font-size-default)',
   letterSpacing: '0.03rem',
-}
+})
 
 const OrdersWidgetDemo: React.FC = () => {
   return (

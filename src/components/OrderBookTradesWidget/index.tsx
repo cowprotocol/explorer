@@ -1,35 +1,35 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import Tabs, { TabItemType, TabThemeType } from 'components/common/Tabs/Tabs'
+import Tabs, { getTabTheme, TabItemInterface } from 'components/common/Tabs/Tabs'
 import OrderBook from 'components/OrderBook'
 import PairTradeHistory from 'components/PairTradeHistory'
 import { OrderBookTradesStyled as Wrapper } from './OrderBookTrades.styled'
 import { dummyOrders } from 'components/OrderBook/dummyTradingData'
 
-const tabItems = (orders: OrderBookWidgetsProp['orders']): TabItemType[] => [
+const tabItems = (orders: OrderBookWidgetsProp['orders']): TabItemInterface[] => [
   {
     id: 1,
-    title: 'Orderbook',
+    tab: 'Orderbook',
     content: <OrderBook orders={orders} />,
   },
   {
     id: 2,
-    title: 'Trades',
+    tab: 'Trades',
     content: <PairTradeHistory />,
   },
 ]
 
 // Provide a custom theme
-const tabThemeConfig: TabThemeType = {
-  activeBg: '--color-transparent',
-  inactiveBg: '--color-transparent',
-  activeText: '--color-text-primary',
-  inactiveText: '--color-text-secondary2',
-  activeBorder: '--color-text-primary',
-  inactiveBorder: '--color-text-secondary2',
+const tabThemeConfig = getTabTheme({
+  activeBg: 'var(--color-transparent)',
+  inactiveBg: 'var(--color-transparent)',
+  activeText: 'var(--color-text-primary)',
+  inactiveText: 'var(--color-text-secondary2)',
+  activeBorder: 'var(--color-text-primary)',
+  inactiveBorder: 'var(--color-text-secondary2)',
   borderRadius: false,
-  fontSize: '--font-size-default',
-}
+  fontSize: 'var(--font-size-default)',
+})
 
 const TabsWrapper = styled.div`
   display: flex;
@@ -59,12 +59,16 @@ interface OrderBookWidgetsProp {
   readonly orders?: typeof dummyOrders
 }
 
-export const OrderBookTradesWidget: React.FC<OrderBookWidgetsProp> = ({ orders }) => (
-  <Wrapper>
-    <TabsWrapper>
-      <Tabs tabItems={tabItems(orders)} tabTheme={tabThemeConfig} />
-    </TabsWrapper>
-  </Wrapper>
-)
+export const OrderBookTradesWidget: React.FC<OrderBookWidgetsProp> = ({ orders }) => {
+  const tabsList = useMemo(() => tabItems(orders), [orders])
+
+  return (
+    <Wrapper>
+      <TabsWrapper>
+        <Tabs tabItems={tabsList} tabTheme={tabThemeConfig} />
+      </TabsWrapper>
+    </Wrapper>
+  )
+}
 
 export default OrderBookTradesWidget
