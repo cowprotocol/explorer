@@ -35,7 +35,7 @@ import { ETH_NODE_URL } from 'const'
 // TODO connect to mainnet if we need AUTOCONNECT at all
 export const getDefaultProvider = (): string | null => (process.env.NODE_ENV === 'test' ? null : ETH_NODE_URL)
 
-function createWeb3Api(): Web3 {
+export function createWeb3Api(): Web3 {
   // TODO: Create an `EthereumApi` https://github.com/gnosis/gp-v1-ui/issues/331
   const web3 = new Web3(getDefaultProvider())
   // `handleRevert = true` makes `require` failures to throw
@@ -49,7 +49,7 @@ function createWeb3Api(): Web3 {
   return web3
 }
 
-function createWalletApi(web3: Web3): WalletApi {
+export function createWalletApi(web3: Web3): WalletApi {
   let walletApi
   if (process.env.MOCK_WALLET === 'true') {
     walletApi = new WalletApiMock()
@@ -60,7 +60,7 @@ function createWalletApi(web3: Web3): WalletApi {
   return walletApi
 }
 
-function createErc20Api(injectedDependencies: Erc20ApiDependencies): Erc20Api {
+export function createErc20Api(injectedDependencies: Erc20ApiDependencies): Erc20Api {
   let erc20Api
   if (process.env.MOCK_ERC20 === 'true') {
     erc20Api = new Erc20ApiMock({ balances: erc20Balances, allowances: erc20Allowances, tokens: unregisteredTokens })
@@ -71,7 +71,7 @@ function createErc20Api(injectedDependencies: Erc20ApiDependencies): Erc20Api {
   return erc20Api
 }
 
-function createWethApi(injectedDependencies: WethApiDependencies): WethApi {
+export function createWethApi(injectedDependencies: WethApiDependencies): WethApi {
   let wethApi
   if (process.env.MOCK_WETH === 'true') {
     wethApi = new WethApiMock()
@@ -83,7 +83,7 @@ function createWethApi(injectedDependencies: WethApiDependencies): WethApi {
   return wethApi
 }
 
-function createDepositApi(erc20Api: Erc20Api, injectedDependencies: DepositApiDependencies): DepositApi {
+export function createDepositApi(erc20Api: Erc20Api, injectedDependencies: DepositApiDependencies): DepositApi {
   let depositApi
   if (process.env.MOCK_DEPOSIT === 'true') {
     depositApi = new DepositApiMock(exchangeBalanceStates, erc20Api)
@@ -94,7 +94,7 @@ function createDepositApi(erc20Api: Erc20Api, injectedDependencies: DepositApiDe
   return depositApi
 }
 
-function createExchangeApi(erc20Api: Erc20Api, injectedDependencies: DepositApiDependencies): ExchangeApi {
+export function createExchangeApi(erc20Api: Erc20Api, injectedDependencies: DepositApiDependencies): ExchangeApi {
   let exchangeApi
   if (process.env.MOCK_EXCHANGE === 'true') {
     const tokens = [FEE_TOKEN, ...tokenList.map((token) => token.address), TOKEN_8]
@@ -114,7 +114,7 @@ function createExchangeApi(erc20Api: Erc20Api, injectedDependencies: DepositApiD
   return exchangeApi
 }
 
-function createTokenListApi(): TokenList {
+export function createTokenListApi(): TokenList {
   const networkIds = [Network.Mainnet, Network.Rinkeby, Network.xDAI]
 
   let tokenListApi: TokenList
@@ -128,7 +128,7 @@ function createTokenListApi(): TokenList {
   return tokenListApi
 }
 
-function createTheGraphApi(): TheGraphApi {
+export function createTheGraphApi(): TheGraphApi {
   const { type, config } = CONFIG.theGraphApi
   let theGraphApi: TheGraphApi
   switch (type) {
@@ -144,7 +144,7 @@ function createTheGraphApi(): TheGraphApi {
   return theGraphApi
 }
 
-function createDexPriceEstimatorApi(): DexPriceEstimatorApi {
+export function createDexPriceEstimatorApi(): DexPriceEstimatorApi {
   const { type, config } = CONFIG.dexPriceEstimator
   let dexPriceEstimatorApi: DexPriceEstimatorApi
   switch (type) {
@@ -160,7 +160,7 @@ function createDexPriceEstimatorApi(): DexPriceEstimatorApi {
   return dexPriceEstimatorApi
 }
 
-function createTcrApi(web3: Web3): TcrApi | undefined {
+export function createTcrApi(web3: Web3): TcrApi | undefined {
   const { type } = CONFIG.tcr
   let tcrApi: TcrApi | undefined
   switch (CONFIG.tcr.type) {
@@ -181,17 +181,5 @@ function createTcrApi(web3: Web3): TcrApi | undefined {
   return tcrApi
 }
 
-// Build APIs
-export const web3: Web3 = createWeb3Api()
-export const walletApi: WalletApi = createWalletApi(web3)
-
-const injectedDependencies = { web3 }
-
-export const erc20Api: Erc20Api = createErc20Api(injectedDependencies)
-export const wethApi: WethApi = createWethApi(injectedDependencies)
-export const depositApi: DepositApi = createDepositApi(erc20Api, injectedDependencies)
-export const exchangeApi: ExchangeApi = createExchangeApi(erc20Api, injectedDependencies)
-export const tokenListApi: TokenList = createTokenListApi()
-export const theGraphApi: TheGraphApi = createTheGraphApi()
-export const dexPriceEstimatorApi: DexPriceEstimatorApi = createDexPriceEstimatorApi()
-export const tcrApi: TcrApi | undefined = createTcrApi(web3)
+export const web3 = createWeb3Api()
+export const walletApi = createWalletApi(web3)

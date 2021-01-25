@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import useSafeState from './useSafeState'
-import { dexPriceEstimatorApi } from 'api'
+import { dexPriceEstimatorApi } from 'apps/gp-v1/api'
 import BigNumber from 'bignumber.js'
 
 export function useMinTradableAmountInOwl(networkId: number): null | BigNumber {

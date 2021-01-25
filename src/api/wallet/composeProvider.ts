@@ -10,7 +10,7 @@ import { TransactionConfig } from 'web3-core'
 import { numberToHex, hexToNumber } from 'web3-utils'
 import { isWalletConnectProvider, Provider } from './providerUtils'
 import { logDebug } from 'utils'
-import { web3 } from 'api'
+import { web3 } from 'apps/gp-v1/api'
 
 import {
   addTxPendingApproval,

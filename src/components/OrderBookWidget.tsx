@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 
-import { dexPriceEstimatorApi } from 'api'
+import { dexPriceEstimatorApi } from 'apps/gp-v1/api'
 import { OrderBookData, RawPricePoint } from 'api/dexPriceEstimator/DexPriceEstimatorApi'
 
 import useSafeState from 'hooks/useSafeState'

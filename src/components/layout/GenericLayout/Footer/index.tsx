@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { depositApi } from 'api'
+import { depositApi } from 'apps/gp-v1/api'
 
 // Components
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'

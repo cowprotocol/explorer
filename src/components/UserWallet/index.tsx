@@ -15,7 +15,7 @@ const LazyUserWallet = React.lazy(async () => {
     ),
     import(
       /* webpackChunkName: "API_chunk"*/
-      'api'
+      'apps/gp-v1/api'
     ),
   ])
   await setupAutoconnect(walletApi)

@@ -32,7 +32,7 @@ import useDataFilter from 'hooks/useDataFilter'
 // Reducer/Actions
 import { TokenLocalState } from 'reducers-actions'
 import { useWalletConnection } from 'hooks/useWalletConnection'
-import { web3 } from 'api'
+import { web3 } from 'apps/gp-v1/api'
 
 interface WithdrawState {
   amount: BN

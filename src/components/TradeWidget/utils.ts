@@ -1,4 +1,4 @@
-import { tokenListApi } from 'api'
+import { tokenListApi } from 'apps/gp-v1/api'
 import { isAddress } from 'web3-utils'
 import { parseBigNumber, getToken, amountToPrecisionDown } from 'utils'
 import { buildSearchQuery } from 'hooks/useQuery'

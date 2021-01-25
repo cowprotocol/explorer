@@ -7,7 +7,7 @@ import { logDebug } from 'utils'
 import { txOptionalParams } from 'utils/transaction'
 
 // api
-import { exchangeApi } from 'api'
+import { exchangeApi } from 'apps/gp-v1/api'
 
 // hooks
 import useSafeState from 'hooks/useSafeState'

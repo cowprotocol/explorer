@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import BN from 'bn.js'
 import { assert } from '@gnosis.pm/dex-js'
 
-import { erc20Api, depositApi } from 'api'
+import { erc20Api, depositApi } from 'apps/gp-v1/api'
 
 import useSafeState from './useSafeState'
 import { useWalletConnection } from './useWalletConnection'
