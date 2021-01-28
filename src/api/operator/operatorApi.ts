@@ -1,5 +1,7 @@
 import { Network } from 'types'
+
 import { OrderCreation } from './signatures'
+import { FeeInformation, GetOrderParams, GetOrdersParams, OrderID, OrderPostError, RawOrder } from './types'
 
 /**
  * See Swagger documentation:
@@ -20,18 +22,6 @@ const DEFAULT_HEADERS: Headers = new Headers({
  * Unique identifier for the order, calculated by keccak256(orderDigest, ownerAddress, validTo),
    where orderDigest = keccak256(orderStruct). bytes32.
  */
-export type OrderID = string
-
-export interface OrderPostError {
-  errorType: 'MissingOrderData' | 'InvalidSignature' | 'DuplicateOrder' | 'InsufficientFunds'
-  description: string
-}
-
-export interface FeeInformation {
-  expirationDate: string
-  minimalFee: string
-  feeRatio: number
-}
 
 function _getApiBaseUrl(networkId: Network): string {
   const baseUrl = API_BASE_URL[networkId]
@@ -129,7 +119,7 @@ export async function postSignedOrder(params: { networkId: Network; order: Order
   // Call API
   const response = await _post(networkId, `/orders`, order)
 
-  // Handle respose
+  // Handle response
   if (!response.ok) {
     // Raise an exception
     const errorMessage = await _getErrorForUnsuccessfulPostOrder(response)
@@ -160,5 +150,90 @@ export async function getFeeQuote(networkId: Network, tokenAddress: string): Pro
     throw new Error('Error getting the fee')
   } else {
     return response.json()
+  }
+}
+
+/**
+ * Gets a single order by id
+ */
+export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
+  const { networkId, orderId } = params
+
+  console.log(`[getOrder] Fetching order id '${orderId}' on network ${networkId}`)
+
+  const queryString = `/orders/${orderId}`
+
+  let response
+
+  try {
+    response = await _get(networkId, queryString)
+  } catch (e) {
+    const msg = `Failed to fetch ${queryString}`
+    console.error(msg, e.message)
+    throw new Error(msg)
+  }
+
+  if (!response.ok) {
+    // 404 is not a hard error, return null instead
+    if (response.status === 404) {
+      return null
+    }
+    throw new Error(`Request failed: [${response.status}] ${await response.text()}`)
+  }
+
+  try {
+    return response.json()
+  } catch (e) {
+    console.error(`Response does not have valid JSON`, e.message)
+    throw new Error(`Failed to parse API response`)
+  }
+}
+
+/**
+ * Gets a list of orders
+ * Optional filters:
+ *  - owner: address
+ *  - sellToken: address
+ *  - buyToken: address
+ */
+export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
+  const { networkId, ...searchParams } = params
+  const { owner, sellToken, buyToken } = searchParams
+
+  console.log(
+    `[getOrders] Fetching orders on network ${networkId} with filters: owner=${owner} sellToken=${sellToken} buyToken=${buyToken}`,
+  )
+
+  const searchString = new URLSearchParams(
+    Object.keys(searchParams).reduce((acc, key) => {
+      // Pick keys that have values non-falsy
+      if (searchParams[key]) {
+        acc[key] = encodeURIComponent(searchParams[key])
+      }
+      return acc
+    }, {}),
+  ).toString()
+
+  const queryString = '/orders/?' + searchString
+
+  let response
+
+  try {
+    response = await _get(networkId, queryString)
+  } catch (e) {
+    const msg = `Failed to fetch ${queryString}`
+    console.error(msg, e.message)
+    throw new Error(msg)
+  }
+
+  if (!response.ok) {
+    throw new Error(`Request failed: [${response.status}] ${response.body}`)
+  }
+
+  try {
+    return response.json()
+  } catch (e) {
+    console.error(`Response does not have valid JSON`, e.message)
+    throw new Error(`Failed to parse API response`)
   }
 }
