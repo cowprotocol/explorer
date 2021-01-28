@@ -95,7 +95,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
 `
 
 export type Props = {
-  header: JSX.Element
+  header?: JSX.Element
   body: JSX.Element
   className?: string
   numColumns?: number
@@ -103,7 +103,7 @@ export type Props = {
 
 export const SimpleTable = ({ header, body, className, numColumns }: Props): JSX.Element => (
   <Wrapper $numColumns={numColumns} className={className}>
-    <thead>{header}</thead>
+    {header && <thead>{header}</thead>}
     <tbody>{body}</tbody>
   </Wrapper>
 )

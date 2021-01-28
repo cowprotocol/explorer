@@ -107,3 +107,6 @@ CustomTableStyle.args = {
     </>
   ),
 }
+
+export const NoHeader = Template.bind({})
+NoHeader.args = { ...BasicTable.args, header: undefined }

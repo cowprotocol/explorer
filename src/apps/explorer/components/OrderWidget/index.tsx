@@ -1,7 +1,19 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { useParams } from 'react-router'
 
 import { getOrder, RawOrder } from 'api/operator'
+
+import { OrderDetails } from './OrderDetails'
+
+// TODO: create a `View` component to abstract display elements away from logic/hooks
+const Wrapper = styled.div`
+  padding: 4rem 3rem;
+
+  > * {
+    margin-bottom: 2rem;
+  }
+`
 
 export const OrderWidget: React.FC = () => {
   const [order, setOrder] = useState<RawOrder | null>(null)
@@ -21,10 +33,12 @@ export const OrderWidget: React.FC = () => {
   }, [orderId])
 
   return (
-    <div>
-      <h1>Details for order id: {orderId}</h1>
-      {order && <p>{JSON.stringify(order)}</p>}
+    <Wrapper>
+      <h2>Order details</h2>
+      {order ? <OrderDetails order={order} /> : <p>Order not found</p>}
+      <h2>Order fills</h2>
+      <p>No fills</p>
       {error && <p>{error}</p>}
-    </div>
+    </Wrapper>
   )
 }
