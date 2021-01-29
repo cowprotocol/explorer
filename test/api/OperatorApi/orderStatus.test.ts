@@ -156,3 +156,52 @@ describe('Expired status', () => {
     })
   })
 })
+
+describe('Open status', () => {
+  beforeEach(mockTimes)
+
+  describe('Buy order', () => {
+    test('Open, no fills', () => {
+      const order: RawOrder = {
+        ...BASE_ORDER,
+        kind: 'buy',
+        buyAmount: '10000',
+        executedBuyAmount: '0',
+        validTo: Math.floor(Date.now() / 1000),
+      }
+      expect(getOrderStatus(order)).toEqual('open')
+    })
+    test('Open, with partial fills', () => {
+      const order: RawOrder = {
+        ...BASE_ORDER,
+        kind: 'buy',
+        buyAmount: '10000',
+        executedBuyAmount: '10',
+        validTo: Math.floor(Date.now() / 1000),
+      }
+      expect(getOrderStatus(order)).toEqual('open')
+    })
+  })
+  describe('Sell order', () => {
+    test('Open, no fills', () => {
+      const order: RawOrder = {
+        ...BASE_ORDER,
+        kind: 'sell',
+        sellAmount: '10000',
+        executedSellAmount: '0',
+        validTo: Math.floor(Date.now() / 1000),
+      }
+      expect(getOrderStatus(order)).toEqual('open')
+    })
+    test('Open, with partial fills', () => {
+      const order: RawOrder = {
+        ...BASE_ORDER,
+        kind: 'sell',
+        sellAmount: '10000',
+        executedSellAmount: '10',
+        validTo: Math.floor(Date.now() / 1000),
+      }
+      expect(getOrderStatus(order)).toEqual('open')
+    })
+  })
+})
