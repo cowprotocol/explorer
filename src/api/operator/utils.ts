@@ -32,9 +32,9 @@ function isOrderExpired(order: RawOrder): boolean {
 
 function isOrderPartiallyFilled(order: RawOrder): boolean {
   if (order.kind === 'buy') {
-    return !!order.executedBuyAmount
+    return order.executedBuyAmount !== '0'
   } else {
-    return !!order.executedSellAmount
+    return order.executedSellAmount !== '0'
   }
 }
 
