@@ -68,3 +68,40 @@ describe('Filled status', () => {
     })
   })
 })
+
+describe('Partially filled status', () => {
+  describe('Buy order', () => {
+    test('Not partially filled, fully filled', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '10000' }
+
+      expect(getOrderStatus(order)).not.toEqual('partially filled')
+    })
+    test('Not partially filled, no fills', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '' }
+
+      expect(getOrderStatus(order)).not.toEqual('partially filled')
+    })
+    test('Partially filled', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '11' }
+
+      expect(getOrderStatus(order)).toEqual('partially filled')
+    })
+  })
+  describe('Sell order', () => {
+    test('Not partially filled, fully filled', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '10000' }
+
+      expect(getOrderStatus(order)).not.toEqual('partially filled')
+    })
+    test('Not partially filled, no fills', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '' }
+
+      expect(getOrderStatus(order)).not.toEqual('partially filled')
+    })
+    test('Partially filled', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '11' }
+
+      expect(getOrderStatus(order)).toEqual('partially filled')
+    })
+  })
+})
