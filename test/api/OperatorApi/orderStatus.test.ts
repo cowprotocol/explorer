@@ -3,6 +3,7 @@ import { getOrderStatus } from 'api/operator/utils'
 
 import { mockTimes, DATE } from '../../testHelpers'
 
+// TODO: add to test data and use it everywhere
 const BASE_ORDER: RawOrder = {
   creationDate: '2021-01-20T23:15:07.892538607Z',
   owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
