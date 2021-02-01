@@ -25,6 +25,14 @@ const BASE_ORDER: RawOrder = {
     '0x04dca25f59e9ac744c4093530a38f1719c4e0b1ce8e4b68c8018b6b05fd4a6944e1dcf2a009df2d5932f7c034b4a24da0999f9309dd5108d51d54236b605ed991c',
 }
 
+function _getCurrentTimestamp(): number {
+  return Math.floor(Date.now() / 1000)
+}
+
+function _getPastTimestamp(): number {
+  return Math.floor(DATE.getTime() / 1000) - 1
+}
+
 describe('Filled status', () => {
   describe('Buy order', () => {
     test('Not filled', () => {
@@ -119,7 +127,7 @@ describe('Expired status', () => {
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '0',
-        validTo: Math.floor(Date.now() / 1000),
+        validTo: _getCurrentTimestamp(),
       }
       expect(getOrderStatus(order)).not.toEqual('expired')
     })
@@ -129,7 +137,7 @@ describe('Expired status', () => {
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '0',
-        validTo: Math.floor(DATE.getTime() / 1000) - 1,
+        validTo: _getPastTimestamp(),
       }
       expect(getOrderStatus(order)).toEqual('expired')
     })
@@ -141,7 +149,7 @@ describe('Expired status', () => {
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '0',
-        validTo: Math.floor(Date.now() / 1000),
+        validTo: _getCurrentTimestamp(),
       }
       expect(getOrderStatus(order)).not.toEqual('expired')
     })
@@ -151,7 +159,7 @@ describe('Expired status', () => {
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '0',
-        validTo: Math.floor(DATE.getTime() / 1000) - 1,
+        validTo: _getPastTimestamp(),
       }
       expect(getOrderStatus(order)).toEqual('expired')
     })
@@ -168,7 +176,7 @@ describe('Open status', () => {
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '0',
-        validTo: Math.floor(Date.now() / 1000),
+        validTo: _getCurrentTimestamp(),
       }
       expect(getOrderStatus(order)).toEqual('open')
     })
@@ -178,7 +186,7 @@ describe('Open status', () => {
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '10',
-        validTo: Math.floor(Date.now() / 1000),
+        validTo: _getCurrentTimestamp(),
       }
       expect(getOrderStatus(order)).toEqual('open')
     })
@@ -190,7 +198,7 @@ describe('Open status', () => {
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '0',
-        validTo: Math.floor(Date.now() / 1000),
+        validTo: _getCurrentTimestamp(),
       }
       expect(getOrderStatus(order)).toEqual('open')
     })
@@ -200,7 +208,7 @@ describe('Open status', () => {
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '10',
-        validTo: Math.floor(Date.now() / 1000),
+        validTo: _getCurrentTimestamp(),
       }
       expect(getOrderStatus(order)).toEqual('open')
     })
