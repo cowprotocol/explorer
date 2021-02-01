@@ -33,13 +33,11 @@ function _getPastTimestamp(): number {
   return Math.floor(DATE.getTime() / 1000) - 1
 }
 
+// mockTimes set's Date.now() to DATE const in the test context
+beforeEach(mockTimes)
+
 describe('Filled status', () => {
   describe('Buy order', () => {
-    test('Not filled', () => {
-      const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9998' }
-
-      expect(getOrderStatus(order)).not.toEqual('filled')
-    })
     test('Filled, within epsilon', () => {
       const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9999' }
 
@@ -55,13 +53,19 @@ describe('Filled status', () => {
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
+    test('Filled, not yet expired', () => {
+      const order: RawOrder = {
+        ...BASE_ORDER,
+        kind: 'buy',
+        buyAmount: '100',
+        executedBuyAmount: '100',
+        validTo: _getCurrentTimestamp(),
+      }
+
+      expect(getOrderStatus(order)).toEqual('filled')
+    })
   })
   describe('Sell order', () => {
-    test('Not filled', () => {
-      const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9998' }
-
-      expect(getOrderStatus(order)).not.toEqual('filled')
-    })
     test('Filled, within epsilon', () => {
       const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9999' }
 
@@ -77,20 +81,26 @@ describe('Filled status', () => {
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
+    test('Filled, not yet expired', () => {
+      const order: RawOrder = {
+        ...BASE_ORDER,
+        kind: 'sell',
+        sellAmount: '100',
+        executedSellAmount: '100',
+        validTo: _getCurrentTimestamp(),
+      }
+
+      expect(getOrderStatus(order)).toEqual('filled')
+    })
   })
 })
 
 describe('Partially filled status', () => {
   describe('Buy order', () => {
-    test('Not partially filled, fully filled', () => {
-      const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '10000' }
+    test('Partially filled, on the border to be considered filled', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9998' }
 
-      expect(getOrderStatus(order)).not.toEqual('partially filled')
-    })
-    test('Not partially filled, no fills', () => {
-      const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '0' }
-
-      expect(getOrderStatus(order)).not.toEqual('partially filled')
+      expect(getOrderStatus(order)).toEqual('partially filled')
     })
     test('Partially filled', () => {
       const order: RawOrder = { ...BASE_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '11' }
@@ -99,15 +109,10 @@ describe('Partially filled status', () => {
     })
   })
   describe('Sell order', () => {
-    test('Not partially filled, fully filled', () => {
-      const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '10000' }
+    test('Partially filled, on the border to be considered filled', () => {
+      const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9998' }
 
-      expect(getOrderStatus(order)).not.toEqual('partially filled')
-    })
-    test('Not partially filled, no fills', () => {
-      const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '0' }
-
-      expect(getOrderStatus(order)).not.toEqual('partially filled')
+      expect(getOrderStatus(order)).toEqual('partially filled')
     })
     test('Partially filled', () => {
       const order: RawOrder = { ...BASE_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '11' }
@@ -118,19 +123,7 @@ describe('Partially filled status', () => {
 })
 
 describe('Expired status', () => {
-  beforeEach(mockTimes)
-
   describe('Buy order', () => {
-    test('Not expired, open', () => {
-      const order: RawOrder = {
-        ...BASE_ORDER,
-        kind: 'buy',
-        buyAmount: '10000',
-        executedBuyAmount: '0',
-        validTo: _getCurrentTimestamp(),
-      }
-      expect(getOrderStatus(order)).not.toEqual('expired')
-    })
     test('Expired', () => {
       const order: RawOrder = {
         ...BASE_ORDER,
@@ -143,16 +136,6 @@ describe('Expired status', () => {
     })
   })
   describe('Sell order', () => {
-    test('Not expired, open', () => {
-      const order: RawOrder = {
-        ...BASE_ORDER,
-        kind: 'sell',
-        sellAmount: '10000',
-        executedSellAmount: '0',
-        validTo: _getCurrentTimestamp(),
-      }
-      expect(getOrderStatus(order)).not.toEqual('expired')
-    })
     test('Expired', () => {
       const order: RawOrder = {
         ...BASE_ORDER,
@@ -167,8 +150,6 @@ describe('Expired status', () => {
 })
 
 describe('Open status', () => {
-  beforeEach(mockTimes)
-
   describe('Buy order', () => {
     test('Open, no fills', () => {
       const order: RawOrder = {
