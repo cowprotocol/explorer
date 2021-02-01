@@ -2,14 +2,11 @@
 
 import BigNumber from 'bignumber.js'
 
-import { ONE_BIG_NUMBER } from 'const'
+import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER } from 'const'
 
 import { RawOrder } from './types'
 
 export type OrderStatus = 'open' | 'filled' | 'expired' | 'partially filled'
-
-// TODO: move to const or app settings?
-const FILLED_ORDER_EPSILON = '0.0001' // == 0.01%
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
