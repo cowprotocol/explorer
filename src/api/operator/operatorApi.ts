@@ -1,5 +1,7 @@
 import { Network } from 'types'
 
+import { buildSearchString } from 'utils/url'
+
 import { OrderCreation } from './signatures'
 import { FeeInformation, GetOrderParams, GetOrdersParams, OrderID, OrderPostError, RawOrder } from './types'
 
@@ -204,17 +206,9 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
     `[getOrders] Fetching orders on network ${networkId} with filters: owner=${owner} sellToken=${sellToken} buyToken=${buyToken}`,
   )
 
-  const searchString = new URLSearchParams(
-    Object.keys(searchParams).reduce((acc, key) => {
-      // Pick keys that have values non-falsy
-      if (searchParams[key]) {
-        acc[key] = encodeURIComponent(searchParams[key])
-      }
-      return acc
-    }, {}),
-  ).toString()
+  const searchString = buildSearchString({ ...searchParams })
 
-  const queryString = '/orders/?' + searchString
+  const queryString = '/orders/' + searchString
 
   let response
 
