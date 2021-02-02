@@ -27,11 +27,6 @@ describe('Filled status', () => {
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
-    test('Filled, surplus', () => {
-      const order: RawOrder = { ...ORDER, kind: 'buy', buyAmount: '1000', executedBuyAmount: '1001' }
-
-      expect(getOrderStatus(order)).toEqual('filled')
-    })
     test('Filled, not yet expired', () => {
       const order: RawOrder = {
         ...ORDER,
@@ -64,11 +59,6 @@ describe('Filled status', () => {
     })
     test('Filled, exact amount', () => {
       const order: RawOrder = { ...ORDER, kind: 'sell', sellAmount: '100', executedSellAmount: '100' }
-
-      expect(getOrderStatus(order)).toEqual('filled')
-    })
-    test('Filled, surplus', () => {
-      const order: RawOrder = { ...ORDER, kind: 'sell', sellAmount: '1000', executedSellAmount: '1001' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
