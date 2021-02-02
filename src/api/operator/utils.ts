@@ -16,7 +16,7 @@ function isOrderFilled(order: RawOrder): boolean {
     executedAmount = new BigNumber(order.executedBuyAmount)
   } else {
     amount = new BigNumber(order.sellAmount)
-    executedAmount = new BigNumber(order.executedSellAmount)
+    executedAmount = new BigNumber(order.executedSellAmount).minus(order.executedFeeAmount)
   }
 
   const minimumAmount = amount.multipliedBy(ONE_BIG_NUMBER.minus(FILLED_ORDER_EPSILON))

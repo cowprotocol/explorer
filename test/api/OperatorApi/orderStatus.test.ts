@@ -50,6 +50,19 @@ describe('Filled status', () => {
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
+    test('Filled, fee does not affect output', () => {
+      const order: RawOrder = {
+        ...ORDER,
+        kind: 'buy',
+        buyAmount: '100',
+        executedBuyAmount: '100',
+        sellAmount: '1000',
+        executedSellAmount: '1100',
+        executedFeeAmount: '100',
+      }
+
+      expect(getOrderStatus(order)).toEqual('filled')
+    })
   })
   describe('Sell order', () => {
     test('Filled, within epsilon', () => {
@@ -69,6 +82,17 @@ describe('Filled status', () => {
         sellAmount: '100',
         executedSellAmount: '100',
         validTo: _getCurrentTimestamp(),
+      }
+
+      expect(getOrderStatus(order)).toEqual('filled')
+    })
+    test('Filled, with fee', () => {
+      const order: RawOrder = {
+        ...ORDER,
+        kind: 'sell',
+        sellAmount: '90',
+        executedSellAmount: '100',
+        executedFeeAmount: '10',
       }
 
       expect(getOrderStatus(order)).toEqual('filled')
@@ -116,6 +140,17 @@ describe('Partially filled status', () => {
   describe('Sell order', () => {
     test('Partially filled, on the border to be considered filled', () => {
       const order: RawOrder = { ...ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9998' }
+
+      expect(getOrderStatus(order)).toEqual('partially filled')
+    })
+    test('Partially filled, with fee, on the border to be considered filled', () => {
+      const order: RawOrder = {
+        ...ORDER,
+        kind: 'sell',
+        sellAmount: '9000',
+        executedSellAmount: '9996',
+        executedFeeAmount: '998',
+      }
 
       expect(getOrderStatus(order)).toEqual('partially filled')
     })
