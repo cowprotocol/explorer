@@ -7,7 +7,7 @@ import { StoryFnReactReturnType } from '@storybook/react/dist/client/preview/typ
 import { ApolloProvider } from '@apollo/client'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { useForm, FormProvider, UseFormOptions } from 'react-hook-form'
-import { getThemePalette, StaticGlobalStyle, Theme } from 'theme'
+import ThemeProvider, { getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMoon, faLightbulb } from '@fortawesome/free-regular-svg-icons'
@@ -21,7 +21,10 @@ import { INITIAL_STATE, rootReducer } from 'reducers-actions'
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
   <>
     <StaticGlobalStyle />
-    {DecoratedStory()}
+    <ThemeProvider>
+      <ThemedGlobalStyle />
+      {DecoratedStory()}
+    </ThemeProvider>
   </>
 )
 

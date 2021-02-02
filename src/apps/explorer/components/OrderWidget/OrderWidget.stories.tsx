@@ -11,7 +11,7 @@ import { ORDER } from '../../../../../test/data'
 export default {
   title: 'Explorer/OrderWidget',
   component: OrderWidgetView,
-  decorators: [ThemeToggler, GlobalStyles],
+  decorators: [GlobalStyles, ThemeToggler],
   //   argTypes: { header: { control: null }, children: { control: null } },
 } as Meta
 
