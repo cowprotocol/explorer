@@ -66,7 +66,7 @@ export const ExplorerApp: React.FC = () => {
           <React.Suspense fallback={null}>
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/order/:orderId" exact component={Order} />
+              <Route path="/orders/:orderId" exact component={Order} />
               <Route component={NotFound} />
             </Switch>
           </React.Suspense>
