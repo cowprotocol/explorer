@@ -9,10 +9,6 @@ import { OrderDetails } from './OrderDetails'
 
 const Wrapper = styled.div`
   padding: 4rem 3rem;
-
-  > * {
-    margin-bottom: 2rem;
-  }
 `
 
 export type Props = {

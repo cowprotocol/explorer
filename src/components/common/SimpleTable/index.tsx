@@ -1,14 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
+import { MEDIA } from 'const'
+
+// TODO: move to theme AAAAND pick color for white variant
+const FONT_COLOR = '#FFFFFF';
+const TR_BORDER_COLOR = 'rgba(151, 151, 184, 0.1)';
+const TABLE_BORDER_COLOR = 'rgba(151, 151, 184, 0.3)';
+const CELL_HEIGHT = '4.8rem';
 
 const Wrapper = styled.table<{ $numColumns?: number }>`
   font-size: var(--font-size-default);
-  background: var(--color-primary);
-
+  background-color: transparent;
+  color: ${FONT_COLOR};
   height: 100%;
   width: 100%;
-
-  margin: 0;
+  margin: 1.6rem auto 2.4rem;
   padding: 0;
   box-sizing: border-box;
   border-spacing: 0;
@@ -16,6 +22,8 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
   grid-template-areas:
     'head-fixed'
     'body-scrollable';
+  border: 0.1rem solid ${TABLE_BORDER_COLOR};
+  border-radius: 0.4rem;
 
   > thead {
     grid-area: head-fixed;
@@ -29,6 +37,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       color: var(--color-text-secondary2);
       display: grid;
       width: calc(100% - 0.6rem);
+      background: transparent;
 
       > th {
         font-weight: var(--font-weight-normal);
@@ -50,19 +59,27 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
     > tr {
       display: grid;
       width: 100%;
-      transition: background 0.1s ease-in-out;
-      border-bottom: 0.1rem solid var(--color-border);
+      transition: background-color 0.1s ease-in-out;
+      border-bottom: 0.1rem solid ${TR_BORDER_COLOR};
+      height: ${CELL_HEIGHT};
+      padding: 1rem;
+      box-sizing: border-box;
+
+      @media ${MEDIA.mobile} {
+        display: flex;
+        flex-flow: column wrap;
+        height: auto;
+        align-items: flex-start;
+      }
+
       &:hover {
         background: var(--color-text-hover);
         > td {
           color: var(--color-text-primary);
         }
       }
-
-      &:last-of-type {
-        margin: 0 0 5rem;
-      }
     }
+
   }
 
   tr {
@@ -71,7 +88,6 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
 
     > td {
       padding: 0;
-      color: var(--color-text-secondary2);
       transition: color 0.1s ease-in-out;
       box-sizing: border-box;
     }
@@ -85,11 +101,6 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: flex;
       align-items: center;
       justify-content: flex-end;
-
-      &:first-of-type {
-        padding-left: 1rem;
-        justify-content: flex-start;
-      }
     }
   }
 `
