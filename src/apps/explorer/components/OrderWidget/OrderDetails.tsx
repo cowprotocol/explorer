@@ -9,6 +9,7 @@ import { SimpleTable } from 'components/common/SimpleTable'
 
 // TODO: move to theme AAAAND pick color for white variant
 const FONT_COLOR_DESCRIPTION = 'rgba(255, 255, 255, 0.9);';
+const TABLE_BORDER_COLOR = 'rgba(151, 151, 184, 0.3)';
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${TABLE_BORDER_COLOR};

@@ -5,7 +5,6 @@ import { MEDIA } from 'const'
 // TODO: move to theme AAAAND pick color for white variant
 const FONT_COLOR = '#FFFFFF';
 const TR_BORDER_COLOR = 'rgba(151, 151, 184, 0.1)';
-const TABLE_BORDER_COLOR = 'rgba(151, 151, 184, 0.3)';
 const CELL_HEIGHT = '4.8rem';
 
 const Wrapper = styled.table<{ $numColumns?: number }>`
@@ -58,10 +57,13 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: grid;
       width: 100%;
       transition: background-color 0.1s ease-in-out;
-      border-bottom: 0.1rem solid ${TR_BORDER_COLOR};
       height: ${CELL_HEIGHT};
       padding: 1rem;
       box-sizing: border-box;
+
+      &:not(:last-of-type) {
+        border-bottom: 0.1rem solid ${TR_BORDER_COLOR};
+      }
 
       @media ${MEDIA.mobile} {
         display: flex;
