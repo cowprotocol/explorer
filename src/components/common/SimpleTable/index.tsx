@@ -22,8 +22,6 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
   grid-template-areas:
     'head-fixed'
     'body-scrollable';
-  border: 0.1rem solid ${TABLE_BORDER_COLOR};
-  border-radius: 0.4rem;
 
   > thead {
     grid-area: head-fixed;

@@ -11,6 +11,8 @@ import { SimpleTable } from 'components/common/SimpleTable'
 const FONT_COLOR_DESCRIPTION = 'rgba(255, 255, 255, 0.9);';
 
 const Table = styled(SimpleTable)`
+  border: 0.1rem solid ${TABLE_BORDER_COLOR};
+  border-radius: 0.4rem;
 
   > tbody > tr {
     grid-template-columns: 14rem auto;
