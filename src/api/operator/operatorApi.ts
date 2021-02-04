@@ -171,7 +171,7 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
     response = await _get(networkId, queryString)
   } catch (e) {
     const msg = `Failed to fetch ${queryString}`
-    console.error(msg, e.message)
+    console.error(msg, e)
     throw new Error(msg)
   }
 
@@ -180,13 +180,19 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
     if (response.status === 404) {
       return null
     }
-    throw new Error(`Request failed: [${response.status}] ${await response.text()}`)
+    // Just in case response.text() fails
+    const responseText = await response.text().catch((e) => {
+      console.error(`Failed to fetch response text`, e)
+      throw new Error(`Request failed`)
+    })
+
+    throw new Error(`Request failed: [${response.status}] ${responseText}`)
   }
 
   try {
     return response.json()
   } catch (e) {
-    console.error(`Response does not have valid JSON`, e.message)
+    console.error(`Response does not have valid JSON`, e)
     throw new Error(`Failed to parse API response`)
   }
 }
@@ -216,18 +222,24 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
     response = await _get(networkId, queryString)
   } catch (e) {
     const msg = `Failed to fetch ${queryString}`
-    console.error(msg, e.message)
+    console.error(msg, e)
     throw new Error(msg)
   }
 
   if (!response.ok) {
-    throw new Error(`Request failed: [${response.status}] ${response.body}`)
+    // Just in case response.text() fails
+    const responseText = await response.text().catch((e) => {
+      console.error(`Failed to fetch response text`, e)
+      throw new Error(`Request failed`)
+    })
+
+    throw new Error(`Request failed: [${response.status}] ${responseText}`)
   }
 
   try {
     return response.json()
   } catch (e) {
-    console.error(`Response does not have valid JSON`, e.message)
+    console.error(`Response does not have valid JSON`, e)
     throw new Error(`Failed to parse API response`)
   }
 }
