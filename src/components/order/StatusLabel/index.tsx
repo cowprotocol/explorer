@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faClock, faDotCircle } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faClock, faDotCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 import { OrderStatus } from 'api/operator'
 
@@ -16,10 +16,6 @@ const Wrapper = styled.div<Props>`
 
   padding: 0.75em;
   display: inline-block;
-
-  & > svg {
-    margin: 0 0.75rem 0 0;
-  }
 
   ${({ theme, status }): string => {
     let background, color
@@ -46,24 +42,34 @@ const Wrapper = styled.div<Props>`
   }}
 `
 
-export const StatusLabel = (props: Props): JSX.Element => {
-  const { status } = props
+const StyledFAIcon = styled(FontAwesomeIcon)`
+  margin: 0 0.75rem 0 0;
+`
 
-  const icon = useMemo(() => {
-    switch (status) {
-      case 'expired':
-        return <FontAwesomeIcon icon={faClock} />
-      case 'filled':
-      case 'partially filled':
-        return <FontAwesomeIcon icon={faCheckCircle} />
-      case 'open':
-        return <FontAwesomeIcon icon={faDotCircle} />
-    }
-  }, [status])
+function getStatusIcon(status: OrderStatus): IconDefinition {
+  switch (status) {
+    case 'expired':
+      return faClock
+    case 'filled':
+    case 'partially filled':
+      return faCheckCircle
+    case 'open':
+      return faDotCircle
+  }
+}
+
+function StatusIcon({ status }: Props): JSX.Element {
+  const icon = getStatusIcon(status)
+
+  return <StyledFAIcon icon={icon} />
+}
+
+export function StatusLabel(props: Props): JSX.Element {
+  const { status } = props
 
   return (
     <Wrapper status={status}>
-      {icon}
+      <StatusIcon status={status} />
       {status}
     </Wrapper>
   )
