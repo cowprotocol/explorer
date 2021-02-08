@@ -1,5 +1,7 @@
 import { RawOrder } from 'api/operator'
 
+import { FEE_TOKEN } from './basic'
+
 export const ORDER: RawOrder = {
   creationDate: '2021-01-20T23:15:07.892538607Z',
   owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
@@ -11,8 +13,8 @@ export const ORDER: RawOrder = {
   feeAmount: '0',
   executedFeeAmount: '0',
   invalidated: false,
-  sellToken: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
-  buyToken: '0xc7ad46e0b8a400bb3c915120d284aafba8fc4735',
+  sellToken: '0xa7d1c04faf998f9161fc9f800a99a809b84cfc9d',
+  buyToken: FEE_TOKEN,
   validTo: 0,
   appData: 0,
   kind: 'sell',
