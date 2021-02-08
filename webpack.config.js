@@ -23,8 +23,8 @@ const { name: appTitle } = config
 
 const TRADE_APP = { name: 'trade', title: 'Gnosis Protocol Exchange', filename: 'trade.html' }
 const EXPLORER_APP = { name: 'explorer', title: 'Gnosis Protocol Explorer', filename: 'index.html' }
-const SWAP_APP_V1 = { name: 'gp-v1', title: appTitle, filename: 'gp-v1.html', disabled: true }
-const ALL_APPS = [TRADE_APP, EXPLORER_APP, SWAP_APP_V1]
+const GP_V1 = { name: 'gp-v1', title: appTitle, filename: 'gp-v1.html', disabled: true }
+const ALL_APPS = [TRADE_APP, EXPLORER_APP, GP_V1]
 
 function getSelectedApps() {
   const appName = process.env.APP

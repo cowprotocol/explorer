@@ -13,7 +13,7 @@ import { ToastContainer } from 'setupToastify'
 import Console from 'Console'
 import { GlobalModalInstance } from 'components/OuterModal'
 import { LegacyTradeLayout } from 'components/layout'
-import { rootReducer, INITIAL_STATE } from 'reducers-actions'
+import { rootReducer, INITIAL_STATE } from 'apps/gp-v1/state'
 
 // Pages
 const About = React.lazy(
@@ -113,7 +113,7 @@ function getInitialUrl(): string {
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
 const initialUrl = getInitialUrl()
 
-export const SwapAppV1: React.FC = () => {
+export const GpV1App: React.FC = () => {
   // Deal with incorrect network
   useNetworkCheck()
 
@@ -149,7 +149,7 @@ export const SwapAppV1: React.FC = () => {
 
 export default hot(
   withGlobalContext(
-    SwapAppV1,
+    GpV1App,
     // Initial State
     INITIAL_STATE,
     rootReducer,

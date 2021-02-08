@@ -16,7 +16,7 @@ import { ThemeToggle } from 'components/common/Button'
 import { useThemeManager } from 'hooks/useThemeManager'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
-import { INITIAL_STATE, rootReducer } from 'reducers-actions'
+import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'reducers-actions'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
   <>
@@ -47,7 +47,7 @@ const ThemeTogglerUnwrapped: React.FC = ({ children }) => {
     </>
   )
 }
-const WrappedThemeToggler: React.FC = withGlobalContext(ThemeTogglerUnwrapped, INITIAL_STATE, rootReducer)
+const WrappedThemeToggler: React.FC = withGlobalContext(ThemeTogglerUnwrapped, GLOBAL_INITIAL_STATE, globalRootReducer)
 
 // Redux aware ThemeToggler - necessary for Theme
 export const ThemeToggler = (DecoratedStory: () => JSX.Element): JSX.Element => (

@@ -30,6 +30,7 @@ import { useEthBalances } from 'hooks/useEthBalance'
 import useDataFilter from 'hooks/useDataFilter'
 
 // Reducer/Actions
+import { GpV1AppState } from 'apps/gp-v1/state'
 import { TokenLocalState } from 'reducers-actions'
 import { useWalletConnection } from 'hooks/useWalletConnection'
 import { web3 } from 'apps/gp-v1/api'
@@ -261,7 +262,7 @@ const BalancesDisplay: React.FC<BalanceDisplayProps> = ({
   const { networkIdOrDefault } = useWalletConnection()
   const windowSpecs = useWindowSizes()
 
-  const [{ localTokens }] = useGlobalState()
+  const [{ localTokens }] = useGlobalState<GpV1AppState>()
 
   const memoizedSearchFilterParams = useMemo(
     () => ({
@@ -395,7 +396,7 @@ const DepositWidget: React.FC = () => {
   // get all token balances, including deprecated
   const { balances: allBalances, error } = useTokenBalances()
 
-  const [{ localTokens }] = useGlobalState()
+  const [{ localTokens }] = useGlobalState<GpV1AppState>()
 
   const balances = useMemo(() => {
     return allBalances.filter((bal) => !localTokens.disabled.has(bal.address))
