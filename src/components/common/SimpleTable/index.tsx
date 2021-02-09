@@ -1,16 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { MEDIA } from 'const'
-
-// TODO: move to theme AAAAND pick color for white variant
-const FONT_COLOR = '#FFFFFF';
-const TR_BORDER_COLOR = 'rgba(151, 151, 184, 0.1)';
-const CELL_HEIGHT = '4.8rem';
+import { applyMediaStyles } from 'theme'
 
 const Wrapper = styled.table<{ $numColumns?: number }>`
   font-size: var(--font-size-default);
   background-color: transparent;
-  color: ${FONT_COLOR};
+  color: ${({ theme }): string => theme.textPrimary1};
   height: 100%;
   width: 100%;
   margin: 1.6rem auto 2.4rem;
@@ -55,28 +50,27 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: grid;
       width: 100%;
       transition: background-color 0.1s ease-in-out;
-      height: ${CELL_HEIGHT};
+      height: 4.8rem;
       box-sizing: border-box;
 
       &:not(:last-of-type) {
-        border-bottom: 0.1rem solid ${TR_BORDER_COLOR};
+        border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       }
 
-      @media ${MEDIA.mobile} {
+      ${applyMediaStyles('upToSmall')`
         display: flex;
         flex-flow: column wrap;
         height: auto;
         align-items: flex-start;
-      }
 
-      &:hover {
-        background: var(--color-text-hover);
-        > td {
-          color: var(--color-text-primary);
+        &:hover {
+          background: var(--color-text-hover);
+          > td {
+            color: var(--color-text-primary);
+          }
         }
-      }
+      `}
     }
-
   }
 
   tr {
@@ -87,6 +81,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       padding: 0;
       transition: color 0.1s ease-in-out;
       box-sizing: border-box;
+      line-height: 1.3;
     }
 
     align-items: center;
@@ -98,7 +93,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding: 0 0 0 1.6rem;
+      padding: 0 1.6rem;
     }
   }
 `

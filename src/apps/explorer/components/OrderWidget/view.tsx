@@ -8,7 +8,7 @@ import { RawOrder } from 'api/operator'
 import { OrderDetails } from './OrderDetails'
 
 const Wrapper = styled.div`
-  padding: 4rem 3rem;
+  padding: 1.6rem 0;
 `
 
 export type Props = {

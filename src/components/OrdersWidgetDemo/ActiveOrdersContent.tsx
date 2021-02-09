@@ -12,7 +12,6 @@ const Table = styled(SimpleTable)`
   }
 
   tr > td {
-
     &.long {
       color: var(--color-long);
       border-left: 0.2rem solid var(--color-long);

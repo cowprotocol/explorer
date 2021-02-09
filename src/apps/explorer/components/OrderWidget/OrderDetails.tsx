@@ -7,16 +7,12 @@ import { RawOrder } from 'api/operator'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 
-// TODO: move to theme AAAAND pick color for white variant
-const FONT_COLOR_DESCRIPTION = 'rgba(255, 255, 255, 0.9);';
-const TABLE_BORDER_COLOR = 'rgba(151, 151, 184, 0.3)';
-
 const Table = styled(SimpleTable)`
-  border: 0.1rem solid ${TABLE_BORDER_COLOR};
+  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.4rem;
 
   > tbody > tr {
-    grid-template-columns: 14rem auto;
+    grid-template-columns: 16rem auto;
 
     > td {
       justify-content: flex-start;
@@ -36,7 +32,7 @@ const Table = styled(SimpleTable)`
       }
 
       &:last-of-type {
-        color: ${FONT_COLOR_DESCRIPTION};
+        color: ${({ theme }): string => theme.textPrimary1};
       }
     }
   }
