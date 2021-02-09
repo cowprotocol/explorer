@@ -3,19 +3,24 @@ import styled from 'styled-components'
 import { SimpleTable } from 'components/common/SimpleTable'
 
 const Table = styled(SimpleTable)`
+  padding: 0 1rem 3rem;
+  margin: 1rem 0 0;
+
+  tr > th:not(:first-of-type),
+  tr > td:not(:first-of-type) {
+    justify-content: flex-end;
+  }
+
   tr > td {
-    &:not(:first-of-type) {
-      text-align: right;
-    }
 
     &.long {
       color: var(--color-long);
-      border-left: 2px solid var(--color-long);
+      border-left: 0.2rem solid var(--color-long);
     }
 
     &.short {
       color: var(--color-short);
-      border-left: 2px solid var(--color-short);
+      border-left: 0.2rem solid var(--color-short);
     }
   }
 

@@ -35,12 +35,10 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: grid;
       width: calc(100% - 0.6rem);
       background: transparent;
+      ${({ $numColumns }): string => ($numColumns ? `grid-template-columns: repeat(${$numColumns}, 1fr);` : '')}
 
       > th {
         font-weight: var(--font-weight-normal);
-        &:not(:first-of-type) {
-          text-align: right;
-        }
       }
     }
   }
@@ -58,7 +56,6 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       width: 100%;
       transition: background-color 0.1s ease-in-out;
       height: ${CELL_HEIGHT};
-      padding: 1rem;
       box-sizing: border-box;
 
       &:not(:last-of-type) {
@@ -100,7 +97,8 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       height: 3rem;
       display: flex;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
+      padding: 0 0 0 1.6rem;
     }
   }
 `
