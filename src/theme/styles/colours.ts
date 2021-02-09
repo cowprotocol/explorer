@@ -19,6 +19,14 @@ export interface Colors {
   gradient1: Color
   gradient2: Color
 
+  // labels
+  labelTextOpen: Color
+  labelTextExpired: Color
+  labelTextFilled: Color
+  labelBgOpen: Color
+  labelBgExpired: Color
+  labelBgFilled: Color
+
   // Base
   white: Color
   black: Color
@@ -50,6 +58,12 @@ export const BASE_COLOURS = {
   yellow2: '#f1851d',
   blue1: '#2172E5',
   blue2: '#3F77FF',
+
+  // labels
+  labelTextExpired: '#DB843A',
+  labelTextFilled: '#41C29B',
+  labelBgExpired: '#DB843A1A',
+  labelBgFilled: '#00D8971A',
 }
 
 export const LIGHT_COLOURS = {
@@ -68,6 +82,10 @@ export const LIGHT_COLOURS = {
   // gradients
   gradient1: '#8958FF',
   gradient2: '#3F77FF',
+
+  // labels
+  labelTextOpen: '#77838F',
+  labelBgOpen: '#77838F1A',
 }
 
 export const DARK_COLOURS = {
@@ -86,6 +104,10 @@ export const DARK_COLOURS = {
   // gradients
   gradient1: '#21222E',
   gradient2: '#2C2D3F',
+
+  // labels
+  labelTextOpen: '#FFFFFF',
+  labelBgOpen: '#9797B84D',
 
   // TODO: add to theme, not colour palette
   // gradientForm1: 'linear-gradient(270deg, #8958FF 0%, #3F77FF 100%)',

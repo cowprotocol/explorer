@@ -5,6 +5,6 @@
   ],
   "rules": {
     "no-descending-specificity": null,
-    "declaration-bang-space-before": "never"
+    "declaration-bang-space-before": null
   }
 }

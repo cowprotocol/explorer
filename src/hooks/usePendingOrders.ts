@@ -6,6 +6,7 @@ import useGlobalState from './useGlobalState'
 import useSafeState from './useSafeState'
 import { useWalletConnection } from './useWalletConnection'
 // Reducers/Actions
+import { GpV1AppState } from 'apps/gp-v1/state'
 import { removePendingOrdersAction } from 'reducers-actions/pendingOrders'
 // Constants/Types/Misc.
 import { EMPTY_ARRAY } from 'const'
@@ -40,7 +41,7 @@ async function getDetailedPendingOrders({
 function usePendingOrders(): DetailedPendingOrder[] {
   const { blockNumber, userAddress, networkId } = useWalletConnection()
 
-  const [{ pendingOrders }, dispatch] = useGlobalState()
+  const [{ pendingOrders }, dispatch] = useGlobalState<GpV1AppState>()
   const [detailedPendingOrders, setDetailedPendingOrders] = useSafeState<DetailedPendingOrder[]>([])
 
   // Handle Pending Orders

@@ -6,7 +6,7 @@ import { withGlobalContext } from 'hooks/useGlobalState'
 import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
 import { GlobalModalInstance } from 'components/OuterModal'
-import { rootReducer, INITIAL_STATE } from 'reducers-actions'
+import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
 
 import { GenericLayout } from 'components/layout'
 import { Navigation } from 'components/layout/GenericLayout/Navigation'
@@ -66,7 +66,7 @@ export const ExplorerApp: React.FC = () => {
           <React.Suspense fallback={null}>
             <Switch>
               <Route path="/" exact component={Home} />
-              <Route path="/order/:orderId" exact component={Order} />
+              <Route path="/orders/:orderId" exact component={Order} />
               <Route component={NotFound} />
             </Switch>
           </React.Suspense>
