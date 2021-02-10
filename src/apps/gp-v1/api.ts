@@ -1,20 +1,21 @@
-import {
-  createDepositApi,
-  createDexPriceEstimatorApi,
-  createErc20Api,
-  createExchangeApi,
-  createTcrApi,
-  createTheGraphApi,
-  createTokenListApi,
-  createWethApi,
-  walletApi,
-  web3,
-} from 'api'
+import { createDepositApi } from 'api/deposit'
+import { createDexPriceEstimatorApi } from 'api/dexPriceEstimator'
+import { createErc20Api } from 'api/erc20'
+import { createExchangeApi } from 'api/exchange'
+import { createTcrApi } from 'api/tcr'
+import { createTheGraphApi } from 'api/thegraph'
+import { createTokenListApi } from 'api/tokenList'
+import { createWalletApi } from 'api/wallet'
+import { createWeb3Api } from 'api/web3'
+import { createWethApi } from 'api/weth'
 
 // Build APIs
 
+const web3 = createWeb3Api()
+
 const injectedDependencies = { web3 }
 
+const walletApi = createWalletApi(web3)
 const erc20Api = createErc20Api(injectedDependencies)
 const wethApi = createWethApi(injectedDependencies)
 const depositApi = createDepositApi(erc20Api, injectedDependencies)

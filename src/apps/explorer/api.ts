@@ -1,6 +1,7 @@
-import { createErc20Api } from 'api'
+import { createErc20Api } from 'api/erc20'
+import { createWeb3Api } from 'api/web3'
 
-import { web3 } from 'api'
+const web3 = createWeb3Api()
 
 const injectedDependencies = { web3 }
 
