@@ -58,12 +58,12 @@ const CustomSimpleTable = styled(SimpleTable)`
 
     &.long {
       color: var(--color-long);
-      border-left: 2px solid var(--color-long);
+      border-left: 0.2rem solid var(--color-long);
     }
 
     &.short {
       color: var(--color-short);
-      border-left: 2px solid var(--color-short);
+      border-left: 0.2rem solid var(--color-short);
     }
   }
 

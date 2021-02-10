@@ -7,37 +7,22 @@ import { RawOrder } from 'api/operator'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 
-// TODO: move to theme AAAAND pick color for white variant
-const COLUMN_COLOR = '#252535'
-
 const Table = styled(SimpleTable)`
+  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+  border-radius: 0.4rem;
+
   > tbody > tr {
-    grid-template-columns: minmax(10rem, 25rem) auto;
-
-    background: ${({ theme }): string => theme.bg2};
-    border-right: 0.1em solid;
-    border-color: ${COLUMN_COLOR};
-
-    :first-of-type {
-      /* border on top of the first row to close the table */
-      border-top: 0.1rem solid ${COLUMN_COLOR};
-    }
-
-    &:last-of-type {
-      /* Remove weird block at the end of the table */
-      margin: 0;
-    }
+    grid-template-columns: 16rem auto;
 
     > td {
       justify-content: flex-start;
 
-      :first-of-type {
-        /* First column same color as border */
-        background: ${COLUMN_COLOR};
+      &:first-of-type {
+        font-weight: var(--font-weight-bold);
 
         /* Question mark */
         > svg {
-          margin-right: 2rem;
+          margin: 0 1rem 0 0;
         }
 
         /* Column after text on first column */
@@ -46,10 +31,8 @@ const Table = styled(SimpleTable)`
         }
       }
 
-      height: 5rem;
-
-      :not(:first-of-type) {
-        padding-left: 2.5rem;
+      &:last-of-type {
+        color: ${({ theme }): string => theme.textPrimary1};
       }
     }
   }

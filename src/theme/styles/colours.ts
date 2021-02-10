@@ -27,6 +27,10 @@ export interface Colors {
   labelBgExpired: Color
   labelBgFilled: Color
 
+  // table & borders
+  borderPrimary: Color
+  tableRowBorder: Color
+
   // Base
   white: Color
   black: Color
@@ -86,6 +90,10 @@ export const LIGHT_COLOURS = {
   // labels
   labelTextOpen: '#77838F',
   labelBgOpen: '#77838F1A',
+
+  // table & borders
+  borderPrimary: 'rgba(151, 151, 184, 0.3)',
+  tableRowBorder: 'rgba(151, 151, 184, 0.1)',
 }
 
 export const DARK_COLOURS = {
@@ -108,6 +116,10 @@ export const DARK_COLOURS = {
   // labels
   labelTextOpen: '#FFFFFF',
   labelBgOpen: '#9797B84D',
+
+  // table & borders
+  borderPrimary: 'rgba(151, 151, 184, 0.3)',
+  tableRowBorder: 'rgba(151, 151, 184, 0.1)',
 
   // TODO: add to theme, not colour palette
   // gradientForm1: 'linear-gradient(270deg, #8958FF 0%, #3F77FF 100%)',
