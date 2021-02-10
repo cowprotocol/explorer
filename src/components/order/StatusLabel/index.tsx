@@ -1,11 +1,36 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheckCircle, faClock, faDotCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 import { OrderStatus } from 'api/operator'
 
 export type Props = { status: OrderStatus }
+
+function setStatusColors({ theme, status }: { theme: DefaultTheme; status: OrderStatus }): string {
+  let background, text
+
+  switch (status) {
+    case 'expired':
+      text = theme.labelTextExpired
+      background = theme.labelBgExpired
+      break
+    case 'filled':
+    case 'partially filled':
+      text = theme.labelTextFilled
+      background = theme.labelBgFilled
+      break
+    case 'open':
+      text = theme.labelTextOpen
+      background = theme.labelBgOpen
+      break
+  }
+
+  return `
+      background: ${background};
+      color: ${text};
+    `
+}
 
 const Wrapper = styled.div<Props>`
   font-size: ${({ theme }): string => theme.fontSizeNormal};
@@ -17,29 +42,7 @@ const Wrapper = styled.div<Props>`
   padding: 0.75em;
   display: inline-block;
 
-  ${({ theme, status }): string => {
-    let background, color
-
-    switch (status) {
-      case 'expired':
-        color = theme.labelTextExpired
-        background = theme.labelBgExpired
-        break
-      case 'filled':
-      case 'partially filled':
-        color = theme.labelTextFilled
-        background = theme.labelBgFilled
-        break
-      case 'open':
-        color = theme.labelTextOpen
-        background = theme.labelBgOpen
-        break
-    }
-    return `
-      background: ${background};
-      color: ${color};
-    `
-  }}
+  ${({ theme, status }): string => setStatusColors({ theme, status })}
 `
 
 const StyledFAIcon = styled(FontAwesomeIcon)`
