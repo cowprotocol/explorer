@@ -29,7 +29,7 @@ import { useWalletConnection } from 'hooks/useWalletConnection'
 import { usePlaceOrder, MultipleOrdersOrder } from 'hooks/usePlaceOrder'
 import { useForm, FormProvider } from 'react-hook-form'
 import useGlobalState from 'hooks/useGlobalState'
-import { savePendingOrdersAction } from 'reducers-actions/pendingOrders'
+import { savePendingOrdersAction } from 'state/pendingOrders'
 
 import { useTokenList } from 'hooks/useTokenList'
 

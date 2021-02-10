@@ -23,7 +23,7 @@ import {
   setHighlightAndWithdrawing,
   setEnabledAction,
   setImmatureClaim,
-} from 'reducers-actions'
+} from 'state'
 
 const ON_ERROR_MESSAGE = 'No logged in user found. Please check wallet connectivity status and try again.'
 

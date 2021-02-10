@@ -16,7 +16,7 @@ import { ThemeToggle } from 'components/common/Button'
 import { useThemeManager } from 'hooks/useThemeManager'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
-import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'reducers-actions'
+import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
   <>

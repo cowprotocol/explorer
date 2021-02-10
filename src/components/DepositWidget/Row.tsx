@@ -22,7 +22,7 @@ import { TokenRow, RowClaimButton, RowClaimSpan } from 'components/DepositWidget
 
 // Hooks and reducers
 import useNoScroll from 'hooks/useNoScroll'
-import { TokenLocalState } from 'reducers-actions'
+import { TokenLocalState } from 'state'
 import { TokenSymbol } from 'components/TokenSymbol'
 import { HelpTooltip, HelpTooltipContainer } from 'components/Tooltip'
 

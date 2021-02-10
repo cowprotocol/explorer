@@ -1,4 +1,4 @@
-import { Actions, ActionCreator, ReducerCreator } from 'reducers-actions'
+import { Actions, ActionCreator, ReducerCreator } from 'state'
 import { DEFAULT_SUGGESTED_SLIPPAGE } from 'const'
 
 const ActionsList = ['SET_PRICE_SLIPPAGE'] as const

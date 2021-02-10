@@ -1,5 +1,5 @@
-import { GlobalState, GLOBAL_INITIAL_STATE, globalRootReducer } from 'reducers-actions'
-import { Erc20State, INITIAL_ERC20_STATE, reducer as erc20sReducer } from 'reducers-actions/erc20'
+import { GlobalState, GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
+import { Erc20State, INITIAL_ERC20_STATE, reducer as erc20sReducer } from 'state/erc20'
 import combineReducers from 'combine-reducers'
 
 export type ExplorerAppState = GlobalState & {

@@ -1,30 +1,30 @@
-import { GlobalState, GLOBAL_INITIAL_STATE, globalRootReducer, addSideEffect } from 'reducers-actions'
-import { reducer as TokenRowReducer, TokenLocalState, TokenRowInitialState as tokens } from 'reducers-actions/tokenRow'
+import { GlobalState, GLOBAL_INITIAL_STATE, globalRootReducer, addSideEffect } from 'state'
+import { reducer as TokenRowReducer, TokenLocalState, TokenRowInitialState as tokens } from 'state/tokenRow'
 import {
   reducer as PendingOrderReducer,
   PendingOrdersState,
   PendingOrdersInitialState as pendingOrders,
   sideEffect as PendingOrdersSideEffect,
-} from 'reducers-actions/pendingOrders'
+} from 'state/pendingOrders'
 import {
   reducer as OrdersReducer,
   OrdersState,
   INITIAL_ORDERS_STATE as orders,
   sideEffect as OrdersSideEffect,
-} from 'reducers-actions/orders'
-import { reducer as TradeReducer, TradeState, INITIAL_TRADE_STATE as trade } from 'reducers-actions/trade'
+} from 'state/orders'
+import { reducer as TradeReducer, TradeState, INITIAL_TRADE_STATE as trade } from 'state/trade'
 import {
   reducer as TradesReducer,
   TradesState,
   initialState as trades,
   sideEffect as TradesSideEffect,
-} from 'reducers-actions/trades'
+} from 'state/trades'
 import {
   reducer as LocalTokensReducer,
   LocalTokensState,
   INITIAL_LOCAL_TOKENS_STATE as localTokens,
   sideEffect as LocalTokensSideEffect,
-} from 'reducers-actions/localTokens'
+} from 'state/localTokens'
 import combineReducers from 'combine-reducers'
 
 export interface GpV1AppState extends GlobalState {

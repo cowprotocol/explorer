@@ -1,6 +1,6 @@
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
-import { Actions } from 'reducers-actions'
+import { Actions } from 'state'
 
 import { Network } from 'types'
 

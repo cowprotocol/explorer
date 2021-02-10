@@ -3,7 +3,7 @@ import { toBN } from '@gnosis.pm/dex-js'
 
 import { Trade, TradeReversion, EventWithBlockInfo } from 'api/exchange/ExchangeApi'
 
-import { Actions } from 'reducers-actions'
+import { Actions } from 'state'
 
 import { logDebug, dateToBatchId, setStorageItem, flattenMapOfLists } from 'utils'
 import { TRADES_LOCAL_STORAGE_KEY } from 'const'

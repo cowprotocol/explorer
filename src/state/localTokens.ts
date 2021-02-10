@@ -1,4 +1,4 @@
-import { Actions } from 'reducers-actions'
+import { Actions } from 'state'
 import { STORAGE_KEY_DISABLED_TOKENS_ADDRESSES } from 'const'
 
 export interface LocalTokensState {

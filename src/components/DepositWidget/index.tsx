@@ -31,7 +31,7 @@ import useDataFilter from 'hooks/useDataFilter'
 
 // Reducer/Actions
 import { GpV1AppState } from 'apps/gp-v1/state'
-import { TokenLocalState } from 'reducers-actions'
+import { TokenLocalState } from 'state'
 import { useWalletConnection } from 'hooks/useWalletConnection'
 import { web3 } from 'apps/gp-v1/api'
 

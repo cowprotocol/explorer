@@ -1,4 +1,4 @@
-import { GlobalState, GLOBAL_INITIAL_STATE, globalRootReducer } from 'reducers-actions'
+import { GlobalState, GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
 import combineReducers from 'combine-reducers'
 
 export type TradeAppState = GlobalState

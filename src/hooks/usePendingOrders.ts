@@ -7,7 +7,7 @@ import useSafeState from './useSafeState'
 import { useWalletConnection } from './useWalletConnection'
 // Reducers/Actions
 import { GpV1AppState } from 'apps/gp-v1/state'
-import { removePendingOrdersAction } from 'reducers-actions/pendingOrders'
+import { removePendingOrdersAction } from 'state/pendingOrders'
 // Constants/Types/Misc.
 import { EMPTY_ARRAY } from 'const'
 import { AuctionElement, DetailedPendingOrder } from 'api/exchange/ExchangeApi'

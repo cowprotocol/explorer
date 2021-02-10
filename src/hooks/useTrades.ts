@@ -7,7 +7,7 @@ import { web3 } from 'apps/gp-v1/api'
 
 import { getTradesAndTradeReversions } from 'services'
 
-import { appendTrades, updateLastCheckedBlock, buildAccountKey } from 'reducers-actions/trades'
+import { appendTrades, updateLastCheckedBlock, buildAccountKey } from 'state/trades'
 
 import { useWalletConnection } from 'hooks/useWalletConnection'
 import useGlobalState from 'hooks/useGlobalState'

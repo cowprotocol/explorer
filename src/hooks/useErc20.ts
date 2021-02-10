@@ -4,7 +4,7 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Network } from 'types'
 
-import { buildErc20Key, saveSingleErc20 } from 'reducers-actions/erc20'
+import { buildErc20Key, saveSingleErc20 } from 'state/erc20'
 
 import useGlobalState from 'hooks/useGlobalState'
 

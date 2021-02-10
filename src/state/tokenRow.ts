@@ -1,4 +1,4 @@
-import { Actions } from 'reducers-actions'
+import { Actions } from 'state'
 
 export enum ActionTypes {
   SET_ENABLING = 'enabling',

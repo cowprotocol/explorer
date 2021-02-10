@@ -66,8 +66,8 @@ import { DevTool } from 'HookFormDevtool'
 import { useSubmitTxModal } from 'hooks/useSubmitTxModal'
 
 // Reducers
-import { savePendingOrdersAction } from 'reducers-actions/pendingOrders'
-import { updateTradeState, TradeState } from 'reducers-actions/trade'
+import { savePendingOrdersAction } from 'state/pendingOrders'
+import { updateTradeState, TradeState } from 'state/trade'
 
 // Validation
 import validationSchema from 'components/TradeWidget/validationSchema'

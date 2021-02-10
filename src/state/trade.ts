@@ -1,4 +1,4 @@
-import { Actions } from 'reducers-actions'
+import { Actions } from 'state'
 import { TokenDetails } from 'types'
 
 export interface TradeState {

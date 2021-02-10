@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { ThemeState, updateTheme } from 'reducers-actions/theme'
+import { ThemeState, updateTheme } from 'state/theme'
 import useGlobalState from './useGlobalState'
 
 import { Theme } from 'theme'

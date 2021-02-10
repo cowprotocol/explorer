@@ -1,4 +1,4 @@
-import { Actions } from 'reducers-actions'
+import { Actions } from 'state'
 import { DetailedAuctionElement } from 'api/exchange/ExchangeApi'
 import { addUnlistedTokensToUserTokenListById } from 'services'
 import { isOrderDeleted } from 'utils'

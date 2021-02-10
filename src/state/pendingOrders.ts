@@ -1,5 +1,5 @@
 import { PendingTxObj } from 'api/exchange/ExchangeApi'
-import { Actions } from 'reducers-actions'
+import { Actions } from 'state'
 import { setStorageItem } from 'utils'
 import { toBN } from '@gnosis.pm/dex-js'
 

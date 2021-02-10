@@ -10,7 +10,7 @@ import searchIcon from 'assets/img/search.svg'
 import { useBetterAddTokenModal, UseAddTokenModalResult } from './useBetterAddTokenModal'
 import useGlobalState from 'hooks/useGlobalState'
 import { GpV1AppState } from 'apps/gp-v1/state'
-import { updateLocalTokens } from 'reducers-actions/localTokens'
+import { updateLocalTokens } from 'state/localTokens'
 import { Toggle } from 'components/Toggle'
 
 const OptionWrapper = styled.div`

@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { MEDIA, SLIPPAGE_MAP } from 'const'
-import { PriceSlippageState } from 'reducers-actions/priceSlippage'
+import { PriceSlippageState } from 'state/priceSlippage'
 
 const Wrapper = styled.div`
   font-size: 1.6rem;
