@@ -114,14 +114,14 @@ export function OrderDetails(props: Props): JSX.Element {
             <td>Sell amount</td>
             <td>
               {formatSmart(sellAmount, sellToken.decimals)}
-              {buyToken.symbol}
+              {sellToken.symbol}
             </td>
           </tr>
           <tr>
             <td>Buy amount</td>
             <td>
               {formatSmart(buyAmount, buyToken.decimals)}
-              {sellToken.symbol}
+              {buyToken.symbol}
             </td>
           </tr>
           <tr>
@@ -129,8 +129,8 @@ export function OrderDetails(props: Props): JSX.Element {
             <td>
               {formatSmart(limitPrice.toString(), 0)}{' '}
               {invertedPrice
-                ? `${buyToken.symbol} for ${sellToken.symbol}`
-                : `${sellToken.symbol} for ${buyToken.symbol}`}{' '}
+                ? `${sellToken.symbol} for ${buyToken.symbol}`
+                : `${buyToken.symbol} for ${sellToken.symbol}`}{' '}
               <FontAwesomeIcon icon={faExchangeAlt} onClick={invertPrice} />
             </td>
           </tr>
