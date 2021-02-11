@@ -1,11 +1,20 @@
-import React from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 
-import { RawOrder } from 'api/operator'
+import { formatSmart, TokenErc20 } from '@gnosis.pm/dex-js'
+
+import {
+  getOrderExecutedAmounts,
+  getOrderFilledAmount,
+  getOrderLimitPrice,
+  getOrderStatus,
+  RawOrder,
+} from 'api/operator'
 
 import { SimpleTable } from 'components/common/SimpleTable'
+import { StatusLabel } from 'components/order/StatusLabel'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -19,6 +28,7 @@ const Table = styled(SimpleTable)`
 
       &:first-of-type {
         font-weight: var(--font-weight-bold);
+        text-transform: capitalize;
 
         /* Question mark */
         > svg {
@@ -38,57 +48,114 @@ const Table = styled(SimpleTable)`
   }
 `
 
-// TODO: use tooltip component once we have tooltips
-const questionMark = <FontAwesomeIcon icon={faQuestionCircle} />
-
 // TODO: either use a RichOrder object or transform it here
 // TODO: for that we'll need token info (decimals, symbol)
-export type Props = { order: RawOrder }
+export type Props = { order: RawOrder; buyToken: TokenErc20; sellToken: TokenErc20 }
 
 export function OrderDetails(props: Props): JSX.Element {
-  const { order } = props
-  const { uid } = order
+  const { order, buyToken, sellToken } = props
+  const { uid, owner, kind, partiallyFillable, creationDate, validTo, buyAmount, sellAmount, executedFeeAmount } = order
+
+  const status = useMemo(() => getOrderStatus(order), [order])
+
+  const [invertedPrice, setInvertedPrice] = useState(false)
+  const invertPrice = useCallback(() => setInvertedPrice((curr) => !curr), [])
+
+  const limitPrice = useMemo(
+    () =>
+      getOrderLimitPrice({
+        order,
+        buyTokenDecimals: buyToken.decimals,
+        sellTokenDecimals: sellToken.decimals,
+        inverted: invertedPrice,
+      }),
+    [buyToken.decimals, invertedPrice, order, sellToken.decimals],
+  )
+
+  const { amount: filledAmount, percentage: filledPercentage } = useMemo(() => getOrderFilledAmount(order), [order])
+  const { executedBuyAmount, executedSellAmount } = useMemo(() => getOrderExecutedAmounts(order), [order])
 
   return (
     <Table
       body={
         <>
           <tr>
-            <td>{questionMark}Order Id</td>
+            <td>Order Id</td>
             <td>{uid}</td>
           </tr>
           <tr>
-            <td>{questionMark}Sell order</td>
-            <td>Swap 10 WETH for DAI</td>
+            <td>From</td>
+            <td>{owner}</td>
           </tr>
           <tr>
-            <td>{questionMark}Status</td>
-            <td>TODO</td>
+            <td>Status</td>
+            <td>
+              <StatusLabel status={status} />
+            </td>
           </tr>
           <tr>
-            <td>{questionMark}Fill Price</td>
-            <td>TODO</td>
+            <td>Submission Time</td>
+            <td>{creationDate}</td>
           </tr>
           <tr>
-            <td>{questionMark}Filled</td>
-            <td>TODO</td>
+            <td>Expiration Time</td>
+            <td>{new Date(validTo * 1000).toISOString()}</td>
           </tr>
           <tr>
-            <td>{questionMark}Submission Time</td>
-            <td>TODO</td>
+            <td>Type</td>
+            <td>
+              {kind === 'sell'
+                ? `Sell ${sellToken.symbol} for ${buyToken.symbol}`
+                : `Buy ${buyToken.symbol} for ${sellToken.symbol}`}
+              {partiallyFillable && ' (fill or kill)'}
+            </td>
           </tr>
           <tr>
-            <td>{questionMark}Limit Price</td>
-            <td>TODO</td>
+            <td>Sell amount</td>
+            <td>
+              {formatSmart(sellAmount, sellToken.decimals)}
+              {buyToken.symbol}
+            </td>
           </tr>
           <tr>
-            <td>{questionMark}Expiration Time</td>
-            <td>TODO</td>
+            <td>Buy amount</td>
+            <td>
+              {formatSmart(buyAmount, buyToken.decimals)}
+              {sellToken.symbol}
+            </td>
           </tr>
           <tr>
-            <td>{questionMark}Gas Fee</td>
-            <td>TODO</td>
+            <td>Limit Price</td>
+            <td>
+              {formatSmart(limitPrice.toString(), 0)}{' '}
+              {invertedPrice
+                ? `${buyToken.symbol} for ${sellToken.symbol}`
+                : `${sellToken.symbol} for ${buyToken.symbol}`}{' '}
+              <FontAwesomeIcon icon={faExchangeAlt} onClick={invertPrice} />
+            </td>
           </tr>
+          {!partiallyFillable && (
+            <>
+              <tr>
+                <td>Filled</td>
+                <td>
+                  {kind === 'sell'
+                    ? `${formatSmart(filledAmount.toString(), sellToken.decimals)} sold for ${formatSmart(
+                        executedBuyAmount.toString(),
+                        buyToken.decimals,
+                      )} (${filledPercentage.multipliedBy(100)}%)`
+                    : `${formatSmart(filledAmount.toString(), buyToken.decimals)} bought for ${formatSmart(
+                        executedSellAmount.toString(),
+                        sellToken.decimals,
+                      )} (${filledPercentage.multipliedBy(100)}%)`}
+                </td>
+              </tr>
+              <tr>
+                <td>Gas Fees paid</td>
+                <td>{formatSmart(executedFeeAmount, sellToken.decimals)}</td>
+              </tr>
+            </>
+          )}
         </>
       }
     />
