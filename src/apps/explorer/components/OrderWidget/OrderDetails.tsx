@@ -112,17 +112,11 @@ export function OrderDetails(props: Props): JSX.Element {
           </tr>
           <tr>
             <td>Sell amount</td>
-            <td>
-              {formatSmart(sellAmount, sellToken.decimals)}
-              {sellToken.symbol}
-            </td>
+            <td>{`${formatSmart(sellAmount, sellToken.decimals)} ${sellToken.symbol}`}</td>
           </tr>
           <tr>
             <td>Buy amount</td>
-            <td>
-              {formatSmart(buyAmount, buyToken.decimals)}
-              {buyToken.symbol}
-            </td>
+            <td>{`${formatSmart(buyAmount, buyToken.decimals)} ${buyToken.symbol}`}</td>
           </tr>
           <tr>
             <td>Limit Price</td>
