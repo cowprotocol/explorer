@@ -13,4 +13,4 @@ export function buildErc20Key(networkId: Network, address: string): string {
 
 export * from './reducer'
 export * from './actions'
-// export * from './hooks'
+export * from './hooks'
