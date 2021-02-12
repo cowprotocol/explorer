@@ -10,17 +10,42 @@ const markdownIt = require('markdown-it')
 const linkAttributes = require('markdown-it-link-attributes')
 const path = require('path')
 
-function getWebpackConfig({ apps, config } = {}) {
+function _getHtmlPlugin({ app, templatePath, isProduction }) {
+  const { name, title, filename } = app
+
+  assert(name, '"name" missing in app config')
+  assert(title, '"title" missing in app config')
+  assert(filename, '"filename" missing in app config')
+
+  return new HtmlWebPackPlugin({
+    template: templatePath,
+    chunks: [name],
+    title: title,
+    filename,
+    ipfsHack: isProduction,
+    minify: isProduction && {
+      removeComments: true,
+      collapseWhitespace: true,
+      removeRedundantAttributes: true,
+      useShortDoctype: true,
+      removeEmptyAttributes: true,
+      removeStyleLinkTypeAttributes: true,
+      keepClosingSlash: true,
+      minifyJS: true,
+      minifyCSS: true,
+      minifyURLs: true,
+    },
+  })
+}
+
+function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {}, baseUrl = '/' } = {}) {
   const { name: appTitle, templatePath, logoPath } = config
-
-  assert(apps, '"apps" param missing')
-  assert(config, '"config" param missing')
-  assert(appTitle, '"appTitle" missing in app config')
-  assert(templatePath, '"templatePath" missing in app config')
-  assert(logoPath, '"logoPath" missing in app config')
-
   const isProduction = process.env.NODE_ENV == 'production'
-  const baseUrl = isProduction ? '' : '/'
+
+  assert(apps.length > 0, "At least one app it's required")
+  assert(appTitle, '"name" missing in config')
+  assert(templatePath, '"templatePath" missing in config')
+  assert(logoPath, '"logoPath" missing in config')
 
   // Log the apps
   console.log('apps', apps)
@@ -33,32 +58,13 @@ function getWebpackConfig({ apps, config } = {}) {
   }, {})
 
   // Generate one HTML per app (with their specific entry point)
-  const htmlPlugins = apps.map((app) => {
-    const { name, title, filename } = app
-    assert(name, '"name" missing in app config')
-    assert(title, '"title" missing in app config')
-    assert(filename, '"filename" missing in app config')
-
-    return new HtmlWebPackPlugin({
-      template: config.templatePath,
-      chunks: [name],
-      title: title,
-      filename,
-      ipfsHack: isProduction,
-      minify: isProduction && {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      },
-    })
-  })
+  const htmlPlugins = apps.map((app) =>
+    _getHtmlPlugin({
+      app,
+      templatePath: config.templatePath,
+      isProduction,
+    }),
+  )
 
   return ({ stats = false } = {}) => ({
     entry: entryPoints, // One entry points per app
@@ -67,7 +73,7 @@ function getWebpackConfig({ apps, config } = {}) {
       path: __dirname + '/dist',
       chunkFilename: isProduction ? '[name].[contenthash].js' : '[name].js',
       filename: isProduction ? '[name].[contenthash].js' : '[name].js',
-      publicPath: baseUrl,
+      publicPath: baseUrl || '/',
     },
     module: {
       rules: [
@@ -190,35 +196,14 @@ function getWebpackConfig({ apps, config } = {}) {
       }),
       isProduction && new InlineChunkHtmlPlugin(HtmlWebPackPlugin, [/runtime/]),
       new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development',
-        BASE_URL: baseUrl,
-        // MOCK: Use mock or real API implementation
-        MOCK: 'false',
-        MOCK_WALLET: process.env.MOCK || 'false',
-        MOCK_TOKEN_LIST: process.env.MOCK || 'false',
-        MOCK_ERC20: process.env.MOCK || 'false',
-        MOCK_WETH: process.env.MOCK || 'false',
-        MOCK_DEPOSIT: process.env.MOCK || 'false',
-        MOCK_EXCHANGE: process.env.MOCK || 'false',
-        MOCK_WEB3: process.env.MOCK || 'false',
-        MOCK_OPERATOR: process.env.MOCK || 'false',
-        // AUTOCONNECT: only applies for mock implementation
-        AUTOCONNECT: 'true',
-        PRICE_ESTIMATOR_URL: process.env.PRICE_ESTIMATOR_URL || (isProduction && 'production') || 'develop',
-        APP: null,
-        APP_ID: null,
-        INFURA_ID: null,
-        WALLET_CONNECT_BRIDGE: null,
-        ETH_NODE_URL: null,
-        LIQUIDITY_TOKEN_LIST: null,
+        NODE_ENV: 'development', // FIXME: Shouldn't this is isProduction??
+        ...envVars,
       }),
       new ForkTsCheckerWebpackPlugin({ silent: stats }),
       // define inside one plugin instance
       new webpack.DefinePlugin({
         VERSION: JSON.stringify(require('./package.json').version),
-        DEX_JS_VERSION: JSON.stringify(require('@gnosis.pm/dex-js/package.json').version),
-        CONTRACT_VERSION: JSON.stringify(require('@gnosis.pm/dex-contracts/package.json').version),
-        CONFIG: JSON.stringify(config),
+        ...defineVars,
       }),
     ].filter(Boolean),
     optimization: {
