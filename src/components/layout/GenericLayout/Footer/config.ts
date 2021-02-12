@@ -3,7 +3,9 @@ export const footerConfig = {
   isBeta: true,
   url: {
     web: 'https://github.com/gnosis/gp-ui/tree/v',
-    appId: 'https://github.com/gnosis/gp-v1-ui/wiki/App-Ids-for-Forks',
+    // TODO: Pending to move and adapt the wiki
+    appId: null,
+    // appId: 'https://github.com/gnosis/gp-v1-ui/wiki/App-Ids-for-Forks',
     contracts: `https://github.com/gnosis/gp-v2-contracts/tree/v`,
   },
 }
