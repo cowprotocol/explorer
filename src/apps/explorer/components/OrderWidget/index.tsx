@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 
 import { getOrder, RawOrder } from 'api/operator'
 
 import { OrderWidgetView } from './view'
-import { useErc20 } from 'hooks/useErc20'
+import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import { Network } from 'types'
 
@@ -38,11 +38,25 @@ export const OrderWidget: React.FC = () => {
 
   // TODO: this is just for testing. The hooks will not be here
   const networkIdOrDefault = networkId ?? Network.Mainnet
-  const { value: buyToken } = useErc20({ address: order?.buyToken, networkId: networkIdOrDefault })
-  const { value: sellToken } = useErc20({ address: order?.sellToken, networkId: networkIdOrDefault })
 
-  console.log(`buy token`, buyToken)
-  console.log(`sell token`, sellToken)
+  const { isLoading: isErc20sLoading, value: erc20s } = useMultipleErc20({
+    addresses: [order?.buyToken || '', order?.sellToken || ''].filter(Boolean),
+    networkId: networkIdOrDefault,
+  })
+  const [buyToken, sellToken] = useMemo(() => {
+    const buyToken = erc20s[order?.buyToken || ''] || undefined
+    const sellToken = erc20s[order?.sellToken || ''] || undefined
 
-  return <OrderWidgetView order={order} isLoading={isLoading} error={error} />
+    return [buyToken, sellToken]
+  }, [order?.buyToken, order?.sellToken, erc20s])
+
+  return (
+    <OrderWidgetView
+      order={order}
+      isLoading={isLoading || isErc20sLoading}
+      error={error}
+      buyToken={buyToken}
+      sellToken={sellToken}
+    />
+  )
 }

@@ -55,7 +55,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
     "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-fontawesome": "^0.1.8",
-    "@gnosis.pm/dex-js": "^0.8.0",
+    "@gnosis.pm/dex-js": "^0.9.0",
     "@gnosis.pm/gp-v2-contracts": "^0.0.1-alpha.11",
     "@hookform/error-message": "^0.0.3",
     "@hot-loader/react-dom": "^16.11.0",
