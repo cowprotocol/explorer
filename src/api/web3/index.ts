@@ -45,8 +45,9 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
   switch (networkId) {
     case Network.Mainnet:
     case Network.Rinkeby:
-    case Network.xDAI:
       return infuraProvider(networkId)
+    case Network.xDAI:
+      return 'wss://rpc.xdaichain.com/wss'
     default:
       return undefined
   }
@@ -62,6 +63,7 @@ export function updateWeb3Provider(web3: Web3, networkId?: Network | null): void
   }
 
   const provider = getProviderByNetwork(networkId)
+  console.log('[api:web3] updateWeb3Provider', provider, networkId)
 
   provider && web3.setProvider(provider)
 }
