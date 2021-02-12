@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch, Link, useRouteMatch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
@@ -8,8 +8,8 @@ import Console from 'Console'
 import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
 
 import { GenericLayout } from 'components/layout'
-import { Navigation } from 'components/layout/GenericLayout/Navigation'
-import { Header } from 'components/layout/GenericLayout/Header'
+import { Header } from './layout/Header'
+
 import { NetworkUpdater } from 'state/network'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,22 +39,6 @@ const Order = React.lazy(
     ),
 )
 
-const HEADER = (
-  <Header>
-    <Navigation>
-      <li>
-        <Link to="/">Batches</Link>
-      </li>
-      <li>
-        <Link to="/trades">Trades</Link>
-      </li>
-      <li>
-        <Link to="/markets">Markets</Link>
-      </li>
-    </Navigation>
-  </Header>
-)
-
 /**
  * Update the global state
  */
@@ -71,7 +55,7 @@ const AppContent = (): JSX.Element => {
   const pathPrefix = path == '/' ? '' : path
 
   return (
-    <GenericLayout header={HEADER}>
+    <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
