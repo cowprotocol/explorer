@@ -3,17 +3,18 @@ import styled from 'styled-components'
 import homeTeaser from './home-teaser.png'
 
 const Wrapper = styled.div`
-  overflow: hidden;
-  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
   width: 100%;
-  height: calc(100vh - var(--height-bar-default));
-  position: fixed;
-  top: var(--height-bar-default);
 
-  text-align: center;
-  img {
-    max-width: 100%;
-    width: 1200px;
+  > a {
+    margin: 0 auto 20rem;
+    width: 100%;
+    max-width: 120rem;
+  }
+
+  > a > img {
+    width: 100%;
   }
 `
 

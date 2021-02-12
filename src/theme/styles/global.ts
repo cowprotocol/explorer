@@ -58,15 +58,12 @@ export const StaticGlobalStyle = createGlobalStyle`
     height: 100vh;
     width: 100vw;
     margin: 0;
-    
     font-size: 62.5%;
     text-rendering: geometricPrecision;
     line-height: 10px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    
     box-sizing: border-box;
-    
     overscroll-behavior-y: none;
     scroll-behavior: smooth;
   }
@@ -74,8 +71,6 @@ export const StaticGlobalStyle = createGlobalStyle`
   *, *:before, *:after {
     box-sizing: inherit;
   }
-
-  
 
   /* TODO: move closer to H elements or sth */
   h1, h2, h3 {
@@ -95,14 +90,7 @@ export const StaticGlobalStyle = createGlobalStyle`
 
 export const ThemedGlobalStyle = createGlobalStyle`
   html, body {
-    background-image: 
-      linear-gradient(
-        0deg, 
-        ${({ theme }): string => theme.gradient1} 
-        0%, 
-        ${({ theme }): string => theme.gradient2} 
-        100%
-      );
+    background: ${({ theme }): string => theme.bg1};
     color: ${({ theme }): string => theme.textPrimary1};
     /* StyleLint fights you for the Helvetica, sans-serif as it requires a fallback and can't detect it from the theme prop */
     font-family: ${({ theme }): string => theme.fontDefault}, Helvetica, sans-serif;

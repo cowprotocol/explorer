@@ -105,7 +105,7 @@ export const DARK_COLOURS = {
   textDisabled: '#31323E',
 
   // backgrounds / greys
-  bg1: '#181923',
+  bg1: '#16171F',
   bg2: '#2C2D3F',
   bgDisabled: '#ffffff80',
 
