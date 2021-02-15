@@ -3,7 +3,7 @@ import React from 'react'
 import { Navigation } from 'components/layout/GenericLayout/Navigation'
 import { Header as GenericHeader } from 'components/layout/GenericLayout/Header'
 import { getNetworkFromId } from '@gnosis.pm/dex-js'
-import { useNetworkId } from 'state/network'
+import { useNetworkId } from 'state/network-in-url'
 import styled from 'styled-components'
 
 const Logo = styled.span`

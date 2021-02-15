@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import Web3 from 'web3'
 
-import { useNetworkId } from 'state/network'
+import { useNetworkId } from 'state/network-in-url'
 
 import { createWeb3Api, getProviderByNetwork } from '.'
 

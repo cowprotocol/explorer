@@ -5,7 +5,7 @@ import { getOrder, RawOrder } from 'api/operator'
 
 import { OrderWidgetView } from './view'
 import { useMultipleErc20 } from 'hooks/useErc20'
-import { useNetworkId } from 'state/network'
+import { useNetworkId } from 'state/network-in-url'
 import { Network } from 'types'
 
 export const OrderWidget: React.FC = () => {

@@ -10,7 +10,7 @@ import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
 import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 
-import { NetworkUpdater } from 'state/network'
+import { NetworkUpdater } from 'state/network-in-url'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter

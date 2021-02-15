@@ -1,6 +1,6 @@
 import { GlobalState, GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
 import { Erc20State, INITIAL_ERC20_STATE, reducer as erc20sReducer } from 'state/erc20'
-import { reducer as networkReducer } from 'state/network'
+import { reducer as networkReducer } from 'state/network-in-url'
 
 import combineReducers from 'combine-reducers'
 import { Network } from 'types'
