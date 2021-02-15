@@ -52,18 +52,3 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
       return undefined
   }
 }
-
-// Approach 2: update the provider in a single web3 instance
-// Advantage is that regular APIs that require web3 instance should work without any changes
-// Also, there's no change to consumers currently importing from <app>/api module
-// Side effect is applied at reducer level (state/network/updater module)
-export function updateWeb3Provider(web3: Web3, networkId?: Network | null): void {
-  if (!networkId) {
-    return
-  }
-
-  const provider = getProviderByNetwork(networkId)
-  console.log('[api:web3] updateWeb3Provider', provider, networkId)
-
-  provider && web3.setProvider(provider)
-}

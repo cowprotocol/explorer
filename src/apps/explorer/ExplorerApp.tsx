@@ -11,6 +11,7 @@ import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 
 import { NetworkUpdater } from 'state/network-in-url'
+import { Web3UpdaterByUrl } from 'state/web3'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -43,15 +44,17 @@ const Order = React.lazy(
  * Update the global state
  */
 export function StateUpdaters(): JSX.Element {
-  return <NetworkUpdater />
+  return (
+    <>
+      <NetworkUpdater />
+      <Web3UpdaterByUrl />
+    </>
+  )
 }
 
 /** App content */
 const AppContent = (): JSX.Element => {
-  const { path, url } = useRouteMatch()
-
-  console.log({ path, url })
-
+  const { path } = useRouteMatch()
   const pathPrefix = path == '/' ? '' : path
 
   return (

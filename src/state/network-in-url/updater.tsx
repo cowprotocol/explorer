@@ -6,8 +6,6 @@ import useGlobalState from 'hooks/useGlobalState'
 
 import { setNetwork } from './actions'
 import { useNetworkId } from './hooks'
-import { updateWeb3Provider } from 'api/web3'
-import { web3 } from 'apps/explorer/api'
 
 function getNetworkId(network: string | undefined): Network {
   switch (network) {
@@ -34,8 +32,8 @@ export const NetworkUpdater: React.FC = () => {
 
     // Update the network if it's different
     if (currentNetworkId !== networkId) {
+      console.log('[state:network-in-url] Update to network', networkId)
       dispatch(setNetwork(networkId))
-      updateWeb3Provider(web3, networkId)
     }
   }, [location, currentNetworkId, dispatch])
 

@@ -10,6 +10,7 @@ export function withGlobalContext<P, State>(
 ): (props: P) => JSX.Element {
   return function WrappedComponentWithGlobalState(props: P): JSX.Element {
     const [state, dispatch] = useReducer(reducer, initialStateFunc())
+    console.log('withGlobalContext!!!!', state)
 
     return (
       <GlobalStateContext.Provider value={[state, dispatch]}>
