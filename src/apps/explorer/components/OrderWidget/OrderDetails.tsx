@@ -14,7 +14,7 @@ import {
 } from 'api/operator'
 
 import { SimpleTable } from 'components/common/SimpleTable'
-import { StatusLabel } from 'components/order/StatusLabel'
+import { StatusLabel } from 'components/orders/StatusLabel'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};

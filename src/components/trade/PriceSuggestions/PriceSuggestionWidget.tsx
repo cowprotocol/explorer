@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-import { TradeFormData } from 'components/TradeWidget'
+import { TradeFormData } from 'apps/gp-v1/components/TradeWidget'
 import { PriceSuggestions, Props as PriceSuggestionsProps } from './PriceSuggestions'
 import PriceImpact from '../PriceImpact'
 

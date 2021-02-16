@@ -9,15 +9,15 @@ import { parseBigNumber } from 'utils'
 import { DEFAULT_PRECISION, MEDIA } from 'const'
 
 // Components
-import { OrderBookBtn } from 'components/OrderBookBtn'
+import { OrderBookBtn } from 'components/order-book/OrderBookBtn'
 
 // Common
 import { FormInputError } from 'components/common/FormInputError'
 import { FormMessage } from 'components/common/FormMessage'
 
 // TradeWidget: subcomponents
-import { TradeFormData } from 'components/TradeWidget'
-import { useNumberInput } from 'components/TradeWidget/useNumberInput'
+import { TradeFormData } from 'apps/gp-v1/components/TradeWidget'
+import { useNumberInput } from 'apps/gp-v1/components/TradeWidget/useNumberInput'
 import { SwapPrice } from 'components/common/SwapPrice'
 
 const Wrapper = styled.div`

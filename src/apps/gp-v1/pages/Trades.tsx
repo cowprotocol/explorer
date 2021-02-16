@@ -1,5 +1,5 @@
 import React from 'react'
-import TradesPage from 'components/TradesWidget'
+import TradesPage from 'apps/gp-v1/components/TradesWidget'
 import { PageWrapper } from 'components/layout'
 
 const Trades: React.FC = () => (

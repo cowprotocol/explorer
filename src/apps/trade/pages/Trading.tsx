@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react'
 import { TradingStyled as Wrapper } from './Trading.styled'
 import OrderForm from 'components/OrderForm'
 import MarketNavBar from 'components/MarketNavBar'
-import OrderBookTradesWidget from 'components/OrderBookTradesWidget'
+import OrderBookTradesWidget from 'components/order-book/OrderBookTradesWidget'
 import PriceDepthChartWidget from 'components/PriceDepthChartWidget'
-import OrdersWidgetDemo from 'components/OrdersWidgetDemo'
+import OrdersWidgetDemo from 'apps/trade/components/OrdersWidgetDemo'
 
 // Dummy data
-import { dummyOrders } from 'components/OrderBook/dummyTradingData'
+import { dummyOrders } from 'components/order-book/OrderBook/dummyTradingData'
 
 export const Trading: React.FC = () => {
   // Simulate fake orders
