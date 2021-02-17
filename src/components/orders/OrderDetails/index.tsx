@@ -1,20 +1,13 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { formatSmart, TokenErc20 } from '@gnosis.pm/dex-js'
 
-import {
-  getOrderExecutedAmounts,
-  getOrderFilledAmount,
-  getOrderLimitPrice,
-  getOrderStatus,
-  RawOrder,
-} from 'api/operator'
+import { getOrderExecutedAmounts, getOrderFilledAmount, getOrderStatus, RawOrder } from 'api/operator'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 import { StatusLabel } from 'components/orders/StatusLabel'
+import { OrderPriceDisplay } from '../OrderPriceDisplay'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -57,20 +50,6 @@ export function OrderDetails(props: Props): JSX.Element {
   const { uid, owner, kind, partiallyFillable, creationDate, validTo, buyAmount, sellAmount, executedFeeAmount } = order
 
   const status = useMemo(() => getOrderStatus(order), [order])
-
-  const [invertedPrice, setInvertedPrice] = useState(false)
-  const invertPrice = useCallback(() => setInvertedPrice((curr) => !curr), [])
-
-  const limitPrice = useMemo(
-    () =>
-      getOrderLimitPrice({
-        order,
-        buyTokenDecimals: buyToken.decimals,
-        sellTokenDecimals: sellToken.decimals,
-        inverted: invertedPrice,
-      }),
-    [buyToken.decimals, invertedPrice, order, sellToken.decimals],
-  )
 
   const { amount: filledAmount, percentage: filledPercentage } = useMemo(() => getOrderFilledAmount(order), [order])
   const { executedBuyAmount, executedSellAmount } = useMemo(() => getOrderExecutedAmounts(order), [order])
@@ -121,11 +100,13 @@ export function OrderDetails(props: Props): JSX.Element {
           <tr>
             <td>Limit Price</td>
             <td>
-              {formatSmart(limitPrice.toString(), 0)}{' '}
-              {invertedPrice
-                ? `${sellToken.symbol} for ${buyToken.symbol}`
-                : `${buyToken.symbol} for ${sellToken.symbol}`}{' '}
-              <FontAwesomeIcon icon={faExchangeAlt} onClick={invertPrice} />
+              <OrderPriceDisplay
+                buyAmount={buyAmount}
+                buyToken={buyToken}
+                sellAmount={sellAmount}
+                sellToken={sellToken}
+                showInvertButton
+              />
             </td>
           </tr>
           {!partiallyFillable && (

@@ -7,7 +7,7 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { RawOrder } from 'api/operator'
 
-import { OrderDetails } from './OrderDetails'
+import { OrderDetails } from 'components/orders/OrderDetails'
 
 const Wrapper = styled.div`
   padding: 1.6rem 0;
