@@ -1,4 +1,4 @@
-import { walletApi } from 'api'
+import { walletApi } from 'apps/gp-v1/api'
 import { useEffect, useMemo } from 'react'
 import { Command, Network } from 'types'
 import useSafeState from './useSafeState'

@@ -1,20 +1,18 @@
-import React from 'react'
-import { TabItemType } from 'components/common/Tabs/Tabs'
+import React, { useMemo } from 'react'
+import { TabItemInterface } from 'components/common/Tabs/Tabs'
 
 type Props = {
-  tabItems: TabItemType[]
+  tabItems: TabItemInterface[]
   activeTab: number
 }
 
 const TabContent: React.FC<Props> = (props) => {
   const { tabItems, activeTab } = props
-  return (
-    <div>
-      {tabItems.map((tab) => {
-        return tab.id === activeTab ? tab.content : null
-      })}
-    </div>
-  )
+  const displayTab = useMemo(() => tabItems.find((tab) => tab.id === activeTab), [activeTab, tabItems])
+
+  if (!displayTab) return null
+
+  return <div>{displayTab.content}</div>
 }
 
 export default TabContent

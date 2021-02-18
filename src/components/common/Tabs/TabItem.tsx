@@ -1,89 +1,76 @@
 import React from 'react'
 import styled from 'styled-components'
-import { TabThemeType } from 'components/common/Tabs/Tabs'
+import { TabItemInterface, TabTheme } from 'components/common/Tabs/Tabs'
+import { ButtonBase } from '../Button'
 
-interface TabProps {
-  title: string
-  readonly id: number
-  onTabClick: (arg: number) => void
+interface TabProps extends Omit<TabItemInterface, 'content'> {
   isActive: boolean
-  readonly tabTheme: TabThemeType
-  readonly count?: number
+  readonly tabTheme: TabTheme
+  onTabClick: (id: number) => void
 }
 
-interface WrapperProps {
-  isActive: boolean
-  readonly tabTheme: TabThemeType
-}
+type TabItemWrapperProps = Pick<TabProps, 'isActive' | 'tabTheme'>
 
-const Wrapper = styled.button<WrapperProps>`
-  background: ${({ isActive, tabTheme }): string =>
-    `var(${
-      isActive && tabTheme.activeBg ? tabTheme.activeBg : tabTheme.inactiveBg ? tabTheme.inactiveBg : '--color-primary'
-    })`};
-  color: ${({ isActive, tabTheme }): string =>
-    `var(${
-      isActive && tabTheme.activeText
-        ? tabTheme.activeText
-        : !isActive && tabTheme.inactiveText
-        ? tabTheme.inactiveText
-        : '--color-text-secondary2'
-    })`};
-  height: var(--height-button-default);
+const TabItemBase = styled(ButtonBase)`
   display: flex;
-  align-items: center;
   flex: 1 1 0;
-  font-weight: ${({ tabTheme }): string => `${tabTheme.fontWeight ? tabTheme.fontWeight : 'var(--font-weight-bold)'}`};
-  font-size: ${({ tabTheme }): string =>
-    `${tabTheme.fontSize ? `var(${tabTheme.fontSize})` : 'var(--font-size-large)'}`};
-  letter-spacing: ${({ tabTheme }): string => `${tabTheme.letterSpacing ? tabTheme.letterSpacing : '0'}`};
-  border: 0;
-  border-bottom: ${({ isActive, tabTheme }): string =>
-    `${
-      isActive && tabTheme.activeBorder
-        ? `.1rem solid var(${tabTheme.activeBorder})`
-        : !isActive && tabTheme.inactiveBorder
-        ? `.1rem solid var(${tabTheme.inactiveBorder})`
-        : 'none'
-    }`};
-  text-align: center;
-  appearance: none;
+  align-items: center;
   justify-content: center;
-  cursor: pointer;
-  outline: 0;
+
+  border: 0;
+  border-radius: 0;
+  /* TODO: move this into baseStyles or sth similar */
+  height: var(--height-button-default);
+
+  text-align: center;
+
+  appearance: none;
+`
+
+// TODO: replace with DefaultTheme and remove `var` approach
+// Make Tabs and TabItemBase it's own common component with theme
+const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
+  background: ${({ isActive, tabTheme }): string => (isActive ? tabTheme.activeBg : tabTheme.inactiveBg)};
+  color: ${({ isActive, tabTheme }): string => (isActive ? tabTheme.activeText : tabTheme.inactiveText)};
+
+  font-weight: ${({ tabTheme }): string => tabTheme.fontWeight};
+  font-size: ${({ tabTheme }): string => tabTheme.fontSize};
+  letter-spacing: ${({ tabTheme }): string => tabTheme.letterSpacing};
+
+  border-bottom: ${({ isActive, tabTheme }): string =>
+    `.1rem solid ${isActive ? tabTheme.activeBorder : tabTheme.inactiveBorder}`};
 
   /* TODO: Provide alternative :focus styling because of using outline: 0; */
 
   &:first-of-type {
     border-top-left-radius: ${({ tabTheme }): string =>
-      `${tabTheme.borderRadius === false ? '0' : 'var(--border-radius-default)'}`};
+      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
     border-bottom-left-radius: ${({ tabTheme }): string =>
-      `${tabTheme.borderRadius === false ? '0' : 'var(--border-radius-default)'}`};
+      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
   }
 
   &:last-of-type {
     border-top-right-radius: ${({ tabTheme }): string =>
-      `${tabTheme.borderRadius === false ? '0' : 'var(--border-radius-default)'}`};
+      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
     border-bottom-right-radius: ${({ tabTheme }): string =>
-      `${tabTheme.borderRadius === false ? '0' : 'var(--border-radius-default)'}`};
-    ${({ isActive, tabTheme }): string | undefined =>
-      isActive && tabTheme.activeBgAlt ? `background: var(${tabTheme.activeBgAlt})` : undefined}
+      `${!tabTheme.borderRadius ? '0' : 'var(--border-radius-default)'}`};
+    ${({ isActive, tabTheme }): string | false => isActive && `background: ${tabTheme.activeBgAlt};`}
   }
 `
 
 const TabItem: React.FC<TabProps> = (props) => {
-  const { onTabClick, id, title, isActive, tabTheme } = props
+  const { onTabClick, id, tab, isActive, tabTheme } = props
 
   return (
-    <Wrapper
+    <TabItemWrapper
       role="tab"
       aria-selected={isActive}
       isActive={isActive}
       onClick={(): void => onTabClick(id)}
       tabTheme={tabTheme}
     >
-      {title}
-    </Wrapper>
+      {tab}
+    </TabItemWrapper>
   )
 }
 

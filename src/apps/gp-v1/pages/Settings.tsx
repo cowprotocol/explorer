@@ -3,7 +3,7 @@ import { useForm, Resolver as FormResolver, FieldErrors, ResolverResult } from '
 import styled from 'styled-components'
 import { DevTool } from 'HookFormDevtool'
 
-import { walletApi } from 'api'
+import { walletApi } from 'apps/gp-v1/api'
 import { setCustomWCOptions, getWCOptionsFromStorage, WCOptions } from 'utils'
 import { useHistory } from 'react-router'
 import { WCSettings, wcResolver } from 'components/Settings/WalletConnect'

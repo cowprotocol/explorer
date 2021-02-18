@@ -3,7 +3,7 @@ import 'react-hot-loader'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import SwapAppV1 from './SwapAppV1'
+import GpV1App from './GpV1App'
 
 const root = document.getElementById('root')
-ReactDOM.render(<SwapAppV1 />, root)
+ReactDOM.render(<GpV1App />, root)

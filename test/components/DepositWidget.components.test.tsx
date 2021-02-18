@@ -2,11 +2,11 @@ import React from 'react'
 import { render } from 'enzyme'
 import BN from 'bn.js'
 
-import { Row, RowProps } from 'components/DepositWidget/Row'
+import { Row, RowProps } from 'apps/gp-v1/components/DepositWidget/Row'
 
 import { ZERO, ONE, TEN } from 'const'
 import { Network, TokenBalanceDetails } from 'types'
-import { TokenLocalState } from 'reducers-actions'
+import { TokenLocalState } from 'state'
 import { createFlux } from '../data'
 
 const fakeRowState: Record<keyof TokenLocalState, boolean> = {

@@ -1,47 +1,43 @@
-[![npm version](https://img.shields.io/npm/v/@gnosis.pm/gp-v1-ui.svg?style=flat)](https://npmjs.org/package/@gnosis.pm/gp-v1-ui 'View this project on npm')
-&nbsp;
-[![Build Status](https://travis-ci.org/gnosis/gp-v1-ui.svg?branch=develop)](https://travis-ci.org/gnosis/gp-v1-ui)
-&nbsp;
-[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-v1-ui/badge.svg?branch=master)](https://coveralls.io/github/gnosis/gp-v1-ui?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-ui/badge.svg?branch=master)](https://coveralls.io/github/gnosis/gp-ui?branch=master)
 
 Develop:
-&nbsp;
-[![Build Status](https://travis-ci.org/gnosis/gp-v1-ui.svg?branch=develop)](https://travis-ci.org/gnosis/gp-v1-ui)
-&nbsp;
-[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-v1-ui/badge.svg?branch=develop)](https://coveralls.io/github/gnosis/gp-v1-ui?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-ui/badge.svg?branch=develop)](https://coveralls.io/github/gnosis/gp-ui?branch=develop)
 
-# Gnosis Protocol v1 Web
+# Gnosis Protocol UI
 
-> IMPORTANT: This repository is for the legacy Gnosis Protocol v1
-> For the UI for the latest version of the protocol go to: https://github.com/gnosis/gp-swap-ui
-
-<img align="right" width="350" src="./docs/screenshot.png">
-
-`Gnosis Protocol v1 Web` is the first dapp built on the [Gnosis Protocol](https://docs.gnosis.io/protocol).
+`Gnosis Protocol UI` contains some reusable components for [Gnosis Protocol](https://docs.gnosis.io/protocol) (`🚨 WARNING: the doc may still refer to v1 of the protocol`).
 
 Gnosis Protocol is a fully permissionless DEX that enables ring trades to maximize liquidity.
 
-`Gnosis Protocol v1 Web` allows users to:
+`Gnosis Protocol UI` contains:
 
-- Create orders in [Gnosis Protocol](https://docs.gnosis.io/protocol)
-- See the balances for any token: available in their wallet and on the exchange
-- Deposit and withdraw tokens to/from the exchange wallet
+- **Explorer**: Gnosis Protocol explorer. Allows you to explore the protocol orders and trades. For now Explorer is a WIP 👷‍♀️.
+- **Trade**: Classical trading interface. For now it is just a WIP 👷‍♀️. 
+- **Legacy GP v1 UI**: Trading interface for Gnosis Protocol v1. It's the only app that is not generated automatically, but it can be run/built by following the instructions in this readme.
+- **Story Book**: Showcases some of the components used in these apps.
 
-## 📚 Wiki
-
-Learn more about Gnosis Protocol v1 Web in the [wiki](https://github.com/gnosis/gp-v1-ui/wiki).
 
 ## 🏃‍♀️ Run it locally
+
+The default app is the **Explorer**.
 
 ```bash
 # Install dependencies (we use Yarn but NPM should work too)
 yarn
 
-# Start dev server in http://localhost:8080
+# Run explorer UI
+#   Start dev server in http://localhost:8080
 yarn start
+
+# Run Trade UI
+yarn start:trade
+
+# Run Legacy GP v1 UI
+yarn start:gp-v1
 ```
 
 Open http://localhost:8080 in your browser.
+
 
 ## 👷‍♀️Build app
 
@@ -56,26 +52,3 @@ Static files will be generated inside the `./dist` dir.
 ```bash
 yarn test
 ```
-
-## 🍴Fork it
-
-**Gnosis Protocol v1 Web** can be forked, this way any project can use its own token list, rebrand it, add new pages or modify the existing ones.
-
-Read more [here](https://github.com/gnosis/gp-v1-ui/wiki/Fork-project).
-
-## 🎩 Customizing components
-
-**Gnosis Protocol v1 Web** allows to redefine any React component, so you can add new pages, modify the existing ones, or modify the layout and styles.
-
-Learn about customizing components [here](https://github.com/gnosis/gp-v1-ui/wiki/Customize-Components).
-
-## 🖧 Supported networks
-App is currently compatible with Mainnet, Rinkeby, and xDAI. Please refer to the [wiki](https://github.com/gnosis/gp-v1-ui/wiki#-compatible-networks) for further information.
-
-## 🦺 Testnet faucets
-
-Test faucets allow to get some tokens for using them in a testnet.
-
-Gnosis Protocol is deployed and fully functional in Rinkeby testnet.
-
-Read more [here](https://github.com/gnosis/gp-v1-ui/wiki/Testnet-faucets).

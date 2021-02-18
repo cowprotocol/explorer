@@ -1,7 +1,7 @@
 import { Network, Command } from 'types'
 import BN from 'bn.js'
 import assert from 'assert'
-import { getDefaultProvider } from '..'
+import { getDefaultProvider } from 'api/web3'
 import { toBN } from '@gnosis.pm/dex-js'
 
 import Web3Modal, { getProviderInfo, IProviderOptions, IProviderInfo, isMobile } from 'web3modal'

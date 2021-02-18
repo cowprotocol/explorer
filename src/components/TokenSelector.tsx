@@ -12,7 +12,7 @@ import { MEDIA } from 'const'
 import { TokenDetails, TokenBalanceDetails, Network } from 'types'
 import { isAddress } from 'web3-utils'
 import { formatSmart } from 'utils'
-import { tokenListApi } from 'api'
+import { tokenListApi } from 'apps/gp-v1/api'
 
 // components
 import { TokenImgWrapper } from 'components/common/TokenImg'

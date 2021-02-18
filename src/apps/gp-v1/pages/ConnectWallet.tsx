@@ -3,7 +3,7 @@ import { Redirect } from 'react-router'
 import { History } from 'history'
 
 import { useWalletConnection } from 'hooks/useWalletConnection'
-import { ConnectWalletBanner } from 'components/ConnectWalletBanner'
+import { ConnectWalletBanner } from 'apps/gp-v1/components/ConnectWalletBanner'
 
 type ConnectWalletProps = History<{ from: string }>
 

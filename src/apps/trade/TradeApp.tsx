@@ -1,22 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
-import { BrowserRouter, HashRouter, Route, Switch, Link } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
-
-import { MEDIA } from 'const'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
 import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
 import { GlobalModalInstance } from 'components/OuterModal'
-import { rootReducer, INITIAL_STATE } from 'reducers-actions'
+import { rootReducer, INITIAL_STATE } from 'apps/trade/state'
 
 import { GenericLayout } from 'components/layout'
-import { Menu } from 'components/layout/GenericLayout/Menu'
+import { Navigation } from 'components/layout/GenericLayout/Navigation'
 import { NavTools } from 'components/layout/GenericLayout/NavTools'
+import { Header } from 'components/layout/GenericLayout/Header'
 
 import PortfolioImage from 'assets/img/portfolio.svg'
 import PortfolioImageWhite from 'assets/img/portfolio-white.svg'
+import { applyMediaStyles } from 'theme'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -40,9 +40,9 @@ const Trading = React.lazy(
 const PortfolioLink = styled.li`
   margin: 0 2.4rem 0 0;
 
-  @media ${MEDIA.mediumDown} {
+  ${applyMediaStyles('upToMedium')`
     order: 2;
-  }
+  `}
 
   > a::before {
     display: block;
@@ -58,12 +58,9 @@ const PortfolioLink = styled.li`
   }
 `
 
-export const SwapAppV1: React.FC = () => {
-  // Deal with incorrect network
-  useNetworkCheck()
-
-  const menu = (
-    <Menu>
+const HEADER = (
+  <Header>
+    <Navigation>
       <li>
         <Link to="/">Trade</Link>
       </li>
@@ -73,23 +70,26 @@ export const SwapAppV1: React.FC = () => {
       <li>
         <Link to="/liquidity">Liquidity</Link>
       </li>
-    </Menu>
-  )
-
-  const navTools = (
+    </Navigation>
     <NavTools hasWallet hasNotifications hasSettings>
       <PortfolioLink>
         <Link to="/portfolio">Portfolio</Link>
       </PortfolioLink>
     </NavTools>
-  )
+  </Header>
+)
+
+export const TradeApp: React.FC = () => {
+  // Deal with incorrect network
+  useNetworkCheck()
 
   return (
     <>
       <Router basename={process.env.BASE_URL}>
-        <GenericLayout menu={menu} navTools={navTools}>
+        <GenericLayout header={HEADER}>
           <React.Suspense fallback={null}>
             <Switch>
+              <Redirect from="/trade.html" exact to="/" push={false} />
               <Route path="/" exact component={Trading} />
               <Route component={NotFound} />
             </Switch>
@@ -104,7 +104,7 @@ export const SwapAppV1: React.FC = () => {
 
 export default hot(
   withGlobalContext(
-    SwapAppV1,
+    TradeApp,
     // Initial State
     INITIAL_STATE,
     rootReducer,

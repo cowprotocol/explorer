@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { MEDIA } from 'const'
-
 import { HelpTooltip, HelpTooltipContainer } from 'components/Tooltip'
 import { SwapPrice } from 'components/common/SwapPrice'
 import { EllipsisText } from 'components/common/EllipsisText'
@@ -11,6 +9,7 @@ import { PriceSuggestionItem } from 'components/trade/PriceSuggestions/PriceSugg
 import BigNumber from 'bignumber.js'
 import { TokenDex } from '@gnosis.pm/dex-js'
 import { isNonZeroNumber } from 'utils'
+import { MEDIA } from 'const'
 
 export const PriceSuggestionsWrapper = styled.div`
   > div {

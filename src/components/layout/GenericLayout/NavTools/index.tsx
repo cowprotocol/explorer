@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { MEDIA } from 'const'
-import { NavStyled } from '../Menu'
+import { Navigation } from '../Navigation'
 
 // Components
 import UserWallet from 'components/UserWallet'
@@ -12,6 +11,8 @@ import SettingsImage from 'assets/img/settings.svg'
 import SettingsImageWhite from 'assets/img/settings-white.svg'
 import NotificationsImage from 'assets/img/bell.svg'
 import NotificationsImageWhite from 'assets/img/bell-white.svg'
+
+import { applyMediaStyles } from 'theme'
 
 const SettingsLink = styled.li`
   margin: 0 2.4rem 0 0;
@@ -48,11 +49,11 @@ const NotificationsLink = styled.li`
   }
 `
 
-const Wrapper = styled(NavStyled)`
+const Wrapper = styled(Navigation)`
   margin: 0 0 0 auto;
   padding: 0;
 
-  /* @media ${MEDIA.mediumDown} {
+  /* ${applyMediaStyles('upToMedium')`
     flex-direction: row;
     justify-content: flex-start;
     justify-self: center;
@@ -65,7 +66,7 @@ const Wrapper = styled(NavStyled)`
     height: 7.2rem;
     border-radius: 0;
     background-color: var(--color-gradient-2);
-  } */
+  `} */
 
   > li {
     display: flex;
@@ -82,11 +83,11 @@ const Wrapper = styled(NavStyled)`
       right: -2.8rem;
     }
 
-    /* @media ${MEDIA.mediumDown} {
+    /* ${applyMediaStyles('upToMedium')`
       &:first-of-type::after {
         content: none;
       }
-    } */
+    `} */
 
     > a {
       transition: background 0.2s ease-in-out;

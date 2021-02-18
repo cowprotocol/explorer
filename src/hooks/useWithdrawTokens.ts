@@ -1,6 +1,6 @@
 import { TokenBalanceDetails, TxOptionalParams, Receipt } from 'types'
 import { assert } from '@gnosis.pm/dex-js'
-import { depositApi } from 'api'
+import { depositApi } from 'apps/gp-v1/api'
 import { useWalletConnection } from './useWalletConnection'
 import useSafeState from './useSafeState'
 

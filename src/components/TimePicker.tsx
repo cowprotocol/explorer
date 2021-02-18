@@ -5,7 +5,7 @@ import { TextField } from '@material-ui/core'
 import DateFnsAdapter from '@material-ui/pickers/adapter/date-fns'
 import { Control, UseFormMethods, FieldError, Controller } from 'react-hook-form'
 
-import { TradeFormData } from './TradeWidget'
+import { TradeFormData } from '../apps/gp-v1/components/TradeWidget'
 import { BATCH_TIME, BATCH_TIME_IN_MS } from 'const'
 import { GlobalStyles } from './TimePicker/TimePicker.styled'
 

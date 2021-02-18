@@ -10,7 +10,7 @@ import { safeFilledToken } from 'utils'
 import { fetchTokenData, FetchTokenResult, TokenAndNetwork } from 'services'
 import { SimpleCache } from 'api/proxy/SimpleCache'
 import { TokenFromExchange } from 'services/factories'
-import { tokenListApi } from 'api'
+import { tokenListApi } from 'apps/gp-v1/api'
 
 // components
 import { TokenImg } from 'components/common/TokenImg'

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { displayTokenSymbolOrLink } from 'utils/display'
 import { EllipsisText } from 'components/common/EllipsisText'
 
-import { SwapIcon } from 'components/TradeWidget/SwapIcon'
+import { SwapIcon } from 'apps/gp-v1/components/TradeWidget/SwapIcon'
 import { TokenDex } from '@gnosis.pm/dex-js'
 
 const SwapPriceWrapper = styled.div`

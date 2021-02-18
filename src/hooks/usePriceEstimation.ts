@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import useSafeState from './useSafeState'
 
 import { getPriceEstimation } from 'services'
-import { dexPriceEstimatorApi } from 'api'
+import { dexPriceEstimatorApi } from 'apps/gp-v1/api'
 import { logDebug } from 'utils'
 
 interface Params {

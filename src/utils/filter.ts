@@ -1,7 +1,7 @@
 import { TokenDetails } from 'types'
 import { DetailedAuctionElement, Trade } from 'api/exchange/ExchangeApi'
 import { computeMarketProp } from './display'
-import { web3 } from 'api'
+import { web3 } from 'apps/gp-v1/api'
 
 export function checkTokenAgainstSearch(token: TokenDetails | null, searchText: string, isAddress?: boolean): boolean {
   if (!token) return false

@@ -2,9 +2,9 @@ import { useEffect, useCallback, useRef } from 'react'
 import { unstable_batchedUpdates as batchedUpdates } from 'react-dom'
 
 // API + Reducer/Actions
-import { exchangeApi } from 'api'
+import { exchangeApi } from 'apps/gp-v1/api'
 import { getTokenFromExchangeById } from 'services'
-import { overwriteOrders, updateOffset, updateOrders } from 'reducers-actions/orders'
+import { overwriteOrders, updateOffset, updateOrders } from 'state/orders'
 // Hooks
 import useSafeState from './useSafeState'
 import useGlobalState from './useGlobalState'

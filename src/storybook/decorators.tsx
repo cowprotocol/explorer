@@ -7,7 +7,7 @@ import { StoryFnReactReturnType } from '@storybook/react/dist/client/preview/typ
 import { ApolloProvider } from '@apollo/client'
 import { ApolloClient, InMemoryCache } from '@apollo/client'
 import { useForm, FormProvider, UseFormOptions } from 'react-hook-form'
-import { getThemePalette, StaticGlobalStyle, Theme } from 'theme'
+import ThemeProvider, { getThemePalette, StaticGlobalStyle, Theme, ThemedGlobalStyle } from 'theme'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMoon, faLightbulb } from '@fortawesome/free-regular-svg-icons'
@@ -16,12 +16,15 @@ import { ThemeToggle } from 'components/common/Button'
 import { useThemeManager } from 'hooks/useThemeManager'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
-import { INITIAL_STATE, rootReducer } from 'reducers-actions'
+import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
   <>
     <StaticGlobalStyle />
-    {DecoratedStory()}
+    <ThemeProvider>
+      <ThemedGlobalStyle />
+      {DecoratedStory()}
+    </ThemeProvider>
   </>
 )
 
@@ -44,7 +47,7 @@ const ThemeTogglerUnwrapped: React.FC = ({ children }) => {
     </>
   )
 }
-const WrappedThemeToggler: React.FC = withGlobalContext(ThemeTogglerUnwrapped, INITIAL_STATE, rootReducer)
+const WrappedThemeToggler: React.FC = withGlobalContext(ThemeTogglerUnwrapped, GLOBAL_INITIAL_STATE, globalRootReducer)
 
 // Redux aware ThemeToggler - necessary for Theme
 export const ThemeToggler = (DecoratedStory: () => JSX.Element): JSX.Element => (

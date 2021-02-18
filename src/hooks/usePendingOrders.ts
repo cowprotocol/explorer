@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from 'react'
 // API
-import { web3 } from 'api'
+import { web3 } from 'apps/gp-v1/api'
 // Hooks
 import useGlobalState from './useGlobalState'
 import useSafeState from './useSafeState'
 import { useWalletConnection } from './useWalletConnection'
 // Reducers/Actions
-import { removePendingOrdersAction } from 'reducers-actions/pendingOrders'
+import { GpV1AppState } from 'apps/gp-v1/state'
+import { removePendingOrdersAction } from 'state/pendingOrders'
 // Constants/Types/Misc.
 import { EMPTY_ARRAY } from 'const'
 import { AuctionElement, DetailedPendingOrder } from 'api/exchange/ExchangeApi'
@@ -40,7 +41,7 @@ async function getDetailedPendingOrders({
 function usePendingOrders(): DetailedPendingOrder[] {
   const { blockNumber, userAddress, networkId } = useWalletConnection()
 
-  const [{ pendingOrders }, dispatch] = useGlobalState()
+  const [{ pendingOrders }, dispatch] = useGlobalState<GpV1AppState>()
   const [detailedPendingOrders, setDetailedPendingOrders] = useSafeState<DetailedPendingOrder[]>([])
 
   // Handle Pending Orders

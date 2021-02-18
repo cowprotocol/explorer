@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { depositApi } from 'api'
+import { depositApi } from 'apps/gp-v1/api'
 
 // Components
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
@@ -22,44 +22,56 @@ const FooterStyled = styled.footer`
   padding: 0 1rem;
   border-top: 0.1rem solid var(--color-border);
   flex: 1 1 auto;
-  background: var(--color-gradient-1);
+  color: ${({ theme }): string => theme.textSecondary2};
+  background: ${({ theme }): string => theme.bg1};
   width: 100%;
-  color: var(--color-text-secondary2);
   justify-content: space-between;
+
+  & a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+
+    &:hover {
+      color: ${({ theme }): string => theme.white};
+    }
+  }
+`
+
+const BetaWrapper = styled.div`
+  display: flex;
+  margin: 0;
+  height: 100%;
+  align-items: center;
+  padding: 0 1rem 0 0;
+  position: relative;
+  border-right: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
 `
 
 const VerifiedButton = styled(BlockExplorerLink)`
-  margin: 0 auto 0 0.6rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 1rem;
+  border-right: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
 `
 
 const VersionsWrapper = styled.div`
   display: flex;
   margin: 0 0 0 auto;
-
-  > a {
-    text-decoration: none;
-
-    &:focus,
-    &:hover {
-      text-decoration: underline;
-    }
-  }
+  align-items: center;
+  padding: 0 0 0 1rem;
+  height: 100%;
+  border-left: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
 
   > a:not(:last-of-type) {
-    margin: 0 1.6rem 0 0;
+    margin: 0 1rem 0 0;
     flex-flow: row nowrap;
     display: flex;
     position: relative;
-
-    &::after {
-      content: '-';
-      position: absolute;
-      right: -1rem;
-      display: block;
-    }
   }
 `
-
 export interface FooterType {
   readonly verifiedText?: string
   readonly isBeta?: boolean
@@ -70,14 +82,14 @@ export interface FooterType {
   }
 }
 
-export const Footer: React.FC<FooterType> = () => {
-  const { verifiedText, isBeta, url } = footerConfig
+export const Footer: React.FC<FooterType> = (props) => {
+  const { verifiedText = footerConfig.verifiedText, isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const { networkIdOrDefault: networkId } = useWalletConnection()
   const contractAddress = depositApi.getContractAddress(networkId)
 
   return (
     <FooterStyled>
-      {isBeta && 'This project is in beta. Use at your own risk.'}
+      <BetaWrapper>{isBeta && 'This project is in beta. Use at your own risk.'}</BetaWrapper>
       {contractAddress && networkId ? (
         <VerifiedButton
           type="contract"
@@ -92,8 +104,8 @@ export const Footer: React.FC<FooterType> = () => {
             Web: v{VERSION}
           </a>
         ) : null}
-        {url.appId && CONFIG.appId ? (
-          <a target="_blank" rel="noopener noreferrer" href={url.appId}>
+        {CONFIG.appId ? (
+          <a target="_blank" rel="noopener noreferrer" href={url.appId ?? '#'}>
             App Id: {CONFIG.appId}
           </a>
         ) : null}

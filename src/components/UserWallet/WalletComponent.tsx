@@ -36,7 +36,7 @@ import { abbreviateString } from 'utils'
 // TODO: probably not do this
 import WalletImg from 'assets/img/eth-network.svg'
 import { Spinner } from 'components/common/Spinner'
-import { walletApi } from 'api'
+import { walletApi } from 'apps/gp-v1/api'
 import { getNetworkFromId } from '@gnosis.pm/dex-js'
 
 interface UserWalletProps extends RouteComponentProps {

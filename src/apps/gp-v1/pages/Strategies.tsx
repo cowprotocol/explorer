@@ -1,5 +1,5 @@
 import React from 'react'
-import PoolingWidget from 'components/PoolingWidget'
+import PoolingWidget from 'apps/gp-v1/components/PoolingWidget'
 import { PageWrapper } from 'components/layout'
 
 const Strategies: React.FC = () => (

@@ -35,6 +35,9 @@ export const ONE_HUNDRED_BIG_NUMBER = new BigNumber(100)
 // E.g.: Sell = 500; ORDER_FILLED_FACTOR = 100 (1%) => 500/100 => 5
 // ∴ when the amount is < 5 the order will be considered filled.
 export const ORDER_FILLED_FACTOR = new BN(10000) // 0.01%
+// Similar to the ORDER_FILLED_FACTOR, but for the explorer, and using a different calculation
+// Order is considered `filled` when less than FILLED_ORDER_EPSILON is left
+export const FILLED_ORDER_EPSILON = new BigNumber('0.0001') // == 0.01%
 
 export const BATCH_SUBMISSION_CLOSE_TIME = 4 // in minutes
 

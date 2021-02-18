@@ -1,17 +1,10 @@
 import { createGlobalStyle, css } from 'styled-components'
 
-import fontFace from './fonts'
 import { web3ModalOverride } from './overrides'
 
 // TODO: remove for constants from colour palette later
 import variables from 'components/layout/GenericLayout/variablesCss'
-
-// TODO: replace these variables w/Colour constants (later):
-// --color-text-primary: #456483
-// --color-gradient-1: #21222E
-// --color-gradient-2: #2C2D3F
-// --color-background-selection: #218DFF
-// --color-text-active: #218DFF
+import fontFace from './fonts'
 
 const selection = css`
   /* CSS for selecting text */
@@ -44,7 +37,7 @@ export const StaticGlobalStyle = createGlobalStyle`
   /* TEMPORARY: import variables */ 
   ${variables}
   
-  /* Import font faces */
+  /* Fonts */
   ${fontFace}
 
   /* Selection CSS */
@@ -66,32 +59,20 @@ export const StaticGlobalStyle = createGlobalStyle`
     width: 100vw;
     margin: 0;
     font-size: 62.5%;
-    line-height: 10px;
-    /* TODO: change the next 3 lines to be in themed global */
-    font-family: var(--font-default);
-    background-image: linear-gradient(0deg, var(--color-gradient-1) 0%, var(--color-gradient-2) 100%);
-    color: var(--color-text-primary);
-    /* End TODO */
-    box-sizing: border-box;
-    scroll-behavior: smooth;
     text-rendering: geometricPrecision;
+    line-height: 10px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
+    overscroll-behavior-y: none;
+    scroll-behavior: smooth;
   }
 
   *, *:before, *:after {
     box-sizing: inherit;
   }
 
-  a {   
-    text-decoration: underline;
-    cursor: pointer;
-      &:link, 
-      &:visited {
-        color: var(--color-text-active);
-      }
-  }
-
+  /* TODO: move closer to H elements or sth */
   h1, h2, h3 {
     margin: 0;
     margin: 0.5rem 0;
@@ -109,6 +90,19 @@ export const StaticGlobalStyle = createGlobalStyle`
 
 export const ThemedGlobalStyle = createGlobalStyle`
   html, body {
-    /* Dynamic, theme interpolated styles here! */
+    background: ${({ theme }): string => theme.bg1};
+    color: ${({ theme }): string => theme.textPrimary1};
+    /* StyleLint fights you for the Helvetica, sans-serif as it requires a fallback and can't detect it from the theme prop */
+    font-family: ${({ theme }): string => theme.fontDefault}, Helvetica, sans-serif;
+  }
+
+  /* TODO: move closer to <a> element */
+  a {   
+    text-decoration: underline;
+    cursor: pointer;
+      &:link, 
+      &:visited {
+        color: ${({ theme }): string => theme.textActive1};
+      }
   }
 `

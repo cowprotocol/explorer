@@ -5,13 +5,13 @@ import { toast } from 'toastify'
 import { MAX_BATCH_ID, toPlaceValidFromOrdersParams } from '@gnosis.pm/dex-js'
 
 import { TokenDetails, Receipt, TxOptionalParams } from 'types'
-import { exchangeApi } from 'api'
+import { exchangeApi } from 'apps/gp-v1/api'
 import { PlaceOrderParams as ExchangeApiPlaceOrderParams } from 'api/exchange/ExchangeApi'
 import { logDebug, formatDistanceStrict, formatDateLocaleShortTime, batchIdToDate } from 'utils'
 import { txOptionalParams as defaultTxOptionalParams } from 'utils/transaction'
 import { BATCHES_TO_WAIT } from 'const'
 import useSafeState from './useSafeState'
-import { getNumberOfBatchesLeftUntilNow } from 'components/TradeWidget/OrderValidity'
+import { getNumberOfBatchesLeftUntilNow } from 'apps/gp-v1/components/TradeWidget/OrderValidity'
 
 interface ConnectionParams {
   userAddress: string

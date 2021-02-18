@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
-import { MEDIA } from 'const'
 import useSafeState from 'hooks/useSafeState'
+import { MEDIA } from 'const'
 
 const TabsWrapper = styled.div`
   margin: 0 auto;
@@ -64,17 +64,14 @@ const TabsWrapper = styled.div`
         flex: 1;
         font-size: 1.2rem;
         min-height: 5.4rem;
-
         > i {
           font-size: 0.9rem;
           height: 1.3rem;
           line-height: 1.36rem;
         }
       }
-
       @media ${MEDIA.xSmallDown} {
         flex-flow: column nowrap;
-
         > i {
           margin: 0.3rem auto;
         }

@@ -9,7 +9,8 @@ import { useDebounce } from './useDebounce'
 import searchIcon from 'assets/img/search.svg'
 import { useBetterAddTokenModal, UseAddTokenModalResult } from './useBetterAddTokenModal'
 import useGlobalState from 'hooks/useGlobalState'
-import { updateLocalTokens } from 'reducers-actions/localTokens'
+import { GpV1AppState } from 'apps/gp-v1/state'
+import { updateLocalTokens } from 'state/localTokens'
 import { Toggle } from 'components/Toggle'
 
 const OptionWrapper = styled.div`
@@ -194,7 +195,7 @@ const ManageTokensContainer: React.FC = () => {
     [tokensShown, setDebouncedSearch],
   )
 
-  const [{ localTokens }, dispatch] = useGlobalState()
+  const [{ localTokens }, dispatch] = useGlobalState<GpV1AppState>()
 
   const [tokensDisabledState, setDisabledTokens] = useState(localTokens.disabled)
   const disabledTokensRef = useRef<typeof localTokens.disabled>(localTokens.disabled)

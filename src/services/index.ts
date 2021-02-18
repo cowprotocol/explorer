@@ -1,4 +1,4 @@
-import { tokenListApi, exchangeApi, erc20Api, web3, theGraphApi, tcrApi, walletApi } from 'api'
+import { tokenListApi, exchangeApi, erc20Api, web3, theGraphApi, tcrApi, walletApi } from 'apps/gp-v1/api'
 
 import {
   getTokenFromExchangeByAddressFactory,

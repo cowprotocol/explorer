@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import Tabs, { TabItemType, TabThemeType } from 'components/common/Tabs/Tabs'
+import Tabs, { getTabTheme } from 'components/common/Tabs/Tabs'
 
-import OrderBookWidget from 'components/OrderBookWidget'
+import OrderBookWidget from 'components/order-book/OrderBookWidget'
 import PriceChart from 'components/PriceChart'
 
 // Styled components
@@ -32,30 +32,30 @@ const demo = {
   networkId: 1,
 }
 
-const tabItems = (): TabItemType[] => [
+const tabItems = [
   {
     id: 1,
-    title: 'Price Chart',
+    tab: 'Price Chart',
     content: <PriceChart />,
   },
   {
     id: 2,
-    title: 'Depth Chart',
+    tab: 'Depth Chart',
     content: <OrderBookWidget baseToken={demo.baseToken} quoteToken={demo.quoteToken} networkId={demo.networkId} />,
   },
 ]
 
 // Provide a custom tabTheme
-const tabThemeConfig: TabThemeType = {
-  activeBg: '--color-transparent',
-  inactiveBg: '--color-transparent',
-  activeText: '--color-text-primary',
-  inactiveText: '--color-text-secondary2',
-  activeBorder: '--color-text-primary',
-  inactiveBorder: '--color-text-secondary2',
+const tabThemeConfig = getTabTheme({
+  activeBg: 'var(--color-transparent)',
+  inactiveBg: 'var(--color-transparent)',
+  activeText: 'var(--color-text-primary)',
+  inactiveText: 'var(--color-text-secondary2)',
+  activeBorder: 'var(--color-text-primary)',
+  inactiveBorder: 'var(--color-text-secondary2)',
   borderRadius: false,
-  fontSize: '--font-size-default',
-}
+  fontSize: 'var(--font-size-default)',
+})
 
 const TabsWrapper = styled.div`
   display: flex;
@@ -84,7 +84,7 @@ const TabsWrapper = styled.div`
 export const PriceDepthChartWidget: React.FC = () => (
   <Wrapper>
     <TabsWrapper>
-      <Tabs tabItems={tabItems()} tabTheme={tabThemeConfig} />
+      <Tabs tabItems={tabItems} tabTheme={tabThemeConfig} />
     </TabsWrapper>
   </Wrapper>
 )

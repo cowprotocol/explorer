@@ -1,15 +1,16 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch, Link } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
 import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
-import { GlobalModalInstance } from 'components/OuterModal'
-import { rootReducer, INITIAL_STATE } from 'reducers-actions'
+import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
 
 import { GenericLayout } from 'components/layout'
-import { Menu } from 'components/layout/GenericLayout/Menu'
+import { Header } from './layout/Header'
+
+import { NetworkUpdater } from 'state/network'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -30,36 +31,65 @@ const Home = React.lazy(
     ),
 )
 
-export const SwapAppV1: React.FC = () => {
+const Order = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "Order_chunk"*/
+      './pages/Order'
+    ),
+)
+
+/**
+ * Update the global state
+ */
+export function StateUpdaters(): JSX.Element {
+  return <NetworkUpdater />
+}
+
+/** App content */
+const AppContent = (): JSX.Element => {
+  const { path } = useRouteMatch()
+
+  const pathPrefix = path == '/' ? '' : path
+
+  return (
+    <GenericLayout header={<Header />}>
+      <React.Suspense fallback={null}>
+        <Switch>
+          <Route path={pathPrefix + '/'} exact component={Home} />
+          <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
+          <Route component={NotFound} />
+        </Switch>
+      </React.Suspense>
+    </GenericLayout>
+  )
+}
+
+/** Redirects to the canonnical URL for mainnet */
+const RedirectMainnet = (): JSX.Element => {
+  const { pathname } = useLocation()
+
+  const pathMatchArray = pathname.match('/mainnet(.*)')
+  const newPath = pathMatchArray && pathMatchArray.length > 0 ? pathMatchArray[1] : '/'
+
+  return <Redirect push={false} to={newPath} />
+}
+
+/**
+ * Render Explorer App
+ */
+export const ExplorerApp: React.FC = () => {
   // Deal with incorrect network
   useNetworkCheck()
-
-  const menu = (
-    <Menu>
-      <li>
-        <Link to="/">Batches</Link>
-      </li>
-      <li>
-        <Link to="/trades">Trades</Link>
-      </li>
-      <li>
-        <Link to="/markets">Markets</Link>
-      </li>
-    </Menu>
-  )
 
   return (
     <>
       <Router basename={process.env.BASE_URL}>
-        <GenericLayout menu={menu}>
-          <React.Suspense fallback={null}>
-            <Switch>
-              <Route path="/" exact component={Home} />
-              <Route component={NotFound} />
-            </Switch>
-          </React.Suspense>
-        </GenericLayout>
-        {GlobalModalInstance}
+        <StateUpdaters />
+        <Switch>
+          <Route path="/mainnet" component={RedirectMainnet} />
+          <Route path={['/xdai', '/rinkeby', '/']} component={AppContent} />
+        </Switch>
       </Router>
       {process.env.NODE_ENV === 'development' && <Console />}
     </>
@@ -68,7 +98,7 @@ export const SwapAppV1: React.FC = () => {
 
 export default hot(
   withGlobalContext(
-    SwapAppV1,
+    ExplorerApp,
     // Initial State
     INITIAL_STATE,
     rootReducer,

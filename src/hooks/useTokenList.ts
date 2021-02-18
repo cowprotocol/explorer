@@ -3,7 +3,7 @@ import { TokenDetails } from 'types'
 import useSafeState from './useSafeState'
 import { getTokens, subscribeToTokenList } from 'services'
 import { EMPTY_ARRAY } from 'const'
-import { tokenListApi } from 'api'
+import { tokenListApi } from 'apps/gp-v1/api'
 
 export interface UseTokenListParams {
   networkId?: number
