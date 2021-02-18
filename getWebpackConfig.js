@@ -42,7 +42,7 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
   const { name: appTitle, templatePath, logoPath } = config
   const isProduction = process.env.NODE_ENV == 'production'
 
-  assert(apps.length > 0, "At least one app it's required")
+  assert(apps.length > 0, "At least one app is required")
   assert(appTitle, '"name" missing in config')
   assert(templatePath, '"templatePath" missing in config')
   assert(logoPath, '"logoPath" missing in config')
