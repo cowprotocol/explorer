@@ -5,7 +5,7 @@ import { calculatePrice, invertPrice } from '@gnosis.pm/dex-js'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
-import { OrderStatus, RawOrder } from './types'
+import { Order, OrderStatus, RawOrder } from './types'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -142,4 +142,45 @@ export function getOrderExecutedPrice({
   })
 
   return inverted ? invertPrice(price) : price
+}
+
+/**
+ * Transforms a RawOrder into an Order object
+ *
+ * @param rawOrder RawOrder object
+ */
+export function transformOrder(rawOrder: RawOrder): Order {
+  const {
+    creationDate,
+    validTo,
+    buyToken,
+    sellToken,
+    buyAmount,
+    sellAmount,
+    feeAmount,
+    executedFeeAmount,
+    invalidated,
+    ...rest
+  } = rawOrder
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
+  const status = getOrderStatus(rawOrder)
+  const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
+
+  return {
+    ...rest,
+    creationDate: new Date(creationDate),
+    expirationDate: new Date(validTo * 1000),
+    buyTokenAddress: buyToken,
+    sellTokenAddress: sellToken,
+    buyAmount: new BigNumber(buyAmount),
+    sellAmount: new BigNumber(sellAmount),
+    executedBuyAmount,
+    executedSellAmount,
+    feeAmount: new BigNumber(feeAmount),
+    executedFeeAmount: new BigNumber(executedFeeAmount),
+    cancelled: invalidated,
+    status,
+    filledAmount,
+    filledPercentage,
+  }
 }

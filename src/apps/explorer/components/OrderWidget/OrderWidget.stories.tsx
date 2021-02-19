@@ -6,7 +6,7 @@ import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { OrderWidgetView, Props } from './view'
 
-import { ORDER } from '../../../../../test/data'
+import { RICH_ORDER } from '../../../../../test/data'
 
 export default {
   title: 'Explorer/OrderWidget',
@@ -17,13 +17,16 @@ export default {
 
 const Template: Story<Props> = (args) => <OrderWidgetView {...args} />
 
-const defaultProps: Props = { order: null, isLoading: false }
+const defaultProps: Props = { order: null, isLoading: false, errors: {} }
 
 export const OrderFound = Template.bind({})
-OrderFound.args = { ...defaultProps, order: ORDER }
+OrderFound.args = { ...defaultProps, order: RICH_ORDER }
 
 export const OrderLoading = Template.bind({})
 OrderLoading.args = { ...defaultProps, isLoading: true }
 
 export const OrderNotFound = Template.bind({})
 OrderNotFound.args = { ...defaultProps }
+
+export const WithErrors = Template.bind({})
+WithErrors.args = { ...defaultProps, errors: { error1: 'Failed something something', error2: 'Something else failed' } }

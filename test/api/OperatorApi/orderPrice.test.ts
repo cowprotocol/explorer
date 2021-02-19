@@ -5,7 +5,7 @@ import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER
 import { RawOrder } from 'api/operator'
 import { getOrderExecutedPrice, getOrderLimitPrice, GetOrderPriceParams } from 'api/operator/utils'
 
-import { ORDER } from '../../data'
+import { RAW_ORDER } from '../../data'
 
 const ZERO_DOT_ONE = new BigNumber('0.1')
 
@@ -43,13 +43,13 @@ function _assertOrderPriceWithoutFills(_order: RawOrder): void {
 
 describe('Limit price', () => {
   describe('Buy order', () => {
-    const order: RawOrder = { ...ORDER, kind: 'buy', buyAmount: '1000', sellAmount: '100' }
+    const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '1000', sellAmount: '100' }
 
     _assertOrderPrice(order, getOrderLimitPrice)
   })
 
   describe('Sell order', () => {
-    const order: RawOrder = { ...ORDER, kind: 'sell', buyAmount: '1000', sellAmount: '100' }
+    const order: RawOrder = { ...RAW_ORDER, kind: 'sell', buyAmount: '1000', sellAmount: '100' }
 
     _assertOrderPrice(order, getOrderLimitPrice)
   })
@@ -58,7 +58,7 @@ describe('Limit price', () => {
 describe('Executed price', () => {
   describe('Buy order', () => {
     const order: RawOrder = {
-      ...ORDER,
+      ...RAW_ORDER,
       kind: 'buy',
       executedBuyAmount: '1000',
       executedSellAmount: '110',
@@ -75,7 +75,7 @@ describe('Executed price', () => {
 
   describe('Sell order', () => {
     const order: RawOrder = {
-      ...ORDER,
+      ...RAW_ORDER,
       kind: 'sell',
       executedBuyAmount: '1000',
       executedSellAmount: '110',
