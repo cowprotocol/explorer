@@ -7,7 +7,8 @@ import { Order } from 'api/operator'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 import { StatusLabel } from 'components/orders/StatusLabel'
-import { OrderPriceDisplay } from '../OrderPriceDisplay'
+import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { DateDisplay } from 'components/orders/DateDisplay'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -88,11 +89,15 @@ export function OrderDetails(props: Props): JSX.Element {
           </tr>
           <tr>
             <td>Submission Time</td>
-            <td>{creationDate.toISOString()}</td>
+            <td>
+              <DateDisplay date={creationDate} />
+            </td>
           </tr>
           <tr>
             <td>Expiration Time</td>
-            <td>{expirationDate.toISOString()}</td>
+            <td>
+              <DateDisplay date={expirationDate} />
+            </td>
           </tr>
           <tr>
             <td>Type</td>
