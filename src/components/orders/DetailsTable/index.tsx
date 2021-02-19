@@ -52,6 +52,7 @@ export function DetailsTable(props: Props): JSX.Element {
   const {
     shortId,
     owner,
+    txHash,
     kind,
     partiallyFillable,
     creationDate,
@@ -84,6 +85,12 @@ export function DetailsTable(props: Props): JSX.Element {
             <td>From</td>
             <td>{owner}</td>
           </tr>
+          {!partiallyFillable && (
+            <tr>
+              <td>Transaction hash</td>
+              <td>{txHash || '-'}</td>
+            </tr>
+          )}
           <tr>
             <td>Status</td>
             <td>
