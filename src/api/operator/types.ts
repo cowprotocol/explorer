@@ -48,6 +48,7 @@ export type RawOrder = {
  * Some fields are kept as is.
  */
 export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature'> & {
+  shortId: string
   creationDate: Date
   expirationDate: Date
   buyTokenAddress: string

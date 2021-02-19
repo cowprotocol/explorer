@@ -200,3 +200,10 @@ export function formatPriceWithFloor(price: BigNumber): string {
   const displayPrice = amountToPrecisionDown(price, DEFAULT_DECIMALS).toString(10)
   return price.gt(LOW_PRICE_FLOOR) ? displayPrice : '< ' + LOW_PRICE_FLOOR.toString(10)
 }
+
+export function capitalize(sentence: string): string {
+  return sentence
+    .split(' ')
+    .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ')
+}

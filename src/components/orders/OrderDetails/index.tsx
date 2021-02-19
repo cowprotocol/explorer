@@ -5,6 +5,8 @@ import { formatSmart } from '@gnosis.pm/dex-js'
 
 import { Order } from 'api/operator'
 
+import { capitalize } from 'utils'
+
 import { SimpleTable } from 'components/common/SimpleTable'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
@@ -47,7 +49,7 @@ export type Props = { order: Order }
 export function OrderDetails(props: Props): JSX.Element {
   const { order } = props
   const {
-    uid,
+    shortId,
     owner,
     kind,
     partiallyFillable,
@@ -75,7 +77,7 @@ export function OrderDetails(props: Props): JSX.Element {
         <>
           <tr>
             <td>Order Id</td>
-            <td>{uid}</td>
+            <td>{shortId}</td>
           </tr>
           <tr>
             <td>From</td>
@@ -102,10 +104,7 @@ export function OrderDetails(props: Props): JSX.Element {
           <tr>
             <td>Type</td>
             <td>
-              {kind === 'sell'
-                ? `Sell ${sellToken.symbol} for ${buyToken.symbol}`
-                : `Buy ${buyToken.symbol} for ${sellToken.symbol}`}
-              {partiallyFillable && ' (fill or kill)'}
+              {capitalize(kind)} order {!partiallyFillable && '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
@@ -130,6 +129,22 @@ export function OrderDetails(props: Props): JSX.Element {
           </tr>
           {!partiallyFillable && (
             <>
+              <tr>
+                <td>Execution price</td>
+                <td>
+                  {!filledAmount.isZero() ? (
+                    <OrderPriceDisplay
+                      buyAmount={executedBuyAmount}
+                      buyToken={buyToken}
+                      sellAmount={executedSellAmount}
+                      sellToken={sellToken}
+                      showInvertButton
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </td>
+              </tr>
               <tr>
                 <td>Filled</td>
                 <td>

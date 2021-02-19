@@ -144,6 +144,10 @@ export function getOrderExecutedPrice({
   return inverted ? invertPrice(price) : price
 }
 
+function getShortOrderId(orderId: string, length = 8): string {
+  return orderId.replace(/^0x/, '').slice(0, length)
+}
+
 /**
  * Transforms a RawOrder into an Order object
  *
@@ -162,12 +166,14 @@ export function transformOrder(rawOrder: RawOrder): Order {
     invalidated,
     ...rest
   } = rawOrder
+  const shortId = getShortOrderId(rawOrder.uid)
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
   const status = getOrderStatus(rawOrder)
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
 
   return {
     ...rest,
+    shortId,
     creationDate: new Date(creationDate),
     expirationDate: new Date(validTo * 1000),
     buyTokenAddress: buyToken,
