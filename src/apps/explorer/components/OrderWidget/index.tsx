@@ -5,12 +5,12 @@ import { useOrderAndErc20s } from 'hooks/useOperatorOrder'
 
 import { ORDER_QUERY_INTERVAL } from 'apps/explorer/const'
 
-import { OrderWidgetView } from './view'
+import { OrderDetails } from 'components/orders/OrderDetails'
 
 export const OrderWidget: React.FC = () => {
   const { orderId } = useParams<{ orderId: string }>()
 
   const { order, isLoading, errors } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
 
-  return <OrderWidgetView order={order} isLoading={isLoading} errors={errors} />
+  return <OrderDetails order={order} isLoading={isLoading} errors={errors} />
 }
