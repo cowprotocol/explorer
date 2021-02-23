@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { abbreviateString, formatSmart } from '@gnosis.pm/dex-js'
+import { formatSmart } from '@gnosis.pm/dex-js'
 
 import { Order } from 'api/operator'
 
 import { capitalize } from 'utils'
+
+import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 
@@ -88,7 +90,10 @@ export function DetailsTable(props: Props): JSX.Element | null {
           <tr>
             <td>From</td>
             <td>
-              <RowWithCopyButton textToCopy={owner} contentsToDisplay={owner} />
+              <RowWithCopyButton
+                textToCopy={owner}
+                contentsToDisplay={<BlockExplorerLink identifier={owner} type="address" label={owner} />}
+              />
             </td>
           </tr>
           {!partiallyFillable && (
@@ -96,7 +101,10 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <td>Transaction hash</td>
               <td>
                 {txHash ? (
-                  <RowWithCopyButton textToCopy={txHash} contentsToDisplay={abbreviateString(txHash, 12, 10)} />
+                  <RowWithCopyButton
+                    textToCopy={txHash}
+                    contentsToDisplay={<BlockExplorerLink identifier={txHash} type="tx" label={txHash} />}
+                  />
                 ) : (
                   '-'
                 )}
