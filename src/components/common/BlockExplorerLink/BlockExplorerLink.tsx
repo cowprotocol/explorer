@@ -1,7 +1,8 @@
 import React, { ReactElement } from 'react'
-import { useWalletConnection } from 'hooks/useWalletConnection'
-import { abbreviateString } from 'utils'
+
 import { Network } from 'types'
+
+import { abbreviateString } from 'utils'
 
 type BlockExplorerLinkType = 'tx' | 'address' | 'contract' | 'token' | 'event'
 
@@ -19,7 +20,7 @@ export interface Props {
    */
   networkId?: number
   /**
-   * label to replace textContent generated from indentifier
+   * label to replace textContent generated from identifier
    */
   label?: string | ReactElement | void
 
@@ -91,17 +92,14 @@ function getExplorerUrl(networkId: number, type: BlockExplorerLinkType, identifi
     : getEtherscanUrl(networkId, type, identifier)
 }
 
-export const BlockExplorerLink: React.FC<Props> = ({
-  type,
-  identifier,
-  label: labelProp,
-  useUrlAsLabel = false,
-  className,
-  networkId: networkIdFixed,
-}) => {
-  const { networkIdOrDefault: networkIdWallet } = useWalletConnection()
-
-  const networkId = networkIdFixed || networkIdWallet
+/**
+ * Dumb BlockExplorerLink, a pure UI component
+ *
+ * Does not make any assumptions regarding the network.
+ * Expects all data as input. Does not use any hooks internally.
+ */
+export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
+  const { type, identifier, label: labelProp, useUrlAsLabel = false, className, networkId } = props
 
   if (!networkId || !identifier) {
     return null

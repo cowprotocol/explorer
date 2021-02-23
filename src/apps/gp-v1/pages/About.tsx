@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ContentPage } from 'components/layout'
 import addressesByNetwork from 'api/deposit/batchExchangeAddresses'
 import { getNetworkFromId } from '@gnosis.pm/dex-js'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 export const AboutWrapper = styled(ContentPage)`
   line-height: 2.2rem;

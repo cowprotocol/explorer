@@ -1,6 +1,6 @@
 import React from 'react'
 import { TokenDex, safeTokenName } from '@gnosis.pm/dex-js'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 export function displayTokenSymbolOrLink(token: TokenDex): React.ReactNode | string {
   const displayName = safeTokenName(token)

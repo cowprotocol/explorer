@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSignOutAlt, faSignInAlt, faCopy, faCheck, faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons'
 
 // components
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 import {
   UserWalletItem,

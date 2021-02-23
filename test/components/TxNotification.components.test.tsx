@@ -4,7 +4,7 @@ import { shallow } from 'enzyme'
 import { TxNotification } from 'components/TxNotification'
 
 import { TX_HASH } from '../data'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 describe('<TxNotification />', () => {
   it('renders with link component', () => {

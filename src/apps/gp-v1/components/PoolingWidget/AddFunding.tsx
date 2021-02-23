@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 // componet
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 // PoolingWidget: subcomponent
 import { HighlightDiv } from 'apps/gp-v1/components/PoolingWidget/PoolingWidget.styled'
