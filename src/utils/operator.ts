@@ -199,8 +199,12 @@ export function transformOrder(rawOrder: RawOrder): Order {
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
   const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(rawOrder)
 
+  // TODO: fill in tx hash for fill or kill orders when available from the api
+  const txHash = '0x489d8fd1efd43394c7c2b26216f36f1ab49b8d67623047e0fcb60efa2a2c420b'
+
   return {
     ...rest,
+    txHash,
     shortId,
     creationDate: new Date(creationDate),
     expirationDate: new Date(validTo * 1000),

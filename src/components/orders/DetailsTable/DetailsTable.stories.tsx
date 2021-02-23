@@ -27,6 +27,7 @@ const order = {
   sellAmount: new BigNumber('5000000000'), //5000 USDT
   creationDate: sub(new Date(), { hours: 1 }),
   expirationDate: add(new Date(), { hours: 1 }),
+  txHash: '0x489d8fd1efd43394c7c2b26216f36f1ab49b8d67623047e0fcb60efa2a2c420b',
 }
 
 const defaultProps: Props = { order }

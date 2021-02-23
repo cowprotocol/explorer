@@ -7,11 +7,15 @@ import { Order } from 'api/operator'
 
 import { capitalize } from 'utils'
 
+import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
+
 import { SimpleTable } from 'components/common/SimpleTable'
+
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
-import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
+import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
+import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -47,11 +51,13 @@ const Table = styled(SimpleTable)`
 
 export type Props = { order: Order }
 
-export function DetailsTable(props: Props): JSX.Element {
+export function DetailsTable(props: Props): JSX.Element | null {
   const { order } = props
   const {
+    uid,
     shortId,
     owner,
+    txHash,
     kind,
     partiallyFillable,
     creationDate,
@@ -69,7 +75,7 @@ export function DetailsTable(props: Props): JSX.Element {
   } = order
 
   if (!buyToken || !sellToken) {
-    return <div>Not sell or buy tokens loaded</div>
+    return null
   }
 
   return (
@@ -78,12 +84,34 @@ export function DetailsTable(props: Props): JSX.Element {
         <>
           <tr>
             <td>Order Id</td>
-            <td>{shortId}</td>
+            <td>
+              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} />
+            </td>
           </tr>
           <tr>
             <td>From</td>
-            <td>{owner}</td>
+            <td>
+              <RowWithCopyButton
+                textToCopy={owner}
+                contentsToDisplay={<BlockExplorerLink identifier={owner} type="address" label={owner} />}
+              />
+            </td>
           </tr>
+          {!partiallyFillable && (
+            <tr>
+              <td>Transaction hash</td>
+              <td>
+                {txHash ? (
+                  <RowWithCopyButton
+                    textToCopy={txHash}
+                    contentsToDisplay={<BlockExplorerLink identifier={txHash} type="tx" label={txHash} />}
+                  />
+                ) : (
+                  '-'
+                )}
+              </td>
+            </tr>
+          )}
           <tr>
             <td>Status</td>
             <td>
