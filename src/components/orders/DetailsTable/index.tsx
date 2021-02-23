@@ -49,7 +49,7 @@ const Table = styled(SimpleTable)`
 
 export type Props = { order: Order }
 
-export function DetailsTable(props: Props): JSX.Element {
+export function DetailsTable(props: Props): JSX.Element | null {
   const { order } = props
   const {
     shortId,
@@ -72,7 +72,7 @@ export function DetailsTable(props: Props): JSX.Element {
   } = order
 
   if (!buyToken || !sellToken) {
-    return <div>Not sell or buy tokens loaded</div>
+    return null
   }
 
   return (
