@@ -1,17 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { formatSmart } from '@gnosis.pm/dex-js'
+import { abbreviateString, formatSmart } from '@gnosis.pm/dex-js'
 
 import { Order } from 'api/operator'
 
 import { capitalize } from 'utils'
 
 import { SimpleTable } from 'components/common/SimpleTable'
+
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
-import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
+import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
+import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -79,16 +81,26 @@ export function DetailsTable(props: Props): JSX.Element {
         <>
           <tr>
             <td>Order Id</td>
-            <td>{shortId}</td>
+            <td>
+              <RowWithCopyButton textToCopy={shortId} contentsToDisplay={shortId} />
+            </td>
           </tr>
           <tr>
             <td>From</td>
-            <td>{owner}</td>
+            <td>
+              <RowWithCopyButton textToCopy={owner} contentsToDisplay={owner} />
+            </td>
           </tr>
           {!partiallyFillable && (
             <tr>
               <td>Transaction hash</td>
-              <td>{txHash || '-'}</td>
+              <td>
+                {txHash ? (
+                  <RowWithCopyButton textToCopy={txHash} contentsToDisplay={abbreviateString(txHash, 12, 10)} />
+                ) : (
+                  '-'
+                )}
+              </td>
             </tr>
           )}
           <tr>
