@@ -5,7 +5,7 @@ import { calculatePrice, invertPrice } from '@gnosis.pm/dex-js'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
-import { Order, OrderStatus, RawOrder } from './types'
+import { Order, OrderStatus, RawOrder } from 'api/operator/types'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -66,6 +66,33 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
   }
 
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
+}
+
+export function getSurplus(
+  inputAmount: BigNumber | string,
+  executedAmount: BigNumber | string,
+): { amount: BigNumber; percentage: BigNumber } {
+  // Just as a nicety, allow both input as strings
+  // inputAmount has ne need for conversion since BigNumber takes care of it when used as a parameter
+  // executedAmount needs to be converted though
+  const _executedAmount = typeof executedAmount === 'string' ? new BigNumber(executedAmount) : executedAmount
+
+  const amount = _executedAmount.gt(inputAmount) ? _executedAmount.minus(inputAmount) : ZERO_BIG_NUMBER
+  const percentage = amount.dividedBy(inputAmount)
+
+  return { amount, percentage }
+}
+
+export function getOrderSurplus(order: RawOrder): { amount: BigNumber; percentage: BigNumber } {
+  const { kind, buyAmount, sellAmount } = order
+
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
+
+  if (kind === 'buy') {
+    return getSurplus(sellAmount, executedSellAmount)
+  } else {
+    return getSurplus(buyAmount, executedBuyAmount)
+  }
 }
 
 /**
@@ -170,6 +197,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
   const status = getOrderStatus(rawOrder)
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
+  const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(rawOrder)
 
   return {
     ...rest,
@@ -188,5 +216,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     status,
     filledAmount,
     filledPercentage,
+    surplusAmount,
+    surplusPercentage,
   }
 }

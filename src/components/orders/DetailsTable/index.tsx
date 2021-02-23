@@ -11,6 +11,7 @@ import { SimpleTable } from 'components/common/SimpleTable'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
+import { OrderSurplusDisplay } from '../OrderSurplusDisplay'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -62,7 +63,7 @@ export function DetailsTable(props: Props): JSX.Element {
     executedFeeAmount,
     status,
     filledAmount,
-    filledPercentage,
+    surplusAmount,
     buyToken,
     sellToken,
   } = order
@@ -146,18 +147,8 @@ export function DetailsTable(props: Props): JSX.Element {
                 </td>
               </tr>
               <tr>
-                <td>Filled</td>
-                <td>
-                  {kind === 'sell'
-                    ? `${formatSmart(filledAmount.toString(), sellToken.decimals)} sold for ${formatSmart(
-                        executedBuyAmount.toString(),
-                        buyToken.decimals,
-                      )} (${filledPercentage.multipliedBy(100)}%)`
-                    : `${formatSmart(filledAmount.toString(), buyToken.decimals)} bought for ${formatSmart(
-                        executedSellAmount.toString(),
-                        sellToken.decimals,
-                      )} (${filledPercentage.multipliedBy(100)}%)`}
-                </td>
+                <td>Order surplus</td>
+                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
               </tr>
               <tr>
                 <td>Gas Fees paid</td>

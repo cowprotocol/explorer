@@ -11,6 +11,7 @@ export interface Colors {
   textDisabled: Color
 
   icon: Color
+  surplusPercentage: Color
 
   // backgrounds / greys
   bg1: Color
@@ -81,6 +82,7 @@ export const LIGHT_COLOURS = {
   textDisabled: '#31323E',
 
   icon: '#657795B3',
+  surplusPercentage: '#1E9B75',
 
   // backgrounds / greys
   bg1: '#ffc1ff',
@@ -109,6 +111,7 @@ export const DARK_COLOURS = {
   textDisabled: '#31323E',
 
   icon: '#8D8DA980',
+  surplusPercentage: '#00D897',
 
   // backgrounds / greys
   bg1: '#16171F',

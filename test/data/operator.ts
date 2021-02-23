@@ -46,4 +46,6 @@ export const RICH_ORDER: Order = {
   filledPercentage: ZERO_BIG_NUMBER,
   buyToken: WETH,
   sellToken: USDT,
+  surplusAmount: ZERO_BIG_NUMBER,
+  surplusPercentage: ZERO_BIG_NUMBER,
 }

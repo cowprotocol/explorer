@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Order, transformOrder } from 'api/operator'
-import { getOrder } from 'api/operator/operatorApi'
+import { Order, getOrder } from 'api/operator'
+
+import { transformOrder } from 'utils'
 
 import { useNetworkId } from 'state/network'
+
 import { useMultipleErc20 } from './useErc20'
 
 type UseOrderResult = {

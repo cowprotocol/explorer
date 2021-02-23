@@ -3,7 +3,8 @@ import BigNumber from 'bignumber.js'
 import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { RawOrder } from 'api/operator'
-import { getOrderFilledAmount } from 'api/operator/utils'
+
+import { getOrderFilledAmount } from 'utils'
 
 import { RAW_ORDER } from '../../../test/data'
 

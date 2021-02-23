@@ -65,6 +65,8 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
   status: OrderStatus
   filledAmount: BigNumber
   filledPercentage: BigNumber
+  surplusAmount: BigNumber
+  surplusPercentage: BigNumber
 }
 
 type WithNetworkId = { networkId: Network }

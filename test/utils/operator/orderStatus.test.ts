@@ -1,5 +1,6 @@
 import { RawOrder } from 'api/operator'
-import { getOrderStatus } from 'api/operator/utils'
+
+import { getOrderStatus } from 'utils'
 
 import { RAW_ORDER } from '../../data'
 import { mockTimes, DATE } from '../../testHelpers'
