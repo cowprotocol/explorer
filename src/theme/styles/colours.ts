@@ -10,6 +10,8 @@ export interface Colors {
   textActive1: Color
   textDisabled: Color
 
+  icon: Color
+
   // backgrounds / greys
   bg1: Color
   bg2: Color
@@ -78,6 +80,8 @@ export const LIGHT_COLOURS = {
   textActive1: '',
   textDisabled: '#31323E',
 
+  icon: '#657795B3',
+
   // backgrounds / greys
   bg1: '#ffc1ff',
   bg2: '#F7F8FA',
@@ -103,6 +107,8 @@ export const DARK_COLOURS = {
   textSecondary2: '#9797B8',
   textActive1: '',
   textDisabled: '#31323E',
+
+  icon: '#8D8DA980',
 
   // backgrounds / greys
   bg1: '#16171F',
