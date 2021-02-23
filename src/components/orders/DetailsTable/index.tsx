@@ -54,6 +54,7 @@ export type Props = { order: Order }
 export function DetailsTable(props: Props): JSX.Element | null {
   const { order } = props
   const {
+    uid,
     shortId,
     owner,
     txHash,
@@ -84,7 +85,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
           <tr>
             <td>Order Id</td>
             <td>
-              <RowWithCopyButton textToCopy={shortId} contentsToDisplay={shortId} />
+              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} />
             </td>
           </tr>
           <tr>
