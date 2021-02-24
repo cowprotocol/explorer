@@ -1,3 +1,7 @@
+import BigNumber from 'bignumber.js'
+
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+
 import { Network } from 'types'
 
 export type OrderID = string
@@ -36,6 +40,34 @@ export type RawOrder = {
   kind: OrderKind
   partiallyFillable: boolean
   signature: string
+}
+
+/**
+ * Enriched Order type.
+ * Applies some transformations on the raw api data.
+ * Some fields are kept as is.
+ */
+export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature'> & {
+  txHash?: string
+  shortId: string
+  creationDate: Date
+  expirationDate: Date
+  buyTokenAddress: string
+  buyToken?: TokenErc20 | null // undefined when not set, null when not found
+  sellTokenAddress: string
+  sellToken?: TokenErc20 | null
+  buyAmount: BigNumber
+  sellAmount: BigNumber
+  executedBuyAmount: BigNumber
+  executedSellAmount: BigNumber
+  feeAmount: BigNumber
+  executedFeeAmount: BigNumber
+  cancelled: boolean
+  status: OrderStatus
+  filledAmount: BigNumber
+  filledPercentage: BigNumber
+  surplusAmount: BigNumber
+  surplusPercentage: BigNumber
 }
 
 type WithNetworkId = { networkId: Network }

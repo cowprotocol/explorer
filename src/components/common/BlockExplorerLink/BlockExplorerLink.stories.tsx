@@ -2,7 +2,7 @@ import React from 'react'
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
 
-import { BlockExplorerLink, Props } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink, Props } from '.'
 import { Network } from 'types'
 import {
   ADDRESS_ACCOUNT_XDAI,

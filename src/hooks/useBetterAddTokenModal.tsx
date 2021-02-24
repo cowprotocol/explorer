@@ -9,7 +9,7 @@ import { tokenListApi } from 'apps/gp-v1/api'
 import { TokenFromExchange } from 'services/factories'
 import { unstable_batchedUpdates as batchUpdates } from 'react-dom'
 import useSafeState from './useSafeState'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 import { useWalletConnection } from './useWalletConnection'
 import Spinner from 'components/common/Spinner'
 

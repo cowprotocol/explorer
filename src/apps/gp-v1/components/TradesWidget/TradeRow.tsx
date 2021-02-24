@@ -7,7 +7,7 @@ import { formatPrice, formatSmart, formatAmountFull, invertPrice, DEFAULT_PRECIS
 
 import { Trade, TradeType } from 'api/exchange/ExchangeApi'
 
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 import { EllipsisText } from 'components/common/EllipsisText'
 
 import { FoldableRowWrapper } from 'components/layout/LegacyTradeLayout/Card'

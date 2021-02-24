@@ -11,7 +11,7 @@ import builtOnGP from 'assets/img/builtOnGP.svg'
 
 // Components
 import ThemeToggler, { ThemeTogglerWrapper } from 'components/ThemeToggler'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 // Hooks
 import { useWalletConnection } from 'hooks/useWalletConnection'

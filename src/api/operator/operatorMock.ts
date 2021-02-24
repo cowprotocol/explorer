@@ -1,12 +1,12 @@
 import { GetOrderParams, GetOrdersParams, RawOrder } from './types'
 
-import { ORDER } from '../../../test/data'
+import { RAW_ORDER } from '../../../test/data'
 
 export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
   const { orderId } = params
 
   return {
-    ...ORDER,
+    ...RAW_ORDER,
     uid: orderId,
   }
 }

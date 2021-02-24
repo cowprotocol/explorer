@@ -10,6 +10,9 @@ export interface Colors {
   textActive1: Color
   textDisabled: Color
 
+  icon: Color
+  surplusPercentage: Color
+
   // backgrounds / greys
   bg1: Color
   bg2: Color
@@ -46,6 +49,7 @@ export interface Colors {
   blue1: Color
   blue2: Color
   blue3?: Color
+  orange1: Color
 }
 
 export const BASE_COLOURS = {
@@ -62,6 +66,7 @@ export const BASE_COLOURS = {
   yellow2: '#f1851d',
   blue1: '#2172E5',
   blue2: '#3F77FF',
+  orange1: '#D96D49',
 
   // labels
   labelTextExpired: '#DB843A',
@@ -75,8 +80,11 @@ export const LIGHT_COLOURS = {
   textPrimary1: '#FFF',
   textSecondary1: '#EDEDED',
   textSecondary2: '#9797B8',
-  textActive1: '',
+  textActive1: '#D96D49',
   textDisabled: '#31323E',
+
+  icon: '#657795B3',
+  surplusPercentage: '#1E9B75',
 
   // backgrounds / greys
   bg1: '#ffc1ff',
@@ -101,8 +109,11 @@ export const DARK_COLOURS = {
   textPrimary1: '#FFF',
   textSecondary1: '#EDEDED',
   textSecondary2: '#9797B8',
-  textActive1: '',
+  textActive1: '#D96D49',
   textDisabled: '#31323E',
+
+  icon: '#8D8DA980',
+  surplusPercentage: '#00D897',
 
   // backgrounds / greys
   bg1: '#16171F',

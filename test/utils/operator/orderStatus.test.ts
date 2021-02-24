@@ -1,7 +1,8 @@
 import { RawOrder } from 'api/operator'
-import { getOrderStatus } from 'api/operator/utils'
 
-import { ORDER } from '../../data'
+import { getOrderStatus } from 'utils'
+
+import { RAW_ORDER } from '../../data'
 import { mockTimes, DATE } from '../../testHelpers'
 
 function _getCurrentTimestamp(): number {
@@ -18,18 +19,18 @@ beforeEach(mockTimes)
 describe('Filled status', () => {
   describe('Buy order', () => {
     test('Filled, within epsilon', () => {
-      const order: RawOrder = { ...ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9999' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9999' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, exact amount', () => {
-      const order: RawOrder = { ...ORDER, kind: 'buy', buyAmount: '100', executedBuyAmount: '100' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '100', executedBuyAmount: '100' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, not yet expired', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '100',
         executedBuyAmount: '100',
@@ -40,7 +41,7 @@ describe('Filled status', () => {
     })
     test('Filled, sell amount does not affect output', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '100',
         executedBuyAmount: '100',
@@ -52,7 +53,7 @@ describe('Filled status', () => {
     })
     test('Filled, fee does not affect output', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '100',
         executedBuyAmount: '100',
@@ -66,18 +67,18 @@ describe('Filled status', () => {
   })
   describe('Sell order', () => {
     test('Filled, within epsilon', () => {
-      const order: RawOrder = { ...ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9999' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9999' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, exact amount', () => {
-      const order: RawOrder = { ...ORDER, kind: 'sell', sellAmount: '100', executedSellAmount: '100' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'sell', sellAmount: '100', executedSellAmount: '100' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, not yet expired', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '100',
         executedSellAmount: '100',
@@ -88,7 +89,7 @@ describe('Filled status', () => {
     })
     test('Filled, with fee', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '90',
         executedSellAmount: '100',
@@ -99,7 +100,7 @@ describe('Filled status', () => {
     })
     test('Filled, buy amount does not affect output', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '100',
         executedSellAmount: '100',
@@ -115,18 +116,18 @@ describe('Filled status', () => {
 describe('Partially filled status', () => {
   describe('Buy order', () => {
     test('Partially filled, on the border to be considered filled', () => {
-      const order: RawOrder = { ...ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9998' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9998' }
 
       expect(getOrderStatus(order)).toEqual('partially filled')
     })
     test('Partially filled', () => {
-      const order: RawOrder = { ...ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '11' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '11' }
 
       expect(getOrderStatus(order)).toEqual('partially filled')
     })
     test('Partially filled, sell amount does not affect output', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '11',
@@ -139,13 +140,13 @@ describe('Partially filled status', () => {
   })
   describe('Sell order', () => {
     test('Partially filled, on the border to be considered filled', () => {
-      const order: RawOrder = { ...ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9998' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9998' }
 
       expect(getOrderStatus(order)).toEqual('partially filled')
     })
     test('Partially filled, with fee, on the border to be considered filled', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '9000',
         executedSellAmount: '9996',
@@ -155,13 +156,13 @@ describe('Partially filled status', () => {
       expect(getOrderStatus(order)).toEqual('partially filled')
     })
     test('Partially filled', () => {
-      const order: RawOrder = { ...ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '11' }
+      const order: RawOrder = { ...RAW_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '11' }
 
       expect(getOrderStatus(order)).toEqual('partially filled')
     })
     test('Partially filled, buy amount does not affect output', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '11',
@@ -178,7 +179,7 @@ describe('Expired status', () => {
   describe('Buy order', () => {
     test('Expired', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '0',
@@ -190,7 +191,7 @@ describe('Expired status', () => {
   describe('Sell order', () => {
     test('Expired', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '0',
@@ -205,7 +206,7 @@ describe('Open status', () => {
   describe('Buy order', () => {
     test('Open, no fills', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '0',
@@ -215,7 +216,7 @@ describe('Open status', () => {
     })
     test('Open, with partial fills', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '10',
@@ -225,7 +226,7 @@ describe('Open status', () => {
     })
     test('Open, sell amount does not affect output', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'buy',
         buyAmount: '10000',
         executedBuyAmount: '10',
@@ -239,7 +240,7 @@ describe('Open status', () => {
   describe('Sell order', () => {
     test('Open, no fills', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '0',
@@ -249,7 +250,7 @@ describe('Open status', () => {
     })
     test('Open, with partial fills', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '10',
@@ -259,7 +260,7 @@ describe('Open status', () => {
     })
     test('Open, buy amount does not affect output', () => {
       const order: RawOrder = {
-        ...ORDER,
+        ...RAW_ORDER,
         kind: 'sell',
         sellAmount: '10000',
         executedSellAmount: '10',

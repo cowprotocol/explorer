@@ -5,7 +5,7 @@ import { calculatePrice, invertPrice } from '@gnosis.pm/dex-js'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
-import { OrderStatus, RawOrder } from './types'
+import { Order, OrderStatus, RawOrder } from 'api/operator/types'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -66,6 +66,33 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
   }
 
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
+}
+
+export function getSurplus(
+  inputAmount: BigNumber | string,
+  executedAmount: BigNumber | string,
+): { amount: BigNumber; percentage: BigNumber } {
+  // Just as a nicety, allow both input as strings
+  // inputAmount has ne need for conversion since BigNumber takes care of it when used as a parameter
+  // executedAmount needs to be converted though
+  const _executedAmount = typeof executedAmount === 'string' ? new BigNumber(executedAmount) : executedAmount
+
+  const amount = _executedAmount.gt(inputAmount) ? _executedAmount.minus(inputAmount) : ZERO_BIG_NUMBER
+  const percentage = amount.dividedBy(inputAmount)
+
+  return { amount, percentage }
+}
+
+export function getOrderSurplus(order: RawOrder): { amount: BigNumber; percentage: BigNumber } {
+  const { kind, buyAmount, sellAmount } = order
+
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
+
+  if (kind === 'buy') {
+    return getSurplus(sellAmount, executedSellAmount)
+  } else {
+    return getSurplus(buyAmount, executedBuyAmount)
+  }
 }
 
 /**
@@ -142,4 +169,58 @@ export function getOrderExecutedPrice({
   })
 
   return inverted ? invertPrice(price) : price
+}
+
+function getShortOrderId(orderId: string, length = 8): string {
+  return orderId.replace(/^0x/, '').slice(0, length)
+}
+
+/**
+ * Transforms a RawOrder into an Order object
+ *
+ * @param rawOrder RawOrder object
+ */
+export function transformOrder(rawOrder: RawOrder): Order {
+  const {
+    creationDate,
+    validTo,
+    buyToken,
+    sellToken,
+    buyAmount,
+    sellAmount,
+    feeAmount,
+    executedFeeAmount,
+    invalidated,
+    ...rest
+  } = rawOrder
+  const shortId = getShortOrderId(rawOrder.uid)
+  const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
+  const status = getOrderStatus(rawOrder)
+  const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
+  const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(rawOrder)
+
+  // TODO: fill in tx hash for fill or kill orders when available from the api
+  const txHash = '0x489d8fd1efd43394c7c2b26216f36f1ab49b8d67623047e0fcb60efa2a2c420b'
+
+  return {
+    ...rest,
+    txHash,
+    shortId,
+    creationDate: new Date(creationDate),
+    expirationDate: new Date(validTo * 1000),
+    buyTokenAddress: buyToken,
+    sellTokenAddress: sellToken,
+    buyAmount: new BigNumber(buyAmount),
+    sellAmount: new BigNumber(sellAmount),
+    executedBuyAmount,
+    executedSellAmount,
+    feeAmount: new BigNumber(feeAmount),
+    executedFeeAmount: new BigNumber(executedFeeAmount),
+    cancelled: invalidated,
+    status,
+    filledAmount,
+    filledPercentage,
+    surplusAmount,
+    surplusPercentage,
+  }
 }

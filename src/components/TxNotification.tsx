@@ -1,5 +1,5 @@
 import React from 'react'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 interface TxNotificationProps {
   txHash: string

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { depositApi } from 'apps/gp-v1/api'
 
 // Components
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 // Hooks
 import { useWalletConnection } from 'hooks/useWalletConnection'

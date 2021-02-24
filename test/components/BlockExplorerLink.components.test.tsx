@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'enzyme'
 
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 import { TX_HASH, USER_1, CONTRACT, TOKEN_1 } from '../data'
 import { abbreviateString } from 'utils'
 import { Network } from 'types'

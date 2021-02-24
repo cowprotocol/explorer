@@ -1,7 +1,6 @@
 import * as realApi from './operatorApi'
 import * as mockApi from './operatorMock'
 export * from './types'
-export * from './utils'
 
 const useMock = process.env.MOCK_OPERATOR === 'true'
 

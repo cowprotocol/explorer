@@ -9,7 +9,7 @@ import { isNeverExpiresOrder } from '@gnosis.pm/dex-js'
 import alertIcon from 'assets/img/alert.svg'
 
 // components
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 import { Spinner } from 'components/common/Spinner'
 import { StatusCountdown } from 'components/StatusCountdown'
 
