@@ -2,28 +2,16 @@ import React, { ReactNode, CSSProperties, useCallback } from 'react'
 import { State, Placement } from '@popperjs/core'
 import styled from 'styled-components'
 import { isElement, isFragment } from 'react-is'
-import SVG from 'react-inlinesvg'
 
 // assets
-import questionImg from 'assets/img/question.svg'
+import { FontAwesomeIcon, FontAwesomeIconProps } from '@fortawesome/react-fontawesome'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 
 // components
 import Portal from 'components/Portal'
 
 // hooks
 import { usePopperOnClick, usePopperDefault, TOOLTIP_OFFSET } from 'hooks/usePopper'
-
-const QuestionIcon = styled(SVG)`
-  width: 1.4rem;
-  height: 1.4rem;
-  fill: ${({ theme }): string => theme.icon};
-  opacity: 0.7;
-  transition: opacity 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 1;
-  }
-`
 
 // visibility necessary for correct boundingRect calculation by popper
 const TooltipOuter = styled.div<Pick<TooltipBaseProps, 'isShown'>>`
@@ -42,25 +30,20 @@ const TooltipArrow = styled.div<{ $bgColor?: string }>`
   ::before {
     content: '';
     transform: rotate(45deg);
-    background: ${({ theme }): string => theme.shade};
+    background: ${({ $bgColor = 'var(--color-background-nav-active)' }): string => $bgColor};
   }
 `
 
 const TooltipInner = styled.div<{ $bgColor?: string }>`
-  background: ${({ theme }): string => theme.shade};
+  background: ${({ $bgColor = 'var(--color-background-nav-active)' }): string => $bgColor};
   color: var(--color-text-primary);
   font-weight: var(--font-weight-normal);
-  padding: 1rem;
-  font-size: 1.3rem;
-  border-radius: 0.9rem;
-  letter-spacing: 0;
+  padding: 0.8rem 1rem;
+  font-size: 1.2rem;
+  border-radius: 0.6rem;
+  letter-spacing: 0.03rem;
   z-index: 9999;
-  margin: 0;
   line-height: 1.4;
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
-  box-sizing: border-box;
-  box-shadow: 0 0.4rem 0.4rem ${({ theme }): string => theme.boxShadow};
-  max-width: 30rem;
 
   &[data-popper-placement^='top'] > ${TooltipArrow} {
     bottom: -${TOOLTIP_OFFSET / 2}px;
@@ -80,12 +63,13 @@ const TooltipInner = styled.div<{ $bgColor?: string }>`
 `
 
 interface TooltipBaseProps {
+  bgColor?: string
   isShown: boolean
   state: Partial<Pick<State, 'placement' | 'styles'>>
 }
 
 const TooltipBase: React.ForwardRefRenderFunction<HTMLDivElement, TooltipBaseProps> = (
-  { children, isShown, state },
+  { children, isShown, bgColor, state },
   ref,
 ) => {
   const { placement, styles = {} } = state
@@ -94,8 +78,14 @@ const TooltipBase: React.ForwardRefRenderFunction<HTMLDivElement, TooltipBasePro
     // Portal isolates popup styles from the App styles
     <Portal>
       <TooltipOuter isShown={isShown} onClick={(e): void => e.stopPropagation()}>
-        <TooltipInner role="tooltip" ref={ref} style={styles.popper as CSSProperties} data-popper-placement={placement}>
-          <TooltipArrow data-popper-arrow style={styles.arrow as CSSProperties} />
+        <TooltipInner
+          role="tooltip"
+          ref={ref}
+          style={styles.popper as CSSProperties}
+          data-popper-placement={placement}
+          $bgColor={bgColor}
+        >
+          <TooltipArrow data-popper-arrow style={styles.arrow as CSSProperties} $bgColor={bgColor} />
           {isShown && children}
         </TooltipInner>
       </TooltipOuter>
@@ -204,13 +194,12 @@ interface HelpTooltipProps {
   tooltip: ReactNode
   placement?: Placement
   offset?: number
+  iconSize?: FontAwesomeIconProps['size']
 }
 
 const HelperSpan = styled.span`
   cursor: pointer;
   transition: color 0.1s;
-  display: flex;
-  padding: 0 0.6rem 0 0;
 
   :hover {
     color: #748a47;
@@ -224,7 +213,7 @@ export const HelpTooltipContainer = styled(LongTooltipContainer)`
   color: black;
 `
 
-export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = 'top', offset }) => {
+export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = 'top', offset, iconSize }) => {
   const {
     targetProps: { ref, onClick },
     tooltipProps,
@@ -241,9 +230,11 @@ export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = '
   return (
     <>
       <HelperSpan ref={ref} onClick={handleClick}>
-        <QuestionIcon src={questionImg} />
+        <FontAwesomeIcon icon={faQuestionCircle} size={iconSize} />
       </HelperSpan>
-      <Tooltip {...tooltipProps}>{tooltip}</Tooltip>
+      <Tooltip {...tooltipProps} bgColor="#bfd6ef">
+        {tooltip}
+      </Tooltip>
     </>
   )
 }
