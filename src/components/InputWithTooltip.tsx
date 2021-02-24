@@ -68,9 +68,7 @@ const InputWithTooltip: React.RefForwardingComponent<HTMLInputElement, InputProp
   return (
     <>
       <Input $error={showErrorStyle} {...props} {...finalTargetProps} />
-      <Tooltip bgColor={tooltipBgColor} {...tooltipProps}>
-        {tooltip}
-      </Tooltip>
+      <Tooltip {...tooltipProps}>{tooltip}</Tooltip>
     </>
   )
 }
