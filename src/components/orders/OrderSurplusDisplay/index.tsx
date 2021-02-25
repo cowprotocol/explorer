@@ -23,13 +23,6 @@ const Wrapper = styled.div`
 `
 
 const Surplus = styled.span`
-  ::before {
-    content: '+';
-  }
-  ::after {
-    content: '%';
-  }
-
   color: ${({ theme }): string => theme.surplusPercentage};
 `
 
@@ -73,7 +66,7 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
 
   return (
     <Wrapper>
-      <Surplus>{formattedSurplusPercentage}</Surplus>
+      <Surplus>+{formattedSurplusPercentage}%</Surplus>
       <span>
         {formattedSurplusAmount} {tokenSymbol}
       </span>
