@@ -12,11 +12,12 @@ import { HelpTooltip } from 'components/Tooltip'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 
-import { StatusLabel } from 'components/orders/StatusLabel'
-import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
+import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
+import { StatusLabel } from 'components/orders/StatusLabel'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -61,8 +62,7 @@ const tooltip = {
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
   type:
     'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
-  sell: 'The total sell amount, denominated in the sell token.',
-  buy: 'The total buy amount, denominated in the buy token.',
+  amount: 'The total sell and buy amount for this order.',
   priceLimit:
     'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',
   priceExecution: 'The actual price at which this order has been matched and executed.',
@@ -175,15 +175,12 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.sell} /> Sell amount
+              <HelpTooltip tooltip={tooltip.amount} />
+              Amount
             </td>
-            <td>{`${formatSmart(sellAmount.toString(), sellToken.decimals)} ${sellToken.symbol}`}</td>
-          </tr>
-          <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.buy} /> Buy amount
+              <AmountsDisplay order={order} />
             </td>
-            <td>{`${formatSmart(buyAmount.toString(), buyToken.decimals)} ${buyToken.symbol}`}</td>
           </tr>
           <tr>
             <td>
