@@ -11,11 +11,12 @@ import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorer
 
 import { SimpleTable } from 'components/common/SimpleTable'
 
-import { StatusLabel } from 'components/orders/StatusLabel'
-import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
+import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
+import { StatusLabel } from 'components/orders/StatusLabel'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -137,12 +138,10 @@ export function DetailsTable(props: Props): JSX.Element | null {
             </td>
           </tr>
           <tr>
-            <td>Sell amount</td>
-            <td>{`${formatSmart(sellAmount.toString(), sellToken.decimals)} ${sellToken.symbol}`}</td>
-          </tr>
-          <tr>
-            <td>Buy amount</td>
-            <td>{`${formatSmart(buyAmount.toString(), buyToken.decimals)} ${buyToken.symbol}`}</td>
+            <td>Amount</td>
+            <td>
+              <AmountsDisplay order={order} />
+            </td>
           </tr>
           <tr>
             <td>Limit Price</td>
