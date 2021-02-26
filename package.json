@@ -88,6 +88,7 @@
     "react-dom": "^16.12.0",
     "react-hook-form": "6.9.2",
     "react-hot-loader": "^4.12.19",
+    "react-inlinesvg": "^2.2.2",
     "react-router-dom": "^5.1.2",
     "react-select": "^3.0.8",
     "react-toastify": "^5.5.0",

@@ -17,6 +17,8 @@ export interface Colors {
   bg1: Color
   bg2: Color
   bgDisabled: Color
+  shade: Color
+  boxShadow: Color
 
   // gradients
   gradient1: Color
@@ -83,13 +85,15 @@ export const LIGHT_COLOURS = {
   textActive1: '#D96D49',
   textDisabled: '#31323E',
 
-  icon: '#657795B3',
+  icon: '#657795',
   surplusPercentage: '#1E9B75',
 
   // backgrounds / greys
   bg1: '#ffc1ff',
   bg2: '#F7F8FA',
   bgDisabled: '#ffffff80',
+  shade: '#2E2F3B',
+  boxShadow: 'rgba(0, 0, 0, 0.16)',
 
   // gradients
   gradient1: '#8958FF',
@@ -100,7 +104,7 @@ export const LIGHT_COLOURS = {
   labelBgOpen: '#77838F1A',
 
   // table & borders
-  borderPrimary: 'rgba(151, 151, 184, 0.3)',
+  borderPrimary: '#3A3A48',
   tableRowBorder: 'rgba(151, 151, 184, 0.1)',
 }
 
@@ -112,13 +116,15 @@ export const DARK_COLOURS = {
   textActive1: '#D96D49',
   textDisabled: '#31323E',
 
-  icon: '#8D8DA980',
+  icon: '#8D8DA9',
   surplusPercentage: '#00D897',
 
   // backgrounds / greys
   bg1: '#16171F',
   bg2: '#2C2D3F',
   bgDisabled: '#ffffff80',
+  shade: '#2E2F3B',
+  boxShadow: 'rgba(0, 0, 0, 0.16)',
 
   // gradients
   gradient1: '#21222E',
@@ -129,7 +135,7 @@ export const DARK_COLOURS = {
   labelBgOpen: '#9797B84D',
 
   // table & borders
-  borderPrimary: 'rgba(151, 151, 184, 0.3)',
+  borderPrimary: '#3A3A48',
   tableRowBorder: 'rgba(151, 151, 184, 0.1)',
 
   // TODO: add to theme, not colour palette

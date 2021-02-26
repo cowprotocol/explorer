@@ -8,6 +8,7 @@ import { Order } from 'api/operator'
 import { capitalize } from 'utils'
 
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
+import { HelpTooltip } from 'components/Tooltip'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 
@@ -50,6 +51,27 @@ const Table = styled(SimpleTable)`
   }
 `
 
+const tooltip = {
+  orderID: 'A unique identifier ID for this order.',
+  from: 'The account address which signed the order.',
+  hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
+  status: 'The order status is either Open, Filled, Expired or Canceled.',
+  submission:
+    'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
+  expiration:
+    'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
+  type:
+    'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
+  amount: 'The total sell and buy amount for this order.',
+  priceLimit:
+    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',
+  priceExecution: 'The actual price at which this order has been matched and executed.',
+  surplus:
+    'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
+  filled: 'Indicates what percentage amount this order has been filled and the amount sold/bought.',
+  fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
+}
+
 export type Props = { order: Order }
 
 export function DetailsTable(props: Props): JSX.Element | null {
@@ -84,13 +106,17 @@ export function DetailsTable(props: Props): JSX.Element | null {
       body={
         <>
           <tr>
-            <td>Order Id</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.orderID} /> Order Id
+            </td>
             <td>
               <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} />
             </td>
           </tr>
           <tr>
-            <td>From</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.from} /> From
+            </td>
             <td>
               <RowWithCopyButton
                 textToCopy={owner}
@@ -100,7 +126,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </tr>
           {!partiallyFillable && (
             <tr>
-              <td>Transaction hash</td>
+              <td>
+                <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
+              </td>
               <td>
                 {txHash ? (
                   <RowWithCopyButton
@@ -114,37 +142,50 @@ export function DetailsTable(props: Props): JSX.Element | null {
             </tr>
           )}
           <tr>
-            <td>Status</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.status} /> Status
+            </td>
             <td>
               <StatusLabel status={status} />
             </td>
           </tr>
           <tr>
-            <td>Submission Time</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.submission} /> Submission Time
+            </td>
             <td>
               <DateDisplay date={creationDate} />
             </td>
           </tr>
           <tr>
-            <td>Expiration Time</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+            </td>
             <td>
               <DateDisplay date={expirationDate} />
             </td>
           </tr>
           <tr>
-            <td>Type</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.type} /> Type
+            </td>
             <td>
               {capitalize(kind)} order {!partiallyFillable && '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
-            <td>Amount</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.amount} />
+              Amount
+            </td>
             <td>
               <AmountsDisplay order={order} />
             </td>
           </tr>
           <tr>
-            <td>Limit Price</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
+            </td>
             <td>
               <OrderPriceDisplay
                 buyAmount={buyAmount}
@@ -158,7 +199,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           {!partiallyFillable && (
             <>
               <tr>
-                <td>Execution price</td>
+                <td>
+                  <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                </td>
                 <td>
                   {!filledAmount.isZero() ? (
                     <OrderPriceDisplay
@@ -174,15 +217,25 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 </td>
               </tr>
               <tr>
-                <td>Order surplus</td>
-                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
+                <td>
+                  <HelpTooltip tooltip={tooltip.filled} /> Filled
+                </td>
+                <td>[------progress bar-------] 81% 2,430 DAI of 3000 DAI sold for a total of 2.842739643 ETH</td>
               </tr>
               <tr>
-                <td>Gas Fees paid</td>
-                <td>{formatSmart(executedFeeAmount.toString(), sellToken.decimals)}</td>
+                <td>
+                  <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+                </td>
+                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
               </tr>
             </>
           )}
+          <tr>
+            <td>
+              <HelpTooltip tooltip={tooltip.fees} /> Gas Fees paid
+            </td>
+            <td>{formatSmart(executedFeeAmount.toString(), sellToken.decimals)}</td>
+          </tr>
         </>
       }
     />
