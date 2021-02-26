@@ -7,25 +7,28 @@ export const Wrapper = styled.div`
   row-gap: 1rem;
   justify-items: start;
   align-items: center;
-  grid-template-columns: 10rem auto;
+  grid-template-columns: 11rem auto;
+  padding: 1.3rem 0;
 `
 
 export const RowTitle = styled.span`
-  ::before {
+  display: flex;
+  align-items: center;
+  font-weight: ${({ theme }): string => theme.fontBold};
+
+  &::before {
     content: '▶';
     margin-right: 0.5rem;
-    color: ${({ theme }): string => theme.icon};
+    color: ${({ theme }): string => theme.grey};
     font-size: 0.75rem;
   }
-
-  font-weight: ${({ theme }): string => theme.fontBold};
 `
 
 export const RowContents = styled.span`
   display: flex;
   align-items: center;
 
-  & > :first-child {
+  & > span:first-child {
     margin: 0 0.5rem 0 0;
   }
 
@@ -35,10 +38,12 @@ export const RowContents = styled.span`
 `
 
 export const UsdAmount = styled.span`
-  color: ${({ theme }): string => theme.bgDisabled};
+  color: ${({ theme }): string => theme.textPrimary1};
+  opacity: 0.5;
 `
 
 export const StyledImg = styled(TokenImg)`
   width: 1.6rem;
   height: 1.6rem;
+  margin: 0 0.5rem;
 `

@@ -5,26 +5,27 @@ import { CopyButton } from 'components/common/CopyButton'
 
 const Wrapper = styled.span`
   display: flex;
-  flex-wrap: no;
+  flex-wrap: nowrap;
 
   & > :first-child {
-    margin-right: 0.5rem;
+    margin-right: 0.75rem;
   }
 `
 
 type Props = {
   textToCopy: string
   contentsToDisplay: string | JSX.Element
+  className?: string
 }
 
 export function RowWithCopyButton(props: Props): JSX.Element {
-  const { textToCopy, contentsToDisplay } = props
+  const { textToCopy, contentsToDisplay, className } = props
 
   // Wrap contents in a <span> if it's a raw string for proper CSS spacing
   const contentsComponent = typeof contentsToDisplay === 'string' ? <span>{contentsToDisplay}</span> : contentsToDisplay
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       {contentsComponent} <CopyButton text={textToCopy} />
     </Wrapper>
   )

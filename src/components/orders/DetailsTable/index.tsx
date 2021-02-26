@@ -24,13 +24,13 @@ const Table = styled(SimpleTable)`
   border-radius: 0.4rem;
 
   > tbody > tr {
-    grid-template-columns: 16rem auto;
+    grid-template-columns: 17rem auto;
 
     > td {
       justify-content: flex-start;
 
       &:first-of-type {
-        font-weight: var(--font-weight-bold);
+        font-weight: ${({ theme }): string => theme.fontLighter};
         text-transform: capitalize;
 
         /* Question mark */

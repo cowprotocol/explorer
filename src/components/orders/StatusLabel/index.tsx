@@ -12,13 +12,13 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
 
   switch (status) {
     case 'expired':
-      text = theme.labelTextExpired
-      background = theme.labelBgExpired
+      text = theme.orange
+      background = theme.orangeOpacity
       break
     case 'filled':
     case 'partially filled':
-      text = theme.labelTextFilled
-      background = theme.labelBgFilled
+      text = theme.green
+      background = theme.greenOpacity
       break
     case 'open':
       text = theme.labelTextOpen
@@ -36,12 +36,11 @@ const Wrapper = styled.div<Props>`
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   font-weight: ${({ theme }): string => theme.fontBold};
   text-transform: capitalize;
-
   border-radius: 0.4rem;
-
-  padding: 0.75em;
-  display: inline-block;
-
+  line-height: 1;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
   ${({ theme, status }): string => setStatusColors({ theme, status })}
 `
 

@@ -23,11 +23,12 @@ const Wrapper = styled.div`
 `
 
 const Surplus = styled.span`
-  color: ${({ theme }): string => theme.surplusPercentage};
+  color: ${({ theme }): string => theme.green};
 `
 
 const UsdAmount = styled.span`
-  color: ${({ theme }): string => theme.bgDisabled};
+  color: ${({ theme }): string => theme.textPrimary1};
+  opacity: 0.5;
 `
 
 export type Props = { order: Order }

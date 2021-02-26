@@ -16,7 +16,7 @@ import { usePopperOnClick, usePopperDefault, TOOLTIP_OFFSET } from 'hooks/usePop
 const QuestionIcon = styled(SVG)`
   width: 1.4rem;
   height: 1.4rem;
-  fill: ${({ theme }): string => theme.icon};
+  fill: ${({ theme }): string => theme.grey};
   opacity: 0.7;
   transition: opacity 0.2s ease-in-out;
 

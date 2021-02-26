@@ -70,14 +70,13 @@ export const StaticGlobalStyle = createGlobalStyle`
 
   /* TODO: move closer to H elements or sth */
   h1, h2, h3 {
-    margin: 0;
     margin: 0.5rem 0;
   }
   h1 {
-    font-size: 3rem;
+    font-size: 1.8rem;
   }
   h2 {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
   
   /* Overrides CSS - see overrides.ts file */

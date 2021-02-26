@@ -8,8 +8,19 @@ import CopyToClipboard from 'react-copy-to-clipboard'
 import { DISPLAY_TEXT_COPIED_CHECK } from 'apps/explorer/const'
 
 const Icon = styled(FontAwesomeIcon)<{ copied: boolean }>`
-  color: ${({ theme, copied }): string => (copied ? theme.green1 : theme.icon)};
+  color: ${({ theme, copied }): string => (copied ? theme.green : theme.grey)};
+  transition: color 0.2s ease-in;
   cursor: ${({ copied }): string => (copied ? 'reset' : 'pointer')};
+
+  &:hover {
+    color: ${({ theme, copied }): string => (copied ? theme.green : theme.white)};
+  }
+
+  + span {
+    color: ${({ theme }): string => theme.green};
+    font-weight: ${({ theme }): string => theme.fontMedium};
+    margin: 0 0 0 0.1rem;
+  }
 `
 
 export type Props = { text: string }
@@ -43,7 +54,7 @@ export function CopyButton(props: Props): JSX.Element {
   return (
     <CopyToClipboard text={text} onCopy={onCopy}>
       <span>
-        <Icon icon={copied ? faCheck : faCopy} copied={copied} /> {copied && 'Copied'}
+        <Icon icon={copied ? faCheck : faCopy} copied={copied} /> {copied && <span>Copied</span>}
       </span>
     </CopyToClipboard>
   )
