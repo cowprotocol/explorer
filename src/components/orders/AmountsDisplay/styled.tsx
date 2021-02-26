@@ -18,7 +18,7 @@ export const RowTitle = styled.span`
     font-size: 0.75rem;
   }
 
-  font-weight: ${({ theme }): string => theme.fontWeightBold};
+  font-weight: ${({ theme }): string => theme.fontBold};
 `
 
 export const RowContents = styled.span`

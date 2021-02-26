@@ -1,13 +1,10 @@
 import { createGlobalStyle } from 'styled-components'
-import fontFace from './fonts'
 import variables from './variables'
 import checkWhite from 'assets/img/check-white.svg'
 
 const GlobalStyles = createGlobalStyle`
   /* global root variables */
   ${variables}
-  /* Import font faces */
-  ${fontFace}
 
   html, body {  
     width: 100%;

@@ -33,8 +33,8 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
 }
 
 const Wrapper = styled.div<Props>`
-  font-size: ${({ theme }): string => theme.fontSizeNormal};
-  font-weight: ${({ theme }): string => theme.fontWeightBold};
+  font-size: ${({ theme }): string => theme.fontSizeDefault};
+  font-weight: ${({ theme }): string => theme.fontBold};
   text-transform: capitalize;
 
   border-radius: 0.4rem;

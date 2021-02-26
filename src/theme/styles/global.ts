@@ -4,7 +4,6 @@ import { web3ModalOverride } from './overrides'
 
 // TODO: remove for constants from colour palette later
 import variables from 'components/layout/GenericLayout/variablesCss'
-import fontFace from './fonts'
 
 const selection = css`
   /* CSS for selecting text */
@@ -36,9 +35,6 @@ const scrollbars = css`
 export const StaticGlobalStyle = createGlobalStyle`
   /* TEMPORARY: import variables */ 
   ${variables}
-  
-  /* Fonts */
-  ${fontFace}
 
   /* Selection CSS */
   ${selection}
@@ -92,8 +88,12 @@ export const ThemedGlobalStyle = createGlobalStyle`
   html, body {
     background: ${({ theme }): string => theme.bg1};
     color: ${({ theme }): string => theme.textPrimary1};
-    /* StyleLint fights you for the Helvetica, sans-serif as it requires a fallback and can't detect it from the theme prop */
-    font-family: ${({ theme }): string => theme.fontDefault}, Helvetica, sans-serif;
+    /* StyleLint fights you for the sans-serif as it requires a fallback and can't detect it from the theme prop */
+    font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;
+
+    @supports (font-variation-settings: normal) {
+      font-family: ${({ theme }): string => theme.fontVariable}, sans-serif;
+    }
   }
 
   /* TODO: move closer to <a> element */

@@ -76,6 +76,7 @@
     "eth-json-rpc-middleware": "^4.4.1",
     "ethers": "^5.0.26",
     "graphql": "^15.3.0",
+    "inter-ui": "^3.15.0",
     "joi": "^17.2.0",
     "json-rpc-engine": "5.3.0",
     "lightweight-charts": "^3.2.0",

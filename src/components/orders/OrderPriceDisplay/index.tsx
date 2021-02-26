@@ -15,7 +15,7 @@ import {
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
-  font-size: ${({ theme }): string => theme.fontSizeNormal};
+  font-size: ${({ theme }): string => theme.fontNormal};
 `
 
 const Icon = styled(FontAwesomeIcon)`
