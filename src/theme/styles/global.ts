@@ -97,12 +97,15 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   /* TODO: move closer to <a> element */
-  a {   
-    text-decoration: underline;
+  a {
+    &:hover {
+      text-decoration: underline;
+    }
+    text-decoration: none;
     cursor: pointer;
-      &:link, 
-      &:visited {
-        color: ${({ theme }): string => theme.textActive1};
-      }
+    &:link, 
+    &:visited {
+      color: ${({ theme }): string => theme.textActive1};
+    }
   }
 `

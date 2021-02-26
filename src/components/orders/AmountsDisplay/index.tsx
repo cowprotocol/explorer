@@ -13,13 +13,13 @@ import { RowContents, RowTitle, StyledImg, UsdAmount, Wrapper } from './styled'
 
 type RowProps = {
   title: string
-  showTitleSuffix: boolean
+  titleSuffix?: string
   amount: BigNumber
   erc20: TokenErc20
 }
 
 function Row(props: RowProps): JSX.Element {
-  const { title, showTitleSuffix, amount, erc20 } = props
+  const { title, titleSuffix, amount, erc20 } = props
 
   // TODO: calculate real usd amount
   const usdAmount = '31231.32'
@@ -40,7 +40,7 @@ function Row(props: RowProps): JSX.Element {
   return (
     <>
       <RowTitle>
-        {title} {showTitleSuffix && 'at least'}
+        {title} {titleSuffix && titleSuffix}
       </RowTitle>
       <RowContents>
         <span>{formattedAmount}</span>
@@ -63,10 +63,12 @@ export function AmountsDisplay(props: Props): JSX.Element | null {
     return null
   }
 
+  const isBuyOrder = kind === 'buy'
+
   return (
     <Wrapper>
-      <Row title="From" showTitleSuffix={kind === 'buy'} amount={buyAmount} erc20={buyToken} />
-      <Row title="To" showTitleSuffix={kind === 'sell'} amount={sellAmount} erc20={sellToken} />
+      <Row title="From" titleSuffix={isBuyOrder ? 'at most' : ''} amount={sellAmount} erc20={sellToken} />
+      <Row title="To" titleSuffix={!isBuyOrder ? 'at least' : ''} amount={buyAmount} erc20={buyToken} />
     </Wrapper>
   )
 }
