@@ -9,6 +9,7 @@ const Wrapper = styled.span`
 
   & > :first-child {
     margin-right: 0.75rem;
+    word-break: break-all;
   }
 `
 

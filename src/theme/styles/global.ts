@@ -19,28 +19,12 @@ const selection = css`
   /* End CSS for selecting text */
 `
 
-const scrollbars = css`
-  ::-webkit-scrollbar {
-    width: 6px !important;
-    height: 6px !important;
-  }
-  ::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-  ::-webkit-scrollbar-track {
-    background: hsla(0, 0%, 100%, 0.1);
-  }
-`
-
 export const StaticGlobalStyle = createGlobalStyle`
   /* TEMPORARY: import variables */ 
   ${variables}
 
   /* Selection CSS */
   ${selection}
-
-  /* Scrollbars CSS */
-  ${scrollbars}
 
   .noScroll {
     overflow: hidden;

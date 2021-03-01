@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { media } from 'theme/styles/media'
 
 import { formatSmart } from '@gnosis.pm/dex-js'
 
@@ -24,14 +25,20 @@ const Table = styled(SimpleTable)`
   border-radius: 0.4rem;
 
   > tbody > tr {
-    grid-template-columns: 17rem auto;
+    grid-template-columns: 27rem auto;
+
+    ${media.mediumDown} {
+      grid-template-columns: 17rem auto;
+    }
 
     > td {
       justify-content: flex-start;
 
       &:first-of-type {
-        font-weight: ${({ theme }): string => theme.fontLighter};
         text-transform: capitalize;
+        ${media.mediumUp} {
+          font-weight: ${({ theme }): string => theme.fontLighter};
+        }
 
         /* Question mark */
         > svg {

@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { media } from 'theme/styles/media'
 
 import TokenImg from 'components/common/TokenImg'
 
@@ -8,13 +9,23 @@ export const Wrapper = styled.div`
   justify-items: start;
   align-items: center;
   grid-template-columns: 11rem auto;
-  padding: 1.3rem 0;
+  padding: 0;
+
+  ${media.mobile} {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: flex-start;
+  }
 `
 
 export const RowTitle = styled.span`
   display: flex;
   align-items: center;
   font-weight: ${({ theme }): string => theme.fontBold};
+
+  ${media.mobile} {
+    margin: 1rem 0 0;
+  }
 
   &::before {
     content: '▶';
@@ -27,13 +38,14 @@ export const RowTitle = styled.span`
 export const RowContents = styled.span`
   display: flex;
   align-items: center;
+  flex-flow: wrap;
 
   & > span:first-child {
     margin: 0 0.5rem 0 0;
   }
 
   & > :not(:first-child) {
-    margin-left: 0.5rem;
+    margin: 0 0 0 0.5rem;
   }
 `
 

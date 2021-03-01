@@ -8,10 +8,21 @@ import { Order } from 'api/operator'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
 
+import { media } from 'theme/styles/media'
+
 const Wrapper = styled.div`
   padding: 1.6rem;
   margin: 0 auto;
+  width: 100%;
   max-width: 140rem;
+
+  ${media.mediumDown} {
+    max-width: 96rem;
+  }
+
+  ${media.mobile} {
+    max-width: 100%;
+  }
 
   > h1 {
     display: flex;
