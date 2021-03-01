@@ -13604,9 +13604,9 @@ levn@~0.3.0:
     type-check "~0.3.2"
 
 lightweight-charts@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/lightweight-charts/-/lightweight-charts-3.2.0.tgz#4b34f07bcb46940ef64393b58a65eb2a08287184"
-  integrity sha512-MLyg87IQITC7vSd14/MaHi0cJFkzNEtHy2t5ZcgxeM4stglz7ceCIQn56iNWAE06J8Lsxb5lMTF9eEk86XUeLA==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/lightweight-charts/-/lightweight-charts-3.3.0.tgz#cbaafe8977ac342d45e847e12eb5c7b36007358a"
+  integrity sha512-W5jeBrXcHG8eHnIQ0L2CB9TLkrrsjNPlQq5SICPO8PnJ3dJ8jZkLCAwemZ7Ym7ZGCfKCz6ow1EPbyzNYxblnkw==
   dependencies:
     fancy-canvas "0.2.2"
 
