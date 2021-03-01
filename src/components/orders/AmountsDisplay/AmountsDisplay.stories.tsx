@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js'
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
 
-import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
+import { GlobalStyles, NetworkDecorator, ThemeToggler } from 'storybook/decorators'
 
 import { AmountsDisplay, Props } from '.'
 
@@ -12,7 +12,7 @@ import { RICH_ORDER } from '../../../../test/data'
 export default {
   title: 'orders/AmountsDisplay',
   component: AmountsDisplay,
-  decorators: [GlobalStyles, ThemeToggler],
+  decorators: [GlobalStyles, NetworkDecorator, ThemeToggler],
 } as Meta
 
 const Template: Story<Props> = (args) => (

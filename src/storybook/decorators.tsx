@@ -17,6 +17,10 @@ import { useThemeManager } from 'hooks/useThemeManager'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
 import { GLOBAL_INITIAL_STATE, globalRootReducer } from 'state'
+import { reducer as networkReducer } from 'state/network'
+
+import { Network } from 'types'
+import combineReducers from 'combine-reducers'
 
 export const GlobalStyles = (DecoratedStory: () => StoryFnReactReturnType): JSX.Element => (
   <>
@@ -43,7 +47,7 @@ const ThemeTogglerUnwrapped: React.FC = ({ children }) => {
       </ThemeToggle>
       <br />
       <br />
-      <code>Current theme: {themeMode.toUpperCase()}</code>
+      <code style={{ fontSize: '12px' }}>Current theme: {themeMode.toUpperCase()}</code>
     </>
   )
 }
@@ -53,6 +57,15 @@ const WrappedThemeToggler: React.FC = withGlobalContext(ThemeTogglerUnwrapped, G
 export const ThemeToggler = (DecoratedStory: () => JSX.Element): JSX.Element => (
   <WrappedThemeToggler>{DecoratedStory()}</WrappedThemeToggler>
 )
+
+export function NetworkDecorator(DecoratedStory: () => JSX.Element): JSX.Element {
+  const Component = withGlobalContext(
+    DecoratedStory,
+    () => ({ networkId: Network.Mainnet }),
+    combineReducers({ networkId: networkReducer }),
+  )
+  return <Component />
+}
 
 export const Router = (DecoratedStory: () => JSX.Element): JSX.Element => (
   <MemoryRouter>{DecoratedStory()}</MemoryRouter>
