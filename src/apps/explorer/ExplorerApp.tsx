@@ -15,7 +15,7 @@ import { initAnalytics } from 'api/analytics'
 import RouteAnalytics from 'components/common/RouteAnalytics'
 
 // Init analytics
-const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
+const GOOGLE_ANALYTICS_ID: string | undefined = process.env.GOOGLE_ANALYTICS_ID
 initAnalytics({ trackingCode: GOOGLE_ANALYTICS_ID || 'UA-190948266-2' })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
