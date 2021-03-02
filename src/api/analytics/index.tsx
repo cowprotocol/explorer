@@ -25,4 +25,12 @@ export function initAnalytics(params: InitAnalyticsParams): void {
   } else {
     ReactGA.initialize('test', { testMode: true, debug: true })
   }
+
+  // Track errors
+  window.addEventListener('error', (error) => {
+    ReactGA.exception({
+      description: `${error.message} @ ${error.filename}:${error.lineno}:${error.colno}`,
+      fatal: true,
+    })
+  })
 }
