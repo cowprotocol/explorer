@@ -11,6 +11,11 @@ import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 
 import { NetworkUpdater } from 'state/network'
+import { initAnalytics } from 'api/analytics'
+
+// Init analytics
+const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
+initAnalytics({ trackingCode: GOOGLE_ANALYTICS_ID || 'UA-190948266-2' })
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
