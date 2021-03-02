@@ -12,6 +12,7 @@ import { Header } from './layout/Header'
 
 import { NetworkUpdater } from 'state/network'
 import { initAnalytics } from 'api/analytics'
+import RouteAnalytics from 'components/common/RouteAnalytics'
 
 // Init analytics
 const GOOGLE_ANALYTICS_ID: string | undefined = process.env.REACT_APP_GOOGLE_ANALYTICS_ID
@@ -60,6 +61,7 @@ const AppContent = (): JSX.Element => {
   return (
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
+        <Route component={RouteAnalytics} />
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
           <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />

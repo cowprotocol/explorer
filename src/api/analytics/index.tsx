@@ -1,5 +1,6 @@
 import ReactGA, { InitializeOptions } from 'react-ga'
 import { isMobile } from 'react-device-detect'
+export { pageview } from 'react-ga'
 
 function getCustomBrowserType(): string {
   if (isMobile) {
