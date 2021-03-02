@@ -14,6 +14,7 @@ import { SimpleTable } from 'components/common/SimpleTable'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { FilledProgress } from 'components/orders/FilledProgress'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
 import { StatusLabel } from 'components/orders/StatusLabel'
@@ -225,7 +226,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 <td>
                   <HelpTooltip tooltip={tooltip.filled} /> Filled
                 </td>
-                <td>[------progress bar-------] 81% 2,430 DAI of 3000 DAI sold for a total of 2.842739643 ETH</td>
+                <td>
+                  <FilledProgress percentage={'34'} />
+                </td>
               </tr>
               <tr>
                 <td>
