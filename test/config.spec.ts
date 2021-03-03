@@ -104,7 +104,7 @@ describe('Test config defaults', () => {
     const expected: InfuraProviderConfig = {
       type: 'infura',
       config: {
-        infuraId: '607a7dfcb1ad4a0b83152e30ce20cfc5',
+        infuraId: 'e941376b017d4dada26dc7891456fa3b',
         infuraEndpoint: 'wss://mainnet.infura.io/ws/v3/',
       },
     }
