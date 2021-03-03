@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { media } from 'theme/styles/media'
+
 import homeTeaser from './home-teaser.png'
 
 const Wrapper = styled.div`
@@ -10,7 +12,16 @@ const Wrapper = styled.div`
   > a {
     margin: 0 auto 20rem;
     width: 100%;
-    max-width: 120rem;
+    max-width: 140rem;
+    padding: 0 1.6rem;
+
+    ${media.mediumDown} {
+      max-width: 94rem;
+    }
+
+    ${media.mobile} {
+      max-width: 100%;
+    }
   }
 
   > a > img {
