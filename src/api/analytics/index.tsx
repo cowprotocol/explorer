@@ -11,7 +11,7 @@ function getCustomBrowserType(): string {
 }
 
 interface InitAnalyticsParams {
-  trackingCode: string
+  trackingCode?: string
   options?: InitializeOptions
 }
 
