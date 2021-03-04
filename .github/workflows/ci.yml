@@ -102,6 +102,8 @@ jobs:
 
       - name: Build Web Apps
         run: yarn build
+        env:
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}          
 
       - name: Upload websites artifact
         uses: actions/upload-artifact@v2
