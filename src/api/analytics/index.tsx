@@ -40,15 +40,17 @@ export function initAnalytics(params: InitAnalyticsParams): void {
   const { trackingCode, options, dimensionNames = {} } = params
   if (typeof trackingCode === 'string') {
     ReactGA.initialize(trackingCode, options)
-
-    const browserTypeDimension = dimensionNames[AnalyticsDimension.BROWSER_TYPE]
-    if (browserTypeDimension) {
-      ReactGA.set({
-        [browserTypeDimension]: getCustomBrowserType(),
-      })
-    }
   } else {
     ReactGA.initialize('test', { testMode: true, debug: true })
+  }
+
+  // Set the browser dimension
+  const browserTypeDimension = dimensionNames[AnalyticsDimension.BROWSER_TYPE]
+  console.log('browserTypeDimension', browserTypeDimension)
+  if (browserTypeDimension) {
+    ReactGA.set({
+      [browserTypeDimension]: getCustomBrowserType(),
+    })
   }
 
   // Track errors
