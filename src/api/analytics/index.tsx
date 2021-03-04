@@ -33,15 +33,15 @@ interface InitAnalyticsParams {
    * dimensionsKey maps the logical name defined in the constant, to
    *
    */
-  dimensionsName?: Record<AnalyticsDimension, string>
+  dimensionNames?: Record<AnalyticsDimension, string>
 }
 
 export function initAnalytics(params: InitAnalyticsParams): void {
-  const { trackingCode, options, dimensionsName = {} } = params
+  const { trackingCode, options, dimensionNames = {} } = params
   if (typeof trackingCode === 'string') {
     ReactGA.initialize(trackingCode, options)
 
-    const browserTypeDimension = dimensionsName[AnalyticsDimension.BROWSER_TYPE]
+    const browserTypeDimension = dimensionNames[AnalyticsDimension.BROWSER_TYPE]
     if (browserTypeDimension) {
       ReactGA.set({
         [browserTypeDimension]: getCustomBrowserType(),
