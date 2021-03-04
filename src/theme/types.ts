@@ -47,3 +47,8 @@ declare module 'styled-components' {
     mq: DefaultTheme['mediaQueries']
   }
 }
+
+export enum AnalyticsDimension {
+  NETWORK,
+  BROWSER_TYPE,
+}
