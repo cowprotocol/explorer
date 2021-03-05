@@ -240,7 +240,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
                   <HelpTooltip tooltip={tooltip.filled} /> Filled
                 </td>
                 <td>
-                  <FilledProgress percentage={'34'} />
+                  <FilledProgress order={order} />
                 </td>
               </tr>
               <tr>

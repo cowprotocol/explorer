@@ -1,15 +1,22 @@
 import React from 'react'
 import styled from 'styled-components'
+
+import { formatSmart, safeTokenName } from '@gnosis.pm/dex-js'
+
 import { media } from 'theme/styles/media'
+
+import { Order } from 'api/operator'
+
 import { ProgressBar } from 'components/common/ProgressBar'
 
 export type Props = {
-  readonly percentage?: string
+  order: Order
 }
 
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
+  color: ${({ theme }): string => theme.textPrimary1};
 
   > span {
     margin: 0 0 0 2rem;
@@ -26,13 +33,71 @@ const Wrapper = styled.div`
 `
 
 export function FilledProgress(props: Props): JSX.Element {
-  const { percentage = '0' } = props
+  const {
+    order: {
+      filledAmount,
+      filledPercentage,
+      kind,
+      buyAmount,
+      sellAmount,
+      buyToken,
+      sellToken,
+      buyTokenAddress,
+      sellTokenAddress,
+    },
+  } = props
+
+  let mainToken
+  let mainAddress
+  let mainAmount
+  let swappedToken
+  let swappedAddress
+  let swappedAmount
+  let action
+
+  if (kind === 'sell') {
+    mainToken = sellToken
+    mainAddress = sellTokenAddress
+    mainAmount = sellAmount
+    swappedToken = buyToken
+    swappedAddress = buyTokenAddress
+    swappedAmount = buyAmount
+    action = 'sold'
+  } else {
+    mainToken = buyToken
+    mainAddress = buyTokenAddress
+    mainAmount = buyAmount
+    swappedToken = sellToken
+    swappedAddress = sellTokenAddress
+    swappedAmount = sellAmount
+    action = 'bought'
+  }
+
+  // In case the token object is empty, display the address
+  const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
+  const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
+  // In case the token object is empty, display the raw amount (`decimals || 0` part)
+  const formattedFilledAmount = formatSmart(filledAmount.toString(10), mainToken?.decimals || 0)
+  const formattedMainAmount = formatSmart(mainAmount.toString(10), mainToken?.decimals || 0)
+  const formattedSwappedAmount = formatSmart(swappedAmount.toString(10), swappedToken?.decimals || 0)
+
+  const formattedPercentage = filledPercentage.times('100').toString(10)
 
   return (
     <Wrapper>
-      <ProgressBar percentage={percentage} />
+      <ProgressBar percentage={formattedPercentage} />
       <span>
-        <b>2,430 DAI</b> of <b>3000 DAI</b> sold for a total of <b>2.842739643 ETH</b>
+        <b>
+          {formattedFilledAmount} {mainSymbol}
+        </b>{' '}
+        of{' '}
+        <b>
+          {formattedMainAmount} {mainSymbol}
+        </b>{' '}
+        {action} for a total of{' '}
+        <b>
+          {formattedSwappedAmount} {swappedSymbol}
+        </b>
       </span>
     </Wrapper>
   )
