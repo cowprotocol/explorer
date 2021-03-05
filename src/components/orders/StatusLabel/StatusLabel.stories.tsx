@@ -14,12 +14,21 @@ export default {
 
 const Template: Story<Props> = (args) => <StatusLabel {...args} />
 
+export const Filled = Template.bind({})
+Filled.args = { status: 'filled' }
+
 export const Expired = Template.bind({})
 Expired.args = { status: 'expired' }
 
-export const Filled = Template.bind({})
-Filled.args = { status: 'filled' }
-export const PartiallyFilled = Template.bind({})
-PartiallyFilled.args = { status: 'partially filled' }
+export const Canceled = Template.bind({})
+Canceled.args = { status: 'canceled' }
+
 export const Open = Template.bind({})
 Open.args = { status: 'open' }
+
+export const OpenPartiallyFilled = Template.bind({})
+OpenPartiallyFilled.args = { status: 'open', partiallyFilled: true }
+export const ExpiredPartiallyFilled = Template.bind({})
+ExpiredPartiallyFilled.args = { status: 'expired', partiallyFilled: true }
+export const CanceledPartiallyFilled = Template.bind({})
+CanceledPartiallyFilled.args = { status: 'canceled', partiallyFilled: true }

@@ -26,7 +26,7 @@ const fontsVariables = {
   fontMedium: '500',
   fontBold: '600',
   fontHeavy: '700',
-  fontBlack: '900',
+  fontBlack: '800',
   fontSizeDefault: '1.3rem',
 }
 

@@ -8,7 +8,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
   color: ${({ theme }): string => theme.textPrimary1};
   height: 100%;
   width: 100%;
-  margin: 1.6rem auto 2.4rem;
+  margin: 1.6rem auto 0;
   padding: 0;
   box-sizing: border-box;
   border-spacing: 0;

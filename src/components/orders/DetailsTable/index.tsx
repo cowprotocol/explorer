@@ -97,6 +97,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     executedBuyAmount,
     executedSellAmount,
     status,
+    partiallyFilled,
     filledAmount,
     surplusAmount,
     buyToken,
@@ -152,7 +153,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.status} /> Status
             </td>
             <td>
-              <StatusLabel status={status} />
+              <StatusLabel status={status} partiallyFilled={partiallyFilled} />
             </td>
           </tr>
           <tr>

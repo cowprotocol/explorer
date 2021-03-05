@@ -35,8 +35,7 @@ export const StaticGlobalStyle = createGlobalStyle`
   }
 
   html, body {  
-    height: 100vh;
-    width: 100vw;
+    width: 100%;
     margin: 0;
     font-size: 62.5%;
     text-rendering: geometricPrecision;

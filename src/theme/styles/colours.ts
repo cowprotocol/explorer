@@ -107,8 +107,8 @@ export const DARK_COLOURS = {
   grey: '#8D8DA9',
   green: '#00D897',
   greenOpacity: 'rgb(0 216 151 / 10%)',
-  orange: '#DB843A',
-  orangeOpacity: 'rgb(219 132 58 / 10%)',
+  orange: '#D96D49',
+  orangeOpacity: 'rgb(217 109 73 / 10%)',
 
   // text
   textPrimary1: '#FFF',

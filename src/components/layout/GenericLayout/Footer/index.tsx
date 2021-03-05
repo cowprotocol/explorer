@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { media } from 'theme/styles/media'
 import { depositApi } from 'apps/gp-v1/api'
 
 // Components
@@ -12,28 +13,32 @@ import { useWalletConnection } from 'hooks/useWalletConnection'
 import { footerConfig } from '../Footer/config'
 
 const FooterStyled = styled.footer`
-  position: fixed;
-  font-size: 1.1rem;
-  bottom: 0;
-  height: 3rem;
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding: 0 1rem;
-  border-top: 0.1rem solid var(--color-border);
+  font-size: 1.2rem;
+  padding: 2.4rem 1.6rem 4rem;
   flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
-  background: ${({ theme }): string => theme.bg1};
   width: 100%;
+  max-width: 140rem;
   justify-content: space-between;
+  margin: 0 auto;
 
-  & a {
-    color: inherit;
+  ${media.mediumDown} {
+    max-width: 94rem;
+  }
+
+  ${media.mobile} {
+    max-width: 100%;
+    flex-flow: column wrap;
+  }
+
+  > a {
     text-decoration: none;
-    transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: ${({ theme }): string => theme.white};
+      text-decoration: underline;
     }
   }
 `
@@ -45,7 +50,10 @@ const BetaWrapper = styled.div`
   align-items: center;
   padding: 0 1rem 0 0;
   position: relative;
-  border-right: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+
+  ${media.mobile} {
+    margin: 0 0 1.6rem;
+  }
 `
 
 const VerifiedButton = styled(BlockExplorerLink)`
@@ -53,8 +61,11 @@ const VerifiedButton = styled(BlockExplorerLink)`
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 1rem;
-  border-right: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+  padding: 0;
+
+  ${media.mobile} {
+    margin: 0 0 1.6rem;
+  }
 `
 
 const VersionsWrapper = styled.div`
@@ -63,7 +74,10 @@ const VersionsWrapper = styled.div`
   align-items: center;
   padding: 0 0 0 1rem;
   height: 100%;
-  border-left: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+
+  ${media.mobile} {
+    margin: 0 0 1.6rem;
+  }
 
   > a:not(:last-of-type) {
     margin: 0 1rem 0 0;
