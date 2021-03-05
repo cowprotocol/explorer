@@ -62,3 +62,8 @@ export interface Fraction {
   denominator: BN
   numerator: BN
 }
+
+export enum AnalyticsDimension {
+  NETWORK,
+  BROWSER_TYPE,
+}

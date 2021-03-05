@@ -1,7 +1,7 @@
 import ReactGA, { InitializeOptions } from 'react-ga'
 import { isMobile } from 'react-device-detect'
-export { pageview as viewPage, event as triggerEvent } from 'react-ga'
-import { AnalyticsDimension } from 'theme'
+import { AnalyticsDimension } from 'types'
+export { pageview as viewPage, event as triggerEvent, set as setDimensions } from 'react-ga'
 
 function getCustomBrowserType(): string {
   if (isMobile) {
