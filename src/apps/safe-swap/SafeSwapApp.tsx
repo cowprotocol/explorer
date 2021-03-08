@@ -96,7 +96,8 @@ export const SafeSwapApp: React.FC = () => {
   useNetworkCheck()
 
   return (
-    <SafeProvider loader={<>Waiting for Safe...</>}>
+    // <SafeProvider loader={<>Waiting for Safe...</>}>
+    <SafeProvider>
       <Router basename={process.env.BASE_URL}>
         <StateUpdaters />
         <Switch>
