@@ -179,6 +179,7 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-recommended": "^3.0.0",
     "stylelint-prettier": "^1.1.2",
+    "tslib": "^2.1.0",
     "ts-jest": "^26.4.1",
     "ts-loader": "^8.0.3",
     "ts-node": "^9.0.0",
