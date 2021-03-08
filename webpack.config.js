@@ -16,7 +16,7 @@ const CONFIG = loadConfig()
 const config = overrideEnvConfig(CONFIG)
 const TRADE_APP = { name: 'trade', title: 'Gnosis Protocol Exchange', filename: 'trade.html' }
 const EXPLORER_APP = { name: 'explorer', title: 'Gnosis Protocol Explorer', filename: 'index.html' }
-const SAFE_SWAP_APP = { name: 'safe-swap', title: 'Gnosis Safe Swap', filename: 'index.html' }
+const SAFE_SWAP_APP = { name: 'safe-swap', title: 'Gnosis Safe Swap', filename: 'safe.html' }
 const ALL_APPS = [TRADE_APP, EXPLORER_APP, SAFE_SWAP_APP]
 
 function getSelectedApps() {
