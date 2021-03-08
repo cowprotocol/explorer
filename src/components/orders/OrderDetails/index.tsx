@@ -66,7 +66,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
         <p key={key}>{errors[key]}</p>
       ))}
       {/* TODO: create common loading indicator */}
-      {isLoading && <FontAwesomeIcon icon={faSpinner} spin size="3x" />}
+      {isLoading && (!order?.buyToken || !order?.sellToken) && <FontAwesomeIcon icon={faSpinner} spin size="3x" />}
     </Wrapper>
   )
 }
