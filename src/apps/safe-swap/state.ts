@@ -5,12 +5,12 @@ import { reducer as networkReducer } from 'state/network'
 import combineReducers from 'combine-reducers'
 import { Network } from 'types'
 
-export type ExplorerAppState = GlobalState & {
+export type SafeSwapAppState = GlobalState & {
   erc20s: Erc20State
   networkId: Network | null
 }
 
-export const INITIAL_STATE = (): ExplorerAppState => ({
+export const INITIAL_STATE = (): SafeSwapAppState => ({
   ...GLOBAL_INITIAL_STATE(),
   erc20s: INITIAL_ERC20_STATE,
   networkId: null,

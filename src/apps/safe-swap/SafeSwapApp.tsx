@@ -5,7 +5,7 @@ import { hot } from 'react-hot-loader/root'
 import { withGlobalContext } from 'hooks/useGlobalState'
 import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
-import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
+import { rootReducer, INITIAL_STATE } from './state'
 
 import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
@@ -87,9 +87,9 @@ const RedirectMainnet = (): JSX.Element => {
 }
 
 /**
- * Render Explorer App
+ * Render Safe-Swap App
  */
-export const ExplorerApp: React.FC = () => {
+export const SafeSwapApp: React.FC = () => {
   // Deal with incorrect network
   useNetworkCheck()
 
@@ -109,7 +109,7 @@ export const ExplorerApp: React.FC = () => {
 
 export default hot(
   withGlobalContext(
-    ExplorerApp,
+    SafeSwapApp,
     // Initial State
     INITIAL_STATE,
     rootReducer,
