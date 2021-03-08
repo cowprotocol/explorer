@@ -98,6 +98,7 @@ export const SafeSwapApp: React.FC = () => {
       <Router basename={process.env.BASE_URL}>
         <StateUpdaters />
         <Switch>
+          <Redirect from="/safe.html" exact to="/" push={false} />
           <Route path="/mainnet" component={RedirectMainnet} />
           <Route path={['/xdai', '/rinkeby', '/']} component={AppContent} />
         </Switch>
