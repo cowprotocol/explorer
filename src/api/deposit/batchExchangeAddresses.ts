@@ -1,15 +1,11 @@
 import { Network } from 'types'
-import networks from '@gnosis.pm/dex-contracts/networks.json'
 
-function _getAddress(networkId: number): string {
-  const networkInfo = networks['BatchExchange'][networkId]
-  return networkInfo ? networkInfo.address : ''
-}
+import { getGpV1ContractAddress } from 'utils/contract'
 
 const addressesByNetwork = {
-  [Network.Rinkeby]: _getAddress(Network.Rinkeby),
-  [Network.Mainnet]: _getAddress(Network.Mainnet),
-  [Network.xDAI]: _getAddress(Network.xDAI),
+  [Network.Rinkeby]: getGpV1ContractAddress(Network.Rinkeby) as string,
+  [Network.Mainnet]: getGpV1ContractAddress(Network.Mainnet) as string,
+  [Network.xDAI]: getGpV1ContractAddress(Network.xDAI) as string,
 }
 
 export const getAddressForNetwork = (networkId: Network): string | null => {

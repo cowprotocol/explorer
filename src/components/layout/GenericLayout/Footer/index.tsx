@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
-import { depositApi } from 'apps/gp-v1/api'
+import { getGpV2ContractAddress } from 'utils/contract'
 
 // Components
 import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
@@ -56,6 +56,14 @@ const BetaWrapper = styled.div`
   }
 `
 
+const ContractsWrapper = styled.div`
+  display: flex;
+
+  > :first-child {
+    margin-right: 1rem;
+  }
+`
+
 const VerifiedButton = styled(BlockExplorerLink)`
   margin: 0;
   display: flex;
@@ -97,21 +105,32 @@ export interface FooterType {
 }
 
 export const Footer: React.FC<FooterType> = (props) => {
-  const { verifiedText = footerConfig.verifiedText, isBeta = footerConfig.isBeta, url = footerConfig.url } = props
+  const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const { networkIdOrDefault: networkId } = useWalletConnection()
-  const contractAddress = depositApi.getContractAddress(networkId)
+  const settlementContractAddress = getGpV2ContractAddress(networkId, 'GPv2Settlement')
+  const allowanceManagerContractAddress = getGpV2ContractAddress(networkId, 'GPv2AllowanceManager')
 
   return (
     <FooterStyled>
       <BetaWrapper>{isBeta && 'This project is in beta. Use at your own risk.'}</BetaWrapper>
-      {contractAddress && networkId ? (
-        <VerifiedButton
-          type="contract"
-          identifier={contractAddress}
-          networkId={networkId}
-          label={verifiedText ? verifiedText : 'View contract'}
-        />
-      ) : null}
+      <ContractsWrapper>
+        {settlementContractAddress ? (
+          <VerifiedButton
+            type="contract"
+            identifier={settlementContractAddress}
+            networkId={networkId}
+            label={'View settlement contract'}
+          />
+        ) : null}
+        {allowanceManagerContractAddress ? (
+          <VerifiedButton
+            type="contract"
+            identifier={allowanceManagerContractAddress}
+            networkId={networkId}
+            label={'View allowance manager contract'}
+          />
+        ) : null}
+      </ContractsWrapper>
       <VersionsWrapper>
         {url.web && VERSION ? (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
