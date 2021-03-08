@@ -57,6 +57,16 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
     return acc
   }, {})
 
+  // Public paths
+  const publicPaths = apps.reduce((acc, app) => {
+    const { publicPath, name } = app
+    if (publicPath) {
+      acc.push(`src/apps/${name}/${publicPath}`)
+    }
+    return acc
+  }, [])
+  console.log(`Public paths: ${publicPaths.join('.')}`)
+
   // Generate one HTML per app (with their specific entry point)
   const htmlPlugins = apps.map((app) =>
     _getHtmlPlugin({
@@ -152,6 +162,14 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
     },
     devServer: {
       historyApiFallback: true,
+      https: process.env.HTTPS === 'true',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET',
+        'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+      },
+      contentBase:
+        publicPaths.length > 0 ? publicPaths.map((publicPath) => path.join(__dirname, publicPath)) : undefined,
     },
     resolve: {
       alias: {
