@@ -27,8 +27,8 @@ const Wrapper = styled.div`
   }
 `
 
-export const Home: React.FC = () => {
+export const Swap: React.FC = () => {
   return <Wrapper>Hello</Wrapper>
 }
 
-export default Home
+export default Swap

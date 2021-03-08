@@ -2,6 +2,8 @@ import React from 'react'
 import { BrowserRouter, HashRouter, Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
+import SafeProvider from '@gnosis.pm/safe-apps-react-sdk'
+
 import { withGlobalContext } from 'hooks/useGlobalState'
 import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
@@ -94,7 +96,7 @@ export const SafeSwapApp: React.FC = () => {
   useNetworkCheck()
 
   return (
-    <>
+    <SafeProvider loader={<>Waiting for Safe...</>}>
       <Router basename={process.env.BASE_URL}>
         <StateUpdaters />
         <Switch>
@@ -104,7 +106,7 @@ export const SafeSwapApp: React.FC = () => {
         </Switch>
       </Router>
       {process.env.NODE_ENV === 'development' && <Console />}
-    </>
+    </SafeProvider>
   )
 }
 
