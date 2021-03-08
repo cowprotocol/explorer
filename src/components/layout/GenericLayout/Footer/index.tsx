@@ -27,11 +27,11 @@ const FooterStyled = styled.footer`
 
   ${media.mediumDown} {
     max-width: 94rem;
+    flex-flow: column wrap;
   }
 
   ${media.mobile} {
     max-width: 100%;
-    flex-flow: column wrap;
   }
 
   > a {
@@ -51,7 +51,7 @@ const BetaWrapper = styled.div`
   padding: 0 1rem 0 0;
   position: relative;
 
-  ${media.mobile} {
+  ${media.mediumDown} {
     margin: 0 0 1.6rem;
   }
 `
@@ -71,7 +71,7 @@ const VerifiedButton = styled(BlockExplorerLink)`
   height: 100%;
   padding: 0;
 
-  ${media.mobile} {
+  ${media.mediumDown} {
     margin: 0 0 1.6rem;
   }
 `
@@ -83,7 +83,7 @@ const VersionsWrapper = styled.div`
   padding: 0 0 0 1rem;
   height: 100%;
 
-  ${media.mobile} {
+  ${media.mediumDown} {
     margin: 0 0 1.6rem;
   }
 
@@ -119,7 +119,7 @@ export const Footer: React.FC<FooterType> = (props) => {
             type="contract"
             identifier={settlementContractAddress}
             networkId={networkId}
-            label={'View settlement contract'}
+            label={'Settlement contract'}
           />
         ) : null}
         {allowanceManagerContractAddress ? (
@@ -127,7 +127,7 @@ export const Footer: React.FC<FooterType> = (props) => {
             type="contract"
             identifier={allowanceManagerContractAddress}
             networkId={networkId}
-            label={'View allowance manager contract'}
+            label={'Allowance manager contract'}
           />
         ) : null}
       </ContractsWrapper>
