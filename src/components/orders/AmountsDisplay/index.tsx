@@ -9,7 +9,7 @@ import { HIGH_PRECISION_DECIMALS, HIGH_PRECISION_SMALL_LIMIT } from 'apps/explor
 
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
 
-import { RowContents, RowTitle, StyledImg, UsdAmount, Wrapper } from './styled'
+import { RowContents, RowTitle, StyledImg, /*UsdAmount,*/ Wrapper } from './styled'
 
 type RowProps = {
   title: string
@@ -22,7 +22,7 @@ function Row(props: RowProps): JSX.Element {
   const { title, titleSuffix, amount, erc20 } = props
 
   // TODO: calculate real usd amount
-  const usdAmount = '31231.32'
+  // const usdAmount = '31231.32'
 
   // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
   const formattedAmount = erc20.decimals
@@ -44,7 +44,7 @@ function Row(props: RowProps): JSX.Element {
       </RowTitle>
       <RowContents>
         <span>{formattedAmount}</span>
-        <UsdAmount>(~${usdAmount})</UsdAmount>
+        {/* <UsdAmount>(~${usdAmount})</UsdAmount> */}
         {/* TODO: figure out the deal with images on networks other than Mainnet */}
         <StyledImg address={erc20.address} />
         <BlockExplorerLink identifier={erc20.address} type="token" label={tokenLabel} />

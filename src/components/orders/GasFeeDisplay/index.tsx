@@ -13,9 +13,9 @@ const Wrapper = styled.div`
   }
 `
 
-const UsdAmount = styled.span`
-  color: ${({ theme }): string => theme.grey};
-`
+// const UsdAmount = styled.span`
+//   color: ${({ theme }): string => theme.grey};
+// `
 
 export type Props = { order: Order }
 
@@ -25,8 +25,8 @@ export function GasFeeDisplay(props: Props): JSX.Element | null {
   } = props
 
   // TODO: fetch amount in USD
-  const executedFeeUSD = '0.99'
-  const totalFeeUSD = '0.35'
+  // const executedFeeUSD = '0.99'
+  // const totalFeeUSD = '0.35'
 
   let smallLimit: string | undefined
   // When `sellToken` is not set, default to raw amounts
@@ -61,11 +61,11 @@ export function GasFeeDisplay(props: Props): JSX.Element | null {
       <span>
         {formattedExecutedFee} {quoteSymbol}
       </span>
-      <UsdAmount>(~${totalFeeUSD})</UsdAmount>
+      {/* <UsdAmount>(~${totalFeeUSD})</UsdAmount> */}
       <span>
         of {formattedTotalFee} {quoteSymbol}
       </span>
-      <UsdAmount>(~${executedFeeUSD})</UsdAmount>
+      {/* <UsdAmount>(~${executedFeeUSD})</UsdAmount> */}
     </Wrapper>
   )
 }
