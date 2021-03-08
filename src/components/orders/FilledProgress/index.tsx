@@ -38,8 +38,8 @@ export function FilledProgress(props: Props): JSX.Element {
       filledAmount,
       filledPercentage,
       kind,
-      buyAmount,
-      sellAmount,
+      executedBuyAmount,
+      executedSellAmount,
       buyToken,
       sellToken,
       buyTokenAddress,
@@ -58,18 +58,18 @@ export function FilledProgress(props: Props): JSX.Element {
   if (kind === 'sell') {
     mainToken = sellToken
     mainAddress = sellTokenAddress
-    mainAmount = sellAmount
+    mainAmount = executedSellAmount
     swappedToken = buyToken
     swappedAddress = buyTokenAddress
-    swappedAmount = buyAmount
+    swappedAmount = executedBuyAmount
     action = 'sold'
   } else {
     mainToken = buyToken
     mainAddress = buyTokenAddress
-    mainAmount = buyAmount
+    mainAmount = executedBuyAmount
     swappedToken = sellToken
     swappedAddress = sellTokenAddress
-    swappedAmount = sellAmount
+    swappedAmount = executedSellAmount
     action = 'bought'
   }
 
