@@ -53,7 +53,7 @@ const Order = React.lazy(
 /**
  * Update the global state
  */
-export function StateUpdaters(): JSX.Element {
+function StateUpdaters(): JSX.Element {
   return <NetworkUpdater />
 }
 
