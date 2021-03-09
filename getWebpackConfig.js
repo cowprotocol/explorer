@@ -1,6 +1,7 @@
 const assert = require('assert').strict
 
 const HtmlWebPackPlugin = require('html-webpack-plugin')
+
 const webpack = require('webpack')
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
@@ -38,6 +39,77 @@ function _getHtmlPlugin({ app, templatePath, isProduction }) {
   })
 }
 
+function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, isProduction }) {
+  const { name: appTitle } = config
+  const plugins = []
+
+  // Html Plugin: Generate one entry point HTML page per app
+  const htmlPlugins = apps.map((app) =>
+    _getHtmlPlugin({
+      app,
+      templatePath: config.templatePath,
+      isProduction,
+    }),
+  )
+  plugins.concat(htmlPlugins)
+
+  // Favicons plugin: Genrates the favicon from a PNG
+  plugins.push(
+    new FaviconsWebpackPlugin({
+      logo: config.logoPath,
+      mode: 'webapp', // optional can be 'webapp' or 'light' - 'webapp' by default
+      devMode: 'webapp', // optional can be 'webapp' or 'light' - 'light' by default
+      favicons: {
+        appName: appTitle,
+        appDescription: appTitle,
+        developerName: appTitle,
+        developerURL: null, // prevent retrieving from the nearest package.json
+        background: '#dfe6ef',
+        themeColor: '#476481',
+        icons: {
+          coast: false,
+          yandex: false,
+        },
+      },
+    }),
+  )
+
+  // Preload plugin: Lazy loading help, uses <link rel='preload'> with the chunks
+  plugins.push(
+    new PreloadWebpackPlugin({
+      rel: 'prefetch',
+      include: 'allAssets',
+      fileBlacklist: [/\.map/, /runtime~.+\.js$/],
+    }),
+  )
+
+  // Fork ts checker plugin: Speed up TS and lint checks
+  plugins.push(new ForkTsCheckerWebpackPlugin({ silent: stats }))
+
+  // Define Plugin: Create global constants
+  plugins.push()
+  new webpack.DefinePlugin({
+    VERSION: JSON.stringify(require('./package.json').version),
+    ...defineVars,
+  })
+
+  // Environment plugin: Like e DefinePlugin but on process.env
+  plugins.push(
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development', // FIXME: Shouldn't this is isProduction??
+      ...envVars,
+    }),
+  )
+
+  // Production only plugins
+  if (isProduction) {
+    // Inline chunk html plugin: Inlines script chunks into index.html
+    plugins.push(new InlineChunkHtmlPlugin(HtmlWebPackPlugin, [/runtime/]))
+  }
+
+  return plugins
+}
+
 function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {}, baseUrl = '/' } = {}) {
   const { name: appTitle, templatePath, logoPath } = config
   const isProduction = process.env.NODE_ENV == 'production'
@@ -66,16 +138,6 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
     return acc
   }, [])
   console.log(`Public paths: ${publicPaths.join('.')}`)
-
-  // Generate one HTML per app (with their specific entry point)
-  const htmlPlugins = apps.map((app) =>
-    _getHtmlPlugin({
-      app,
-      templatePath: config.templatePath,
-      isProduction,
-    }),
-  )
-
   return ({ stats = false } = {}) => ({
     entry: entryPoints, // One entry points per app
     devtool: isProduction ? 'source-map' : 'eval-source-map',
@@ -188,42 +250,7 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
       }
       callback()
     },
-    plugins: [
-      ...htmlPlugins, // one html page per app
-      new FaviconsWebpackPlugin({
-        logo: config.logoPath,
-        mode: 'webapp', // optional can be 'webapp' or 'light' - 'webapp' by default
-        devMode: 'webapp', // optional can be 'webapp' or 'light' - 'light' by default
-        favicons: {
-          appName: appTitle,
-          appDescription: appTitle,
-          developerName: appTitle,
-          developerURL: null, // prevent retrieving from the nearest package.json
-          background: '#dfe6ef',
-          themeColor: '#476481',
-          icons: {
-            coast: false,
-            yandex: false,
-          },
-        },
-      }),
-      new PreloadWebpackPlugin({
-        rel: 'prefetch',
-        include: 'allAssets',
-        fileBlacklist: [/\.map/, /runtime~.+\.js$/],
-      }),
-      isProduction && new InlineChunkHtmlPlugin(HtmlWebPackPlugin, [/runtime/]),
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development', // FIXME: Shouldn't this is isProduction??
-        ...envVars,
-      }),
-      new ForkTsCheckerWebpackPlugin({ silent: stats }),
-      // define inside one plugin instance
-      new webpack.DefinePlugin({
-        VERSION: JSON.stringify(require('./package.json').version),
-        ...defineVars,
-      }),
-    ].filter(Boolean),
+    plugins: _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, isProduction }),
     optimization: {
       moduleIds: 'hashed',
       splitChunks: {
