@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useLocation } from 'react-router'
+import { Redirect, useLocation } from 'react-router-dom'
 
 import { Network } from 'types'
 import useGlobalState from 'hooks/useGlobalState'
@@ -18,6 +18,16 @@ function getNetworkId(network: string | undefined): Network {
     default:
       return Network.Mainnet
   }
+}
+
+/** Redirects to the canonnical URL for mainnet */
+export const RedirectMainnet = (): JSX.Element => {
+  const { pathname } = useLocation()
+
+  const pathMatchArray = pathname.match('/mainnet(.*)')
+  const newPath = pathMatchArray && pathMatchArray.length > 0 ? pathMatchArray[1] : '/'
+
+  return <Redirect push={false} to={newPath} />
 }
 
 export const NetworkUpdater: React.FC = () => {

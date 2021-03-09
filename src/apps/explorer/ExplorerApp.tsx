@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Redirect, Route, Switch, useLocation, useRouteMatch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
@@ -10,7 +10,7 @@ import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
 import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 
-import { NetworkUpdater } from 'state/network'
+import { NetworkUpdater, RedirectMainnet } from 'state/network'
 import { initAnalytics } from 'api/analytics'
 import RouteAnalytics from 'components/analytics/RouteAnalytics'
 import NetworkAnalytics from 'components/analytics/NetworkAnalytics'
@@ -83,16 +83,6 @@ const AppContent = (): JSX.Element => {
       </React.Suspense>
     </GenericLayout>
   )
-}
-
-/** Redirects to the canonnical URL for mainnet */
-const RedirectMainnet = (): JSX.Element => {
-  const { pathname } = useLocation()
-
-  const pathMatchArray = pathname.match('/mainnet(.*)')
-  const newPath = pathMatchArray && pathMatchArray.length > 0 ? pathMatchArray[1] : '/'
-
-  return <Redirect push={false} to={newPath} />
 }
 
 /**
