@@ -1,15 +1,15 @@
 const assert = require('assert').strict
-
-const HtmlWebPackPlugin = require('html-webpack-plugin')
+const path = require('path')
 
 const webpack = require('webpack')
+const HtmlWebPackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const PreloadWebpackPlugin = require('preload-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const markdownIt = require('markdown-it')
 const linkAttributes = require('markdown-it-link-attributes')
-const path = require('path')
 
 function _getHtmlPlugin({ app, templatePath, isProduction }) {
   const { name, title, filename } = app
@@ -41,7 +41,6 @@ function _getHtmlPlugin({ app, templatePath, isProduction }) {
 
 function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, isProduction }) {
   const { name: appTitle } = config
-  const plugins = []
 
   // Html Plugin: Generate one entry point HTML page per app
   const htmlPlugins = apps.map((app) =>
@@ -51,7 +50,7 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
       isProduction,
     }),
   )
-  plugins.concat(htmlPlugins)
+  const plugins = [...htmlPlugins]
 
   // Favicons plugin: Genrates the favicon from a PNG
   plugins.push(
@@ -105,6 +104,15 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
   if (isProduction) {
     // Inline chunk html plugin: Inlines script chunks into index.html
     plugins.push(new InlineChunkHtmlPlugin(HtmlWebPackPlugin, [/runtime/]))
+
+    // Copy plugin
+    if (publicPaths.length > 0) {
+      plugins.push(
+        new CopyPlugin({
+          patterns: publicPaths.map((publicPath) => ({ from: publicPath })),
+        }),
+      )
+    }
   }
 
   return plugins
