@@ -24,7 +24,15 @@ const ALL_APPS = [TRADE_APP, EXPLORER_APP, SAFE_SWAP_APP]
 
 function writeGnosisSafeSwapManifest() {
   console.log('Write: ', 'dist/output.json')
-  const overridedManifest = { ...safeManifest }
+  const { short_name, name } = safeManifest
+
+  const namePrefix = isProduction ? '' : '[dev] '
+
+  const overridedManifest = {
+    ...safeManifest,
+    short_name: short_name + short_name,
+    name: namePrefix + name,
+  }
   fs.writeFileSync('dist/output.json', JSON.stringify(overridedManifest, null, 2))
 }
 
