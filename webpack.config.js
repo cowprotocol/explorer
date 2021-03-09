@@ -32,6 +32,7 @@ function writeGnosisSafeSwapManifest() {
     ...safeManifest,
     short_name: short_name + short_name,
     name: namePrefix + name,
+    start_url: './safe.html', // One test for fixing PRaul is to detect when we should override this start URL
   }
   fs.writeFileSync('dist/output.json', JSON.stringify(overridedManifest, null, 2))
 }
