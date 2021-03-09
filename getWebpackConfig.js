@@ -86,11 +86,12 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
   plugins.push(new ForkTsCheckerWebpackPlugin({ silent: stats }))
 
   // Define Plugin: Create global constants
-  plugins.push()
-  new webpack.DefinePlugin({
-    VERSION: JSON.stringify(require('./package.json').version),
-    ...defineVars,
-  })
+  plugins.push(
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify(require('./package.json').version),
+      ...defineVars,
+    }),
+  )
 
   // Environment plugin: Like e DefinePlugin but on process.env
   plugins.push(
