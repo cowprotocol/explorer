@@ -28,5 +28,8 @@ OrderLoading.args = { ...defaultProps, isLoading: true }
 export const OrderNotFound = Template.bind({})
 OrderNotFound.args = { ...defaultProps }
 
+export const TokensNotLoaded = Template.bind({})
+TokensNotLoaded.args = { ...defaultProps, order: { ...RICH_ORDER, buyToken: undefined } }
+
 export const WithErrors = Template.bind({})
 WithErrors.args = { ...defaultProps, errors: { error1: 'Failed something something', error2: 'Something else failed' } }
