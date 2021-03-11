@@ -1,11 +1,11 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
 
-import { formatSmart, TokenErc20 } from '@gnosis.pm/dex-js'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Order } from 'api/operator'
 
-import { HIGH_PRECISION_DECIMALS, HIGH_PRECISION_SMALL_LIMIT } from 'apps/explorer/const'
+import { formatSmartMaxPrecision } from 'utils'
 
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
 
@@ -25,14 +25,7 @@ function Row(props: RowProps): JSX.Element {
   // const usdAmount = '31231.32'
 
   // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
-  const formattedAmount = erc20.decimals
-    ? formatSmart({
-        amount: amount.toString(10),
-        precision: erc20.decimals,
-        decimals: HIGH_PRECISION_DECIMALS,
-        smallLimit: HIGH_PRECISION_SMALL_LIMIT,
-      })
-    : amount.toString(10)
+  const formattedAmount = erc20.decimals ? formatSmartMaxPrecision(amount, erc20) : amount.toString(10)
   // Name and symbol are optional on ERC20 spec. Fallback to address when no name,
   // and show no symbol when that's not set
   const tokenLabel = `${erc20.name || erc20.address}${erc20.symbol ? ` (${erc20.symbol})` : ''}`
