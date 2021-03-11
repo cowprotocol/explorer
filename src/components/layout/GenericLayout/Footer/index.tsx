@@ -21,19 +21,12 @@ const FooterStyled = styled.footer`
   flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
   width: 100%;
-  max-width: 140rem;
   justify-content: space-between;
   margin: 0 auto;
 
   ${media.mediumDown} {
-    max-width: 94rem;
     flex-flow: column wrap;
   }
-
-  ${media.mobile} {
-    max-width: 100%;
-  }
-
   > a {
     text-decoration: none;
 
