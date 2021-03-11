@@ -114,39 +114,39 @@ export const Footer: React.FC<FooterType> = (props) => {
     <FooterStyled>
       <BetaWrapper>{isBeta && 'This project is in beta. Use at your own risk.'}</BetaWrapper>
       <ContractsWrapper>
-        {settlementContractAddress ? (
+        {settlementContractAddress && (
           <VerifiedButton
             type="contract"
             identifier={settlementContractAddress}
             networkId={networkId}
-            label={'Settlement contract'}
+            label="Settlement contract"
           />
-        ) : null}
-        {allowanceManagerContractAddress ? (
+        )}
+        {allowanceManagerContractAddress && (
           <VerifiedButton
             type="contract"
             identifier={allowanceManagerContractAddress}
             networkId={networkId}
-            label={'Allowance manager contract'}
+            label="Allowance manager contract"
           />
-        ) : null}
+        )}
       </ContractsWrapper>
       <VersionsWrapper>
-        {url.web && VERSION ? (
+        {url.web && VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
             Web: v{VERSION}
           </a>
-        ) : null}
-        {CONFIG.appId ? (
+        )}
+        {CONFIG.appId && (
           <a target="_blank" rel="noopener noreferrer" href={url.appId ?? '#'}>
             App Id: {CONFIG.appId}
           </a>
-        ) : null}
-        {url.contracts && CONTRACT_VERSION ? (
+        )}
+        {url.contracts && CONTRACT_VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.contracts + CONTRACT_VERSION}>
             Contracts: v{CONTRACT_VERSION}
           </a>
-        ) : null}
+        )}
       </VersionsWrapper>
     </FooterStyled>
   )

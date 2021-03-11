@@ -13,10 +13,10 @@ export function getContractAddressFromNetworkInfo(
   network: OptionalNetwork,
   networkInfo: ContractNetworkInfo,
 ): string | null {
-  if (!network) {
+  if (!network || !networkInfo[network]?.address) {
     return null
   }
-  return networkInfo[network]?.address || null
+  return networkInfo[network].address
 }
 
 type V2ContractNames = keyof typeof v2Networks
@@ -25,6 +25,6 @@ export function getGpV2ContractAddress(network: OptionalNetwork, contractName: V
   return getContractAddressFromNetworkInfo(network, v2Networks[contractName])
 }
 
-export function getGpV1ContractAddress(network: OptionalNetwork): string | null {
-  return getContractAddressFromNetworkInfo(network, v1Networks.BatchExchange)
+export function getGpV1ContractAddress(network: OptionalNetwork): string {
+  return getContractAddressFromNetworkInfo(network, v1Networks.BatchExchange) || ''
 }
