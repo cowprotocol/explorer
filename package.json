@@ -11,6 +11,7 @@
     "start": "npm run start:explorer",
     "start:explorer": "APP=explorer npm run start:apps",
     "start:trade": "APP=trade npm run start:apps",
+    "start:safe-swap": "APP=safe-swap npm run start:apps",
     "start:gp-v1": "APP=gp-v1 npm run start:apps -- --config webpack.gp-v1.config.js",
     "start:apps": "NODE_ENV=development webpack-dev-server --mode development --hot --host 0.0.0.0 --disable-host-check",
     "start:dist": "serve dist -s -l 8081",
