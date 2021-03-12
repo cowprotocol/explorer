@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
@@ -88,6 +88,7 @@ export const SafeSwapApp: React.FC = () => {
       <Router basename={process.env.BASE_URL}>
         <StateUpdaters />
         <Switch>
+          <Redirect from="/safe.html" exact to="/" push={false} />
           <Route path="/mainnet" component={RedirectMainnet} />
           <Route path={['/xdai', '/rinkeby', '/']} component={AppContent} />
         </Switch>
