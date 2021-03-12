@@ -90,7 +90,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     uid,
     shortId,
     owner,
-    txHash,
+    // txHash,
     kind,
     partiallyFillable,
     creationDate,
@@ -142,7 +142,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
               />
             </td>
           </tr>
-          {!partiallyFillable && (
+          {/* TODO: re-enable once this data is available on the API */}
+          {/* {!partiallyFillable && (
             <tr>
               <td>
                 <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
@@ -159,7 +160,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 )}
               </td>
             </tr>
-          )}
+          )} */}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.status} /> Status

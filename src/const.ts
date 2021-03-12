@@ -30,6 +30,9 @@ export const ONE_BIG_NUMBER = new BigNumber(1)
 export const TEN_BIG_NUMBER = new BigNumber(10)
 export const ONE_HUNDRED_BIG_NUMBER = new BigNumber(100)
 
+// Value used on formatSmart's smallLimit for integer values, such as raw token amounts
+export const MINIMUM_ATOM_VALUE = '1'
+
 // How much of the order needs to be matched to consider it filled
 // Will divide the total sell amount by this factor.
 // E.g.: Sell = 500; ORDER_FILLED_FACTOR = 100 (1%) => 500/100 => 5

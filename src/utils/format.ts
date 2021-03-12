@@ -1,5 +1,15 @@
 import BigNumber from 'bignumber.js'
-import { ONE_HUNDRED_BIG_NUMBER, BATCH_TIME_IN_MS, DEFAULT_DECIMALS } from 'const'
+
+import { TokenErc20, formatSmart } from '@gnosis.pm/dex-js'
+
+import {
+  ONE_HUNDRED_BIG_NUMBER,
+  BATCH_TIME_IN_MS,
+  DEFAULT_DECIMALS,
+  ONE_BIG_NUMBER,
+  TEN_BIG_NUMBER,
+  MINIMUM_ATOM_VALUE,
+} from 'const'
 import { batchIdToDate } from './time'
 
 export {
@@ -206,4 +216,29 @@ export function capitalize(sentence: string): string {
     .split(' ')
     .map((word) => word[0].toUpperCase() + word.slice(1).toLowerCase())
     .join(' ')
+}
+
+export function getMinimumRepresentableValue(decimals?: number): string {
+  // Small limit === 1 token atom in relation to token units.
+  // E.g.: Token decimals: 5; 1 unit => 100000; 1 atom => 0.00001 === small limit
+  return decimals ? ONE_BIG_NUMBER.div(TEN_BIG_NUMBER.exponentiatedBy(decimals)).toString(10) : MINIMUM_ATOM_VALUE
+}
+
+/**
+ * Wrapper around `formatSmart` that formats amount to max precision for given token.
+ * Assumes `amount` to be in atom units. E.g:
+ * amount: 10001
+ * token.decimals: 4
+ * return: 1.0001
+ *
+ * @param amount BigNumber integer amount
+ * @param token Erc20 token
+ */
+export function formatSmartMaxPrecision(amount: BigNumber, token?: TokenErc20 | null): string {
+  return formatSmart({
+    amount: amount.toString(10),
+    precision: token?.decimals || 0,
+    decimals: token?.decimals || 0,
+    smallLimit: getMinimumRepresentableValue(token?.decimals),
+  })
 }

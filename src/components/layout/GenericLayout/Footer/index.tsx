@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
-import { depositApi } from 'apps/gp-v1/api'
+import { getGpV2ContractAddress } from 'utils/contract'
 
 // Components
 import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
@@ -21,19 +21,12 @@ const FooterStyled = styled.footer`
   flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
   width: 100%;
-  max-width: 140rem;
   justify-content: space-between;
   margin: 0 auto;
 
   ${media.mediumDown} {
-    max-width: 94rem;
-  }
-
-  ${media.mobile} {
-    max-width: 100%;
     flex-flow: column wrap;
   }
-
   > a {
     text-decoration: none;
 
@@ -51,8 +44,16 @@ const BetaWrapper = styled.div`
   padding: 0 1rem 0 0;
   position: relative;
 
-  ${media.mobile} {
+  ${media.mediumDown} {
     margin: 0 0 1.6rem;
+  }
+`
+
+const ContractsWrapper = styled.div`
+  display: flex;
+
+  > :first-child {
+    margin-right: 1rem;
   }
 `
 
@@ -63,7 +64,7 @@ const VerifiedButton = styled(BlockExplorerLink)`
   height: 100%;
   padding: 0;
 
-  ${media.mobile} {
+  ${media.mediumDown} {
     margin: 0 0 1.6rem;
   }
 `
@@ -75,7 +76,7 @@ const VersionsWrapper = styled.div`
   padding: 0 0 0 1rem;
   height: 100%;
 
-  ${media.mobile} {
+  ${media.mediumDown} {
     margin: 0 0 1.6rem;
   }
 
@@ -97,37 +98,48 @@ export interface FooterType {
 }
 
 export const Footer: React.FC<FooterType> = (props) => {
-  const { verifiedText = footerConfig.verifiedText, isBeta = footerConfig.isBeta, url = footerConfig.url } = props
+  const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const { networkIdOrDefault: networkId } = useWalletConnection()
-  const contractAddress = depositApi.getContractAddress(networkId)
+  const settlementContractAddress = getGpV2ContractAddress(networkId, 'GPv2Settlement')
+  const allowanceManagerContractAddress = getGpV2ContractAddress(networkId, 'GPv2AllowanceManager')
 
   return (
     <FooterStyled>
       <BetaWrapper>{isBeta && 'This project is in beta. Use at your own risk.'}</BetaWrapper>
-      {contractAddress && networkId ? (
-        <VerifiedButton
-          type="contract"
-          identifier={contractAddress}
-          networkId={networkId}
-          label={verifiedText ? verifiedText : 'View contract'}
-        />
-      ) : null}
+      <ContractsWrapper>
+        {settlementContractAddress && (
+          <VerifiedButton
+            type="contract"
+            identifier={settlementContractAddress}
+            networkId={networkId}
+            label="Settlement contract"
+          />
+        )}
+        {allowanceManagerContractAddress && (
+          <VerifiedButton
+            type="contract"
+            identifier={allowanceManagerContractAddress}
+            networkId={networkId}
+            label="Allowance manager contract"
+          />
+        )}
+      </ContractsWrapper>
       <VersionsWrapper>
-        {url.web && VERSION ? (
+        {url.web && VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
             Web: v{VERSION}
           </a>
-        ) : null}
-        {CONFIG.appId ? (
+        )}
+        {CONFIG.appId && (
           <a target="_blank" rel="noopener noreferrer" href={url.appId ?? '#'}>
             App Id: {CONFIG.appId}
           </a>
-        ) : null}
-        {url.contracts && CONTRACT_VERSION ? (
+        )}
+        {url.contracts && CONTRACT_VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.contracts + CONTRACT_VERSION}>
             Contracts: v{CONTRACT_VERSION}
           </a>
-        ) : null}
+        )}
       </VersionsWrapper>
     </FooterStyled>
   )
