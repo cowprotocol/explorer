@@ -1,5 +1,4 @@
 export const footerConfig = {
-  verifiedText: 'View verified contract',
   isBeta: true,
   url: {
     web: 'https://github.com/gnosis/gp-ui/tree/v',

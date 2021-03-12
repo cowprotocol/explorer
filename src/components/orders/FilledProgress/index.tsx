@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { formatSmart, safeTokenName } from '@gnosis.pm/dex-js'
-
 import { media } from 'theme/styles/media'
 
 import { Order } from 'api/operator'
+
+import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { ProgressBar } from 'components/common/ProgressBar'
 
@@ -38,8 +38,8 @@ export function FilledProgress(props: Props): JSX.Element {
       filledAmount,
       filledPercentage,
       kind,
-      buyAmount,
-      sellAmount,
+      executedBuyAmount,
+      executedSellAmount,
       buyToken,
       sellToken,
       buyTokenAddress,
@@ -58,18 +58,18 @@ export function FilledProgress(props: Props): JSX.Element {
   if (kind === 'sell') {
     mainToken = sellToken
     mainAddress = sellTokenAddress
-    mainAmount = sellAmount
+    mainAmount = executedSellAmount
     swappedToken = buyToken
     swappedAddress = buyTokenAddress
-    swappedAmount = buyAmount
+    swappedAmount = executedBuyAmount
     action = 'sold'
   } else {
     mainToken = buyToken
     mainAddress = buyTokenAddress
-    mainAmount = buyAmount
+    mainAmount = executedBuyAmount
     swappedToken = sellToken
     swappedAddress = sellTokenAddress
-    swappedAmount = sellAmount
+    swappedAmount = executedSellAmount
     action = 'bought'
   }
 
@@ -77,9 +77,9 @@ export function FilledProgress(props: Props): JSX.Element {
   const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
-  const formattedFilledAmount = formatSmart(filledAmount.toString(10), mainToken?.decimals || 0)
-  const formattedMainAmount = formatSmart(mainAmount.toString(10), mainToken?.decimals || 0)
-  const formattedSwappedAmount = formatSmart(swappedAmount.toString(10), swappedToken?.decimals || 0)
+  const formattedFilledAmount = formatSmartMaxPrecision(filledAmount, mainToken)
+  const formattedMainAmount = formatSmartMaxPrecision(mainAmount, mainToken)
+  const formattedSwappedAmount = formatSmartMaxPrecision(swappedAmount, swappedToken)
 
   const formattedPercentage = filledPercentage.times('100').toString(10)
 
