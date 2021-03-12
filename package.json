@@ -167,7 +167,7 @@
     "polished": "^4.0.5",
     "preload-webpack-plugin": "^3.0.0-beta.4",
     "prettier": "^2.1.2",
-    "react-dev-utils": "^10.0.0",
+    "react-dev-utils": "^11.0.4",
     "react-inspector": "^5.1.0",
     "react-is": "^16.13.1",
     "react-test-renderer": "^16.12.0",
