@@ -1,34 +1,39 @@
+import { useSafeAppsSDK } from '@gnosis.pm/safe-apps-react-sdk'
 import React from 'react'
 import styled from 'styled-components'
-import { media } from 'theme/styles/media'
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  color: ${({ theme }): string => theme.grey};
+  font-size: ${({ theme }): string => theme.fontSizeDefault};
+  font-weight: ${({ theme }): string => theme.fontNormal};
 
-  > a {
-    margin: 0 auto 20rem;
-    width: 100%;
-    max-width: 140rem;
-    padding: 0 1.6rem;
-
-    ${media.mediumDown} {
-      max-width: 94rem;
-    }
-
-    ${media.mobile} {
-      max-width: 100%;
-    }
-  }
-
-  > a > img {
-    width: 100%;
-  }
+  line-height: 3rem;
+  padding: 2rem;
 `
 
-export const Home: React.FC = () => {
-  return <Wrapper>Hello</Wrapper>
+export const Swap: React.FC = () => {
+  const { sdk, safe, connected } = useSafeAppsSDK()
+  const { safeAddress, network } = safe
+  console.log('Safe SDK ready', sdk)
+
+  return (
+    <Wrapper>
+      <h1>Gnosis Protocol</h1>
+      <div>
+        <ul>
+          <li>
+            <strong>Safe</strong>: {safeAddress}
+          </li>
+          <li>
+            <strong>Network</strong>: {network}
+          </li>
+          <li>
+            <strong>Connected</strong>: {String(connected)}
+          </li>
+        </ul>
+      </div>
+    </Wrapper>
+  )
 }
 
-export default Home
+export default Swap
