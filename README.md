@@ -29,7 +29,6 @@ yarn
 > Make sure you installed the dependencies first
 
 
-
 | App         |      Description                                   |  Run                              |  Notes                                 |
 |-------------|:----------------------------------------------:|--------------------------------------:|----------------------------------------|
 | Explorer    | Gnosis Protocol Explorer. It's the default app | `yarn start` or `yarn start:explorer` |                                        |
