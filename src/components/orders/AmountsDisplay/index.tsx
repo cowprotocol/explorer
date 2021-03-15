@@ -50,7 +50,7 @@ export type Props = { order: Order }
 
 export function AmountsDisplay(props: Props): JSX.Element | null {
   const { order } = props
-  const { kind, buyAmount, buyToken, sellAmount, sellToken } = order
+  const { kind, buyAmount, buyToken, sellAmount, feeAmount, sellToken } = order
 
   if (!buyToken || !sellToken) {
     return null
@@ -60,7 +60,12 @@ export function AmountsDisplay(props: Props): JSX.Element | null {
 
   return (
     <Wrapper>
-      <Row title="From" titleSuffix={isBuyOrder ? 'at most' : ''} amount={sellAmount} erc20={sellToken} />
+      <Row
+        title="From"
+        titleSuffix={isBuyOrder ? 'at most' : ''}
+        amount={sellAmount.plus(feeAmount)}
+        erc20={sellToken}
+      />
       <Row title="To" titleSuffix={!isBuyOrder ? 'at least' : ''} amount={buyAmount} erc20={buyToken} />
     </Wrapper>
   )
