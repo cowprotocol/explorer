@@ -9,15 +9,40 @@ import { useNetworkId } from './hooks'
 import { updateWeb3Provider } from 'api/web3'
 import { web3 } from 'apps/explorer/api'
 
-function getNetworkId(network: string | undefined): Network {
-  switch (network) {
-    case 'rinkeby':
-      return Network.Rinkeby
-    case 'xdai':
-      return Network.xDAI
-    default:
-      return Network.Mainnet
+const MAINNET_PREFIX = ''
+const NETWORK_PREFIXES_RAW: [Network, string][] = [
+  [Network.Mainnet, ''],
+  [Network.xDAI, 'xdai'],
+  [Network.Rinkeby, 'rinkeby'],
+]
+const PREFIX_BY_NETWORK_ID: Map<Network, string> = new Map(NETWORK_PREFIXES_RAW)
+const NETWORK_ID_BY_PREFIX: Map<string, Network> = new Map(NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]))
+
+function getNetworkId(network = MAINNET_PREFIX): Network {
+  const networkId = NETWORK_ID_BY_PREFIX.get(network)
+  return networkId || Network.Mainnet
+}
+
+function getNetworkPrefix(network: Network): string {
+  const prefix = PREFIX_BY_NETWORK_ID.get(network)
+  return prefix || MAINNET_PREFIX
+}
+
+/** Redirects to the canonnical URL for mainnet */
+export const RedirectToNetwork = (props: { networkId: Network }): JSX.Element | null => {
+  const { networkId } = props
+  const { pathname } = useLocation()
+  const prefix = getNetworkPrefix(networkId)
+
+  const pathMatchArray = pathname.match('/(rinkeby|xdai|mainnet)?/?(.*)')
+  if (pathMatchArray == null) {
+    return null
   }
+
+  const prefixPath = prefix ? `/${prefix}` : ''
+  const newPath = prefixPath + '/' + pathMatchArray[2]
+
+  return <Redirect push={false} to={newPath} />
 }
 
 /** Redirects to the canonnical URL for mainnet */
