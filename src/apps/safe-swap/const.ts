@@ -1,4 +1,4 @@
-import { AnalyticsDimension } from 'theme'
+import { AnalyticsDimension } from 'types'
 
 // Analytics
 export const DIMENSION_NAMES = {
