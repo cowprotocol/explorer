@@ -224,8 +224,3 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
     [Network.xDAI]: {},
   },
 )
-
-export enum AnalyticsDimension {
-  NETWORK,
-  BROWSER_TYPE,
-}

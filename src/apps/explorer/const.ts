@@ -1,4 +1,4 @@
-import { AnalyticsDimension } from 'const'
+import { AnalyticsDimension } from 'types'
 
 /** Explorer app constants */
 export const ORDER_QUERY_INTERVAL = 10000 // in ms
