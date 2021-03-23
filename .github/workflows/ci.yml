@@ -102,6 +102,8 @@ jobs:
 
       - name: Build Web Apps
         run: yarn build
+        env:
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}          
 
       - name: Upload websites artifact
         uses: actions/upload-artifact@v2
@@ -174,8 +176,9 @@ jobs:
         uses: mshick/add-pr-comment@v1
         with:
           message: |
-            * **🔭 [Explorer Dapp](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
-            * **📈 [Trade Dapp](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
+            * **🔭 [Explorer](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
+            * **🔒 [Safe Swap App](${{ env.REVIEW_FEATURE_URL }}/safe.html)**: Trade test app (add to your safe apps)
+            * **📈 [Trade](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
             * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'

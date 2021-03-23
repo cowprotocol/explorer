@@ -1,61 +1,36 @@
-import { css } from 'styled-components'
-
-import InterRegular from 'assets/fonts/Inter-Regular.woff2'
-import InterBold from 'assets/fonts/Inter-Bold.woff2'
-import RobotoMono from 'assets/fonts/RobotoMono-Regular.woff2'
+import 'inter-ui'
 
 import { Theme } from 'theme'
 import { logDebug } from 'utils'
-
-export const fontFace = css`
-  @font-face {
-    font-family: 'Inter';
-    src: url(${InterRegular}) format('woff2');
-    font-weight: 400;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Inter';
-    src: url(${InterBold}) format('woff2');
-    font-weight: 700;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: 'Roboto Mono';
-    src: url(${RobotoMono}) format('woff2');
-    font-weight: 400;
-    font-style: normal;
-  }
-`
 export interface Fonts {
   fontDefault: string
-  fontArial: string
-  fontSizeNormal: string
-  fontSizeSmall: string
-  fontSizeLarge: string
-  fontSizeXLarge: string
-  fontSizeXXLarge: string
-  fontWeightNormal: string
-  fontWeightMedium: string
-  fontWeightBold: string
+  fontVariable: string
+  fontThin: string
+  fontLight: string
+  fontLighter: string
+  fontNormal: string
+  fontMedium: string
+  fontBold: string
+  fontHeavy: string
+  fontBlack: string
+  fontSizeDefault: string
 }
 
-const DEFAULT_FONT = {
-  fontDefault: '"Inter", "Helvetica Neue"',
-  fontArial: 'Arial',
-  fontSizeNormal: '1.2rem',
-  fontSizeSmall: '1.1rem',
-  fontSizeLarge: '1.3',
-  fontSizeXLarge: '1.4rem',
-  fontSizeXXLarge: '1.5rem',
-  fontWeightNormal: '400',
-  fontWeightMedium: '500',
-  fontWeightBold: '700',
+const fontsVariables = {
+  fontDefault: 'Inter',
+  fontVariable: 'Inter var',
+  fontThin: '100',
+  fontLight: '200',
+  fontLighter: '300',
+  fontNormal: '400',
+  fontMedium: '500',
+  fontBold: '600',
+  fontHeavy: '700',
+  fontBlack: '800',
+  fontSizeDefault: '1.3rem',
 }
 
 export function getFonts(mode: Theme): Fonts {
   logDebug(`[THEME] Loading ${mode} theme font`)
-  return DEFAULT_FONT
+  return fontsVariables
 }
-
-export default fontFace

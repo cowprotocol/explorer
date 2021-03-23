@@ -76,7 +76,7 @@ defaultProviderConfig:
   type: 'infura' # Choices: infura | url
   config:
     # It'll be appended to `infuraEndpoint`
-    infuraId: 607a7dfcb1ad4a0b83152e30ce20cfc5
+    infuraId: e941376b017d4dada26dc7891456fa3b
     infuraEndpoint: wss://mainnet.infura.io/ws/v3/
   #
   # Example for type `url`

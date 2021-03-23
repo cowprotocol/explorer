@@ -7,7 +7,7 @@ import { Row, RowProps } from 'apps/gp-v1/components/DepositWidget/Row'
 import { ZERO, ONE, TEN } from 'const'
 import { Network, TokenBalanceDetails } from 'types'
 import { TokenLocalState } from 'state'
-import { createFlux } from '../data'
+import { createFlux, TOKEN_1 } from '../data'
 
 const fakeRowState: Record<keyof TokenLocalState, boolean> = {
   enabling: false,
@@ -26,7 +26,7 @@ const initialTokenBalanceDetails = {
   name: 'Test token',
   symbol: 'TTT',
   decimals: 18,
-  address: '0x0',
+  address: TOKEN_1,
   exchangeBalance: ZERO,
   totalExchangeBalance: ZERO,
   pendingDeposit: createFlux(),

@@ -10,13 +10,11 @@ export interface Colors {
   textActive1: Color
   textDisabled: Color
 
-  icon: Color
-  surplusPercentage: Color
-
   // backgrounds / greys
   bg1: Color
   bg2: Color
-  bgDisabled: Color
+  shade: Color
+  boxShadow: Color
 
   // gradients
   gradient1: Color
@@ -24,11 +22,7 @@ export interface Colors {
 
   // labels
   labelTextOpen: Color
-  labelTextExpired: Color
-  labelTextFilled: Color
   labelBgOpen: Color
-  labelBgExpired: Color
-  labelBgFilled: Color
 
   // table & borders
   borderPrimary: Color
@@ -40,6 +34,11 @@ export interface Colors {
   red1: Color
   red2: Color
   red3?: Color
+  grey: Color
+  greyShade: Color
+  greyOpacity: Color
+  green: Color
+  greenOpacity: Color
   green1: Color
   green2: Color
   green3?: Color
@@ -49,6 +48,8 @@ export interface Colors {
   blue1: Color
   blue2: Color
   blue3?: Color
+  orange: Color
+  orangeOpacity: Color
   orange1: Color
 }
 
@@ -67,29 +68,30 @@ export const BASE_COLOURS = {
   blue1: '#2172E5',
   blue2: '#3F77FF',
   orange1: '#D96D49',
-
-  // labels
-  labelTextExpired: '#DB843A',
-  labelTextFilled: '#41C29B',
-  labelBgExpired: '#DB843A1A',
-  labelBgFilled: '#00D8971A',
 }
 
 export const LIGHT_COLOURS = {
+  //base
+  grey: '#657795',
+  greyShade: 'rgb(141 141 169 / 70%)',
+  greyOpacity: 'rgb(141 141 169 / 10%)',
+  green: '#1E9B75',
+  greenOpacity: 'rgb(30 155 117 / 10%)',
+  orange: '#DB843A',
+  orangeOpacity: 'rgb(219 132 58 / 20%)',
+
   // text
-  textPrimary1: '#FFF',
+  textPrimary1: '#2B3658',
   textSecondary1: '#EDEDED',
   textSecondary2: '#9797B8',
   textActive1: '#D96D49',
   textDisabled: '#31323E',
 
-  icon: '#657795B3',
-  surplusPercentage: '#1E9B75',
-
   // backgrounds / greys
-  bg1: '#ffc1ff',
+  bg1: '#F7F8FA',
   bg2: '#F7F8FA',
-  bgDisabled: '#ffffff80',
+  shade: '#2E2F3B',
+  boxShadow: 'rgba(0, 0, 0, 0.16)',
 
   // gradients
   gradient1: '#8958FF',
@@ -100,11 +102,20 @@ export const LIGHT_COLOURS = {
   labelBgOpen: '#77838F1A',
 
   // table & borders
-  borderPrimary: 'rgba(151, 151, 184, 0.3)',
-  tableRowBorder: 'rgba(151, 151, 184, 0.1)',
+  borderPrimary: 'rgb(151 151 184 / 30%)',
+  tableRowBorder: 'rgb(151 151 184 / 10%)',
 }
 
 export const DARK_COLOURS = {
+  // base
+  grey: '#8D8DA9',
+  greyShade: 'rgb(141 141 169 / 70%)',
+  greyOpacity: 'rgb(141 141 169 / 10%)',
+  green: '#00D897',
+  greenOpacity: 'rgb(0 216 151 / 10%)',
+  orange: '#D96D49',
+  orangeOpacity: 'rgb(217 109 73 / 10%)',
+
   // text
   textPrimary1: '#FFF',
   textSecondary1: '#EDEDED',
@@ -112,13 +123,12 @@ export const DARK_COLOURS = {
   textActive1: '#D96D49',
   textDisabled: '#31323E',
 
-  icon: '#8D8DA980',
-  surplusPercentage: '#00D897',
-
   // backgrounds / greys
   bg1: '#16171F',
   bg2: '#2C2D3F',
   bgDisabled: '#ffffff80',
+  shade: '#2E2F3B',
+  boxShadow: 'rgba(0, 0, 0, 0.16)',
 
   // gradients
   gradient1: '#21222E',
@@ -129,8 +139,8 @@ export const DARK_COLOURS = {
   labelBgOpen: '#9797B84D',
 
   // table & borders
-  borderPrimary: 'rgba(151, 151, 184, 0.3)',
-  tableRowBorder: 'rgba(151, 151, 184, 0.1)',
+  borderPrimary: 'rgb(151 151 184 / 30%)',
+  tableRowBorder: 'rgb(151 151 184 / 10%)',
 
   // TODO: add to theme, not colour palette
   // gradientForm1: 'linear-gradient(270deg, #8958FF 0%, #3F77FF 100%)',

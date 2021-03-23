@@ -1,35 +1,45 @@
 import React from 'react'
 import styled from 'styled-components'
-
-import { formatSmart } from '@gnosis.pm/dex-js'
+import { media } from 'theme/styles/media'
 
 import { Order } from 'api/operator'
 
 import { capitalize } from 'utils'
 
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
+import { HelpTooltip } from 'components/Tooltip'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 
-import { StatusLabel } from 'components/orders/StatusLabel'
-import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
+import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
+import { FilledProgress } from 'components/orders/FilledProgress'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
+import { StatusLabel } from 'components/orders/StatusLabel'
+import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
+import { triggerEvent } from 'api/analytics'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.4rem;
 
   > tbody > tr {
-    grid-template-columns: 16rem auto;
+    grid-template-columns: 27rem auto;
+
+    ${media.mediumDown} {
+      grid-template-columns: 17rem auto;
+    }
 
     > td {
       justify-content: flex-start;
 
       &:first-of-type {
-        font-weight: var(--font-weight-bold);
         text-transform: capitalize;
+        ${media.mediumUp} {
+          font-weight: ${({ theme }): string => theme.fontLighter};
+        }
 
         /* Question mark */
         > svg {
@@ -49,7 +59,30 @@ const Table = styled(SimpleTable)`
   }
 `
 
-export type Props = { order: Order }
+const tooltip = {
+  orderID: 'A unique identifier ID for this order.',
+  from: 'The account address which signed the order.',
+  hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
+  status: 'The order status is either Open, Filled, Expired or Canceled.',
+  submission:
+    'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
+  expiration:
+    'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
+  type:
+    'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
+  amount: 'The total sell and buy amount for this order.',
+  priceLimit:
+    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',
+  priceExecution: 'The actual price at which this order has been matched and executed.',
+  surplus:
+    'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
+  filled: 'Indicates what percentage amount this order has been filled and the amount sold/bought.',
+  fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
+}
+
+export type Props = {
+  order: Order
+}
 
 export function DetailsTable(props: Props): JSX.Element | null {
   const { order } = props
@@ -57,7 +90,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     uid,
     shortId,
     owner,
-    txHash,
+    // txHash,
     kind,
     partiallyFillable,
     creationDate,
@@ -66,8 +99,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
     sellAmount,
     executedBuyAmount,
     executedSellAmount,
-    executedFeeAmount,
     status,
+    partiallyFilled,
     filledAmount,
     surplusAmount,
     buyToken,
@@ -78,32 +111,48 @@ export function DetailsTable(props: Props): JSX.Element | null {
     return null
   }
 
+  const onCopy = (label: string): void =>
+    triggerEvent({
+      category: 'Order details',
+      action: 'Copy',
+      label,
+    })
+
   return (
     <Table
       body={
         <>
           <tr>
-            <td>Order Id</td>
             <td>
-              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} />
+              <HelpTooltip tooltip={tooltip.orderID} /> Order Id
+            </td>
+            <td>
+              <RowWithCopyButton textToCopy={uid} contentsToDisplay={shortId} onCopy={(): void => onCopy('orderId')} />
             </td>
           </tr>
           <tr>
-            <td>From</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.from} /> From
+            </td>
             <td>
               <RowWithCopyButton
                 textToCopy={owner}
+                onCopy={(): void => onCopy('ownerAddress')}
                 contentsToDisplay={<BlockExplorerLink identifier={owner} type="address" label={owner} />}
               />
             </td>
           </tr>
-          {!partiallyFillable && (
+          {/* TODO: re-enable once this data is available on the API */}
+          {/* {!partiallyFillable && (
             <tr>
-              <td>Transaction hash</td>
+              <td>
+                <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
+              </td>
               <td>
                 {txHash ? (
                   <RowWithCopyButton
                     textToCopy={txHash}
+                    onCopy={(): void => onCopy('settlementTx')}
                     contentsToDisplay={<BlockExplorerLink identifier={txHash} type="tx" label={txHash} />}
                   />
                 ) : (
@@ -111,41 +160,52 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 )}
               </td>
             </tr>
-          )}
+          )} */}
           <tr>
-            <td>Status</td>
             <td>
-              <StatusLabel status={status} />
+              <HelpTooltip tooltip={tooltip.status} /> Status
+            </td>
+            <td>
+              <StatusLabel status={status} partiallyFilled={partiallyFilled} />
             </td>
           </tr>
           <tr>
-            <td>Submission Time</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.submission} /> Submission Time
+            </td>
             <td>
               <DateDisplay date={creationDate} />
             </td>
           </tr>
           <tr>
-            <td>Expiration Time</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
+            </td>
             <td>
               <DateDisplay date={expirationDate} />
             </td>
           </tr>
           <tr>
-            <td>Type</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.type} /> Type
+            </td>
             <td>
               {capitalize(kind)} order {!partiallyFillable && '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
-            <td>Sell amount</td>
-            <td>{`${formatSmart(sellAmount.toString(), sellToken.decimals)} ${sellToken.symbol}`}</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.amount} />
+              Amount
+            </td>
+            <td>
+              <AmountsDisplay order={order} />
+            </td>
           </tr>
           <tr>
-            <td>Buy amount</td>
-            <td>{`${formatSmart(buyAmount.toString(), buyToken.decimals)} ${buyToken.symbol}`}</td>
-          </tr>
-          <tr>
-            <td>Limit Price</td>
+            <td>
+              <HelpTooltip tooltip={tooltip.priceLimit} /> Limit Price
+            </td>
             <td>
               <OrderPriceDisplay
                 buyAmount={buyAmount}
@@ -159,7 +219,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
           {!partiallyFillable && (
             <>
               <tr>
-                <td>Execution price</td>
+                <td>
+                  <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+                </td>
                 <td>
                   {!filledAmount.isZero() ? (
                     <OrderPriceDisplay
@@ -175,15 +237,29 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 </td>
               </tr>
               <tr>
-                <td>Order surplus</td>
-                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
+                <td>
+                  <HelpTooltip tooltip={tooltip.filled} /> Filled
+                </td>
+                <td>
+                  <FilledProgress order={order} />
+                </td>
               </tr>
               <tr>
-                <td>Gas Fees paid</td>
-                <td>{formatSmart(executedFeeAmount.toString(), sellToken.decimals)}</td>
+                <td>
+                  <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+                </td>
+                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
               </tr>
             </>
           )}
+          <tr>
+            <td>
+              <HelpTooltip tooltip={tooltip.fees} /> Gas Fees paid
+            </td>
+            <td>
+              <GasFeeDisplay order={order} />
+            </td>
+          </tr>
         </>
       }
     />

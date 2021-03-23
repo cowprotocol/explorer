@@ -41,7 +41,7 @@ export function getOrderLink(networkId: Network, orderId: OrderID): string {
   return baseUrl + `/orders/${orderId}`
 }
 
-function _post(networkId: Network, url: string, data: any): Promise<Response> {
+function _post(networkId: Network, url: string, data: unknown): Promise<Response> {
   const baseUrl = _getApiBaseUrl(networkId)
   return fetch(baseUrl + url, {
     headers: DEFAULT_HEADERS,

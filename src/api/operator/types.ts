@@ -19,7 +19,7 @@ export interface FeeInformation {
 
 export type OrderKind = 'sell' | 'buy'
 
-export type OrderStatus = 'open' | 'filled' | 'expired' | 'partially filled'
+export type OrderStatus = 'open' | 'filled' | 'canceled' | 'expired'
 
 // Raw API response
 export type RawOrder = {
@@ -64,6 +64,7 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
   executedFeeAmount: BigNumber
   cancelled: boolean
   status: OrderStatus
+  partiallyFilled: boolean
   filledAmount: BigNumber
   filledPercentage: BigNumber
   surplusAmount: BigNumber

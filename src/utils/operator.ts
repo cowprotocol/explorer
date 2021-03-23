@@ -28,6 +28,9 @@ function isOrderExpired(order: RawOrder): boolean {
 }
 
 function isOrderPartiallyFilled(order: RawOrder): boolean {
+  if (isOrderFilled(order)) {
+    return false
+  }
   if (order.kind === 'buy') {
     return order.executedBuyAmount !== '0'
   } else {
@@ -38,12 +41,10 @@ function isOrderPartiallyFilled(order: RawOrder): boolean {
 export function getOrderStatus(order: RawOrder): OrderStatus {
   if (isOrderFilled(order)) {
     return 'filled'
+  } else if (order.invalidated) {
+    return 'canceled'
   } else if (isOrderExpired(order)) {
-    if (isOrderPartiallyFilled(order)) {
-      return 'partially filled'
-    } else {
-      return 'expired'
-    }
+    return 'expired'
   } else {
     return 'open'
   }
@@ -196,6 +197,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
   const shortId = getShortOrderId(rawOrder.uid)
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
   const status = getOrderStatus(rawOrder)
+  const partiallyFilled = isOrderPartiallyFilled(rawOrder)
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
   const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(rawOrder)
 
@@ -218,6 +220,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedFeeAmount: new BigNumber(executedFeeAmount),
     cancelled: invalidated,
     status,
+    partiallyFilled,
     filledAmount,
     filledPercentage,
     surplusAmount,

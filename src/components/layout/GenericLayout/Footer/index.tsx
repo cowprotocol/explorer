@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { depositApi } from 'apps/gp-v1/api'
+import { media } from 'theme/styles/media'
+import { getGpV2ContractAddress } from 'utils/contract'
 
 // Components
 import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
@@ -12,28 +13,25 @@ import { useWalletConnection } from 'hooks/useWalletConnection'
 import { footerConfig } from '../Footer/config'
 
 const FooterStyled = styled.footer`
-  position: fixed;
-  font-size: 1.1rem;
-  bottom: 0;
-  height: 3rem;
   display: flex;
   align-items: center;
   box-sizing: border-box;
-  padding: 0 1rem;
-  border-top: 0.1rem solid var(--color-border);
+  font-size: 1.2rem;
+  padding: 2.4rem 1.6rem 4rem;
   flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
-  background: ${({ theme }): string => theme.bg1};
   width: 100%;
   justify-content: space-between;
+  margin: 0 auto;
 
-  & a {
-    color: inherit;
+  ${media.mediumDown} {
+    flex-flow: column wrap;
+  }
+  > a {
     text-decoration: none;
-    transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: ${({ theme }): string => theme.white};
+      text-decoration: underline;
     }
   }
 `
@@ -45,7 +43,18 @@ const BetaWrapper = styled.div`
   align-items: center;
   padding: 0 1rem 0 0;
   position: relative;
-  border-right: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+
+  ${media.mediumDown} {
+    margin: 0 0 1.6rem;
+  }
+`
+
+const ContractsWrapper = styled.div`
+  display: flex;
+
+  > :first-child {
+    margin-right: 1rem;
+  }
 `
 
 const VerifiedButton = styled(BlockExplorerLink)`
@@ -53,8 +62,11 @@ const VerifiedButton = styled(BlockExplorerLink)`
   display: flex;
   align-items: center;
   height: 100%;
-  padding: 0 1rem;
-  border-right: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+  padding: 0;
+
+  ${media.mediumDown} {
+    margin: 0 0 1.6rem;
+  }
 `
 
 const VersionsWrapper = styled.div`
@@ -63,7 +75,10 @@ const VersionsWrapper = styled.div`
   align-items: center;
   padding: 0 0 0 1rem;
   height: 100%;
-  border-left: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+
+  ${media.mediumDown} {
+    margin: 0 0 1.6rem;
+  }
 
   > a:not(:last-of-type) {
     margin: 0 1rem 0 0;
@@ -83,37 +98,48 @@ export interface FooterType {
 }
 
 export const Footer: React.FC<FooterType> = (props) => {
-  const { verifiedText = footerConfig.verifiedText, isBeta = footerConfig.isBeta, url = footerConfig.url } = props
+  const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const { networkIdOrDefault: networkId } = useWalletConnection()
-  const contractAddress = depositApi.getContractAddress(networkId)
+  const settlementContractAddress = getGpV2ContractAddress(networkId, 'GPv2Settlement')
+  const allowanceManagerContractAddress = getGpV2ContractAddress(networkId, 'GPv2AllowanceManager')
 
   return (
     <FooterStyled>
       <BetaWrapper>{isBeta && 'This project is in beta. Use at your own risk.'}</BetaWrapper>
-      {contractAddress && networkId ? (
-        <VerifiedButton
-          type="contract"
-          identifier={contractAddress}
-          networkId={networkId}
-          label={verifiedText ? verifiedText : 'View contract'}
-        />
-      ) : null}
+      <ContractsWrapper>
+        {settlementContractAddress && (
+          <VerifiedButton
+            type="contract"
+            identifier={settlementContractAddress}
+            networkId={networkId}
+            label="Settlement contract"
+          />
+        )}
+        {allowanceManagerContractAddress && (
+          <VerifiedButton
+            type="contract"
+            identifier={allowanceManagerContractAddress}
+            networkId={networkId}
+            label="Allowance manager contract"
+          />
+        )}
+      </ContractsWrapper>
       <VersionsWrapper>
-        {url.web && VERSION ? (
+        {url.web && VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
             Web: v{VERSION}
           </a>
-        ) : null}
-        {CONFIG.appId ? (
+        )}
+        {CONFIG.appId && (
           <a target="_blank" rel="noopener noreferrer" href={url.appId ?? '#'}>
             App Id: {CONFIG.appId}
           </a>
-        ) : null}
-        {url.contracts && CONTRACT_VERSION ? (
+        )}
+        {url.contracts && CONTRACT_VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.contracts + CONTRACT_VERSION}>
             Contracts: v{CONTRACT_VERSION}
           </a>
-        ) : null}
+        )}
       </VersionsWrapper>
     </FooterStyled>
   )

@@ -1,14 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import { applyMediaStyles } from 'theme'
+import { media } from 'theme/styles/media'
 
 const Wrapper = styled.table<{ $numColumns?: number }>`
-  font-size: var(--font-size-default);
+  font-size: ${({ theme }): string => theme.fontSizeDefault};
   background-color: transparent;
   color: ${({ theme }): string => theme.textPrimary1};
   height: 100%;
   width: 100%;
-  margin: 1.6rem auto 2.4rem;
+  margin: 1.6rem auto 0;
   padding: 0;
   box-sizing: border-box;
   border-spacing: 0;
@@ -50,18 +50,20 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: grid;
       width: 100%;
       transition: background-color 0.1s ease-in-out;
-      height: 4.8rem;
+      min-height: 4.8rem;
+      padding: 1.4rem 0;
       box-sizing: border-box;
 
       &:not(:last-of-type) {
         border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       }
 
-      ${applyMediaStyles('upToSmall')`
+      ${media.mobile} {
         display: flex;
         flex-flow: column wrap;
         height: auto;
         align-items: flex-start;
+        justify-content: center;
 
         &:hover {
           background: var(--color-text-hover);
@@ -69,7 +71,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
             color: var(--color-text-primary);
           }
         }
-      `}
+      }
     }
   }
 
@@ -84,16 +86,26 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       line-height: 1.3;
     }
 
+    > td:first-of-type {
+      ${media.mobile} {
+        margin: 0 0 1.2rem 0;
+        font-weight: ${({ theme }): string => theme.fontBold};
+      }
+    }
+
     align-items: center;
     ${({ $numColumns }): string => ($numColumns ? `grid-template-columns: repeat(${$numColumns}, 1fr);` : '')}
 
     > th, 
     > td {
-      height: 3rem;
       display: flex;
       align-items: center;
       justify-content: flex-start;
       padding: 0 1.6rem;
+
+      ${media.mobile} {
+        padding: 0 1rem;
+      }
     }
   }
 `

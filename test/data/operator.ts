@@ -42,6 +42,7 @@ export const RICH_ORDER: Order = {
   executedFeeAmount: new BigNumber(RAW_ORDER.executedFeeAmount),
   cancelled: RAW_ORDER.invalidated,
   status: 'open',
+  partiallyFilled: false,
   filledAmount: ZERO_BIG_NUMBER,
   filledPercentage: ZERO_BIG_NUMBER,
   buyToken: WETH,

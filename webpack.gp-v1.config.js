@@ -20,7 +20,16 @@ module.exports = getWebpackConfig({
       filename: 'index.html',
     },
   ],
-  config,
+  config: {
+    ...config,
+    defaultProviderConfig: {
+      type: 'infura', // Choices: infura | url
+      config: {
+        infuraId: '607a7dfcb1ad4a0b83152e30ce20cfc5',
+        infuraEndpoint: 'wss://mainnet.infura.io/ws/v3/',
+      },
+    },
+  },
   baseUrl,
   envVars: {
     BASE_URL: baseUrl,

@@ -15,16 +15,16 @@ import {
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
-  font-size: ${({ theme }): string => theme.fontSizeNormal};
 `
 
 const Icon = styled(FontAwesomeIcon)`
-  background: ${({ theme }): string => theme.textSecondary2}33; /* 33==20% transparency in hex */
+  background: ${({ theme }): string => theme.grey}33; /* 33==20% transparency in hex */
   border-radius: 1rem;
   width: 2rem !important; /* FontAwesome sets it to 1em with higher specificity */
   height: 2rem;
   padding: 0.4rem;
   margin-left: 0.5rem;
+  cursor: pointer;
 `
 
 export type Props = {

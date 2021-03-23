@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react'
 
 import { Network } from 'types'
+import { ExternalLink } from 'components/analytics/ExternalLink'
 
 import { abbreviateString } from 'utils'
 
@@ -109,8 +110,8 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
   const label = labelProp || (useUrlAsLabel && url) || abbreviateString(identifier, 6, 4)
 
   return (
-    <a href={url} target="_blank" rel="noopener noreferrer" className={className}>
+    <ExternalLink href={url} eventLabel={url} target="_blank" rel="noopener noreferrer" className={className}>
       {label}
-    </a>
+    </ExternalLink>
   )
 }

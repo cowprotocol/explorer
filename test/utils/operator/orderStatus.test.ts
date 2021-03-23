@@ -113,65 +113,34 @@ describe('Filled status', () => {
   })
 })
 
-describe('Partially filled status', () => {
-  describe('Buy order', () => {
-    test('Partially filled, on the border to be considered filled', () => {
-      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9998' }
-
-      expect(getOrderStatus(order)).toEqual('partially filled')
-    })
-    test('Partially filled', () => {
-      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '11' }
-
-      expect(getOrderStatus(order)).toEqual('partially filled')
-    })
-    test('Partially filled, sell amount does not affect output', () => {
-      const order: RawOrder = {
-        ...RAW_ORDER,
-        kind: 'buy',
-        buyAmount: '10000',
-        executedBuyAmount: '11',
-        sellAmount: '10000',
-        executedSellAmount: '123',
-      }
-
-      expect(getOrderStatus(order)).toEqual('partially filled')
-    })
+describe('Canceled status', () => {
+  test('Buy order', () => {
+    const order: RawOrder = {
+      ...RAW_ORDER,
+      kind: 'buy',
+      buyAmount: '10000',
+      invalidated: true,
+    }
+    expect(getOrderStatus(order)).toEqual('canceled')
   })
-  describe('Sell order', () => {
-    test('Partially filled, on the border to be considered filled', () => {
-      const order: RawOrder = { ...RAW_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9998' }
-
-      expect(getOrderStatus(order)).toEqual('partially filled')
-    })
-    test('Partially filled, with fee, on the border to be considered filled', () => {
-      const order: RawOrder = {
-        ...RAW_ORDER,
-        kind: 'sell',
-        sellAmount: '9000',
-        executedSellAmount: '9996',
-        executedFeeAmount: '998',
-      }
-
-      expect(getOrderStatus(order)).toEqual('partially filled')
-    })
-    test('Partially filled', () => {
-      const order: RawOrder = { ...RAW_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '11' }
-
-      expect(getOrderStatus(order)).toEqual('partially filled')
-    })
-    test('Partially filled, buy amount does not affect output', () => {
-      const order: RawOrder = {
-        ...RAW_ORDER,
-        kind: 'sell',
-        sellAmount: '10000',
-        executedSellAmount: '11',
-        buyAmount: '10000',
-        executedBuyAmount: '20',
-      }
-
-      expect(getOrderStatus(order)).toEqual('partially filled')
-    })
+  test('Sell order', () => {
+    const order: RawOrder = {
+      ...RAW_ORDER,
+      kind: 'sell',
+      sellAmount: '10000',
+      invalidated: true,
+    }
+    expect(getOrderStatus(order)).toEqual('canceled')
+  })
+  test('Expired and invalidated', () => {
+    const order: RawOrder = {
+      ...RAW_ORDER,
+      kind: 'sell',
+      sellAmount: '10000',
+      invalidated: true,
+      validTo: _getPastTimestamp(),
+    }
+    expect(getOrderStatus(order)).toEqual('canceled')
   })
 })
 

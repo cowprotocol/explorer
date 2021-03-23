@@ -7,29 +7,33 @@ import { useNetworkId } from 'state/network'
 import styled from 'styled-components'
 
 const Logo = styled.span`
-  display: block;
-  margin: 0 0.5rem;
-  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  margin: 0 0.5rem 0 0;
+  font-size: 1.8rem;
+  line-height: 1;
+  font-weight: ${({ theme }): string => theme.fontBlack};
 `
 
 const NetworkLabel = styled.span`
-  display: block;
+  border-radius: 0.6rem;
+  display: flex;
   margin: 0 0.5rem;
   font-size: 1.1rem;
   text-align: center;
-  padding: 0.3rem 0.8rem;
+  padding: 0.7rem;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
 
   &.rinkeby {
-    background-color: #f6c343;
-    color: #6d3e00;
+    background: ${({ theme }): string => theme.borderPrimary};
+    color: ${({ theme }): string => theme.textSecondary1};
   }
 
   &.xdai {
-    background-color: #48a9a6;
-    color: #153a39;
+    background: ${({ theme }): string => theme.orangeOpacity};
+    color: ${({ theme }): string => theme.orange};
   }
 `
 

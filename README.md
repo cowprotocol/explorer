@@ -1,3 +1,5 @@
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/gnosis/gp-ui)
+
 [![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-ui/badge.svg?branch=master)](https://coveralls.io/github/gnosis/gp-ui?branch=master)
 
 Develop:
@@ -17,29 +19,28 @@ Gnosis Protocol is a fully permissionless DEX that enables ring trades to maximi
 - **Story Book**: Showcases some of the components used in these apps.
 
 
-## 🏃‍♀️ Run it locally
-
-The default app is the **Explorer**.
-
+## 🧪 Install dependencies 
 ```bash
 # Install dependencies (we use Yarn but NPM should work too)
 yarn
-
-# Run explorer UI
-#   Start dev server in http://localhost:8080
-yarn start
-
-# Run Trade UI
-yarn start:trade
-
-# Run Legacy GP v1 UI
-yarn start:gp-v1
 ```
+
+## 🏃‍♀️ Run it locally
+> Make sure you installed the dependencies first
+
+
+| App         |      Description                                   |  Run                              |  Notes                                 |
+|-------------|:----------------------------------------------:|--------------------------------------:|----------------------------------------|
+| Explorer    | Gnosis Protocol Explorer. It's the default app | `yarn start` or `yarn start:explorer` |                                        |
+| Safe Swap   | Gnosis Safe's Swap UI                          | `yarn start:safe-swap`                | 🚧 `WIP: Under construction`           |
+| Trade UI    | Classical trading UI                           | `yarn start:trade`                    | 🚧 `WIP: Just a not working prototype` |
+| GP v1 Swap   |  Swap UI for Gnosis Protocol v1               | `yarn start:gp-v1`                    |                                        |
+    
 
 Open http://localhost:8080 in your browser.
 
 
-## 👷‍♀️Build app
+## 👷‍♀️ Build app
 
 ```bash
 yarn build
