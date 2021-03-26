@@ -1,19 +1,26 @@
 import { useHistory, useParams, useRouteMatch } from 'react-router'
 
+function useOrderIdParam(): string {
+  const { orderId } = useParams<{ orderId: string }>()
+
+  return orderId
+}
+
 /**
  * Fetches order id from url parameters
  * Sanitizes it and updates the URL, if any
  *
  * @returns Sanitized order id
  */
-export function useOrderId(): string {
-  const { orderId } = useParams<{ orderId: string }>()
+export function useSanitizeOrderIdAndUpdateUrl(): string {
+  const orderId = useOrderIdParam()
   const { url } = useRouteMatch()
   const history = useHistory()
 
   // Allows any kind of crap in the orderId, as long as there is a valid and continuous order id in it
   // Ignores case
-  const regexMatch = orderId.match(/(0x[0-9a-f]{112})/i)
+  // 0x prefix is optional
+  const regexMatch = orderId.match(/(:?0x)?([0-9a-f]{112})/i)
 
   // Get extracted order id from the match, if any
   const sanitizedOrderId = (regexMatch && regexMatch[0]?.toLowerCase()) || orderId.toLowerCase()
