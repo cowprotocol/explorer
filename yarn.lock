@@ -3353,9 +3353,9 @@
     defer-to-connect "^1.0.1"
 
 "@truffle/hdwallet-provider@^1.2.0":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@truffle/hdwallet-provider/-/hdwallet-provider-1.2.2.tgz#7b42f7cb7fc1f80751c573c72ba488e59690f8ea"
-  integrity sha512-gpE5M9c+G7uMR9Nn2xslY0BRdl8hvlrHxBJ451g/V3WnOI5rDQMXezz6VZMn3zvWDiQTPRknx1uUDfWvMuQwqg==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@truffle/hdwallet-provider/-/hdwallet-provider-1.2.6.tgz#249cfdb291e9b6ce6f0444a60bc4b0f06e87b627"
+  integrity sha512-g4n1ETH2y7KlqQYq0PMjuHaLxggU96RSj1p3i6dGCAgONyPyA+TD1wyot8M2dXp+RG/VVzZoVTuyFGyBs5EhXw==
   dependencies:
     "@trufflesuite/web3-provider-engine" "15.0.13-1"
     any-promise "^1.3.0"
@@ -3365,7 +3365,6 @@
     ethereumjs-tx "^1.0.0"
     ethereumjs-util "^6.1.0"
     ethereumjs-wallet "^1.0.1"
-    source-map-support "^0.5.19"
 
 "@trufflesuite/eth-json-rpc-filters@^4.1.2-1":
   version "4.1.2-1"
@@ -17987,7 +17986,7 @@ source-map-support@^0.3.2:
   dependencies:
     source-map "0.1.32"
 
-source-map-support@^0.5.16, source-map-support@^0.5.17, source-map-support@^0.5.19, source-map-support@^0.5.6, source-map-support@~0.5.12:
+source-map-support@^0.5.16, source-map-support@^0.5.17, source-map-support@^0.5.6, source-map-support@~0.5.12:
   version "0.5.19"
   resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.19.tgz#a98b62f86dcaf4f67399648c085291ab9e8fed61"
   integrity sha512-Wonm7zOCIJzBGQdB+thsPar0kYuCIzYvxZwlBa87yi/Mdjv7Tip2cyVbLj5o0cFPN4EVkuTwb3GDDyUx2DGnGw==
