@@ -62,6 +62,7 @@ const Table = styled(SimpleTable)`
 const tooltip = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
+  to: 'The account address which will/did receive the bought amount.',
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
   status: 'The order status is either Open, Filled, Expired or Canceled.',
   submission:
@@ -90,6 +91,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     uid,
     shortId,
     owner,
+    receiver,
     // txHash,
     kind,
     partiallyFillable,
@@ -139,6 +141,18 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 textToCopy={owner}
                 onCopy={(): void => onCopy('ownerAddress')}
                 contentsToDisplay={<BlockExplorerLink identifier={owner} type="address" label={owner} />}
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <HelpTooltip tooltip={tooltip.to} /> To
+            </td>
+            <td>
+              <RowWithCopyButton
+                textToCopy={receiver}
+                onCopy={(): void => onCopy('receiverAddress')}
+                contentsToDisplay={<BlockExplorerLink identifier={receiver} type="address" label={receiver} />}
               />
             </td>
           </tr>

@@ -9,6 +9,7 @@ import { USDT, WETH } from './erc20s'
 export const RAW_ORDER: RawOrder = {
   creationDate: '2021-01-20T23:15:07.892538607Z',
   owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
+  receiver: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
   uid: '0xadef89adea9e8d7f987e98f79a87efde5f7e65df65e76d5f67e5d76f5edf',
   buyAmount: '0',
   executedBuyAmount: '0',
@@ -29,6 +30,7 @@ export const RAW_ORDER: RawOrder = {
 
 export const RICH_ORDER: Order = {
   ...RAW_ORDER,
+  receiver: RAW_ORDER.owner,
   shortId: 'adef89ad',
   creationDate: new Date(RAW_ORDER.creationDate),
   expirationDate: new Date(RAW_ORDER.validTo * 1000),

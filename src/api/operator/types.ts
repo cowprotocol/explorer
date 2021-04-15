@@ -25,6 +25,7 @@ export type OrderStatus = 'open' | 'filled' | 'canceled' | 'expired'
 export type RawOrder = {
   creationDate: string
   owner: string
+  receiver?: string
   uid: string
   executedBuyAmount: string
   executedSellAmount: string
@@ -48,6 +49,7 @@ export type RawOrder = {
  * Some fields are kept as is.
  */
 export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature'> & {
+  receiver: string
   txHash?: string
   shortId: string
   creationDate: Date

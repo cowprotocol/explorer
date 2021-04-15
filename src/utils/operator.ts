@@ -217,6 +217,14 @@ function getShortOrderId(orderId: string, length = 8): string {
   return orderId.replace(/^0x/, '').slice(0, length)
 }
 
+function isZeroAddress(address: string): boolean {
+  return /^0x0{40}$/.test(address)
+}
+
+function getReceiverAddress({ owner, receiver }: RawOrder): string {
+  return !receiver || isZeroAddress(receiver) ? owner : receiver
+}
+
 /**
  * Transforms a RawOrder into an Order object
  *
@@ -235,6 +243,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     invalidated,
     ...rest
   } = rawOrder
+  const receiver = getReceiverAddress(rawOrder)
   const shortId = getShortOrderId(rawOrder.uid)
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
   const status = getOrderStatus(rawOrder)
@@ -247,6 +256,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
 
   return {
     ...rest,
+    receiver,
     txHash,
     shortId,
     creationDate: new Date(creationDate),
