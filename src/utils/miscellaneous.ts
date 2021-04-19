@@ -4,11 +4,11 @@ import Web3 from 'web3'
 
 const toChecksumAddress = Web3.utils.toChecksumAddress
 
-import { TokenDetails, Unpromise } from 'types'
+import { Network, TokenDetails, Unpromise } from 'types'
 import { AssertionError } from 'assert'
 import { AuctionElement, Trade, Order } from 'api/exchange/ExchangeApi'
 import { batchIdToDate } from './time'
-import { ORDER_FILLED_FACTOR, MINIMUM_ALLOWANCE_DECIMALS, DEFAULT_TIMEOUT } from 'const'
+import { ORDER_FILLED_FACTOR, MINIMUM_ALLOWANCE_DECIMALS, DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
 import { TEN, ZERO } from '@gnosis.pm/dex-js'
 
 export function assertNonNull<T>(val: T, message: string): asserts val is NonNullable<T> {
@@ -89,6 +89,21 @@ export function getImageUrl(tokenAddress?: string): string | undefined {
   } catch (e) {
     return undefined
   }
+}
+
+export function isNativeToken(address: string): boolean {
+  return address.toLowerCase() === NATIVE_TOKEN_ADDRESS.toLowerCase()
+}
+
+export function getImageAddress(address: string, network: Network): string {
+  if (isNativeToken(address)) {
+    // What is going on here?
+    // Well, this address here is the path on `src/assets/tokens/`
+    // So these special values will use the local images,
+    // because they are native tokens and don't really have an address
+    return network === Network.xDAI ? 'xdai' : 'eth'
+  }
+  return address
 }
 
 export function isTokenEnabled(allowance: BN, { decimals = 18 }: TokenDetails): boolean {

@@ -2,8 +2,11 @@ name: Continuous Integration
 
 # Run on every commit
 on:
+  # build on PR creation/updates, also when pushing to master/develop, or create a release
+  pull_request:
+    types: [opened, synchronize]
   push:
-    branches: '**'
+    branches: [master, develop]
   release:
     types: [published]
 

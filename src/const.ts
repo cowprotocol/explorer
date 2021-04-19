@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
+import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
   FEE_DENOMINATOR,
@@ -174,6 +174,7 @@ export const WETH_ADDRESS_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 export const WETH_ADDRESS_RINKEBY = '0xc778417E063141139Fce010982780140Aa0cD5Ab'
 export const WXDAI_ADDRESS_XDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
 export const WETH_ADDRESS_XDAI = '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'
+export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 export const ORDER_BOOK_HOPS_MAX = 30
 
@@ -224,3 +225,23 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
     [Network.xDAI]: {},
   },
 )
+
+export const ETH: TokenErc20 = {
+  name: 'ETH',
+  symbol: 'ETH',
+  decimals: 18,
+  address: NATIVE_TOKEN_ADDRESS,
+}
+
+export const XDAI: TokenErc20 = {
+  name: 'xDai',
+  symbol: 'xDai',
+  decimals: 18,
+  address: NATIVE_TOKEN_ADDRESS,
+}
+
+export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
+  '1': ETH,
+  '4': ETH,
+  '100': XDAI,
+}
