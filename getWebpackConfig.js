@@ -96,7 +96,15 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
   // Environment plugin: Like e DefinePlugin but on process.env
   plugins.push(
     new webpack.EnvironmentPlugin({
-      NODE_ENV: 'development', // FIXME: Shouldn't this is isProduction??
+      NODE_ENV: 'development', // defaults to `development` when not set
+      // Load app's env vars, if any
+      ...apps.reduce((acc, app) => {
+        if (app && app.envVars) {
+          acc = { ...acc, ...app.envVars }
+        }
+        return acc
+      }, {}),
+      // Finally load global env vars
       ...envVars,
     }),
   )
