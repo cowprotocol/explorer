@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { DefaultTheme } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faClock, faDotCircle, faTimesCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faCircleNotch, faClock, faTimesCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 
 import { OrderStatus } from 'api/operator'
 
@@ -68,14 +68,15 @@ function getStatusIcon(status: OrderStatus): IconDefinition {
     case 'canceled':
       return faTimesCircle
     case 'open':
-      return faDotCircle
+      return faCircleNotch
   }
 }
 
 function StatusIcon({ status }: DisplayProps): JSX.Element {
   const icon = getStatusIcon(status)
+  const isOpen = status === 'open'
 
-  return <StyledFAIcon icon={icon} />
+  return <StyledFAIcon icon={icon} spin={isOpen} />
 }
 
 export type Props = DisplayProps & { partiallyFilled: boolean }
