@@ -30,7 +30,7 @@ const order = {
   txHash: '0x489d8fd1efd43394c7c2b26216f36f1ab49b8d67623047e0fcb60efa2a2c420b',
 }
 
-const defaultProps: Props = { order }
+const defaultProps: Props = { order, areTradesLoading: false }
 
 export const DefaultFillOrKill = Template.bind({})
 DefaultFillOrKill.args = { ...defaultProps }

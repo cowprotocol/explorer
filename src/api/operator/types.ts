@@ -73,6 +73,36 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
   surplusPercentage: BigNumber
 }
 
+/**
+ * Raw API trade response type
+ */
+export type RawTrade = {
+  blockNumber: number
+  logIndex: number
+  owner: string
+  txHash: string
+  orderUid: string
+  buyAmount: string
+  sellAmount: string
+  sellAmountBeforeFees: string
+  buyToken: string
+  sellToken: string
+}
+
+/**
+ * Enriched Trade type
+ */
+export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
+  orderId: string // rename the field
+  buyAmount: BigNumber
+  sellAmount: BigNumber
+  sellAmountBeforeFees: BigNumber
+  buyToken?: TokenErc20 | null
+  buyTokenAddress: string
+  sellToken?: TokenErc20 | null
+  sellTokenAddress: string
+}
+
 type WithNetworkId = { networkId: Network }
 
 export type GetOrderParams = WithNetworkId & {
@@ -83,4 +113,9 @@ export type GetOrdersParams = WithNetworkId & {
   owner?: string
   sellToken?: string
   buyToken?: string
+}
+
+export type GetTradesParams = WithNetworkId & {
+  owner?: string
+  orderId?: string
 }

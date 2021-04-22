@@ -5,7 +5,7 @@ import { calculatePrice, invertPrice } from '@gnosis.pm/dex-js'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
-import { Order, OrderStatus, RawOrder } from 'api/operator/types'
+import { Order, OrderStatus, RawOrder, RawTrade, Trade } from 'api/operator/types'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -276,5 +276,22 @@ export function transformOrder(rawOrder: RawOrder): Order {
     filledPercentage,
     surplusAmount,
     surplusPercentage,
+  }
+}
+
+/**
+ * Transforms a RawTrade into a Trade object
+ */
+export function transformTrade(rawTrade: RawTrade): Trade {
+  const { orderUid, buyAmount, sellAmount, sellAmountBeforeFees, buyToken, sellToken, ...rest } = rawTrade
+
+  return {
+    ...rest,
+    orderId: orderUid,
+    buyAmount: new BigNumber(buyAmount),
+    sellAmount: new BigNumber(sellAmount),
+    sellAmountBeforeFees: new BigNumber(sellAmountBeforeFees),
+    buyTokenAddress: buyToken,
+    sellTokenAddress: sellToken,
   }
 }
