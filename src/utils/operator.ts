@@ -69,30 +69,71 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
 }
 
-export function getSurplus(
-  inputAmount: BigNumber | string,
-  executedAmount: BigNumber | string,
-): { amount: BigNumber; percentage: BigNumber } {
-  // Just as a nicety, allow both input as strings
-  // inputAmount has ne need for conversion since BigNumber takes care of it when used as a parameter
-  // executedAmount needs to be converted though
-  const _executedAmount = typeof executedAmount === 'string' ? new BigNumber(executedAmount) : executedAmount
+type Surplus = {
+  amount: BigNumber
+  percentage: BigNumber
+}
 
-  const amount = _executedAmount.gt(inputAmount) ? _executedAmount.minus(inputAmount) : ZERO_BIG_NUMBER
-  const percentage = amount.dividedBy(inputAmount)
+type BigNumberIsh = string | BigNumber
+
+/**
+ * Calculates SELL surplus based on buy amounts
+ *
+ * @param buyAmount buyAmount
+ * @param executedBuyAmount executedBuyAmount
+ * @returns Sell surplus
+ */
+export function getSellSurplus(buyAmount: BigNumberIsh, executedBuyAmount: BigNumberIsh): Surplus {
+  const buyAmountBigNumber = new BigNumber(buyAmount)
+  const executedAmountBigNumber = new BigNumber(executedBuyAmount)
+  // SELL order has the sell amount fixed, so it'll buy AT LEAST `buyAmount`
+  // Surplus is in the form of additional buy amount
+  // The difference between `executedBuyAmount - buyAmount` is the surplus.
+  const amount = executedAmountBigNumber.gt(buyAmountBigNumber)
+    ? executedAmountBigNumber.minus(buyAmountBigNumber)
+    : ZERO_BIG_NUMBER
+  const percentage = amount.dividedBy(buyAmountBigNumber)
 
   return { amount, percentage }
 }
 
-export function getOrderSurplus(order: RawOrder): { amount: BigNumber; percentage: BigNumber } {
-  const { kind, buyAmount, sellAmount } = order
+/**
+ * Calculates BUY surplus based on sell amounts
+ *
+ * @param sellAmount sellAmount
+ * @param executedSellAmountMinusFees executedSellAmount minus executedFeeAmount
+ * @returns Buy surplus
+ */
+export function getBuySurplus(sellAmount: BigNumberIsh, executedSellAmountMinusFees: BigNumberIsh): Surplus {
+  const sellAmountBigNumber = new BigNumber(sellAmount)
+  const executedAmountBigNumber = new BigNumber(executedSellAmountMinusFees)
+  // BUY order has the buy amount fixed, so it'll sell AT MOST `sellAmount`
+  // Surplus will come in the form of a "discount", selling less than `sellAmount`
+  // The difference between `sellAmount - executedSellAmount` is the surplus.
+  const amount =
+    executedAmountBigNumber.gt(ZERO_BIG_NUMBER) && sellAmountBigNumber.gt(executedAmountBigNumber)
+      ? sellAmountBigNumber.minus(executedAmountBigNumber)
+      : ZERO_BIG_NUMBER
+  const percentage = amount.dividedBy(sellAmountBigNumber)
 
+  return { amount, percentage }
+}
+
+export function getOrderSurplus(order: RawOrder): Surplus {
+  const { kind, buyAmount, sellAmount, partiallyFillable } = order
+
+  // `executedSellAmount` already has `executedFeeAmount` discounted
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
 
+  if (partiallyFillable) {
+    // TODO: calculate how much was matched based on the type and check whether there was any surplus
+    throw Error('Not implemented')
+  }
+
   if (kind === 'buy') {
-    return getSurplus(sellAmount, executedSellAmount)
+    return getBuySurplus(sellAmount, executedSellAmount)
   } else {
-    return getSurplus(buyAmount, executedBuyAmount)
+    return getSellSurplus(buyAmount, executedBuyAmount)
   }
 }
 
@@ -176,6 +217,14 @@ function getShortOrderId(orderId: string, length = 8): string {
   return orderId.replace(/^0x/, '').slice(0, length)
 }
 
+function isZeroAddress(address: string): boolean {
+  return /^0x0{40}$/.test(address)
+}
+
+function getReceiverAddress({ owner, receiver }: RawOrder): string {
+  return !receiver || isZeroAddress(receiver) ? owner : receiver
+}
+
 /**
  * Transforms a RawOrder into an Order object
  *
@@ -194,6 +243,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     invalidated,
     ...rest
   } = rawOrder
+  const receiver = getReceiverAddress(rawOrder)
   const shortId = getShortOrderId(rawOrder.uid)
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(rawOrder)
   const status = getOrderStatus(rawOrder)
@@ -206,6 +256,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
 
   return {
     ...rest,
+    receiver,
     txHash,
     shortId,
     creationDate: new Date(creationDate),

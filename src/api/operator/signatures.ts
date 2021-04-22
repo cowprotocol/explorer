@@ -34,6 +34,10 @@ export async function signOrder(params: SignOrderParams): Promise<string> {
   const { networkId, signer, order } = params
 
   const domain = _getDomain(networkId)
+
   console.log('[api:operator:signature] signOrder', { domain, order, signer, TYPED_DATA_SIGNING_SCHEME })
-  return signOrderGp(domain, order, signer, TYPED_DATA_SIGNING_SCHEME)
+
+  const { data: signature } = await signOrderGp(domain, order, signer, TYPED_DATA_SIGNING_SCHEME)
+
+  return signature.toString()
 }

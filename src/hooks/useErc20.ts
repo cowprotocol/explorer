@@ -15,12 +15,23 @@ import { getErc20Info } from 'services/helpers'
 
 import { web3, erc20Api } from 'apps/explorer/api'
 
+import { NATIVE_TOKEN_PER_NETWORK } from 'const'
+import { isNativeToken } from 'utils'
+
 async function _fetchErc20FromNetwork(params: {
   address: string
   networkId: number
   setError: (error: string) => void
 }): Promise<SingleErc20State> {
   const { address, networkId, setError } = params
+
+  if (isNativeToken(address)) {
+    // Default to mainnet (ETH) when the network isn't configured
+    const nativeToken = NATIVE_TOKEN_PER_NETWORK[networkId] || NATIVE_TOKEN_PER_NETWORK[Network.Mainnet]
+    // Overwrite native address because otherwise it won't match the case
+    // Causing the caller to never know we got the token it was looking for
+    return { ...nativeToken, address }
+  }
 
   try {
     return getErc20Info({ tokenAddress: address, networkId, web3, erc20Api })

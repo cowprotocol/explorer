@@ -1,19 +1,28 @@
 import { Network } from 'types'
 
 import { buildSearchString } from 'utils/url'
+import { isProd, isStaging } from 'utils/env'
 
 import { OrderCreation } from './signatures'
 import { FeeInformation, GetOrderParams, GetOrdersParams, OrderID, OrderPostError, RawOrder } from './types'
 
-/**
- * See Swagger documentation:
- *    https://protocol-rinkeby.dev.gnosisdev.com/api/
- */
-const API_BASE_URL: Partial<Record<Network, string>> = {
-  [Network.Mainnet]: 'https://protocol-mainnet.dev.gnosisdev.com/api/v1',
-  [Network.Rinkeby]: 'https://protocol-rinkeby.dev.gnosisdev.com/api/v1',
-  [Network.xDAI]: 'https://protocol-xdai.dev.gnosisdev.com/api/v1',
+function getOperatorUrl(): Partial<Record<Network, string>> {
+  if (isProd || isStaging) {
+    return {
+      [Network.Mainnet]: process.env.OPERATOR_URL_PROD_MAINNET,
+      [Network.Rinkeby]: process.env.OPERATOR_URL_PROD_RINKEBY,
+      [Network.xDAI]: process.env.OPERATOR_URL_PROD_XDAI,
+    }
+  } else {
+    return {
+      [Network.Mainnet]: process.env.OPERATOR_URL_STAGING_MAINNET,
+      [Network.Rinkeby]: process.env.OPERATOR_URL_STAGING_RINKEBY,
+      [Network.xDAI]: process.env.OPERATOR_URL_STAGING_XDAI,
+    }
+  }
 }
+
+const API_BASE_URL = getOperatorUrl()
 
 const DEFAULT_HEADERS: Headers = new Headers({
   'Content-Type': 'application/json',
@@ -31,7 +40,7 @@ function _getApiBaseUrl(networkId: Network): string {
   if (!baseUrl) {
     throw new Error('Unsupported Network. The operator API is not deployed in the Network ' + networkId)
   } else {
-    return baseUrl
+    return baseUrl + '/v1'
   }
 }
 

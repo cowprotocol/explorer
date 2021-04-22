@@ -15,7 +15,23 @@ const CONFIG = loadConfig()
 
 const config = overrideEnvConfig(CONFIG)
 const TRADE_APP = { name: 'trade', title: 'Gnosis Protocol Exchange', filename: 'trade.html' }
-const EXPLORER_APP = { name: 'explorer', title: 'Gnosis Protocol Explorer', filename: 'index.html' }
+const EXPLORER_APP = {
+  name: 'explorer',
+  title: 'Gnosis Protocol Explorer',
+  filename: 'index.html',
+  envVars: {
+    EXPLORER_APP_DOMAIN_REGEX_DEV: '^protocol-explorer\\.dev|^localhost:\\d{2,5}|^pr\\d+--gpui\\.review',
+    EXPLORER_APP_DOMAIN_REGEX_STAGING: '^protocol-explorer\\.staging',
+    EXPLORER_APP_DOMAIN_REGEX_PROD: '^gnosis-protocol\\.io',
+
+    OPERATOR_URL_STAGING_MAINNET: 'https://protocol-mainnet.dev.gnosisdev.com/api',
+    OPERATOR_URL_STAGING_RINKEBY: 'https://protocol-rinkeby.dev.gnosisdev.com/api',
+    OPERATOR_URL_STAGING_XDAI: 'https://protocol-xdai.dev.gnosisdev.com/api',
+    OPERATOR_URL_PROD_MAINNET: 'https://protocol-mainnet.gnosis.io/api',
+    OPERATOR_URL_PROD_RINKEBY: 'https://protocol-rinkeby.gnosis.io/api',
+    OPERATOR_URL_PROD_XDAI: 'https://protocol-xdai.gnosis.io/api',
+  },
+}
 const SAFE_SWAP_APP = {
   name: 'safe-swap',
   title: 'Gnosis Safe - Swap app',

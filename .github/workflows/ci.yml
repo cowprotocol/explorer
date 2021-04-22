@@ -1,11 +1,19 @@
 name: Continuous Integration
 
 # Run on every commit
-on: push
+on:
+  # build on PR creation/updates, also when pushing to master/develop, or create a release
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: [master, develop]
+  release:
+    types: [published]
 
 env:
   APP_ID: 1
   REPO_NAME_SLUG: gpui
+  PR_NUMBER: ${{ github.event.number }}
 
 jobs:
   setup:
@@ -103,7 +111,7 @@ jobs:
       - name: Build Web Apps
         run: yarn build
         env:
-          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}          
+          GOOGLE_ANALYTICS_ID: ${{ secrets.GOOGLE_ANALYTICS_ID }}
 
       - name: Upload websites artifact
         uses: actions/upload-artifact@v2
@@ -162,15 +170,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Get PR number
-        uses: jwalton/gh-find-current-pr@v1
-        id: findPr
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: 'Deploy to S3: PRaul'
-        if: success() && steps.findPr.outputs.number
-        run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ steps.findPr.outputs.number }} --delete
+        if: success() && env.PR_NUMBER
+        run: aws s3 sync website s3://${{ secrets.AWS_REVIEW_BUCKET_NAME }}/${{ env.REPO_NAME_SLUG }}/pr${{ env.PR_NUMBER }} --delete
 
       - name: 'PRaul: Comment PR with app URLs'
         uses: mshick/add-pr-comment@v1
@@ -182,9 +184,9 @@ jobs:
             * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
-        if: success() && steps.findPr.outputs.number
+        if: success() && env.PR_NUMBER
         env:
-          REVIEW_FEATURE_URL: https://pr${{ steps.findPr.outputs.number }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
+          REVIEW_FEATURE_URL: https://pr${{ env.PR_NUMBER }}--${{ env.REPO_NAME_SLUG }}.review.gnosisdev.com
 
       - name: 'Deploy to S3: Develop'
         if: github.ref == 'refs/heads/develop'
@@ -193,3 +195,15 @@ jobs:
       - name: 'Deploy to S3: Staging'
         if: github.ref == 'refs/heads/master'
         run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
+
+      - name: 'Production deployment: Upload release build files to be deployed'
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }} --delete
+
+      - name: 'Production deployment: Enable production deployment'
+        if: success() && startsWith(github.ref, 'refs/tags/v')
+        run: bash ./.github/scripts/prepare_production_deployment.sh
+        env:
+          PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          VERSION_TAG: ${{ github.event.release.tag_name }}

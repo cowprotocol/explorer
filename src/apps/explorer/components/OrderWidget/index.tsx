@@ -1,7 +1,7 @@
 import React from 'react'
-import { useParams } from 'react-router'
 
 import { useOrderAndErc20s } from 'hooks/useOperatorOrder'
+import { useSanitizeOrderIdAndUpdateUrl } from 'hooks/useSanitizeOrderIdAndUpdateUrl'
 
 import { ORDER_QUERY_INTERVAL } from 'apps/explorer/const'
 
@@ -10,7 +10,7 @@ import { RedirectToNetwork, useNetworkId } from 'state/network'
 
 export const OrderWidget: React.FC = () => {
   const networkId = useNetworkId()
-  const { orderId } = useParams<{ orderId: string }>()
+  const orderId = useSanitizeOrderIdAndUpdateUrl()
 
   const { order, isLoading, errors, errorOrderPresentInNetworkId } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
 

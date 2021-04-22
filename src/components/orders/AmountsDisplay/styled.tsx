@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
-import TokenImg from 'components/common/TokenImg'
-
 export const Wrapper = styled.div`
   display: grid;
   row-gap: 1rem;
@@ -52,10 +50,4 @@ export const RowContents = styled.span`
 export const UsdAmount = styled.span`
   color: ${({ theme }): string => theme.textPrimary1};
   opacity: 0.5;
-`
-
-export const StyledImg = styled(TokenImg)`
-  width: 1.6rem;
-  height: 1.6rem;
-  margin: 0 0.5rem;
 `
