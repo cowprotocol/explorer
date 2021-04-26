@@ -152,7 +152,7 @@ jobs:
 
   deploy:
     name: Deploy
-    # needs: [build, storybook]
+    needs: [build, storybook]
     runs-on: ubuntu-latest
 
     steps:
