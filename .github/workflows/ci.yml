@@ -155,7 +155,7 @@ jobs:
     needs: [build, storybook]
     runs-on: ubuntu-latest
 
-    steps:      
+    steps:
       - name: Download website
         uses: actions/download-artifact@v2
 
