@@ -199,6 +199,16 @@ jobs:
   #       if: startsWith(github.ref, 'refs/tags/v')
   #       run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }} --delete
 
+
+      - name: 'where I am???'
+        run: pwd && ls -la
+
+      - name: 'github dir???'
+        run: ls -la .github/scripts/
+
+      - name: 'scripts dir???'
+        run: ls -la .github/scripts/
+
       - name: 'Production deployment: Enable production deployment'
         if: success() && startsWith(github.ref, 'refs/tags/v')
         run: bash .github/scripts/prepare_production_deployment.sh
