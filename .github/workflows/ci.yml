@@ -201,7 +201,7 @@ jobs:
 
       - name: 'Production deployment: Enable production deployment'
         if: success() && startsWith(github.ref, 'refs/tags/v')
-        run: bash ../.github/scripts/prepare_production_deployment.sh
+        run: bash .github/scripts/prepare_production_deployment.sh
         env:
           PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
