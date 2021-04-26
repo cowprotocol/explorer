@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/gp-v1",
-  "version": "2.1.0-rc.14",
+  "version": "2.1.0-rc.15",
   "description": "",
   "main": "src/index.js",
   "sideEffects": false,
