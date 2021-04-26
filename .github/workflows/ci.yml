@@ -156,6 +156,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Download website
         uses: actions/download-artifact@v2
 
@@ -194,9 +197,6 @@ jobs:
       - name: 'Deploy to S3: Staging'
         if: github.ref == 'refs/heads/master'
         run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete      
-
-      - name: Checkout code
-        uses: actions/checkout@v2
 
       - name: Get the version
         id: get_version
