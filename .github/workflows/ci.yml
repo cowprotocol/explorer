@@ -199,29 +199,21 @@ jobs:
       #   if: startsWith(github.ref, 'refs/tags/v')
       #   run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/releases/${{ github.event.release.tag_name }} --delete
 
-      # - name: Checkout code
-      #   uses: actions/checkout@v2
-
-      # - name: 'Production deployment: Enable production deployment'
-      #   if: success() && startsWith(github.ref, 'refs/tags/v')
-      #   run: bash .github/scripts/prepare_production_deployment.sh
-      #   env:
-      #     PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
-      #     PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
-      #     VERSION_TAG: ${{ github.event.release.tag_name }}
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+
+      - name: 'Production deployment: Enable production deployment'
+        if: success() && startsWith(github.ref, 'refs/tags/v')
+        run: bash .github/scripts/prepare_production_deployment.sh
+        env:
+          PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
+          PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
+          VERSION_TAG: ${{ steps.get_version.outputs.VERSION }}
+
+      
           
-      - name: Test
-        run: echo ${{ steps.get_version.outputs.VERSION }}
-        env: 
-            PROD_DEPLOYMENT_HOOK_TOKEN: ${GITHUB_REF##*/}
-
-      - name: Test 2
-        run: echo ${{ env.PROD_DEPLOYMENT_HOOK_TOKEN }}
-        env: 
-            PROD_DEPLOYMENT_HOOK_TOKEN: ${{ steps.get_version.outputs.VERSION }}
-
           
