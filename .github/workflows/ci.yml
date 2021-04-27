@@ -152,7 +152,7 @@ jobs:
 
   deploy:
     name: Deploy
-    # needs: [build, storybook]
+    needs: [build, storybook]
     runs-on: ubuntu-latest
 
     steps:
@@ -196,7 +196,7 @@ jobs:
 
       - name: 'Deploy to S3: Staging'
         if: github.ref == 'refs/heads/master'
-        run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete      
+        run: aws s3 sync website s3://${{ secrets.AWS_STAGING_BUCKET_NAME }}/current --delete
 
       - name: Get the version
         id: get_version
@@ -213,7 +213,3 @@ jobs:
           PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
           VERSION_TAG: ${{ steps.get_version.outputs.VERSION }}
-
-      
-          
-          
