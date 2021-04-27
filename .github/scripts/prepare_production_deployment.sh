@@ -16,4 +16,5 @@ then
   #     $PROD_DEPLOYMENT_HOOK_URL
 else
   echo  >&2 "[ERROR] Deployment to production could not be prepared. Some Environment variables are missing"
+  exit 100
 fi
