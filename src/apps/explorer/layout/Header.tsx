@@ -14,6 +14,19 @@ const Logo = styled.span`
   line-height: 1;
   font-weight: ${({ theme }): string => theme.fontBlack};
   white-space: nowrap;
+  position: relative;
+
+  &::after {
+    content: 'EXPLORER';
+    font-size: 0.9rem;
+    letter-spacing: 0.36rem;
+    opacity: 0.5;
+    display: block;
+    position: absolute;
+    bottom: -0.9rem;
+    right: 0;
+    font-weight: 500;
+  }
 `
 
 const NetworkLabel = styled.span`

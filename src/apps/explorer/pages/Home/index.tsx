@@ -20,6 +20,7 @@ const Wrapper = styled.div`
     width: 100%;
     margin: 0 0 2.4rem;
     font-size: 2.4rem;
+    line-height: 1;
   }
 `
 
