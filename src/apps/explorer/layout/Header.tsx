@@ -13,6 +13,7 @@ const Logo = styled.span`
   font-size: 1.8rem;
   line-height: 1;
   font-weight: ${({ theme }): string => theme.fontBlack};
+  white-space: nowrap;
 `
 
 const NetworkLabel = styled.span`
@@ -43,13 +44,12 @@ export const Header: React.FC = () => {
     return null
   }
 
-  const network = networkId !== 1 ? getNetworkFromId(networkId) : null
+  const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : null
 
   return (
-    <GenericHeader>
+    <GenericHeader logoAlt="Gnosis Protocol" linkTo={`/${network || ''}`} label={<Logo>Gnosis Protocol</Logo>}>
       <Navigation>
-        <Logo>GP Explorer</Logo>
-        {network && <NetworkLabel className={network.toLowerCase()}>{network}</NetworkLabel>}
+        {network && <NetworkLabel className={network}>{network}</NetworkLabel>}
         {/*      
         <li>
           <Link to="/">Batches</Link>
