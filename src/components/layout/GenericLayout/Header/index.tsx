@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
@@ -26,31 +26,42 @@ const HeaderStyled = styled.header`
 `
 
 const Logo = styled(Link)`
-  width: 2.8rem;
   height: 2.8rem;
-  transform: perspective(20rem) rotateY(0);
-  transform-style: preserve-3d;
-  transition: transform 1s ease-in-out;
   padding: 0;
-  margin: 0 1rem 0 0;
   display: flex;
   align-content: center;
   justify-content: center;
 
   &:hover {
-    animation-name: spin;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    animation-delay: 0.3s;
+    text-decoration: none;
   }
 
   > img {
+    transform: perspective(20rem) rotateY(0);
+    transform-style: preserve-3d;
+    transition: transform 1s ease-in-out;
+
+    &:hover {
+      animation-name: spin;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+      animation-delay: 0.3s;
+    }
+
     background: url(${LogoImage}) no-repeat center/contain;
     border: 0;
     object-fit: contain;
     width: inherit;
     height: inherit;
     margin: auto;
+  }
+
+  > span {
+    margin: 0 0 0 1rem;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    color: ${({ theme }): string => theme.textPrimary1};
   }
 
   @keyframes spin {
@@ -66,10 +77,17 @@ const Logo = styled(Link)`
   }
 `
 
-export const Header: React.FC = ({ children }) => (
+type Props = PropsWithChildren<{
+  label?: React.ReactNode
+  linkTo?: string
+  logoAlt?: string
+}>
+
+export const Header: React.FC<Props> = ({ children, linkTo, logoAlt, label }) => (
   <HeaderStyled>
-    <Logo to="/" href="#">
-      <img src={LogoImage} alt="Trading interface homepage" />
+    <Logo to={linkTo || '/'}>
+      <img src={LogoImage} alt={logoAlt || 'Trading interface homepage'} />
+      {label && <span>{label}</span>}
     </Logo>
     {children}
   </HeaderStyled>

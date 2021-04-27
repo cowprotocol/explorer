@@ -7,11 +7,11 @@ export function useSearchSubmit(): (query: string) => void {
 
   return useCallback(
     (query: string) => {
-      const pathPrefix = path === '/' ? '' : path
+      const pathPrefix = path.endsWith('/') ? path : path + '/'
 
       // For now assumes /orders/ path. Needs logic to try all types for a valid response:
       // Orders, transactions, tokens, batches
-      query && query.length > 0 && history.push(`${pathPrefix}/orders/${query}`)
+      query && query.length > 0 && history.push(`${pathPrefix}orders/${query}`)
     },
     [history, path],
   )

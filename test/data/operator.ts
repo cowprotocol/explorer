@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { Order, RawOrder } from 'api/operator'
+import { Order, RawOrder, RawTrade, Trade } from 'api/operator'
 
 import { ZERO_BIG_NUMBER } from 'const'
 
@@ -51,4 +51,30 @@ export const RICH_ORDER: Order = {
   sellToken: USDT,
   surplusAmount: ZERO_BIG_NUMBER,
   surplusPercentage: ZERO_BIG_NUMBER,
+}
+
+export const RAW_TRADE: RawTrade = {
+  blockNumber: 8453440,
+  logIndex: 3,
+  orderUid:
+    '0x9754ac5510f5057c71e7da67c63edfb2258c608e26f102418e15fef6110c61595b0abe214ab7875562adee331deff0fe1912fe42608087c7',
+  buyAmount: '50000000000000000',
+  sellAmount: '455756789061273449606',
+  sellAmountBeforeFees: '454756979170023164166',
+  owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
+  buyToken: '0xc778417e063141139fce010982780140aa0cd5ab',
+  sellToken: '0xd9ba894e0097f8cc2bbc9d24d308b98e36dc6d02',
+  txHash: '0x2ebf2ba8c2a568af0b11d2498648d6fec01db11e81c6e4bc5dbba9237472dce9',
+}
+
+export const RICH_TRADE: Trade = {
+  ...RAW_TRADE,
+  orderId: RAW_TRADE.orderUid,
+  buyAmount: new BigNumber(RAW_TRADE.buyAmount),
+  sellAmount: new BigNumber(RAW_TRADE.sellAmount),
+  sellAmountBeforeFees: new BigNumber(RAW_TRADE.sellAmountBeforeFees),
+  buyToken: WETH,
+  buyTokenAddress: RAW_TRADE.buyToken,
+  sellToken: USDT,
+  sellTokenAddress: RAW_TRADE.sellToken,
 }

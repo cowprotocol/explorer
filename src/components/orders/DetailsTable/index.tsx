@@ -10,6 +10,7 @@ import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorer
 import { HelpTooltip } from 'components/Tooltip'
 
 import { SimpleTable } from 'components/common/SimpleTable'
+import Spinner from 'components/common/Spinner'
 
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { DateDisplay } from 'components/orders/DateDisplay'
@@ -83,16 +84,17 @@ const tooltip = {
 
 export type Props = {
   order: Order
+  areTradesLoading: boolean
 }
 
 export function DetailsTable(props: Props): JSX.Element | null {
-  const { order } = props
+  const { order, areTradesLoading } = props
   const {
     uid,
     shortId,
     owner,
     receiver,
-    // txHash,
+    txHash,
     kind,
     partiallyFillable,
     creationDate,
@@ -156,14 +158,15 @@ export function DetailsTable(props: Props): JSX.Element | null {
               />
             </td>
           </tr>
-          {/* TODO: re-enable once this data is available on the API */}
-          {/* {!partiallyFillable && (
+          {!partiallyFillable && (
             <tr>
               <td>
                 <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
               </td>
               <td>
-                {txHash ? (
+                {areTradesLoading ? (
+                  <Spinner />
+                ) : txHash ? (
                   <RowWithCopyButton
                     textToCopy={txHash}
                     onCopy={(): void => onCopy('settlementTx')}
@@ -174,7 +177,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 )}
               </td>
             </tr>
-          )} */}
+          )}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.status} /> Status
@@ -268,7 +271,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
           )}
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.fees} /> Gas Fees paid
+              <HelpTooltip tooltip={tooltip.fees} /> Fees
             </td>
             <td>
               <GasFeeDisplay order={order} />

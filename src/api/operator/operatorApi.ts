@@ -4,7 +4,16 @@ import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
 import { OrderCreation } from './signatures'
-import { FeeInformation, GetOrderParams, GetOrdersParams, OrderID, OrderPostError, RawOrder } from './types'
+import {
+  FeeInformation,
+  GetOrderParams,
+  GetOrdersParams,
+  GetTradesParams,
+  OrderID,
+  OrderPostError,
+  RawOrder,
+  RawTrade,
+} from './types'
 
 function getOperatorUrl(): Partial<Record<Network, string>> {
   if (isProd || isStaging) {
@@ -174,40 +183,12 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
 
   const queryString = `/orders/${orderId}`
 
-  let response
-
-  try {
-    response = await _get(networkId, queryString)
-  } catch (e) {
-    const msg = `Failed to fetch ${queryString}`
-    console.error(msg, e)
-    throw new Error(msg)
-  }
-
-  if (!response.ok) {
-    // 404 is not a hard error, return null instead
-    if (response.status === 404) {
-      return null
-    }
-    // Just in case response.text() fails
-    const responseText = await response.text().catch((e) => {
-      console.error(`Failed to fetch response text`, e)
-      throw new Error(`Request failed`)
-    })
-
-    throw new Error(`Request failed: [${response.status}] ${responseText}`)
-  }
-
-  try {
-    return response.json()
-  } catch (e) {
-    console.error(`Response does not have valid JSON`, e)
-    throw new Error(`Failed to parse API response`)
-  }
+  return _fetchQuery(networkId, queryString, true)
 }
 
 /**
  * Gets a list of orders
+ *
  * Optional filters:
  *  - owner: address
  *  - sellToken: address
@@ -225,6 +206,35 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
 
   const queryString = '/orders/' + searchString
 
+  return _fetchQuery(networkId, queryString)
+}
+
+/**
+ * Gets a list of trades
+ *
+ * Optional filters:
+ *  - owner: address
+ *  - orderId: string
+ *
+ * Both filters cannot be used at the same time
+ */
+export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
+  const { networkId, owner = '', orderId = '' } = params
+
+  if (owner && orderId) {
+    throw new Error('Cannot use both `owner` and `orderId` filters at the same time')
+  }
+
+  console.log(`[getTrades] Fetching trades on network ${networkId} with filters: owner=${owner} orderId=${orderId}`)
+
+  const queryString = `/trades/` + buildSearchString({ owner, orderUid: orderId })
+
+  return _fetchQuery(networkId, queryString)
+}
+
+async function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>
+async function _fetchQuery<T>(networkId: Network, queryString: string, nullOn404: true): Promise<T | null>
+async function _fetchQuery<T>(networkId: Network, queryString: string, nullOn404?: boolean): Promise<T | null> {
   let response
 
   try {
@@ -236,6 +246,11 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
   }
 
   if (!response.ok) {
+    // 404 is not a hard error, return null instead if `nullOn404` is set
+    if (response.status === 404 && nullOn404) {
+      return null
+    }
+
     // Just in case response.text() fails
     const responseText = await response.text().catch((e) => {
       console.error(`Failed to fetch response text`, e)

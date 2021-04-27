@@ -17,13 +17,16 @@ export default {
 
 const Template: Story<Props> = (args) => <OrderDetails {...args} />
 
-const defaultProps: Props = { order: null, isLoading: false, errors: {} }
+const defaultProps: Props = { order: null, isOrderLoading: false, areTradesLoading: false, trades: [], errors: {} }
 
 export const OrderFound = Template.bind({})
 OrderFound.args = { ...defaultProps, order: RICH_ORDER }
 
 export const OrderLoading = Template.bind({})
-OrderLoading.args = { ...defaultProps, isLoading: true }
+OrderLoading.args = { ...defaultProps, isOrderLoading: true }
+
+export const TradesLoading = Template.bind({})
+TradesLoading.args = { ...defaultProps, order: RICH_ORDER, areTradesLoading: true }
 
 export const OrderNotFound = Template.bind({})
 OrderNotFound.args = { ...defaultProps }
