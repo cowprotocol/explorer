@@ -31,7 +31,8 @@ fi
 
 if [ -n "$VERSION_TAG" ] && [ -n "$PROD_DEPLOYMENT_HOOK_TOKEN" ] && [ -n "$PROD_DEPLOYMENT_HOOK_URL" ]
 then
-  echo "Calling hook" 
+  echo "Calling hook"
+  exit $?
   # curl --silent --output /dev/null --write-out "%{http_code}" -X POST \
   #    -F token="$PROD_DEPLOYMENT_HOOK_TOKEN" \
   #    -F ref=master \
