@@ -28,6 +28,7 @@ export const ContentPage = styled.div`
     color: var(--color-text-primary);
     letter-spacing: 0;
   }
+
   h2 {
     margin: 1.5rem auto 0.5rem;
     text-align: left;
