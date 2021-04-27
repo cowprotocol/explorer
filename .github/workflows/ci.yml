@@ -212,7 +212,7 @@ jobs:
         env:
           PROD_DEPLOYMENT_HOOK_TOKEN: ${{ secrets.PROD_DEPLOYMENT_HOOK_TOKEN }}
           PROD_DEPLOYMENT_HOOK_URL: ${{ secrets.PROD_DEPLOYMENT_HOOK_URL }}
-          VERSION_TAG: ${{ steps.get_version.outputs.VERSION }}
+          # VERSION_TAG: ${{ steps.get_version.outputs.VERSION }}
 
       
           

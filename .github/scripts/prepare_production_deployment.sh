@@ -1,6 +1,5 @@
 #!/bin/bash
-
-set -ev
+set -e
 
 # Only:
 # - Tagged commits
@@ -16,5 +15,5 @@ then
   #    -F "variables[TRIGGER_RELEASE_COMMIT_TAG]=$VERSION_TAG" \
   #     $PROD_DEPLOYMENT_HOOK_URL
 else
-  echo  >&2 "Deployment to production could not be prepared. Some Environment variables are missing"
+  echo  >&2 "[ERROR] Deployment to production could not be prepared. Some Environment variables are missing"
 fi
