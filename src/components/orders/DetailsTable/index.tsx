@@ -271,7 +271,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
           )}
           <tr>
             <td>
-              <HelpTooltip tooltip={tooltip.fees} /> Gas Fees paid
+              <HelpTooltip tooltip={tooltip.fees} /> Fees
             </td>
             <td>
               <GasFeeDisplay order={order} />
