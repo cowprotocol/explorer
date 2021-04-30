@@ -45,6 +45,7 @@ export const RICH_ORDER: Order = {
   cancelled: RAW_ORDER.invalidated,
   status: 'open',
   partiallyFilled: false,
+  fullyFilled: false,
   filledAmount: ZERO_BIG_NUMBER,
   filledPercentage: ZERO_BIG_NUMBER,
   buyToken: WETH,

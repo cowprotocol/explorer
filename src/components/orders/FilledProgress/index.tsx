@@ -37,6 +37,7 @@ export function FilledProgress(props: Props): JSX.Element {
     order: {
       filledAmount,
       filledPercentage,
+      fullyFilled,
       kind,
       sellAmount,
       buyAmount,
@@ -92,10 +93,14 @@ export function FilledProgress(props: Props): JSX.Element {
         <b>
           {formattedFilledAmount} {mainSymbol}
         </b>{' '}
-        of{' '}
-        <b>
-          {formattedMainAmount} {mainSymbol}
-        </b>{' '}
+        {!fullyFilled && (
+          <>
+            of{' '}
+            <b>
+              {formattedMainAmount} {mainSymbol}
+            </b>{' '}
+          </>
+        )}
         {action} for a total of{' '}
         <b>
           {formattedSwappedAmount} {swappedSymbol}

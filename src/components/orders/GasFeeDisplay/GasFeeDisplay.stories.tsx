@@ -38,7 +38,7 @@ export const PartialFee = Template.bind({})
 PartialFee.args = { ...defaultProps, order: { ...order, executedFeeAmount: new BigNumber('100000') } }
 
 export const FullFee = Template.bind({})
-FullFee.args = { ...defaultProps, order: { ...order, executedFeeAmount: order.feeAmount } }
+FullFee.args = { ...defaultProps, order: { ...order, executedFeeAmount: order.feeAmount, fullyFilled: true } }
 
 export const TinyFee6DecimalsToken = Template.bind({})
 TinyFee6DecimalsToken.args = { ...defaultProps, order: { ...order, executedFeeAmount: new BigNumber('1') } }

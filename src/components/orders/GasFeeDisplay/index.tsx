@@ -19,7 +19,7 @@ export type Props = { order: Order }
 
 export function GasFeeDisplay(props: Props): JSX.Element | null {
   const {
-    order: { feeAmount, executedFeeAmount, sellToken, sellTokenAddress },
+    order: { feeAmount, executedFeeAmount, sellToken, sellTokenAddress, fullyFilled },
   } = props
 
   // TODO: fetch amount in USD
@@ -45,10 +45,14 @@ export function GasFeeDisplay(props: Props): JSX.Element | null {
         {formattedExecutedFee} {quoteSymbol}
       </span>
       {/* <UsdAmount>(~${totalFeeUSD})</UsdAmount> */}
-      <span>
-        of {formattedTotalFee} {quoteSymbol}
-      </span>
-      {/* <UsdAmount>(~${executedFeeUSD})</UsdAmount> */}
+      {!fullyFilled && (
+        <>
+          <span>
+            of {formattedTotalFee} {quoteSymbol}
+          </span>
+          {/* <UsdAmount>(~${executedFeeUSD})</UsdAmount> */}
+        </>
+      )}
     </Wrapper>
   )
 }

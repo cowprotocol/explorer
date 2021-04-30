@@ -67,6 +67,7 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
+  fullyFilled: boolean
   filledAmount: BigNumber
   filledPercentage: BigNumber
   surplusAmount: BigNumber
