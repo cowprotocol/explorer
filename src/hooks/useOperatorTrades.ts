@@ -90,6 +90,8 @@ export function useOrderTrades(order: Order | null): Result {
     }
   }, [])
 
+  const executedSellAmount = order?.executedSellAmount.toString()
+  const executedBuyAmount = order?.executedBuyAmount.toString()
   useEffect(() => {
     if (!networkId || !order?.uid) {
       return
@@ -100,7 +102,7 @@ export function useOrderTrades(order: Order | null): Result {
     // Depending on `executedBuy/SellAmount`s string to force a refetch when there are new trades
     // using the string version because hooks are bad at detecting Object changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchTrades, networkId, order?.uid, order?.executedSellAmount.toString(), order?.executedBuyAmount.toString()])
+  }, [fetchTrades, networkId, order?.uid, executedSellAmount, executedBuyAmount])
 
   return { trades, error, isLoading }
 }
