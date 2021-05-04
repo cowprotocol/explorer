@@ -42,13 +42,19 @@ Default.args = { ...defaultArgs }
 export const FullyFilledSellOrder = Template.bind({})
 FullyFilledSellOrder.args = {
   ...defaultArgs,
-  order: { ...order, kind: 'sell', filledAmount: order.sellAmount, filledPercentage: ONE_BIG_NUMBER },
+  order: {
+    ...order,
+    kind: 'sell',
+    filledAmount: order.sellAmount,
+    filledPercentage: ONE_BIG_NUMBER,
+    fullyFilled: true,
+  },
 }
 
 export const FullyFilledBuyOrder = Template.bind({})
 FullyFilledBuyOrder.args = {
   ...defaultArgs,
-  order: { ...order, kind: 'buy', filledAmount: order.buyAmount, filledPercentage: ONE_BIG_NUMBER },
+  order: { ...order, kind: 'buy', filledAmount: order.buyAmount, filledPercentage: ONE_BIG_NUMBER, fullyFilled: true },
 }
 
 export const PartiallyFilledSellOrder = Template.bind({})

@@ -97,8 +97,10 @@ export function useOrderTrades(order: Order | null): Result {
 
     fetchTrades(networkId, order)
     // Depending on order UID to avoid re-fetching when obj changes but ID remains the same
+    // Depending on `executedBuy/SellAmount`s string to force a refetch when there are new trades
+    // using the string version because hooks are bad at detecting Object changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fetchTrades, networkId, order?.uid])
+  }, [fetchTrades, networkId, order?.uid, order?.executedSellAmount.toString(), order?.executedBuyAmount.toString()])
 
   return { trades, error, isLoading }
 }
