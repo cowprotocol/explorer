@@ -30,6 +30,8 @@ const EXPLORER_APP = {
     OPERATOR_URL_PROD_MAINNET: 'https://protocol-mainnet.gnosis.io/api',
     OPERATOR_URL_PROD_RINKEBY: 'https://protocol-rinkeby.gnosis.io/api',
     OPERATOR_URL_PROD_XDAI: 'https://protocol-xdai.gnosis.io/api',
+
+    GOOGLE_ANALYTICS_ID: undefined,
   },
 }
 const SAFE_SWAP_APP = {
