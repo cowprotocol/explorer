@@ -50,6 +50,8 @@ export function FilledProgress(props: Props): JSX.Element {
     },
   } = props
 
+  const touched = filledPercentage.gt(0)
+
   let mainToken
   let mainAddress
   let mainAmount
@@ -101,10 +103,15 @@ export function FilledProgress(props: Props): JSX.Element {
             </b>{' '}
           </>
         )}
-        {action} for a total of{' '}
-        <b>
-          {formattedSwappedAmount} {swappedSymbol}
-        </b>
+        {action}{' '}
+        {touched && (
+          <>
+            for a total of{' '}
+            <b>
+              {formattedSwappedAmount} {swappedSymbol}
+            </b>
+          </>
+        )}
       </span>
     </Wrapper>
   )
