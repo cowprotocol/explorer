@@ -1833,9 +1833,9 @@
     bignumber.js "^9.0.0"
 
 "@gnosis.pm/gp-v2-contracts@^0.0.1-alpha.17":
-  version "0.0.1-alpha.19"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.19.tgz#3451c3dd8dc5e6697b4c6e5dd5275d5bf3815b3a"
-  integrity sha512-RChg9d1Fp0CDAGIw2sSwR6KiOJanyP/Dcuimd1lfatQkstFdSVBZX4rt6254I2HrJEqv9/edteOxCY+jVbLqeQ==
+  version "0.0.1-alpha.20"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/gp-v2-contracts/-/gp-v2-contracts-0.0.1-alpha.20.tgz#8a53a1495c9dc356080b3ec3ec4f29808726952b"
+  integrity sha512-+R+JKMbzC4SDEdbg86yRbWEBom5ZW0eRGfvNCJ3qUg5KSNKJvA/2bCYHpfWBiQ7fETKHyYH2mlO3XziWplwa2A==
 
 "@gnosis.pm/safe-apps-react-sdk@^2.1.0":
   version "2.4.0"
