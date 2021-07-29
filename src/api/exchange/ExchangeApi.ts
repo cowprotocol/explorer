@@ -373,16 +373,8 @@ export class ExchangeApiImpl extends DepositApiImpl implements ExchangeApi {
   }
 
   public async placeOrder(params: PlaceOrderParams): Promise<Receipt> {
-    const {
-      userAddress,
-      buyTokenId,
-      sellTokenId,
-      validUntil,
-      buyAmount,
-      sellAmount,
-      networkId,
-      txOptionalParams,
-    } = params
+    const { userAddress, buyTokenId, sellTokenId, validUntil, buyAmount, sellAmount, networkId, txOptionalParams } =
+      params
 
     const contract = await this._getContract(networkId)
 

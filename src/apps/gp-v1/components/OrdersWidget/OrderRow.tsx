@@ -221,10 +221,10 @@ const Status: React.FC<Pick<Props, 'order' | 'isOverBalance' | 'transactionHash'
   const isActiveNextBatch = batchId === order.validFrom
   const isFirstActiveBatch = batchId === order.validFrom + 1 && msRemainingInBatch > 60 * 1000 // up until minute 4
   const isUnlimited = order.isUnlimited
-  const isActive = useMemo(() => order.remainingAmount.eq(order.priceDenominator), [
-    order.priceDenominator,
-    order.remainingAmount,
-  ])
+  const isActive = useMemo(
+    () => order.remainingAmount.eq(order.priceDenominator),
+    [order.priceDenominator, order.remainingAmount],
+  )
   const isFilled = useMemo(() => isOrderFilled(order), [order])
   // Display isLowBalance warning only for active and partial fill orders
   const isLowBalance =
@@ -236,10 +236,10 @@ const Status: React.FC<Pick<Props, 'order' | 'isOverBalance' | 'transactionHash'
     !isPendingOrder &&
     !isExpiredOrder
 
-  const pending = useMemo(() => isPendingOrder && <PendingLink transactionHash={transactionHash} />, [
-    isPendingOrder,
-    transactionHash,
-  ])
+  const pending = useMemo(
+    () => isPendingOrder && <PendingLink transactionHash={transactionHash} />,
+    [isPendingOrder, transactionHash],
+  )
 
   // Dima's trick to force component update
   const [, forceUpdate] = useSafeState({})

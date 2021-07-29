@@ -13,10 +13,12 @@ export const OrderWidget: React.FC = () => {
   const networkId = useNetworkId()
   const orderId = useSanitizeOrderIdAndUpdateUrl()
 
-  const { order, isLoading: isOrderLoading, errors, errorOrderPresentInNetworkId } = useOrderAndErc20s(
-    orderId,
-    ORDER_QUERY_INTERVAL,
-  )
+  const {
+    order,
+    isLoading: isOrderLoading,
+    errors,
+    errorOrderPresentInNetworkId,
+  } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
   const { trades, error, isLoading: areTradesLoading } = useOrderTrades(order)
 
   if (error) {

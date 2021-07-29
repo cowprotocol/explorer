@@ -22,11 +22,13 @@ type ToastPromised = {
 const properties = methods.reduce((accum, method) => {
   accum[method] = {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    get: (): any => (...args: [any, any]): Promise<any> =>
-      import(
-        /* webpackChunkName: "toastify"*/
-        './setupToastify'
-      ).then(({ toast }) => toast[method](...args)),
+    get:
+      (): any =>
+      (...args: [any, any]): Promise<any> =>
+        import(
+          /* webpackChunkName: "toastify"*/
+          './setupToastify'
+        ).then(({ toast }) => toast[method](...args)),
   }
   return accum
 }, {}) as {

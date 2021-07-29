@@ -134,16 +134,8 @@ export interface Props {
 }
 
 export const PriceSuggestions: React.FC<Props> = (props) => {
-  const {
-    amount,
-    baseToken,
-    quoteToken,
-    isPriceInverted,
-    fillPrice,
-    fillPriceLoading,
-    onClickPrice,
-    onSwapPrices,
-  } = props
+  const { amount, baseToken, quoteToken, isPriceInverted, fillPrice, fillPriceLoading, onClickPrice, onSwapPrices } =
+    props
 
   const commonProps = {
     baseToken,

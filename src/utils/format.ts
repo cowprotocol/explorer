@@ -170,10 +170,10 @@ export function formatPercentage(percentage: BigNumber): string {
  *
  * @param ROUNDING_MODE BigNumber.RoundingMode
  */
-export const formatBigNumberToPrecisionAndRoundingFactory = (ROUNDING_MODE: BigNumber.RoundingMode) => (
-  amount: BigNumber,
-  precision: number,
-): BigNumber => amount.decimalPlaces(precision, ROUNDING_MODE)
+export const formatBigNumberToPrecisionAndRoundingFactory =
+  (ROUNDING_MODE: BigNumber.RoundingMode) =>
+  (amount: BigNumber, precision: number): BigNumber =>
+    amount.decimalPlaces(precision, ROUNDING_MODE)
 
 /**
  * @function amountToPrecisionDown

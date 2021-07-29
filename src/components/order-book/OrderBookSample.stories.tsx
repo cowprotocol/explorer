@@ -62,13 +62,15 @@ const SampleTemplate: React.FC<SampleProps> = ({
   baseToken: baseTokenSymbolOrAddress,
   quoteToken: quoteTokenSymbolOrAddress,
 }) => {
-  const baseToken = useMemo(() => findTokenConfig(baseTokenSymbolOrAddress, baseTokenDefault), [
-    baseTokenSymbolOrAddress,
-  ])
+  const baseToken = useMemo(
+    () => findTokenConfig(baseTokenSymbolOrAddress, baseTokenDefault),
+    [baseTokenSymbolOrAddress],
+  )
 
-  const quoteToken = useMemo(() => findTokenConfig(quoteTokenSymbolOrAddress, quoteTokenDefault), [
-    quoteTokenSymbolOrAddress,
-  ])
+  const quoteToken = useMemo(
+    () => findTokenConfig(quoteTokenSymbolOrAddress, quoteTokenDefault),
+    [quoteTokenSymbolOrAddress],
+  )
 
   const props = useMemo(
     () =>

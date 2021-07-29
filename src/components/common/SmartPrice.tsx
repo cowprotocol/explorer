@@ -15,10 +15,10 @@ interface Props {
 
 export const SmartPrice: React.FC<Props> = ({ buyToken, sellToken, price: priceFraction }) => {
   const [isPriceInverted, setIsPriceInverted] = useState(false)
-  const { baseToken, quoteToken } = useMemo(() => getMarket({ sellToken, receiveToken: buyToken }), [
-    buyToken,
-    sellToken,
-  ])
+  const { baseToken, quoteToken } = useMemo(
+    () => getMarket({ sellToken, receiveToken: buyToken }),
+    [buyToken, sellToken],
+  )
 
   const [price, priceInverse] = useMemo((): BigNumber[] => {
     const buyOrderPrice = calculatePrice({

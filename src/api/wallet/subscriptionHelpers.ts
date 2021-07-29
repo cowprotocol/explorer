@@ -41,11 +41,13 @@ const createWeb3Subscription = <T extends SubscribeEvent>({
       }
     }
 
-    const sub = (logOptions && event === 'logs'
-      ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        web3.eth.subscribe(event as any, logOptions as any, detectValidSubCb)
-      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        web3.eth.subscribe(event as any, detectValidSubCb)) as Subscription<Event2Data[T]>
+    const sub = (
+      logOptions && event === 'logs'
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          web3.eth.subscribe(event as any, logOptions as any, detectValidSubCb)
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          web3.eth.subscribe(event as any, detectValidSubCb)
+    ) as Subscription<Event2Data[T]>
 
     sub
       .on('connected', (id) => {

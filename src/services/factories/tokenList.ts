@@ -113,13 +113,10 @@ export function getTokensFactory(factoryParams: {
   async function fetchAddressesAndIds(networkId: number, numTokens: number): Promise<Map<string, number>> {
     logDebug(`[tokenListFactory][${networkId}] Fetching addresses for ids from 0 to ${numTokens - 1}`)
 
-    const promises = Array.from(
-      { length: numTokens },
-      async (_, tokenId): Promise<[string, number]> => {
-        const tokenAddress = await exchangeApi.getTokenAddressById({ networkId, tokenId })
-        return [tokenAddress, tokenId]
-      },
-    )
+    const promises = Array.from({ length: numTokens }, async (_, tokenId): Promise<[string, number]> => {
+      const tokenAddress = await exchangeApi.getTokenAddressById({ networkId, tokenId })
+      return [tokenAddress, tokenId]
+    })
 
     const tokenAddressIdPairs = await Promise.all(promises)
 
