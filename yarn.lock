@@ -3644,9 +3644,9 @@
     "@types/enzyme" "*"
 
 "@types/enzyme@*", "@types/enzyme@^3.10.4":
-  version "3.10.8"
-  resolved "https://registry.yarnpkg.com/@types/enzyme/-/enzyme-3.10.8.tgz#ad7ac9d3af3de6fd0673773123fafbc63db50d42"
-  integrity sha512-vlOuzqsTHxog6PV79+tvOHFb6hq4QZKMq1lLD9MaWD1oec2lHTKndn76XOpSwCA0oFTaIbKVPrgM3k78Jjd16g==
+  version "3.10.9"
+  resolved "https://registry.yarnpkg.com/@types/enzyme/-/enzyme-3.10.9.tgz#b2d7c7429a37d994c156b6f361e83f271a60c8aa"
+  integrity sha512-dx5UvcWe2Vtye6S9Hw2rFB7Ul9uMXOAje2FAbXvVYieQDNle9qPAo7DfvFMSztZ9NFiD3dVZ4JsRYGTrSLynJg==
   dependencies:
     "@types/cheerio" "*"
     "@types/react" "*"
@@ -7378,9 +7378,9 @@ data-urls@^2.0.0:
     whatwg-url "^8.0.0"
 
 date-fns@^2.9.0:
-  version "2.22.1"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.22.1.tgz#1e5af959831ebb1d82992bf67b765052d8f0efc4"
-  integrity sha512-yUFPQjrxEmIsMqlHhAhmxkuH769baF21Kk+nZwZGyrMoyLA+LugaQtC0+Tqf9CBUUULWwUJt6Q5ySI3LJDDCGg==
+  version "2.23.0"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
+  integrity sha512-5ycpauovVyAk0kXNZz6ZoB9AYMZB4DObse7P3BPWmyEjXNORTI8EJ6X0uaSAq4sCHzM1uajzrkr6HnsLQpxGXA==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
@@ -11294,9 +11294,9 @@ inline-style-parser@0.1.1:
   integrity sha512-7NXolsK4CAS5+xvdj5OMMbI962hU/wvwoxk+LWR9Ek9bVtyuuYScDN6eS0rUm6TxApFpw7CX1o4uJzcd4AyD3Q==
 
 inter-ui@^3.15.0:
-  version "3.18.0"
-  resolved "https://registry.yarnpkg.com/inter-ui/-/inter-ui-3.18.0.tgz#7e231bd09c3d0cf949645ad42e4a6375abe294e9"
-  integrity sha512-3Q1saEINwBSkgsA2ZzyQGbWoOZeIC9DHlNzC8qdDmZJpj6v21gJwewaC2hcO45AYnz5K5HgBN1jAvoIVW+GhGQ==
+  version "3.19.3"
+  resolved "https://registry.yarnpkg.com/inter-ui/-/inter-ui-3.19.3.tgz#cf4b4b6d30de8d5463e2462588654b325206488c"
+  integrity sha512-5FG9fjuYOXocIfjzcCBhICL5cpvwEetseL3FU6tP3d6Bn7g8wODhB+I9RNGRTizCT7CUG4GOK54OPxqq3msQgg==
 
 internal-ip@^4.3.0:
   version "4.3.0"
