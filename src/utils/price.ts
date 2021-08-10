@@ -1,8 +1,11 @@
 import BN from 'bn.js'
 import BigNumber from 'bignumber.js'
-import { assert, ONE_BIG_NUMBER } from '@gnosis.pm/dex-js'
-import { parseBigNumber } from './format'
+import { assert, ONE_BIG_NUMBER, TokenErc20 } from '@gnosis.pm/dex-js'
+import { formatSmartMaxPrecision, parseBigNumber } from './format'
 import { TEN, UNLIMITED_ORDER_AMOUNT_BIGNUMBER, ONE_HUNDRED_BIG_NUMBER } from 'const'
+import { PriceData } from 'types'
+import { calculatePrice, safeTokenName } from '@gnosis.pm/dex-js'
+import { Order } from 'api/operator'
 
 interface AdjustAmountParams {
   amount: BN
@@ -120,4 +123,35 @@ export function checkSlippageAgainstPrice(slippage: string, prePrice: BigNumber 
   const postSlippagePrice = prePrice.times(slippageAsFraction)
 
   return postSlippagePrice
+}
+
+interface PriceContructorData {
+  data: PriceData
+  isPriceInverted: boolean
+  order: Order | any
+}
+
+/**
+ * @name constructPrice
+ * @param priceData
+ * @returns string showing formatted price
+ */
+export const constructPrice = (priceData: PriceContructorData): string => {
+  const {data, isPriceInverted, order} = priceData
+  const calculatedPrice = calculatePrice({
+    numerator: { amount: data.numerator.amount, decimals: data.numerator.token?.decimals },
+    denominator: { amount: data.denominator.amount, decimals: data.denominator.token?.decimals },
+  })
+
+  const buySymbol = order.buyToken ? safeTokenName(order.buyToken) : ''
+  const sellSymbol = order.sellToken ? safeTokenName(order.sellToken) : ''
+  const [baseSymbol, quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
+
+  // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
+  const erc20: TokenErc20 = isPriceInverted ? data.numerator.token : data.denominator.token
+  const formattedAmount = erc20.decimals 
+  ? formatSmartMaxPrecision(calculatedPrice, erc20) 
+  : calculatedPrice.toString(10)
+
+  return `${formattedAmount ?? ''} ${quoteSymbol} for ${baseSymbol}`
 }

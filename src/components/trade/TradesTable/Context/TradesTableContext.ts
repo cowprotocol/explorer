@@ -1,13 +1,13 @@
 import React from 'react'
 
 export let isPriceInverted = false
-export const inverPrice = (): void => {
+export const invertPrice = (): void => {
   isPriceInverted = !isPriceInverted
 }
 
 const TradesTableContext = React.createContext({
-  inverPrice: inverPrice,
-  isPriceInverted: isPriceInverted,
+  invertPrice,
+  isPriceInverted,
 })
 
 export default TradesTableContext

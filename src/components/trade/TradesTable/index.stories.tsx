@@ -22,15 +22,13 @@ export default {
 
 const Template: Story<Props & { Component?: typeof TradesTable }> = (args): JSX.Element => {
   const { Component = TradesTable, ...rest } = args
-  const [state, setState] = React.useState({
-    isPriceInverted: false,
-  })
+  const [isPriceInverted, invertPrice] = React.useState(false)
   return (
     <div style={{ overflowX: 'auto' }}>
       <TradesTableContext.Provider
         value={{
-          isPriceInverted: state.isPriceInverted,
-          inverPrice: (): void => setState({ ...state, isPriceInverted: !state.isPriceInverted }),
+          isPriceInverted: isPriceInverted,
+          invertPrice: (): void => invertPrice(!isPriceInverted),
         }}
       >
         <Component {...rest} />
@@ -53,7 +51,7 @@ const order = {
 const BasicTable = styled(TradesTable)`
   tr > td {
     &:not(:first-of-type) {
-      text-align: right;
+      text-align: left;
     }
 
     &.long {
