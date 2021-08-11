@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
+import { Link } from 'react-router-dom'
 
 import { Order } from 'api/operator'
 
@@ -141,7 +142,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <RowWithCopyButton
                 textToCopy={owner}
                 onCopy={(): void => onCopy('ownerAddress')}
-                contentsToDisplay={<BlockExplorerLink identifier={owner} type="address" label={owner} />}
+                contentsToDisplay={<Link to={`/address/${owner}`}>{owner}</Link>}
               />
             </td>
           </tr>
@@ -153,7 +154,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <RowWithCopyButton
                 textToCopy={receiver}
                 onCopy={(): void => onCopy('receiverAddress')}
-                contentsToDisplay={<BlockExplorerLink identifier={receiver} type="address" label={receiver} />}
+                contentsToDisplay={<Link to={`/address/${receiver}`}>{receiver}</Link>}
               />
             </td>
           </tr>

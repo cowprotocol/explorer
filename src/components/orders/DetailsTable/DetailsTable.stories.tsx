@@ -4,7 +4,7 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 import BigNumber from 'bignumber.js'
 import { add, sub } from 'date-fns'
 
-import { GlobalStyles, NetworkDecorator, ThemeToggler } from 'storybook/decorators'
+import { GlobalStyles, NetworkDecorator, Router, ThemeToggler } from 'storybook/decorators'
 
 import { ONE_BIG_NUMBER } from 'const'
 
@@ -15,7 +15,7 @@ import { RICH_ORDER } from '../../../../test/data'
 export default {
   title: 'orders/DetailsTable',
   component: DetailsTable,
-  decorators: [GlobalStyles, NetworkDecorator, ThemeToggler],
+  decorators: [Router, GlobalStyles, NetworkDecorator, ThemeToggler],
   argTypes: { order: { control: null } },
 } as Meta
 
