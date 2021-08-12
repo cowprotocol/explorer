@@ -52,6 +52,14 @@ const Order = React.lazy(
     ),
 )
 
+const UserDetails = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "UserDetails_chunk"*/
+      './pages/UserDetails'
+    ),
+)
+
 /**
  * Update the global state
  */
@@ -80,6 +88,7 @@ const AppContent = (): JSX.Element => {
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
           <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
+          <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
           <Route component={NotFound} />
         </Switch>
       </React.Suspense>
