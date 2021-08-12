@@ -137,7 +137,7 @@ interface PriceContructorData {
  * @returns string showing formatted price
  */
 export const constructPrice = (priceData: PriceContructorData): string => {
-  const {data, isPriceInverted, order} = priceData
+  const { data, isPriceInverted, order } = priceData
   const calculatedPrice = calculatePrice({
     numerator: { amount: data.numerator.amount, decimals: data.numerator.token?.decimals },
     denominator: { amount: data.denominator.amount, decimals: data.denominator.token?.decimals },
@@ -149,9 +149,9 @@ export const constructPrice = (priceData: PriceContructorData): string => {
 
   // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
   const erc20: TokenErc20 = isPriceInverted ? data.numerator.token : data.denominator.token
-  const formattedAmount = erc20.decimals 
-  ? formatSmartMaxPrecision(calculatedPrice, erc20) 
-  : calculatedPrice.toString(10)
+  const formattedAmount = erc20.decimals
+    ? formatSmartMaxPrecision(calculatedPrice, erc20)
+    : calculatedPrice.toString(10)
 
   return `${formattedAmount ?? ''} ${quoteSymbol} for ${baseSymbol}`
 }

@@ -1,15 +1,22 @@
 import { Order } from 'api/operator'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
 import React from 'react'
 import { SimpleTable } from '../../common/SimpleTable'
 import TradesTableContext from './Context/TradesTableContext'
 import { DateDisplay } from 'components/orders/DateDisplay'
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt, faQuestion } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { constructPrice } from 'utils'
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
+import { COLOURS } from 'styles'
+import { Theme } from 'theme'
+import { variants } from 'styled-theming'
+import TokenImg from 'components/common/TokenImg'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+
+const { white, blackLight } = COLOURS
 
 const Icon = styled(FontAwesomeIcon)`
   background: ${({ theme }): string => theme.grey}33; /* 33==20% transparency in hex */
@@ -21,13 +28,52 @@ const Icon = styled(FontAwesomeIcon)`
   cursor: pointer;
 `
 
+const IconOutline = styled(FontAwesomeIcon)`
+  background: none;
+  border-radius: 1rem;
+  border: 2px solid;
+  width: 2rem !important; /* FontAwesome sets it to 1em with higher specificity */
+  height: 2rem;
+  padding: 0.4rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+`
+
+export const TableTheme = variants('mode', 'variant', {
+  default: {
+    [Theme.LIGHT]: css`
+      color: ${blackLight} !important;
+    `,
+    [Theme.DARK]: css`
+      color: ${white} !important;
+    `,
+  },
+  get primary() {
+    return this.default
+  },
+})
+
+const TableRow = styled.tr`
+  padding: 6px 2px 6px 2px !important;
+  th {
+    font-weight: 600 !important;
+  }
+`
+const StyledTableRow = styled(TableRow)`
+  /* Fold in theme css above */
+  ${TableTheme}
+`
+
 export const TradesTableHeader = (): JSX.Element => {
   const tableContext = React.useContext(TradesTableContext)
 
   return (
-    <tr>
-      <th>Order Id</th>
+    <StyledTableRow variant={'default'}>
+      <th>
+        Tx Id <IconOutline icon={faQuestion} />
+      </th>
       <th>Type</th>
+      <th>Surplus</th>
       <th>Sell Amount</th>
       <th>Buy Amount</th>
       <th>
@@ -38,10 +84,45 @@ export const TradesTableHeader = (): JSX.Element => {
         Execution Price
         <Icon icon={faExchangeAlt} onClick={tableContext.invertPrice} />
       </th>
-      <th>Tx Hash</th>
-      <th>Surplus</th>
-      <th>Trade Time</th>
-    </tr>
+      <th>Execution Time</th>
+    </StyledTableRow>
+  )
+}
+
+const TradeTypeWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  span {
+    margin: 5px 0px 5px 0px;
+  }
+`
+
+type TradeTypeProps = {
+  buyToken: TokenErc20
+  sellToken: TokenErc20
+  isLong: boolean
+}
+
+const TradeType = ({ buyToken, sellToken, isLong }: TradeTypeProps): JSX.Element => {
+  const [tokens, setTokens] = React.useState<TokenErc20[]>([])
+  React.useEffect(() => {
+    // isLong - When True, determines if trade type is a BUY else trade type is a SELL
+    setTokens(isLong ? [buyToken, sellToken] : [sellToken, buyToken])
+  }, [isLong, buyToken, sellToken])
+
+  return tokens.length > 0 ? (
+    <TradeTypeWrapper>
+      <span>{isLong ? 'Buy' : 'Sell'}</span>&nbsp;
+      <TokenImg address={tokens[0].address} />
+      &nbsp;
+      <span>{tokens[0].symbol}</span>&nbsp;
+      <span>for</span>&nbsp;
+      <span>{tokens[1].symbol}</span>&nbsp;
+      <TokenImg address={tokens[1].address} />
+    </TradeTypeWrapper>
+  ) : (
+    <></>
   )
 }
 
@@ -51,14 +132,6 @@ export type Props = {
   numColumns?: number
   data: Array<Order>
 }
-
-const TitleUid = styled(RowWithCopyButton)`
-  color: ${({ theme }): string => theme.grey};
-  font-size: ${({ theme }): string => theme.fontSizeDefault};
-  font-weight: ${({ theme }): string => theme.fontNormal};
-  display: flex;
-  align-items: center;
-`
 
 export const TradesTable = ({ header, className, numColumns, data }: Props): JSX.Element => {
   const tableContext = React.useContext(TradesTableContext)
@@ -122,19 +195,7 @@ export const TradesTable = ({ header, className, numColumns, data }: Props): JSX
             rows.map(
               (order: Order & { limitPrice: string; executionPrice: string }, i) =>
                 order.uid && (
-                  <tr key={i}>
-                    <td>
-                      <TitleUid textToCopy={order.uid} contentsToDisplay={order.shortId} />
-                    </td>
-                    <td className={i % 2 === 1 ? 'long' : 'short'}>{i % 2 === 1 ? 'Buy' : 'Sell'}</td>
-                    <td>
-                      {order.sellToken?.decimals.toFixed(3)} {order.sellToken?.symbol}
-                    </td>
-                    <td>
-                      {order.buyToken?.decimals.toFixed(3)} {order.buyToken?.symbol}
-                    </td>
-                    <td>{order.limitPrice}</td>
-                    <td>{order.executionPrice}</td>
+                  <StyledTableRow key={i}>
                     <td>
                       {order.txHash ? (
                         <RowWithCopyButton
@@ -156,11 +217,26 @@ export const TradesTable = ({ header, className, numColumns, data }: Props): JSX
                         '-'
                       )}
                     </td>
+                    <td>
+                      {order.buyToken && order.sellToken ? (
+                        <TradeType buyToken={order.buyToken} sellToken={order.sellToken} isLong={i % 2 === 1} />
+                      ) : (
+                        '-'
+                      )}
+                    </td>
                     <td>{!order.surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
+                    <td>
+                      {order.sellToken?.decimals.toFixed(3)} {order.sellToken?.symbol}
+                    </td>
+                    <td>
+                      {order.buyToken?.decimals.toFixed(3)} {order.buyToken?.symbol}
+                    </td>
+                    <td>{order.limitPrice}</td>
+                    <td>{order.executionPrice}</td>
                     <td>
                       <DateDisplay date={order.creationDate} />
                     </td>
-                  </tr>
+                  </StyledTableRow>
                 ),
             )}
         </>

@@ -53,21 +53,14 @@ const BasicTable = styled(TradesTable)`
     &:not(:first-of-type) {
       text-align: left;
     }
-
-    &.long {
-      color: var(--color-long);
-      border-left: 0.2rem solid var(--color-long);
-    }
-
-    &.short {
-      color: var(--color-short);
-      border-left: 0.2rem solid var(--color-short);
+    &:nth-child(2) {
+      min-width: 800px !important;
     }
   }
 
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 10rem repeat(7, [col-start] minmax(150px, 1fr) [col-end]) 10rem;
+    grid-template-columns: 15rem repeat(7, [col-start] minmax(200px, 1fr) [col-end]) 10rem;
   }
 
   thead tr th,
@@ -75,13 +68,17 @@ const BasicTable = styled(TradesTable)`
     padding: 2px 5px 2px 5px !important;
   }
 
-  thead tr th {
-    font-style: normal;
-    font-weight: 800;
-    font-size: 13px;
-    line-height: 18px;
-    display: flex;
-    align-items: center;
+  thead {
+    border-bottom: 1px solid rgba(141, 141, 169, 0.1);
+    padding-bottom: 10px;
+    &tr th {
+      font-style: normal;
+      font-weight: 800;
+      font-size: 13px;
+      line-height: 18px;
+      display: flex;
+      align-items: center;
+    }
   }
 
   tbody tr:hover {
