@@ -1,10 +1,9 @@
 pull_request_rules:
-  - name: Merge approved and green PRs without merge blocking PR labels
+  - name: Merge approved and green PRs when tagged with 'Auto-merge'
     conditions:
       - "#approved-reviews-by>=2"
-      - label!=["WIP", "Don't merge", "On hold"]
+      - label="Auto-merge"
       - check-success=Deploy
-      - base=develop
     actions:
       merge:
         method: squash
