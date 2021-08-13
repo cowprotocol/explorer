@@ -18,7 +18,7 @@ import { web3, erc20Api } from 'apps/explorer/api'
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { isNativeToken } from 'utils'
 
-async function _fetchErc20FromNetwork(params: {
+export async function _fetchErc20FromNetwork(params: {
   address: string
   networkId: number
   setError: (error: string) => void

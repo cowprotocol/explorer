@@ -1,6 +1,6 @@
 import { getTrades, Order, Trade } from 'api/operator'
 import { useCallback, useEffect, useState } from 'react'
-import { useNetworkId } from 'state/network'
+import { useNetworkId, useNetworkOrDefault } from 'state/network'
 import { Network } from 'types'
 import { transformTrade } from 'utils'
 
@@ -9,7 +9,7 @@ type Params = {
   orderId?: string
 }
 
-type Result = {
+export type TradeResult = {
   trades: Trade[]
   error: string
   isLoading: boolean
@@ -19,7 +19,7 @@ type Result = {
  * Fetches trades for given filters
  * When no filter is given, fetches all trades for current network
  */
-export function useTrades(params: Params): Result {
+export function useTrades(params: Params): TradeResult {
   const { owner, orderId } = params
 
   const [isLoading, setIsLoading] = useState(false)
@@ -28,7 +28,8 @@ export function useTrades(params: Params): Result {
 
   // Here we assume that we are already in the right network
   // contrary to useOrder hook, where it searches all networks for a given orderId
-  const networkId = useNetworkId()
+  // const networkId = useNetworkId()
+  const networkId = useNetworkOrDefault()
 
   const fetchTrades = useCallback(async (networkId: Network, owner?: string, orderId?: string): Promise<void> => {
     setIsLoading(true)
@@ -62,7 +63,7 @@ export function useTrades(params: Params): Result {
 /**
  * Fetches trades for given order
  */
-export function useOrderTrades(order: Order | null): Result {
+export function useOrderTrades(order: Order | null): TradeResult {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [trades, setTrades] = useState<Trade[]>([])

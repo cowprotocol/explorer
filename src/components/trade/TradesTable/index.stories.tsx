@@ -7,11 +7,7 @@ import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { Props } from '.'
 import { TradesTable, TradesTableHeader } from '.'
-import { RICH_ORDER } from '../../../../test/data'
-import BigNumber from 'bignumber.js'
-import { add, sub } from 'date-fns'
 import TradesTableContext from './Context/TradesTableContext'
-import { Order } from 'api/operator'
 
 export default {
   title: 'Trade/TradesTable',
@@ -23,6 +19,7 @@ export default {
 const Template: Story<Props & { Component?: typeof TradesTable }> = (args): JSX.Element => {
   const { Component = TradesTable, ...rest } = args
   const [isPriceInverted, invertPrice] = React.useState(false)
+
   return (
     <div style={{ overflowX: 'auto' }}>
       <TradesTableContext.Provider
@@ -35,17 +32,6 @@ const Template: Story<Props & { Component?: typeof TradesTable }> = (args): JSX.
       </TradesTableContext.Provider>
     </div>
   )
-}
-
-const order = {
-  ...RICH_ORDER,
-  buyAmount: new BigNumber('1000000000000000000'), // 1WETH
-  sellAmount: new BigNumber('5000000000'), //5000 USDT
-  creationDate: sub(new Date(), { hours: 1 }),
-  expirationDate: add(new Date(), { hours: 1 }),
-  txHash: '0x489d8fd1efd43394c7c2b26216f36f1ab49b8d67623047e0fcb60efa2a2c420b',
-  surplusAmount: new BigNumber('5000000000'),
-  surplusPercentage: new BigNumber('1'),
 }
 
 const BasicTable = styled(TradesTable)`
@@ -89,5 +75,5 @@ export const BasicTradesTable = Template.bind({})
 BasicTradesTable.args = {
   Component: BasicTable,
   header: <TradesTableHeader />,
-  data: [...Array(4).keys()].map((): Order => order),
+  owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
 }

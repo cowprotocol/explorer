@@ -6,6 +6,8 @@ import { calculatePrice, invertPrice } from '@gnosis.pm/dex-js'
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { Order, OrderStatus, RawOrder, RawTrade, Trade } from 'api/operator/types'
+import { _fetchErc20FromNetwork } from 'hooks/useErc20'
+import { SingleErc20State } from 'state/erc20'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -297,4 +299,16 @@ export function transformTrade(rawTrade: RawTrade): Trade {
     buyTokenAddress: buyToken,
     sellTokenAddress: sellToken,
   }
+}
+
+export async function addressToErc20(address: string, networkId: number): Promise<SingleErc20State> {
+  return new Promise((resolve, reject) => {
+    _fetchErc20FromNetwork({ address, networkId, setError: (err) => console.log('Error', err) })
+      .then((erc20) => {
+        resolve(erc20)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 }

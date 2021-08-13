@@ -1,21 +1,22 @@
-import { Order } from 'api/operator'
+import { Trade } from 'api/operator'
 import styled, { css } from 'styled-components'
 import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
 import React from 'react'
 import { SimpleTable } from '../../common/SimpleTable'
 import TradesTableContext from './Context/TradesTableContext'
-import { DateDisplay } from 'components/orders/DateDisplay'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
-import { constructPrice, numberWithCommas } from 'utils'
+import { useTrades } from 'hooks/useOperatorTrades'
+import Spinner from 'components/common/Spinner'
+import { addressToErc20, constructPrice, numberWithCommas } from 'utils'
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
 import { COLOURS } from 'styles'
 import { Theme } from 'theme'
 import { variants } from 'styled-theming'
 import TokenImg from 'components/common/TokenImg'
-import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { HelpTooltip } from 'components/Tooltip'
 import Icon from 'components/Icon'
+import { SingleErc20State } from 'state/erc20'
+import { useNetworkOrDefault } from 'state/network'
 
 const { white, blackLight } = COLOURS
 
@@ -83,19 +84,33 @@ const TradeTypeWrapper = styled.div`
 `
 
 type TradeTypeProps = {
-  buyToken: TokenErc20
-  sellToken: TokenErc20
+  buyTokenAddress: string
+  sellTokenAddress: string
   isLong: boolean
 }
 
-const TradeType = ({ buyToken, sellToken, isLong }: TradeTypeProps): JSX.Element => {
-  const [tokens, setTokens] = React.useState<TokenErc20[]>([])
+const TradeType = ({ buyTokenAddress, sellTokenAddress, isLong }: TradeTypeProps): JSX.Element => {
+  const [tokens, setTokens] = React.useState<SingleErc20State[]>([])
+  const networkId = useNetworkOrDefault()
+
   React.useEffect(() => {
     // isLong - When True, determines if trade type is a BUY else trade type is a SELL
-    setTokens(isLong ? [buyToken, sellToken] : [sellToken, buyToken])
-  }, [isLong, buyToken, sellToken])
+    addressToErc20(buyTokenAddress, networkId)
+      .then((buyToken) => {
+        return buyToken
+      })
+      .then((buyToken) => {
+        addressToErc20(sellTokenAddress, networkId)
+          .then((sellToken) => {
+            console.log('BUY =>', buyTokenAddress, buyToken)
+            setTokens(isLong ? [buyToken, sellToken] : [sellToken, buyToken])
+          })
+          .catch((err) => console.log('Err', err))
+      })
+      .catch((err) => console.log('Err', err))
+  }, [isLong, buyTokenAddress, sellTokenAddress])
 
-  return tokens.length > 0 ? (
+  return tokens.length == 2 && tokens[0] && tokens[1] ? (
     <TradeTypeWrapper>
       <span>{isLong ? 'Buy' : 'Sell'}</span>&nbsp;
       <TokenImg address={tokens[0].address} />
@@ -114,54 +129,56 @@ export type Props = {
   header?: JSX.Element
   className?: string
   numColumns?: number
-  data: Array<Order>
+  owner: string
+  orderId?: string
 }
 
-export const TradesTable = ({ header, className, numColumns, data }: Props): JSX.Element => {
+export const TradesTable = ({ header, className, numColumns, owner, orderId }: Props): JSX.Element => {
   const tableContext = React.useContext(TradesTableContext)
   const [rows, setRows] = React.useState([{}])
+  const { isLoading, trades } = useTrades({ owner, orderId })
 
   React.useEffect((): void => {
     // for each entry in the data array invert the values of
     // the limit price and execution price if toggled
     const _rows: Array<
-      Order & {
+      Trade & {
         limitPrice: string
         executionPrice: string
       }
-    > = data.map((order): any => {
+    > = trades.map((trade): any => {
       return {
-        ...order,
+        ...trade,
         limitPrice:
-          order.buyToken && order.sellToken
+          trade.buyToken && trade.sellToken
             ? constructPrice({
                 isPriceInverted: tableContext.isPriceInverted,
-                order,
+                order: trade,
                 data: {
                   numerator: {
-                    amount: order.sellAmount,
-                    token: order.sellToken,
+                    amount: trade.sellAmount,
+                    token: trade.sellToken,
                   },
                   denominator: {
-                    amount: order.buyAmount,
-                    token: order.buyToken,
+                    amount: trade.buyAmount,
+                    token: trade.buyToken,
                   },
                 },
               })
             : '-',
         executionPrice:
-          order.buyToken && order.sellToken
+          trade.buyToken && trade.sellToken
             ? constructPrice({
                 isPriceInverted: tableContext.isPriceInverted,
-                order,
+                order: trade,
                 data: {
                   numerator: {
-                    amount: order.buyAmount,
-                    token: order.buyToken,
+                    amount: trade.buyAmount,
+                    token: trade.buyToken,
                   },
                   denominator: {
-                    amount: order.sellAmount,
-                    token: order.sellToken,
+                    amount: trade.sellAmount,
+                    token: trade.sellToken,
                   },
                 },
               })
@@ -169,30 +186,33 @@ export const TradesTable = ({ header, className, numColumns, data }: Props): JSX
       }
     })
     setRows(_rows)
-  }, [data, tableContext.isPriceInverted])
+  }, [trades, tableContext.isPriceInverted])
 
   return (
     <SimpleTable
       body={
         <>
-          {rows.length > 0 &&
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            rows.length > 0 &&
             rows.map(
-              (order: Order & { limitPrice: string; executionPrice: string }, i) =>
-                order.uid && (
+              (trade: Trade & { limitPrice: string; executionPrice: string }, i) =>
+                trade.orderId && (
                   <StyledTableRow key={i}>
                     <td>
-                      {order.txHash ? (
+                      {trade.txHash ? (
                         <RowWithCopyButton
-                          textToCopy={order.txHash}
+                          textToCopy={trade.txHash}
                           onCopy={(): void => console.log('settlementTx')}
                           contentsToDisplay={
                             <BlockExplorerLink
-                              identifier={order.txHash}
+                              identifier={trade.txHash}
                               type="tx"
                               label={`${
-                                order.txHash.substr(0, 4) +
+                                trade.txHash.substr(0, 4) +
                                 '...' +
-                                order.txHash.substr(order.txHash.length - 5, order.txHash.length)
+                                trade.txHash.substr(trade.txHash.length - 5, trade.txHash.length)
                               }`}
                             />
                           }
@@ -202,27 +222,29 @@ export const TradesTable = ({ header, className, numColumns, data }: Props): JSX
                       )}
                     </td>
                     <td>
-                      {order.buyToken && order.sellToken ? (
-                        <TradeType buyToken={order.buyToken} sellToken={order.sellToken} isLong={i % 2 === 1} />
+                      {trade.buyTokenAddress && trade.sellTokenAddress ? (
+                        <TradeType
+                          buyTokenAddress={trade.buyTokenAddress}
+                          sellTokenAddress={trade.sellTokenAddress}
+                          isLong={i % 2 === 1}
+                        />
                       ) : (
                         '-'
                       )}
                     </td>
-                    <td>{!order.surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
+                    <td>{/*!trade.surplusAmount.isZero() ? <OrderSurplusDisplay order={trade} /> : */ '-'}</td>
                     <td>
-                      {numberWithCommas(order.sellAmount)} {order.sellToken?.symbol}
+                      {numberWithCommas(trade.sellAmount)} {trade.sellToken?.symbol}
                     </td>
                     <td>
-                      {numberWithCommas(order.buyAmount)} {order.buyToken?.symbol}
+                      {numberWithCommas(trade.buyAmount)} {trade.buyToken?.symbol}
                     </td>
-                    <td>{order.limitPrice}</td>
-                    <td>{order.executionPrice}</td>
-                    <td>
-                      <DateDisplay date={order.creationDate} />
-                    </td>
+                    <td>{trade.limitPrice}</td>
+                    <td>{trade.executionPrice}</td>
                   </StyledTableRow>
                 ),
-            )}
+            )
+          )}
         </>
       }
       numColumns={numColumns}
