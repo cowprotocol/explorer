@@ -12,7 +12,7 @@ const TabContent: React.FC<Props> = (props) => {
 
   if (!displayTab) return null
 
-  return <div>{displayTab.content}</div>
+  return <div className="tab-content">{displayTab.content}</div>
 }
 
 export default TabContent

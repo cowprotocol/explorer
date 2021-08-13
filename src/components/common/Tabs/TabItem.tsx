@@ -38,7 +38,7 @@ const TabItemWrapper = styled(TabItemBase)<TabItemWrapperProps>`
   letter-spacing: ${({ tabTheme }): string => tabTheme.letterSpacing};
 
   border-bottom: ${({ isActive, tabTheme }): string =>
-    `.1rem solid ${isActive ? tabTheme.activeBorder : tabTheme.inactiveBorder}`};
+    `${tabTheme.indicatorTabSize}rem solid ${isActive ? tabTheme.activeBorder : tabTheme.inactiveBorder}`};
 
   /* TODO: Provide alternative :focus styling because of using outline: 0; */
 
