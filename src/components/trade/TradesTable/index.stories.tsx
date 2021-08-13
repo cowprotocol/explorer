@@ -39,7 +39,7 @@ const Template: Story<Props & { Component?: typeof TradesTable }> = (args): JSX.
 
 const order = {
   ...RICH_ORDER,
-  buyAmount: new BigNumber('10000000000'), // 1WETH
+  buyAmount: new BigNumber('1000000000000000000'), // 1WETH
   sellAmount: new BigNumber('5000000000'), //5000 USDT
   creationDate: sub(new Date(), { hours: 1 }),
   expirationDate: add(new Date(), { hours: 1 }),

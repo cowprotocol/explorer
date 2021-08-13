@@ -1,28 +1,18 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { constructPrice } from 'utils'
+import Icon from 'components/Icon'
 
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
 `
 
-const Icon = styled(FontAwesomeIcon)`
-  background: ${({ theme }): string => theme.grey}33; /* 33==20% transparency in hex */
-  border-radius: 1rem;
-  width: 2rem !important; /* FontAwesome sets it to 1em with higher specificity */
-  height: 2rem;
-  padding: 0.4rem;
-  margin-left: 0.5rem;
-  cursor: pointer;
-`
-
-export type Props = {
+export type OrderPriceDisplayType = {
   buyAmount: string | BigNumber
   buyToken: TokenErc20
   sellAmount: string | BigNumber
@@ -31,7 +21,7 @@ export type Props = {
   showInvertButton?: boolean
 }
 
-export function OrderPriceDisplay(props: Props): JSX.Element {
+export function OrderPriceDisplay(props: OrderPriceDisplayType): JSX.Element {
   const {
     buyAmount,
     buyToken,

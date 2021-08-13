@@ -5,39 +5,19 @@ import React from 'react'
 import { SimpleTable } from '../../common/SimpleTable'
 import TradesTableContext from './Context/TradesTableContext'
 import { DateDisplay } from 'components/orders/DateDisplay'
-import { faExchangeAlt, faQuestion } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
-import { constructPrice } from 'utils'
+import { constructPrice, numberWithCommas } from 'utils'
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
 import { COLOURS } from 'styles'
 import { Theme } from 'theme'
 import { variants } from 'styled-theming'
 import TokenImg from 'components/common/TokenImg'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
+import { HelpTooltip } from 'components/Tooltip'
+import Icon from 'components/Icon'
 
 const { white, blackLight } = COLOURS
-
-const Icon = styled(FontAwesomeIcon)`
-  background: ${({ theme }): string => theme.grey}33; /* 33==20% transparency in hex */
-  border-radius: 1rem;
-  width: 2rem !important; /* FontAwesome sets it to 1em with higher specificity */
-  height: 2rem;
-  padding: 0.4rem;
-  margin-left: 0.5rem;
-  cursor: pointer;
-`
-
-const IconOutline = styled(FontAwesomeIcon)`
-  background: none;
-  border-radius: 1rem;
-  border: 2px solid;
-  width: 2rem !important; /* FontAwesome sets it to 1em with higher specificity */
-  height: 2rem;
-  padding: 0.4rem;
-  margin-left: 0.5rem;
-  cursor: pointer;
-`
 
 export const TableTheme = variants('mode', 'variant', {
   default: {
@@ -57,6 +37,9 @@ const TableRow = styled.tr`
   padding: 6px 2px 6px 2px !important;
   th {
     font-weight: 600 !important;
+    span {
+      margin-right: 7px;
+    }
   }
 `
 const StyledTableRow = styled(TableRow)`
@@ -70,7 +53,8 @@ export const TradesTableHeader = (): JSX.Element => {
   return (
     <StyledTableRow variant={'default'}>
       <th>
-        Tx Id <IconOutline icon={faQuestion} />
+        <span>Tx Id</span>
+        <HelpTooltip tooltip={'Transaction Hash'} />
       </th>
       <th>Type</th>
       <th>Surplus</th>
@@ -226,10 +210,10 @@ export const TradesTable = ({ header, className, numColumns, data }: Props): JSX
                     </td>
                     <td>{!order.surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
                     <td>
-                      {order.sellToken?.decimals.toFixed(3)} {order.sellToken?.symbol}
+                      {numberWithCommas(order.sellAmount)} {order.sellToken?.symbol}
                     </td>
                     <td>
-                      {order.buyToken?.decimals.toFixed(3)} {order.buyToken?.symbol}
+                      {numberWithCommas(order.buyAmount)} {order.buyToken?.symbol}
                     </td>
                     <td>{order.limitPrice}</td>
                     <td>{order.executionPrice}</td>

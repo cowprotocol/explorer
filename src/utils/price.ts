@@ -5,7 +5,8 @@ import { formatSmartMaxPrecision, parseBigNumber } from './format'
 import { TEN, UNLIMITED_ORDER_AMOUNT_BIGNUMBER, ONE_HUNDRED_BIG_NUMBER } from 'const'
 import { PriceData } from 'types'
 import { calculatePrice, safeTokenName } from '@gnosis.pm/dex-js'
-import { Order } from 'api/operator'
+import { Order, Trade } from 'api/operator'
+import { OrderPriceDisplayType } from 'components/orders/OrderPriceDisplay'
 
 interface AdjustAmountParams {
   amount: BN
@@ -128,7 +129,7 @@ export function checkSlippageAgainstPrice(slippage: string, prePrice: BigNumber 
 interface PriceContructorData {
   data: PriceData
   isPriceInverted: boolean
-  order: Order | any
+  order: Order | Trade | OrderPriceDisplayType
 }
 
 /**
@@ -154,4 +155,8 @@ export const constructPrice = (priceData: PriceContructorData): string => {
     : calculatedPrice.toString(10)
 
   return `${formattedAmount ?? ''} ${quoteSymbol} for ${baseSymbol}`
+}
+
+export function numberWithCommas(x: BigNumber): string {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }

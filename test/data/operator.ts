@@ -48,8 +48,8 @@ export const RICH_ORDER: Order = {
   fullyFilled: false,
   filledAmount: ZERO_BIG_NUMBER,
   filledPercentage: ZERO_BIG_NUMBER,
-  buyToken: WETH,
-  sellToken: USDT,
+  buyToken: USDT,
+  sellToken: WETH,
   surplusAmount: ZERO_BIG_NUMBER,
   surplusPercentage: ZERO_BIG_NUMBER,
 }
