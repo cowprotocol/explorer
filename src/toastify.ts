@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Toast } from 'react-toastify'
 
 type ToastMethods = Exclude<keyof Toast, 'TYPE' | 'POSITION'>
@@ -21,12 +22,13 @@ type ToastPromised = {
 
 const properties = methods.reduce((accum, method) => {
   accum[method] = {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    get: (): any => (...args: [any, any]): Promise<any> =>
-      import(
-        /* webpackChunkName: "toastify"*/
-        './setupToastify'
-      ).then(({ toast }) => toast[method](...args)),
+    get:
+      (): any =>
+      (...args: [any, any]): Promise<any> =>
+        import(
+          /* webpackChunkName: "toastify"*/
+          './setupToastify'
+        ).then(({ toast }) => toast[method](...args)),
   }
   return accum
 }, {}) as {
@@ -39,5 +41,4 @@ const toastFunc = (...args: Parameters<Toast>): Promise<ReturnType<Toast>> =>
     './setupToastify'
   ).then(({ toast }) => toast(...args))
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const toast = Object.defineProperties(toastFunc, properties as any) as ToastPromised
+export const toast = Object.defineProperties(toastFunc, properties as any) as unknown as ToastPromised
