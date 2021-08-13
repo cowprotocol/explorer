@@ -193,7 +193,7 @@ const Wrapper = <C extends keyof JSX.IntrinsicElements | React.ComponentType = '
   )
 }
 
-export const TooltipWrapper = (React.memo(Wrapper) as unknown) as typeof Wrapper
+export const TooltipWrapper = React.memo(Wrapper) as unknown as typeof Wrapper
 
 export const LongTooltipContainer = styled.div`
   max-width: 30rem;

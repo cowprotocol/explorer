@@ -226,13 +226,15 @@ interface BalanceDisplayProps extends TokenLocalState {
   hasTokensToShow?: boolean
 }
 
-const customFilterFnFactory = (searchTxt: string) => (token: TokenBalanceDetails): boolean => {
-  if (searchTxt === '') return true
+const customFilterFnFactory =
+  (searchTxt: string) =>
+  (token: TokenBalanceDetails): boolean => {
+    if (searchTxt === '') return true
 
-  const searchIsAddress = web3.utils.isAddress(searchTxt)
+    const searchIsAddress = web3.utils.isAddress(searchTxt)
 
-  return checkTokenAgainstSearch(token, searchTxt, searchIsAddress)
-}
+    return checkTokenAgainstSearch(token, searchTxt, searchIsAddress)
+  }
 
 const customHideZeroFilterFn = ({
   totalExchangeBalance,
@@ -409,12 +411,8 @@ const DepositWidget: React.FC = () => {
     tokenAddress: '',
   })
 
-  const {
-    withdrawOverwriteModal,
-    toggleWithdrawOverwriteModal,
-    withdrawAndClaimModal,
-    toggleWithdrawAndClaimModal,
-  } = useDepositModals({ ...withdrawRequest, requestWithdrawToken })
+  const { withdrawOverwriteModal, toggleWithdrawOverwriteModal, withdrawAndClaimModal, toggleWithdrawAndClaimModal } =
+    useDepositModals({ ...withdrawRequest, requestWithdrawToken })
 
   const requestWithdrawConfirmation = useCallback(
     async (amount: BN, tokenAddress: string, claimable: boolean, onTxHash: (hash: string) => void): Promise<void> => {

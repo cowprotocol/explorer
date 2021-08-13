@@ -91,9 +91,8 @@ async function placeValidFromOrdersTx(placeOrderParams: PlaceValidFromOrders): P
     }),
   )
 
-  const { buyAmounts, sellAmounts, validFroms, validUntils, sellTokens, buyTokens } = toPlaceValidFromOrdersParams(
-    ordersWithDefaults,
-  )
+  const { buyAmounts, sellAmounts, validFroms, validUntils, sellTokens, buyTokens } =
+    toPlaceValidFromOrdersParams(ordersWithDefaults)
 
   return exchangeApi.placeValidFromOrders({
     userAddress,

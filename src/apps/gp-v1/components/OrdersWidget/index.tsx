@@ -69,16 +69,15 @@ function classifyOrders(
   })
 }
 
-const compareFnFactory = (topic: TopicNames, asc: boolean) => (
-  lhs: DetailedAuctionElement,
-  rhs: DetailedAuctionElement,
-): number => {
-  if (asc) {
-    return lhs[topic] - rhs[topic]
-  } else {
-    return rhs[topic] - lhs[topic]
+const compareFnFactory =
+  (topic: TopicNames, asc: boolean) =>
+  (lhs: DetailedAuctionElement, rhs: DetailedAuctionElement): number => {
+    if (asc) {
+      return lhs[topic] - rhs[topic]
+    } else {
+      return rhs[topic] - lhs[topic]
+    }
   }
-}
 
 interface Props {
   displayOnly?: 'liquidity' | 'regular'
@@ -194,7 +193,11 @@ const OrdersWidget: React.FC<Props> = ({ displayOnly }) => {
   // =========================================
   // SORTING + FILTERING
   // =========================================
-  const { sortedData: sortedOrders, sortTopic, setSortTopic } = useSortByTopic<DetailedAuctionElement, TopicNames>(
+  const {
+    sortedData: sortedOrders,
+    sortTopic,
+    setSortTopic,
+  } = useSortByTopic<DetailedAuctionElement, TopicNames>(
     displayedOrders,
     DEFAULT_ORDERS_SORTABLE_TOPIC,
     compareFnFactory,
@@ -227,23 +230,24 @@ const OrdersWidget: React.FC<Props> = ({ displayOnly }) => {
   // =========================================
 
   const toggleMarkForDeletionFactory = useCallback(
-    (orderId: string, selectedTab: OrderTabs): (() => void) => (): void => {
-      if (selectedTab === 'trades') return
+    (orderId: string, selectedTab: OrderTabs): (() => void) =>
+      (): void => {
+        if (selectedTab === 'trades') return
 
-      setClassifiedOrders((curr) => {
-        // copy full state
-        const state = { ...curr }
+        setClassifiedOrders((curr) => {
+          // copy full state
+          const state = { ...curr }
 
-        // copy markedForDeletion set
-        const newSet = new Set(curr[selectedTab].markedForDeletion)
-        // toggle order
-        newSet.has(orderId) ? newSet.delete(orderId) : newSet.add(orderId)
-        // store new set
-        state[selectedTab].markedForDeletion = newSet
+          // copy markedForDeletion set
+          const newSet = new Set(curr[selectedTab].markedForDeletion)
+          // toggle order
+          newSet.has(orderId) ? newSet.delete(orderId) : newSet.add(orderId)
+          // store new set
+          state[selectedTab].markedForDeletion = newSet
 
-        return state
-      })
-    },
+          return state
+        })
+      },
     [setClassifiedOrders],
   )
 

@@ -108,9 +108,12 @@ interface UseTabsReturn<T extends string> {
 
 export function useTabs<T extends string>(defaultTab: T, tabsList: TabData<T>[] = []): UseTabsReturn<T> {
   const [selectedTab, setSelectedTab] = useSafeState<T>(defaultTab)
-  const setSelectedTabFactory = useCallback((type: T): (() => void) => (): void => setSelectedTab(type), [
-    setSelectedTab,
-  ])
+  const setSelectedTabFactory = useCallback(
+    (type: T): (() => void) =>
+      (): void =>
+        setSelectedTab(type),
+    [setSelectedTab],
+  )
 
   return {
     selectedTab,

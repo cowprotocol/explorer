@@ -24,34 +24,32 @@ export function validatePositive(value: string, constraint = 0): true | string {
  * @param type [OPTIONAL] 'number' | undefined - sets casting use or straight FormData use
  */
 
-export const resolverFactory = <FormData>(validationSchema: ObjectSchema<unknown>) => async (
-  data: FormData,
-): Promise<ResolverResult<FormData>> => {
-  const castedData: Partial<FormData> = Object.keys(data).reduce((acc, key) => {
-    acc[key] = data[key] || undefined
-    return acc
-  }, {} as FormData)
+export const resolverFactory =
+  <FormData>(validationSchema: ObjectSchema<unknown>) =>
+  async (data: FormData): Promise<ResolverResult<FormData>> => {
+    const castedData: Partial<FormData> = Object.keys(data).reduce((acc, key) => {
+      acc[key] = data[key] || undefined
+      return acc
+    }, {} as FormData)
 
-  const { error, value }: { value: typeof castedData | undefined; error?: ValidationError } = validationSchema.validate(
-    castedData,
-    {
-      abortEarly: false,
-    },
-  )
+    const { error, value }: { value: typeof castedData | undefined; error?: ValidationError } =
+      validationSchema.validate(castedData, {
+        abortEarly: false,
+      })
 
-  return {
-    values: error || !value ? {} : data,
-    errors: error
-      ? error.details.reduce((previous, currentError) => {
-          const finalError = { ...currentError, message: currentError?.message?.replace(/(['"])/g, '') }
-          return {
-            ...previous,
-            [currentError.path[0]]: finalError,
-          }
-        }, {})
-      : {},
+    return {
+      values: error || !value ? {} : data,
+      errors: error
+        ? error.details.reduce((previous, currentError) => {
+            const finalError = { ...currentError, message: currentError?.message?.replace(/(['"])/g, '') }
+            return {
+              ...previous,
+              [currentError.path[0]]: finalError,
+            }
+          }, {})
+        : {},
+    }
   }
-}
 
 export const VALIDATOR_ERROR_KEYS = {
   REF: 'any.ref',

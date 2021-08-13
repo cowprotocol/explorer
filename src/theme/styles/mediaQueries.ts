@@ -64,6 +64,8 @@ type ThemeProps = {
  *  tabletLandscape: 720 to 960, orientation: landscape,
  * }
  */
-export const applyMediaStyles = (mediaSize: keyof MediaWidth) => (
-  stylesAndStuff: CSSObject | TemplateStringsArray,
-) => ({ theme }: ThemeProps): FlattenSimpleInterpolation => theme.mq[mediaSize](stylesAndStuff)
+export const applyMediaStyles =
+  (mediaSize: keyof MediaWidth) =>
+  (stylesAndStuff: CSSObject | TemplateStringsArray) =>
+  ({ theme }: ThemeProps): FlattenSimpleInterpolation =>
+    theme.mq[mediaSize](stylesAndStuff)

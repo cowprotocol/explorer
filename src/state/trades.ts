@@ -306,8 +306,11 @@ export const reducer = (state: TradesState, action: ReducerActionType): TradesSt
 
       const accountKey = buildAccountKey({ networkId, userAddress })
 
-      const { trades: currTrades, pendingTrades: currPendingTrades, tradeIds } =
-        state[accountKey] || INITIAL_TRADES_STATE_SINGLE_ACCOUNT
+      const {
+        trades: currTrades,
+        pendingTrades: currPendingTrades,
+        tradeIds,
+      } = state[accountKey] || INITIAL_TRADES_STATE_SINGLE_ACCOUNT
 
       const { trades, pendingTrades, seenIds } = applyRevertsToTrades(newTrades, reverts, currPendingTrades, tradeIds)
 

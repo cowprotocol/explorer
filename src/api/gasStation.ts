@@ -32,40 +32,40 @@ interface GasStationResponse {
   fastest: string
 }
 
-const fetchGasPriceFactory = (walletApi: WalletApi) => async (
-  gasPriceLevel: GasPriceLevel = GAS_PRICE_LEVEL,
-): Promise<string | undefined> => {
-  const { blockchainState } = walletApi
+const fetchGasPriceFactory =
+  (walletApi: WalletApi) =>
+  async (gasPriceLevel: GasPriceLevel = GAS_PRICE_LEVEL): Promise<string | undefined> => {
+    const { blockchainState } = walletApi
 
-  if (!blockchainState) return undefined
+    if (!blockchainState) return undefined
 
-  const { chainId, blockHeader } = blockchainState
+    const { chainId, blockHeader } = blockchainState
 
-  // only fetch new gasPrice when chainId or blockNumber changed
-  const key = constructKey({ chainId, blockNumber: blockHeader && blockHeader.number })
-  if (key === cacheKey) {
-    return cachedGasPrice
-  }
-
-  const gasStationURL = GAS_STATIONS[chainId]
-
-  if (!gasStationURL) return undefined
-
-  try {
-    const response = await fetch(gasStationURL)
-    const json: GasStationResponse = await response.json()
-
-    const gasPrice = json[gasPriceLevel]
-    if (gasPrice) {
-      cacheKey = key
-      cachedGasPrice = gasPrice
-
-      return gasPrice
+    // only fetch new gasPrice when chainId or blockNumber changed
+    const key = constructKey({ chainId, blockNumber: blockHeader && blockHeader.number })
+    if (key === cacheKey) {
+      return cachedGasPrice
     }
-  } catch (error) {
-    console.error('[api:gasStation] Error fetching gasPrice from', gasStationURL, error)
+
+    const gasStationURL = GAS_STATIONS[chainId]
+
+    if (!gasStationURL) return undefined
+
+    try {
+      const response = await fetch(gasStationURL)
+      const json: GasStationResponse = await response.json()
+
+      const gasPrice = json[gasPriceLevel]
+      if (gasPrice) {
+        cacheKey = key
+        cachedGasPrice = gasPrice
+
+        return gasPrice
+      }
+    } catch (error) {
+      console.error('[api:gasStation] Error fetching gasPrice from', gasStationURL, error)
+    }
+    return undefined
   }
-  return undefined
-}
 
 export default fetchGasPriceFactory

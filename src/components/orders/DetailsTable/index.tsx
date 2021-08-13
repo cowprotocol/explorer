@@ -70,8 +70,7 @@ const tooltip = {
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
-  type:
-    'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
+  type: 'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
   amount: 'The total sell and buy amount for this order.',
   priceLimit:
     'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',

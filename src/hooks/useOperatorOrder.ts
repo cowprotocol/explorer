@@ -141,10 +141,12 @@ type UseOrderAndErc20sResult = {
 export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrderAndErc20sResult {
   const networkId = useNetworkId() || undefined
 
-  const { order, isLoading: isOrderLoading, error: orderError, errorOrderPresentInNetworkId } = useOrder(
-    orderId,
-    updateInterval,
-  )
+  const {
+    order,
+    isLoading: isOrderLoading,
+    error: orderError,
+    errorOrderPresentInNetworkId,
+  } = useOrder(orderId, updateInterval)
 
   const addresses = order ? [order.buyTokenAddress, order.sellTokenAddress] : []
 

@@ -66,31 +66,33 @@ export const useWrapUnwrapEth = (): Result => {
   )
 
   const wrapEth = useMemo(
-    () => async (amount: string, txOptionalParams: TxOptionalParams): Promise<Receipt> => {
-      logDebug('[useWrapUnwrapEth] Wrap ETH: ' + amount)
+    () =>
+      async (amount: string, txOptionalParams: TxOptionalParams): Promise<Receipt> => {
+        logDebug('[useWrapUnwrapEth] Wrap ETH: ' + amount)
 
-      return _wrapUnwrap({
-        ...baseParams,
-        amount,
-        setLoadingFlag: setWrappingEth,
-        execute: (params) => wethApi.deposit(params),
-        txOptionalParams,
-      })
-    },
+        return _wrapUnwrap({
+          ...baseParams,
+          amount,
+          setLoadingFlag: setWrappingEth,
+          execute: (params) => wethApi.deposit(params),
+          txOptionalParams,
+        })
+      },
     [baseParams, setWrappingEth],
   )
 
   const unwrapWeth = useMemo(
-    () => async (amount: string, txOptionalParams: TxOptionalParams): Promise<Receipt> => {
-      logDebug('[useWrapUnwrapEth] Unwrap ETH: ' + amount)
-      return _wrapUnwrap({
-        ...baseParams,
-        amount,
-        setLoadingFlag: setUnwrappingWeth,
-        execute: (params) => wethApi.withdraw(params),
-        txOptionalParams,
-      })
-    },
+    () =>
+      async (amount: string, txOptionalParams: TxOptionalParams): Promise<Receipt> => {
+        logDebug('[useWrapUnwrapEth] Unwrap ETH: ' + amount)
+        return _wrapUnwrap({
+          ...baseParams,
+          amount,
+          setLoadingFlag: setUnwrappingWeth,
+          execute: (params) => wethApi.withdraw(params),
+          txOptionalParams,
+        })
+      },
     [baseParams, setUnwrappingWeth],
   )
 

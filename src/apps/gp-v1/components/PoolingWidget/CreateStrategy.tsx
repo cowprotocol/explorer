@@ -28,9 +28,10 @@ interface SpreadInformationProps {
 }
 
 const SpreadInformation: React.FC<SpreadInformationProps> = ({ selectedTokensMap, spread }) => {
-  const tokenSymbolsString = React.useMemo(() => Array.from(selectedTokensMap.values()).map((token) => token.symbol), [
-    selectedTokensMap,
-  ])
+  const tokenSymbolsString = React.useMemo(
+    () => Array.from(selectedTokensMap.values()).map((token) => token.symbol),
+    [selectedTokensMap],
+  )
 
   return (
     <SpreadInformationWrapper>

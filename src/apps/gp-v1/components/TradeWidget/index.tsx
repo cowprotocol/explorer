@@ -468,17 +468,8 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({
       userAddress: string
       price: string
     }) => {
-      const {
-        price,
-        validFrom,
-        validUntil,
-        buyAmount,
-        buyToken,
-        sellAmount,
-        sellToken,
-        networkId,
-        userAddress,
-      } = params
+      const { price, validFrom, validUntil, buyAmount, buyToken, sellAmount, sellToken, networkId, userAddress } =
+        params
 
       // block form
       setIsSubmitting(true)

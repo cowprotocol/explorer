@@ -143,9 +143,10 @@ export function getOrderSurplus(order: RawOrder): Surplus {
  *
  * @param order The order
  */
-export function getOrderExecutedAmounts(
-  order: RawOrder,
-): { executedBuyAmount: BigNumber; executedSellAmount: BigNumber } {
+export function getOrderExecutedAmounts(order: RawOrder): {
+  executedBuyAmount: BigNumber
+  executedSellAmount: BigNumber
+} {
   return {
     executedBuyAmount: new BigNumber(order.executedBuyAmount),
     executedSellAmount: new BigNumber(order.executedSellAmount).minus(order.executedFeeAmount),
