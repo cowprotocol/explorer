@@ -101,7 +101,7 @@ export const Footer: React.FC<FooterType> = (props) => {
   const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const { networkIdOrDefault: networkId } = useWalletConnection()
   const settlementContractAddress = getGpV2ContractAddress(networkId, 'GPv2Settlement')
-  const allowanceManagerContractAddress = getGpV2ContractAddress(networkId, 'GPv2AllowanceManager')
+  const vaultRelayerContractAddress = getGpV2ContractAddress(networkId, 'GPv2VaultRelayer')
 
   return (
     <FooterStyled>
@@ -115,12 +115,12 @@ export const Footer: React.FC<FooterType> = (props) => {
             label="Settlement contract"
           />
         )}
-        {allowanceManagerContractAddress && (
+        {vaultRelayerContractAddress && (
           <VerifiedButton
             type="contract"
-            identifier={allowanceManagerContractAddress}
+            identifier={vaultRelayerContractAddress}
             networkId={networkId}
-            label="Allowance manager contract"
+            label="Vault Relayer contract"
           />
         )}
       </ContractsWrapper>
