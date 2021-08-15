@@ -4,7 +4,7 @@ import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-import { constructPrice } from 'utils'
+import { ConstructedPrice, constructPrice } from 'utils'
 import Icon from 'components/Icon'
 
 const Wrapper = styled.span`
@@ -36,7 +36,7 @@ export function OrderPriceDisplay(props: OrderPriceDisplayType): JSX.Element {
   const invert = (): void => setIsPriceInverted(!isPriceInverted)
 
   React.useEffect((): void => {
-    const price: string = constructPrice({
+    const price: ConstructedPrice = constructPrice({
       isPriceInverted: props.isPriceInverted ?? false,
       order: props,
       data: {
@@ -50,7 +50,7 @@ export function OrderPriceDisplay(props: OrderPriceDisplayType): JSX.Element {
         },
       },
     })
-    setFormattedPrice(price)
+    setFormattedPrice(`${price.formattedAmount ?? ''} ${price.quoteSymbol} for ${price.baseSymbol}`)
   }, [isPriceInverted])
 
   return (

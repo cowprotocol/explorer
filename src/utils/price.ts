@@ -132,12 +132,18 @@ interface PriceContructorData {
   order: Order | Trade | OrderPriceDisplayType
 }
 
+export type ConstructedPrice = {
+  formattedAmount: string
+  quoteSymbol: string
+  baseSymbol: string
+}
+
 /**
  * @name constructPrice
  * @param priceData
  * @returns string showing formatted price
  */
-export const constructPrice = (priceData: PriceContructorData): string => {
+export const constructPrice = (priceData: PriceContructorData): ConstructedPrice => {
   const { data, isPriceInverted, order } = priceData
   const calculatedPrice = calculatePrice({
     numerator: { amount: data.numerator.amount, decimals: data.numerator.token?.decimals },
@@ -147,14 +153,19 @@ export const constructPrice = (priceData: PriceContructorData): string => {
   const buySymbol = order.buyToken ? safeTokenName(order.buyToken) : ''
   const sellSymbol = order.sellToken ? safeTokenName(order.sellToken) : ''
   const [baseSymbol, quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
-
+  if (!data.numerator.token || !data.denominator.token)
+    return {
+      formattedAmount: '',
+      quoteSymbol,
+      baseSymbol,
+    }
   // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
   const erc20: TokenErc20 = isPriceInverted ? data.numerator.token : data.denominator.token
   const formattedAmount = erc20.decimals
     ? formatSmartMaxPrecision(calculatedPrice, erc20)
     : calculatedPrice.toString(10)
 
-  return `${formattedAmount ?? ''} ${quoteSymbol} for ${baseSymbol}`
+  return { formattedAmount, quoteSymbol, baseSymbol }
 }
 
 export function numberWithCommas(x: BigNumber): string {

@@ -7,7 +7,7 @@ import TradesTableContext from './Context/TradesTableContext'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { useTrades } from 'hooks/useOperatorTrades'
 import Spinner from 'components/common/Spinner'
-import { addressToErc20, constructPrice, numberWithCommas } from 'utils'
+import { addressToErc20, ConstructedPrice, constructPrice, numberWithCommas } from 'utils'
 import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
 import { COLOURS } from 'styles'
 import { Theme } from 'theme'
@@ -77,6 +77,7 @@ export const TradesTableHeader = (): JSX.Element => {
 const TradeTypeWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   span {
     margin: 5px 0px 5px 0px;
@@ -113,12 +114,12 @@ const TradeType = ({ buyTokenAddress, sellTokenAddress, isLong }: TradeTypeProps
   return tokens.length == 2 && tokens[0] && tokens[1] ? (
     <TradeTypeWrapper>
       <span>{isLong ? 'Buy' : 'Sell'}</span>&nbsp;
-      <TokenImg address={tokens[0].address} />
+      <TokenImg width={'16px'} height={'16px'} address={tokens[0].address} />
       &nbsp;
       <span>{tokens[0].symbol}</span>&nbsp;
       <span>for</span>&nbsp;
       <span>{tokens[1].symbol}</span>&nbsp;
-      <TokenImg address={tokens[1].address} />
+      <TokenImg width={'16px'} height={'16px'} address={tokens[1].address} />
     </TradeTypeWrapper>
   ) : (
     <></>
@@ -139,6 +140,10 @@ export const TradesTable = ({ header, className, numColumns, owner, orderId }: P
   const { isLoading, trades } = useTrades({ owner, orderId })
 
   React.useEffect((): void => {
+    populateTable()
+  }, [trades, tableContext.isPriceInverted])
+
+  const populateTable = async (): Promise<void> => {
     // for each entry in the data array invert the values of
     // the limit price and execution price if toggled
     const _rows: Array<
@@ -146,47 +151,55 @@ export const TradesTable = ({ header, className, numColumns, owner, orderId }: P
         limitPrice: string
         executionPrice: string
       }
-    > = trades.map((trade): any => {
-      return {
+    > = []
+    for (const trade of trades) {
+      let limitPrice: ConstructedPrice | null = null,
+        execPrice: ConstructedPrice | null = null
+      if (trade.sellToken && trade.buyToken) {
+        limitPrice = constructPrice({
+          isPriceInverted: tableContext.isPriceInverted,
+          order: trade,
+          data: {
+            numerator: {
+              amount: trade.sellAmount,
+              token: trade.sellToken,
+            },
+            denominator: {
+              amount: trade.buyAmount,
+              token: trade.buyToken,
+            },
+          },
+        })
+        execPrice = constructPrice({
+          isPriceInverted: tableContext.isPriceInverted,
+          order: trade,
+          data: {
+            numerator: {
+              amount: trade.sellAmount,
+              token: trade.sellToken,
+            },
+            denominator: {
+              amount: trade.buyAmount,
+              token: trade.buyToken,
+            },
+          },
+        })
+      }
+      const result = {
         ...trade,
         limitPrice:
-          trade.buyToken && trade.sellToken
-            ? constructPrice({
-                isPriceInverted: tableContext.isPriceInverted,
-                order: trade,
-                data: {
-                  numerator: {
-                    amount: trade.sellAmount,
-                    token: trade.sellToken,
-                  },
-                  denominator: {
-                    amount: trade.buyAmount,
-                    token: trade.buyToken,
-                  },
-                },
-              })
+          trade.buyToken && trade.sellToken && limitPrice
+            ? `${limitPrice.formattedAmount ?? ''} ${limitPrice.quoteSymbol} for ${limitPrice.baseSymbol}`
             : '-',
         executionPrice:
-          trade.buyToken && trade.sellToken
-            ? constructPrice({
-                isPriceInverted: tableContext.isPriceInverted,
-                order: trade,
-                data: {
-                  numerator: {
-                    amount: trade.buyAmount,
-                    token: trade.buyToken,
-                  },
-                  denominator: {
-                    amount: trade.sellAmount,
-                    token: trade.sellToken,
-                  },
-                },
-              })
+          trade.buyToken && trade.sellToken && execPrice
+            ? `${execPrice.formattedAmount ?? ''} ${execPrice.quoteSymbol} for ${execPrice.baseSymbol}`
             : '-',
       }
-    })
+      _rows.push(result)
+    }
     setRows(_rows)
-  }, [trades, tableContext.isPriceInverted])
+  }
 
   return (
     <SimpleTable

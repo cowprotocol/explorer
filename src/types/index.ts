@@ -72,7 +72,7 @@ export enum AnalyticsDimension {
 
 export interface Price {
   amount: BigNumber
-  token: TokenErc20
+  token: TokenErc20 | null
 }
 
 export interface PriceData {
