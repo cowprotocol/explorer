@@ -20,4 +20,16 @@ function checkEnvironment(host: string): Envs {
 
 const { isDev, isStaging, isProd } = checkEnvironment(window.location.host)
 
+export const environmentName = (function (): 'production' | 'staging' | 'development' | undefined {
+  if (isProd) {
+    return 'production'
+  } else if (isStaging) {
+    return 'staging'
+  } else if (isDev) {
+    return 'development'
+  } else {
+    return undefined
+  }
+})()
+
 export { isDev, isStaging, isProd }

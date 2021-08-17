@@ -17,6 +17,27 @@ import { initAnalytics } from 'api/analytics'
 import RouteAnalytics from 'components/analytics/RouteAnalytics'
 import NetworkAnalytics from 'components/analytics/NetworkAnalytics'
 import { DIMENSION_NAMES } from './const'
+import * as Sentry from '@sentry/react'
+import { Integrations } from '@sentry/tracing'
+import { environmentName } from 'utils/env'
+import { version } from '../../../package.json'
+
+const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
+const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
+
+if (SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    integrations: [new Integrations.BrowserTracing()],
+    release: 'gp-explorer@' + version,
+    environment: environmentName,
+
+    // Set tracesSampleRate to 1.0 to capture 100%
+    // of transactions for performance monitoring.
+    // We recommend adjusting this value in production
+    tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE ? Number(SENTRY_TRACES_SAMPLE_RATE) : 1.0,
+  })
+}
 
 // Init analytics
 const GOOGLE_ANALYTICS_ID: string | undefined = process.env.GOOGLE_ANALYTICS_ID
