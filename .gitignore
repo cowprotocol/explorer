@@ -17,3 +17,4 @@ storybook-static
 .stylelint-cache
 tsconfig.tsbuildinfo
 playwright/build
+.idea/
