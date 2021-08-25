@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { TokenErc20, formatSmart } from '@gnosis.pm/dex-js'
+import { TokenErc20, formatSmart, safeTokenName } from '@gnosis.pm/dex-js'
 
 import {
   ONE_HUNDRED_BIG_NUMBER,
@@ -10,6 +10,11 @@ import {
   TEN_BIG_NUMBER,
   MINIMUM_ATOM_VALUE,
 } from 'const'
+import {
+  HIGH_PRECISION_DECIMALS,
+  HIGH_PRECISION_SMALL_LIMIT,
+  NO_ADJUSTMENT_NEEDED_PRECISION,
+} from 'apps/explorer/const'
 import { batchIdToDate } from './time'
 
 export {
@@ -241,4 +246,37 @@ export function formatSmartMaxPrecision(amount: BigNumber, token?: TokenErc20 | 
     decimals: token?.decimals || 0,
     smallLimit: getMinimumRepresentableValue(token?.decimals),
   })
+}
+
+/**
+ * Transforms a BigNumber order calculatedPrice (buy/sell) into a string
+ * based on buyToken / sellToken (Erc20 both of them)
+ * e.g:
+ * return: 3,000.2 USDT per WETH
+ *
+ * @param calculatedPrice BigNumber integer amount
+ * @param buyToken Erc20 token
+ * @param sellToken Erc20 token
+ * @param inverted Optional. Whether to invert the price (1/price).
+ */
+
+export function formatCalculatedPriceToDisplay(
+  calculatedPrice: BigNumber,
+  buyToken: TokenErc20,
+  sellToken: TokenErc20,
+  isPriceInverted?: boolean,
+): string {
+  const displayPrice = calculatedPrice.toString(10)
+  const formattedPrice = formatSmart({
+    amount: displayPrice,
+    precision: NO_ADJUSTMENT_NEEDED_PRECISION,
+    smallLimit: HIGH_PRECISION_SMALL_LIMIT,
+    decimals: HIGH_PRECISION_DECIMALS,
+  })
+  const buySymbol = safeTokenName(buyToken)
+  const sellSymbol = safeTokenName(sellToken)
+
+  const [baseSymbol, quoteSymbol] = isPriceInverted ? [sellSymbol, buySymbol] : [buySymbol, sellSymbol]
+
+  return `${formattedPrice} ${quoteSymbol} per ${baseSymbol}`
 }
