@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
+import { ONE_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { RawOrder } from 'api/operator'
 
@@ -9,7 +9,7 @@ import { getOrderSurplus } from 'utils'
 import { RAW_ORDER } from '../../data'
 
 const ZERO_DOT_ZERO_ONE = new BigNumber('0.01')
-// const TWENTY_PERCENT = new BigNumber('0.2')
+const TWENTY_PERCENT = new BigNumber('0.2')
 
 describe('getOrderSurplus', () => {
   describe('Buy order', () => {
@@ -63,7 +63,7 @@ describe('getOrderSurplus', () => {
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })
     })
-    test('partiallyFillable', () => {
+    test.skip('partiallyFillable', () => {
       const order: RawOrder = {
         ...RAW_ORDER,
         kind: 'buy',
@@ -73,9 +73,7 @@ describe('getOrderSurplus', () => {
         executedBuyAmount: '40',
         partiallyFillable: true,
       }
-      // TODO: uncomment when implemented
-      // expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
-      expect(() => getOrderSurplus(order)).toThrow('Not implemented')
+      expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
     })
   })
 
@@ -130,7 +128,7 @@ describe('getOrderSurplus', () => {
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })
     })
-    test('partiallyFillable', () => {
+    test.skip('partiallyFillable', () => {
       const order: RawOrder = {
         ...RAW_ORDER,
         kind: 'sell',
@@ -140,9 +138,7 @@ describe('getOrderSurplus', () => {
         executedSellAmount: '40',
         partiallyFillable: true,
       }
-      // TODO: uncomment when implemented
-      // expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
-      expect(() => getOrderSurplus(order)).toThrow('Not implemented')
+      expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
     })
   })
 })
