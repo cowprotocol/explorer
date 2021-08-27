@@ -232,42 +232,44 @@ export function DetailsTable(props: Props): JSX.Element | null {
               />
             </td>
           </tr>
-          {!partiallyFillable && (
-            <>
-              <tr>
-                <td>
-                  <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
-                </td>
-                <td>
-                  {!filledAmount.isZero() ? (
-                    <OrderPriceDisplay
-                      buyAmount={executedBuyAmount}
-                      buyToken={buyToken}
-                      sellAmount={executedSellAmount}
-                      sellToken={sellToken}
-                      showInvertButton
-                    />
-                  ) : (
-                    '-'
-                  )}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <HelpTooltip tooltip={tooltip.filled} /> Filled
-                </td>
-                <td>
-                  <FilledProgress order={order} />
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
-                </td>
-                <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
-              </tr>
-            </>
-          )}
+          {/*TODO: uncomment when fills tab is implemented */}
+          {/*{!partiallyFillable && (*/}
+          <>
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.priceExecution} /> Execution price
+              </td>
+              <td>
+                {!filledAmount.isZero() ? (
+                  <OrderPriceDisplay
+                    buyAmount={executedBuyAmount}
+                    buyToken={buyToken}
+                    sellAmount={executedSellAmount}
+                    sellToken={sellToken}
+                    showInvertButton
+                  />
+                ) : (
+                  '-'
+                )}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.filled} /> Filled
+              </td>
+              <td>
+                <FilledProgress order={order} />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.surplus} /> Order surplus
+              </td>
+              <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
+            </tr>
+          </>
+          {/*TODO: uncomment when fills tab is implemented */}
+          {/*)}*/}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.fees} /> Fees

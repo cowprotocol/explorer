@@ -127,7 +127,7 @@ export function getOrderSurplus(order: RawOrder): Surplus {
 
   if (partiallyFillable) {
     // TODO: calculate how much was matched based on the type and check whether there was any surplus
-    throw Error('Not implemented')
+    return { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
   }
 
   if (kind === 'buy') {
