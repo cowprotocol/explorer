@@ -19,4 +19,5 @@ export const COLOURS = {
   disabledDark: '#31323E',
   mainGradient: 'linear-gradient(270deg, #8958FF 0%, #3F77FF 100%)',
   mainGradientDarker: 'linear-gradient(270deg, #6a2cff 0%, #185afb 100%)',
+  fadedGreyishWhite: 'rgba(141, 141, 169, 0.08)',
 }
