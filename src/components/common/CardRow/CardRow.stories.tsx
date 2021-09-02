@@ -6,6 +6,9 @@ import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { Card } from '../Card/index'
 import { CardRow, CardRowProps } from '.'
+import { CardContent } from '../Card/CardContent'
+
+import QuestionIcon from '../../../assets/img/question1.svg'
 
 export default {
   title: 'Common/CardRow',
@@ -17,16 +20,43 @@ const Template: Story<CardRowProps> = (args) => (
   <CardRow {...args}>
     <>
       <Card>
-        <span>Card1</span>
+        <CardContent variant="2row" label1="24h Transactions" value1="194" caption1="-3.45%" captionColor="red1" />
       </Card>
       <Card>
-        <span>Card2</span>
+        <CardContent
+          icon1={<img src={QuestionIcon} />}
+          variant="3row"
+          label1="24h Transactions"
+          value1="194"
+          caption1="-3.45%"
+          captionColor="red1"
+        />
       </Card>
       <Card>
-        <span>Card3</span>
+        <CardContent
+          variant="3row"
+          label1="Trades"
+          value1="511.12k"
+          caption1="0.588ETH"
+          hint1="(~$1015.01)"
+          captionColor="white"
+          hintColor="grey"
+        />
       </Card>
       <Card>
-        <span>Card4</span>
+        <span>Dummy Card</span>
+      </Card>
+      <Card xs={12} sm={12} md={8} lg={6}>
+        <CardContent
+          variant="double"
+          direction="row"
+          valueSize={14}
+          labelWidth={110}
+          label1="Limit Price"
+          value1="1055.32 DAI per ETH"
+          label2="Avg. Exec. Price"
+          value2="1055.54 DAI per ETH"
+        />
       </Card>
     </>
   </CardRow>
