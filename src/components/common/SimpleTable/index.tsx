@@ -101,7 +101,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding: 0 1.6rem;
+      padding: 0 0.5rem;
 
       ${media.mobile} {
         padding: 0 1rem;

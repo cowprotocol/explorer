@@ -5,12 +5,17 @@ import { CopyButton } from 'components/common/CopyButton'
 
 const Wrapper = styled.span`
   display: flex;
+  align-items: center;
   flex-wrap: nowrap;
 
   & > :first-child {
     margin-right: 0.75rem;
     word-break: break-all;
   }
+`
+
+const Content = styled.div`
+  display: inline-block;
 `
 
 type Props = {
@@ -28,7 +33,7 @@ export function RowWithCopyButton(props: Props): JSX.Element {
 
   return (
     <Wrapper className={className}>
-      {contentsComponent} <CopyButton text={textToCopy} onCopy={onCopy} />
+      <Content>{contentsComponent}</Content> <CopyButton text={textToCopy} onCopy={onCopy} />
     </Wrapper>
   )
 }

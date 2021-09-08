@@ -280,3 +280,23 @@ export function formatCalculatedPriceToDisplay(
 
   return `${formattedPrice} ${quoteSymbol} per ${baseSymbol}`
 }
+
+export function formatExecutedPriceToDisplay(
+  calculatedPrice: BigNumber,
+  buyToken: TokenErc20,
+  sellToken: TokenErc20,
+  isPriceInverted?: boolean,
+): string {
+  const displayPrice = calculatedPrice.toString(10)
+  const formattedPrice = formatSmart({
+    amount: displayPrice,
+    precision: NO_ADJUSTMENT_NEEDED_PRECISION,
+    smallLimit: HIGH_PRECISION_SMALL_LIMIT,
+    decimals: HIGH_PRECISION_DECIMALS,
+  })
+  const buySymbol = safeTokenName(buyToken)
+  const sellSymbol = safeTokenName(sellToken)
+  const baseSymbol = isPriceInverted ? sellSymbol : buySymbol
+
+  return `${formattedPrice} ${baseSymbol}`
+}

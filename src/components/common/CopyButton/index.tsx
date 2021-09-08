@@ -17,6 +17,7 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string }>`
   color: ${({ theme, copied }): string => (copied ? theme.green : theme.grey)};
   transition: color 0.2s ease-in;
   cursor: ${({ copied }): string => (copied ? 'reset' : 'pointer')};
+  vertical-align: top;
 
   &:hover {
     color: ${({ theme, copied }): string => (copied ? theme.green : theme.white)};

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Order, Trade } from 'api/operator'
 
 import { DetailsTable } from 'components/orders/DetailsTable'
-import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
 const Wrapper = styled.div`
   padding: 1.6rem;
