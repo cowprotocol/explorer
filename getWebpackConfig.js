@@ -1,5 +1,6 @@
 const assert = require('assert').strict
 const path = require('path')
+const { version } = require('./package.json')
 
 const webpack = require('webpack')
 const HtmlWebPackPlugin = require('html-webpack-plugin')
@@ -8,6 +9,7 @@ const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const PreloadWebpackPlugin = require('preload-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const markdownIt = require('markdown-it')
 const linkAttributes = require('markdown-it-link-attributes')
 
@@ -111,6 +113,26 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
 
   // Production only plugins
   if (isProduction) {
+    // Sentry source-maps plugin
+    const SENTRY_RELEASE = 'gp-explorer@v' + version
+    const SENTRY_AUTH_TOKEN = process.env.REACT_APP_SENTRY_AUTH_TOKEN
+
+    if (SENTRY_AUTH_TOKEN) {
+      plugins.push(
+        new SentryWebpackPlugin({
+          // sentry-cli configuration - can also be done directly through sentry-cli
+          // see https://docs.sentry.io/product/cli/configuration/ for details
+          authToken: SENTRY_AUTH_TOKEN,
+          org: 'gnosis-protocol',
+          project: 'gp-explorer',
+          release: SENTRY_RELEASE,
+          // other SentryWebpackPlugin configuration
+          include: './dist',
+          ignore: ['node_modules', 'webpack.config.js'],
+        }),
+      )
+    }
+
     // Inline chunk html plugin: Inlines script chunks into index.html
     plugins.push(new InlineChunkHtmlPlugin(HtmlWebPackPlugin, [/runtime/]))
 
