@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 import { SimpleTable, Props as SimpleTableProps } from 'components/common/SimpleTable'
 
-interface Props {
+export interface Props {
   showBorderTable?: boolean
 }
 
@@ -11,6 +11,7 @@ export type StyledUserDetailsTableProps = SimpleTableProps & Props
 const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   border: ${({ theme, showBorderTable }): string => (showBorderTable ? `0.1rem solid ${theme.borderPrimary}` : 'none')};
   border-radius: 0.4rem;
+  margin-top: 0;
 
   tr td {
     &:not(:first-of-type) {
@@ -38,8 +39,15 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
     gap: 6px;
   }
 
+  thead {
+    position: inherit;
+  }
   thead tr {
     width: 100%;
+  }
+
+  tbody {
+    overflow: unset;
   }
 
   tbody tr:hover {
@@ -53,6 +61,18 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   span.wrap-datedisplay > span:last-of-type {
     display: flex;
   }
+
+  tbody tr td.row-td-empty {
+    grid-column: 1 / span all;
+
+    :hover {
+      background-color: ${({ theme }): string => theme.bg1};
+    }
+  }
+
+  tbody tr.row-empty {
+    padding: 0;
+  }
 `
 
 export const EmptyItemWrapper = styled.div`
@@ -62,6 +82,8 @@ export const EmptyItemWrapper = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
+  width: 100%;
+  font-size: ${({ theme }): string => theme.fontSizeDefault};
 `
 
 export default StyledUserDetailsTable

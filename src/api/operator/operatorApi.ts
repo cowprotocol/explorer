@@ -193,16 +193,24 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
  *  - owner: address
  *  - sellToken: address
  *  - buyToken: address
+ *  - minValidTo: number
  */
 export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
   const { networkId, ...searchParams } = params
-  const { owner, sellToken, buyToken } = searchParams
+  const { owner, sellToken, buyToken, minValidTo } = searchParams
+  const defaultValues = {
+    includeFullyExecuted: 'true',
+    includeInvalidated: 'true',
+    includeInsufficientBalance: 'true',
+    includePresignaturePending: 'true',
+    includeUnsupportedTokens: 'true',
+  }
 
   console.log(
     `[getOrders] Fetching orders on network ${networkId} with filters: owner=${owner} sellToken=${sellToken} buyToken=${buyToken}`,
   )
 
-  const searchString = buildSearchString({ ...searchParams })
+  const searchString = buildSearchString({ ...searchParams, ...defaultValues, minValidTo: String(minValidTo) })
 
   const queryString = '/orders/' + searchString
 

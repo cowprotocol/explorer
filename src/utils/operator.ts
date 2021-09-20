@@ -238,7 +238,7 @@ function isZeroAddress(address: string): boolean {
 }
 
 export function isTokenErc20(token: TokenErc20 | null | undefined): token is TokenErc20 {
-  return (token as TokenErc20).address !== undefined
+  return (token as TokenErc20)?.address !== undefined
 }
 
 export function formattedAmount(erc20: TokenErc20 | null | undefined, amount: BigNumber): string {

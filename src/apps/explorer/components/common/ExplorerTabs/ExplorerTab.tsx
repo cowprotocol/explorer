@@ -11,6 +11,7 @@ const StyledTabs = styled.div`
   padding: 0;
   border: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
   border-radius: 4px;
+  min-height: 33rem;
 
   > div > div.tablist {
     justify-content: flex-start;

@@ -119,7 +119,8 @@ export type GetOrderParams = WithNetworkId & {
 }
 
 export type GetOrdersParams = WithNetworkId & {
-  owner?: string
+  owner: string
+  minValidTo: number
   sellToken?: string
   buyToken?: string
 }

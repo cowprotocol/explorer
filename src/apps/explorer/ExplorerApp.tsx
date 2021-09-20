@@ -118,7 +118,7 @@ const AppContent = (): JSX.Element => {
 }
 
 const Wrapper = styled.div`
-  max-width: 140rem;
+  max-width: 118rem;
   margin: 0 auto;
 
   ${media.mediumDown} {

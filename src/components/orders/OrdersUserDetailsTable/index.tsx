@@ -11,7 +11,7 @@ import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount } f
 import { StatusLabel } from '../StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import StyledUserDetailsTable, {
-  StyledUserDetailsTableProps,
+  Props as StyledUserDetailsTableProps,
   EmptyItemWrapper,
 } from '../../common/StyledUserDetailsTable'
 import Icon from 'components/Icon'
@@ -20,10 +20,10 @@ import TradeOrderType from 'components/common/TradeOrderType'
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 7rem repeat(2, 16rem) repeat(2, minmax(18rem, 24rem)) 1fr;
+    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
   }
+  overflow: auto;
 `
-
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'
 
@@ -59,9 +59,13 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
       <td>
         {
           <RowWithCopyButton
-            className="wrap-copybtn"
+            className="span-copybtn-wrap"
             textToCopy={uid}
-            contentsToDisplay={<Link to={`/orders/${order.uid}`}>{shortId}</Link>}
+            contentsToDisplay={
+              <Link to={`/orders/${order.uid}`} target="_blank">
+                {shortId}
+              </Link>
+            }
           />
         }
       </td>
@@ -94,7 +98,14 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
   }
 
   const orderItems = (items: Order[]): JSX.Element => {
-    if (items.length === 0) return <EmptyItemWrapper>No Orders.</EmptyItemWrapper>
+    if (items.length === 0)
+      return (
+        <tr className="row-empty">
+          <td className="row-td-empty">
+            <EmptyItemWrapper>No Orders.</EmptyItemWrapper>
+          </td>
+        </tr>
+      )
 
     return (
       <>
