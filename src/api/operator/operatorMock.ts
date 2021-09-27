@@ -1,4 +1,4 @@
-import { GetOrderParams, GetOrdersParams, GetTradesParams, RawOrder, RawTrade } from './types'
+import { GetOrderParams, GetOrdersParams, GetAccountOrdersParams, GetTradesParams, RawOrder, RawTrade } from './types'
 
 import { RAW_ORDER, RAW_TRADE } from '../../../test/data'
 
@@ -12,6 +12,16 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
 }
 
 export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
+  const { owner, networkId } = params
+
+  const order = await getOrder({ networkId, orderId: 'whatever' })
+
+  order.owner = owner || order.owner
+
+  return [order]
+}
+
+export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { owner, networkId } = params
 
   const order = await getOrder({ networkId, orderId: 'whatever' })
