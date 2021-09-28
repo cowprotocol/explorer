@@ -22,7 +22,7 @@ type Result = {
   isLoading: boolean
 }
 
-export function useGetOrders(ownerAddress: string, offset = 0, limit = 1000): Result {
+export function useGetOrders(ownerAddress: string, limit = 1000, offset = 0): Result {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [orders, setOrders] = useState<Order[]>([])
