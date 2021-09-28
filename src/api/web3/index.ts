@@ -47,7 +47,7 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
     case Network.Rinkeby:
       return infuraProvider(networkId)
     case Network.xDAI:
-      return 'wss://rpc.xdaichain.com/wss'
+      return 'https://dai.poa.network'
     default:
       return undefined
   }
