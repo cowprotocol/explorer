@@ -60,7 +60,7 @@ const TooltipInner = styled.div<{ $bgColor?: string }>`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
   box-sizing: border-box;
   box-shadow: 0 0.4rem 0.4rem ${({ theme }): string => theme.boxShadow};
-  max-width: 30rem;
+  max-width: 40rem;
 
   &[data-popper-placement^='top'] > ${TooltipArrow} {
     bottom: -${TOOLTIP_OFFSET / 2}px;
