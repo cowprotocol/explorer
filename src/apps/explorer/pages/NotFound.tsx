@@ -6,6 +6,7 @@ import { media } from 'theme/styles/media'
 const Wrapper = styled.div`
   max-width: 118rem;
   margin: 0 auto;
+  padding: 1.6rem;
 
   ${media.mediumDown} {
     max-width: 94rem;
@@ -18,7 +19,7 @@ const Wrapper = styled.div`
 `
 
 const Title = styled.h1`
-  margin: 4rem 0;
+  margin: 3rem 0 2.95rem;
   font-weight: ${({ theme }): string => theme.fontBold};
 `
 
@@ -28,6 +29,9 @@ const Content = styled.div`
   padding: 20px;
   border-radius: 0.4rem;
   min-height: 23rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   p {
     line-height: ${({ theme }): string => theme.fontLineHeight};
@@ -43,7 +47,6 @@ const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   cursor: pointer;
   color: ${({ theme }): string => theme.white} !important;
 
@@ -57,7 +60,7 @@ const NotFound2: React.FC = () => (
     <Title>Page not found</Title>
     <Content>
       <p>We&apos;re sorry, the page you requested could not be found.</p>
-      <StyledLink to="/">home page</StyledLink>
+      <StyledLink to="/">Back Home</StyledLink>
     </Content>
   </Wrapper>
 )
