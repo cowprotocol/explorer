@@ -20,9 +20,10 @@ type Result = {
   orders: Order[]
   error: string
   isLoading: boolean
+  isThereNext: boolean
 }
 
-export function useGetOrders(ownerAddress: string, limit = 1000, offset = 0): Result {
+export function useGetOrders(ownerAddress: string, limit = 1000, offset = 0, pageIndex?: number): Result {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [orders, setOrders] = useState<Order[]>([])
@@ -30,14 +31,20 @@ export function useGetOrders(ownerAddress: string, limit = 1000, offset = 0): Re
   const [erc20Addresses, setErc20Addresses] = useState<string[]>([])
   const { value: valueErc20s, isLoading: areErc20Loading } = useMultipleErc20({ networkId, addresses: erc20Addresses })
   const [mountNewOrders, setMountNewOrders] = useState(false)
+  const [isThereNext, setIsThereNext] = useState(false)
 
   const fetchOrders = useCallback(
     async (network: Network, owner: string): Promise<void> => {
       setIsLoading(true)
       setError('')
+      const limitPlusOne = limit + 1
 
       try {
-        const ordersFetched = await getAccountOrders({ networkId: network, owner, offset, limit })
+        const ordersFetched = await getAccountOrders({ networkId: network, owner, offset, limit: limitPlusOne })
+        if (ordersFetched.length === limitPlusOne) {
+          setIsThereNext(true)
+          ordersFetched.pop()
+        }
         const newErc20Addresses = ordersFetched.reduce((accumulator: string[], element) => {
           const updateAccumulator = (tokenAddress: string): void => {
             if (accumulator.indexOf(tokenAddress) === -1) {
@@ -70,7 +77,10 @@ export function useGetOrders(ownerAddress: string, limit = 1000, offset = 0): Re
       return
     }
 
+    setIsThereNext(false)
     fetchOrders(networkId, ownerAddress)
+
+    if (pageIndex && pageIndex > 1) return
 
     const intervalId: NodeJS.Timeout = setInterval(() => {
       fetchOrders(networkId, ownerAddress)
@@ -79,7 +89,7 @@ export function useGetOrders(ownerAddress: string, limit = 1000, offset = 0): Re
     return (): void => {
       clearInterval(intervalId)
     }
-  }, [fetchOrders, networkId, ownerAddress])
+  }, [fetchOrders, networkId, ownerAddress, pageIndex])
 
   useEffect(() => {
     if (areErc20Loading || isObjectEmpty(valueErc20s) || !mountNewOrders) {
@@ -97,5 +107,5 @@ export function useGetOrders(ownerAddress: string, limit = 1000, offset = 0): Re
     setMountNewOrders(false)
   }, [valueErc20s, networkId, areErc20Loading, mountNewOrders, orders])
 
-  return { orders, error, isLoading }
+  return { orders, error, isLoading, isThereNext }
 }

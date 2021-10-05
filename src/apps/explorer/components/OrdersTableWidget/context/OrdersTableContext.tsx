@@ -1,14 +1,13 @@
 import React from 'react'
 
 import { Order } from 'api/operator'
-import { TableState } from 'apps/explorer/components/OrdersTableWidget/useTable'
+import { TableState, TableStateSetters } from 'apps/explorer/components/OrdersTableWidget/useTable'
 
-interface CommonState {
+type CommonState = {
   orders: Order[]
   error: string
-  isFirstLoading: boolean
-  setPageSize: (pageSize: number) => void
+  isOrdersLoading: boolean
   tableState: TableState
-}
+} & TableStateSetters
 
 export const OrdersTableContext = React.createContext({} as CommonState)
