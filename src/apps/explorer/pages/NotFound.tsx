@@ -24,7 +24,7 @@ const Title = styled.h1`
 `
 
 const Content = styled.div`
-  font-size: 16px;
+  font-size: 1.6rem;
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
   padding: 20px;
   border-radius: 0.4rem;
@@ -41,9 +41,9 @@ const Content = styled.div`
 
 const StyledLink = styled(Link)`
   height: 5rem;
-  border: 1px solid ${({ theme }): string => theme.borderPrimary};
+  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.6rem;
-  width: 160px;
+  width: 16rem;
   display: flex;
   align-items: center;
   justify-content: center;
