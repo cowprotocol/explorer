@@ -51,7 +51,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       width: 100%;
       transition: background-color 0.1s ease-in-out;
       min-height: 4.8rem;
-      padding: 1.4rem 0;
+      padding: 1.4rem 0 1.4rem 1.1rem;
       box-sizing: border-box;
 
       &:not(:last-of-type) {
@@ -64,6 +64,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
         height: auto;
         align-items: flex-start;
         justify-content: center;
+        padding: 1.4rem 0;
 
         &:hover {
           background: var(--color-text-hover);
