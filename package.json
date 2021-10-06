@@ -120,6 +120,7 @@
     "@storybook/addon-knobs": "^6.2.9",
     "@storybook/addon-links": "^6.2.9",
     "@storybook/react": "^6.2.9",
+    "@testing-library/react-hooks": "^7.0.2",
     "@truffle/hdwallet-provider": "^1.2.0",
     "@types/bn.js": "^4.11.6",
     "@types/combine-reducers": "^1.0.0",
