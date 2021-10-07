@@ -33,6 +33,7 @@ const Table = styled(SimpleTable)`
 
     ${media.mediumDown} {
       grid-template-columns: 17rem auto;
+      padding: 1.4rem 0;
     }
 
     > td {
