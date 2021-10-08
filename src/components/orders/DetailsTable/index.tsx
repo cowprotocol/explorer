@@ -29,9 +29,11 @@ const Table = styled(SimpleTable)`
 
   > tbody > tr {
     grid-template-columns: 27rem auto;
+    padding: 1.4rem 0 1.4rem 1.1rem;
 
     ${media.mediumDown} {
       grid-template-columns: 17rem auto;
+      padding: 1.4rem 0;
     }
 
     > td {
