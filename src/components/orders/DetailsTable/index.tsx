@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
-import { Link } from 'react-router-dom'
 
 import { Order } from 'api/operator'
 
@@ -22,6 +21,7 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { triggerEvent } from 'api/analytics'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -144,7 +144,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <RowWithCopyButton
                 textToCopy={owner}
                 onCopy={(): void => onCopy('ownerAddress')}
-                contentsToDisplay={<Link to={`/address/${owner}`}>{owner}</Link>}
+                contentsToDisplay={<LinkWithPrefixNetwork to={`/address/${owner}`}>{owner}</LinkWithPrefixNetwork>}
               />
             </td>
           </tr>
@@ -156,7 +156,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <RowWithCopyButton
                 textToCopy={receiver}
                 onCopy={(): void => onCopy('receiverAddress')}
-                contentsToDisplay={<Link to={`/address/${receiver}`}>{receiver}</Link>}
+                contentsToDisplay={
+                  <LinkWithPrefixNetwork to={`/address/${receiver}`}>{receiver}</LinkWithPrefixNetwork>
+                }
               />
             </td>
           </tr>
