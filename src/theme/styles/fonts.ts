@@ -14,6 +14,7 @@ export interface Fonts {
   fontHeavy: string
   fontBlack: string
   fontSizeDefault: string
+  fontLineHeight: string
 }
 
 const fontsVariables = {
@@ -28,6 +29,7 @@ const fontsVariables = {
   fontHeavy: '700',
   fontBlack: '800',
   fontSizeDefault: '1.3rem',
+  fontLineHeight: '2.6rem',
 }
 
 export function getFonts(mode: Theme): Fonts {

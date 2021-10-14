@@ -12,8 +12,8 @@ export default {
   decorators: [ThemeToggler],
   argTypes: {
     label: { control: 'text' },
-    variant: { control: 'radio' },
-    size: { control: 'inline-radio' },
+    variant: { control: 'default' },
+    size: { control: 'default' },
     as: { control: null },
     theme: { control: null },
     forwardedAs: { control: null },
@@ -74,9 +74,9 @@ BigButton.args = {
   size: 'big',
 }
 
-export const SmolButton = Template.bind({})
-SmolButton.args = {
-  label: 'Smol Button',
+export const SmallButton = Template.bind({})
+SmallButton.args = {
+  label: 'Small Button',
   variant: 'primary',
   size: 'small',
 }

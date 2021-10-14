@@ -1,6 +1,7 @@
 import { tokenList } from '../data'
-import { getToken } from 'utils'
+import { getToken, isAnAddressAccount, isAnOrderId } from 'utils'
 import BN from 'bn.js'
+import { pathAccordingTo } from 'hooks/useSearchSubmit'
 
 describe('getToken', () => {
   describe('empty cases', () => {
@@ -87,5 +88,61 @@ describe('getToken', () => {
       expect(actual).not.toBeUndefined()
       expect(actual).toBe(expected)
     })
+  })
+})
+
+describe('isAnOrderId', () => {
+  test('Is orderId', () => {
+    const text =
+      '0x405bd0278c11399f84f10e19fb9b45123996e7d0a68a60ddebc3b9581576b484ff714b8b0e2700303ec912bd40496c3997ceea2b614b17d9'
+
+    const result = isAnOrderId(text)
+
+    expect(result).toBe(true)
+  })
+
+  test('Is not orderId', () => {
+    const text = '0xb6BAd41ae76A11D10f7b0E664C5007b908bC77C9'
+
+    const result = isAnOrderId(text)
+
+    expect(result).toBe(false)
+  })
+})
+
+describe('isAnAddressAccount', () => {
+  test('Is an Address account', () => {
+    const text = '0xb6BAd41ae76A11D10f7b0E664C5007b908bC77C9'
+
+    const result = isAnAddressAccount(text)
+
+    expect(result).toBe(true)
+  })
+
+  test('Is not an Address account', () => {
+    const text =
+      '0x405bd0278c11399F84f10e19fb9b45123996e7d0a68a60ddebc3b9581576b484ff714b8b0e2700303ec912bd40496c3997ceea2b614b17d9'
+
+    const result = isAnAddressAccount(text)
+
+    expect(result).toBe(false)
+  })
+})
+
+describe('pathAccordingTo', () => {
+  it('should return the orders word when it does not match', () => {
+    const text = 'Invalid Search'
+
+    const result = pathAccordingTo(text)
+
+    expect(result).toBe('orders')
+  })
+
+  it('should return the address word when it match', () => {
+    const text = '0xb6BAd41ae76A11D10f7b0E664C5007b908bC77C9'
+
+    const result = pathAccordingTo(text)
+
+    expect(result).toBe('address')
   })
 })

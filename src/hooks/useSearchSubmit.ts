@@ -1,18 +1,30 @@
 import { useCallback } from 'react'
-import { useHistory, useRouteMatch } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import { isAnAddressAccount } from 'utils'
+import { usePathPrefix } from 'state/network'
+
+export function pathAccordingTo(query: string): string {
+  let path = 'orders'
+  if (isAnAddressAccount(query)) {
+    path = 'address'
+  }
+
+  return path
+}
 
 export function useSearchSubmit(): (query: string) => void {
   const history = useHistory()
-  const { path } = useRouteMatch()
+  const prefixNetwork = usePathPrefix()
 
   return useCallback(
     (query: string) => {
-      const pathPrefix = path.endsWith('/') ? path : path + '/'
-
       // For now assumes /orders/ path. Needs logic to try all types for a valid response:
       // Orders, transactions, tokens, batches
-      query && query.length > 0 && history.push(`${pathPrefix}orders/${query}`)
+      const path = pathAccordingTo(query)
+      const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
+
+      query && query.length > 0 && history.push(`/${pathPrefix}/${query}`)
     },
-    [history, path],
+    [history, prefixNetwork],
   )
 }

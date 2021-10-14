@@ -252,3 +252,17 @@ export async function timeout<T>(params: TimeoutParams<T>): Promise<T | never> {
   // no defined result -- throw message
   throw new Error(timeoutMsg)
 }
+
+/**
+ * Check if a string is an orderId against regex
+ *
+ * @param text Possible OrderId string to check
+ */
+export const isAnOrderId = (text: string): boolean => text.match(/^0x[a-fA-F0-9]{112}$/)?.input !== undefined
+
+/**
+ * Check if string is an address account against regex
+ *
+ * @param text Possible address string to check
+ */
+export const isAnAddressAccount = (text: string): boolean => text.match(/^0x[a-fA-F0-9]{40}$/)?.input !== undefined

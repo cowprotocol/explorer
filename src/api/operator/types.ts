@@ -88,20 +88,28 @@ export type RawTrade = {
   sellAmountBeforeFees: string
   buyToken: string
   sellToken: string
+  executionTime: string
 }
 
 /**
  * Enriched Trade type
  */
 export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
-  orderId: string // rename the field
+  orderId: string
+  kind?: OrderKind
   buyAmount: BigNumber
+  executedBuyAmount?: BigNumber
   sellAmount: BigNumber
+  executedSellAmount?: BigNumber
+  executedFeeAmount?: BigNumber
   sellAmountBeforeFees: BigNumber
   buyToken?: TokenErc20 | null
   buyTokenAddress: string
   sellToken?: TokenErc20 | null
   sellTokenAddress: string
+  executionTime: Date
+  surplusAmount?: BigNumber
+  surplusPercentage?: BigNumber
 }
 
 type WithNetworkId = { networkId: Network }
@@ -110,8 +118,15 @@ export type GetOrderParams = WithNetworkId & {
   orderId: string
 }
 
+export type GetAccountOrdersParams = WithNetworkId & {
+  owner: string
+  offset?: number
+  limit?: number
+}
+
 export type GetOrdersParams = WithNetworkId & {
-  owner?: string
+  owner: string
+  minValidTo: number
   sellToken?: string
   buyToken?: string
 }

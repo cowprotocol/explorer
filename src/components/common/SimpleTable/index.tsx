@@ -64,6 +64,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
         height: auto;
         align-items: flex-start;
         justify-content: center;
+        padding: 1.4rem 0;
 
         &:hover {
           background: var(--color-text-hover);
@@ -101,7 +102,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding: 0 1.6rem;
+      padding: 0 0.5rem;
 
       ${media.mobile} {
         padding: 0 1rem;

@@ -60,7 +60,7 @@ async function _getOrder(
   }
 }
 
-export function useOrderByNetwork(orderId: string, updateInterval = 0, networkId: Network | null): UseOrderResult {
+export function useOrderByNetwork(orderId: string, networkId: Network | null, updateInterval = 0): UseOrderResult {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [order, setOrder] = useState<Order | null>(null)
@@ -121,7 +121,7 @@ export function useOrderByNetwork(orderId: string, updateInterval = 0, networkId
 
 export function useOrder(orderId: string, updateInterval?: number): UseOrderResult {
   const networkId = useNetworkId()
-  return useOrderByNetwork(orderId, updateInterval, networkId)
+  return useOrderByNetwork(orderId, networkId, updateInterval)
 }
 
 type UseOrderAndErc20sResult = {

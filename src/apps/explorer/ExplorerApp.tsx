@@ -27,9 +27,9 @@ const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RAT
 
 if (SENTRY_DSN) {
   Sentry.init({
-    dsn: process.env.REACT_APP_SENTRY_DSN,
+    dsn: SENTRY_DSN,
     integrations: [new Integrations.BrowserTracing()],
-    release: 'gp-explorer@' + version,
+    release: 'gp-explorer@v' + version,
     environment: environmentName,
 
     // Set tracesSampleRate to 1.0 to capture 100%
@@ -73,6 +73,14 @@ const Order = React.lazy(
     ),
 )
 
+const UserDetails = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "UserDetails_chunk"*/
+      './pages/UserDetails'
+    ),
+)
+
 /**
  * Update the global state
  */
@@ -101,6 +109,7 @@ const AppContent = (): JSX.Element => {
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
           <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
+          <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
           <Route component={NotFound} />
         </Switch>
       </React.Suspense>
@@ -109,7 +118,7 @@ const AppContent = (): JSX.Element => {
 }
 
 const Wrapper = styled.div`
-  max-width: 140rem;
+  max-width: 118rem;
   margin: 0 auto;
 
   ${media.mediumDown} {

@@ -1,11 +1,18 @@
-import styled from 'styled-components'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import SVG from 'react-inlinesvg'
 
 export const Wrapper = styled.form`
   display: flex;
-  width: 100%;
-  max-width: 50rem;
-  margin: 0 auto;
+  ${({ className }): FlattenSimpleInterpolation =>
+    className === 'home'
+      ? css`
+          width: 100%;
+          max-width: 50rem;
+          margin: 0 auto;
+        `
+      : css`
+          width: 60rem;
+        `}
   position: relative;
 `
 

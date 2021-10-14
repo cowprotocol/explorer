@@ -13,14 +13,15 @@ import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
 
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
-import { DateDisplay } from 'components/orders/DateDisplay'
+import { DateDisplay } from 'components/common/DateDisplay'
 import { OrderPriceDisplay } from 'components/orders/OrderPriceDisplay'
 import { FilledProgress } from 'components/orders/FilledProgress'
 import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
-import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { triggerEvent } from 'api/analytics'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -28,9 +29,11 @@ const Table = styled(SimpleTable)`
 
   > tbody > tr {
     grid-template-columns: 27rem auto;
+    padding: 1.4rem 0 1.4rem 1.1rem;
 
     ${media.mediumDown} {
       grid-template-columns: 17rem auto;
+      padding: 1.4rem 0;
     }
 
     > td {
@@ -141,7 +144,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <RowWithCopyButton
                 textToCopy={owner}
                 onCopy={(): void => onCopy('ownerAddress')}
-                contentsToDisplay={<BlockExplorerLink identifier={owner} type="address" label={owner} />}
+                contentsToDisplay={<LinkWithPrefixNetwork to={`/address/${owner}`}>{owner}</LinkWithPrefixNetwork>}
               />
             </td>
           </tr>
@@ -153,7 +156,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <RowWithCopyButton
                 textToCopy={receiver}
                 onCopy={(): void => onCopy('receiverAddress')}
-                contentsToDisplay={<BlockExplorerLink identifier={receiver} type="address" label={receiver} />}
+                contentsToDisplay={
+                  <LinkWithPrefixNetwork to={`/address/${receiver}`}>{receiver}</LinkWithPrefixNetwork>
+                }
               />
             </td>
           </tr>

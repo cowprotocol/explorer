@@ -6,6 +6,11 @@ import TabItem from 'components/common/Tabs/TabItem'
 import TabContent from 'components/common/Tabs/TabContent'
 
 type TabId = number
+export enum IndicatorTabSize {
+  small = 0.1,
+  big = 0.2,
+}
+export type TabBarExtraContent = React.ReactNode
 
 export interface TabItemInterface {
   readonly tab: React.ReactNode
@@ -25,11 +30,13 @@ export interface TabTheme {
   readonly fontWeight: string
   readonly fontSize: string
   readonly borderRadius: boolean
+  readonly indicatorTabSize: IndicatorTabSize
 }
-interface Props {
+export interface Props {
   readonly tabItems: TabItemInterface[]
   readonly tabTheme: TabTheme
   readonly defaultTab?: TabId
+  readonly extra?: TabBarExtraContent
 }
 
 const Wrapper = styled.div`
@@ -46,6 +53,10 @@ const Wrapper = styled.div`
   }
 `
 
+export const TabList = styled.div`
+  /* stylelint-disable no-empty-block */
+`
+
 export const DEFAULT_TAB_THEME: TabTheme = {
   activeBg: 'var(--color-transparent)',
   activeBgAlt: 'initial',
@@ -58,16 +69,27 @@ export const DEFAULT_TAB_THEME: TabTheme = {
   fontWeight: 'var(--font-weight-normal)',
   letterSpacing: 'initial',
   borderRadius: false,
+  indicatorTabSize: IndicatorTabSize.small,
+}
+
+interface ExtraContentProps {
+  extra?: TabBarExtraContent
+}
+
+const ExtraContent = ({ extra }: ExtraContentProps): JSX.Element | null => {
+  if (!extra) return null
+
+  return <div className="tab-extra-content">{extra}</div>
 }
 
 const Tabs: React.FC<Props> = (props) => {
-  const { tabTheme = DEFAULT_TAB_THEME, tabItems, defaultTab = 1 } = props
+  const { tabTheme = DEFAULT_TAB_THEME, tabItems, defaultTab = 1, extra: tabBarExtraContent } = props
 
   const [activeTab, setActiveTab] = useState(defaultTab)
 
   return (
     <Wrapper>
-      <div role="tablist" className="tablist">
+      <TabList role="tablist" className="tablist">
         {tabItems.map(({ tab, id }) => (
           <TabItem
             key={id}
@@ -78,7 +100,8 @@ const Tabs: React.FC<Props> = (props) => {
             tabTheme={tabTheme}
           />
         ))}
-      </div>
+        <ExtraContent extra={tabBarExtraContent} />
+      </TabList>
       <TabContent tabItems={tabItems} activeTab={activeTab} />
     </Wrapper>
   )

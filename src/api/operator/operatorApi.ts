@@ -7,6 +7,7 @@ import { OrderCreation } from './signatures'
 import {
   FeeInformation,
   GetOrderParams,
+  GetAccountOrdersParams,
   GetOrdersParams,
   GetTradesParams,
   OrderID,
@@ -193,18 +194,48 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
  *  - owner: address
  *  - sellToken: address
  *  - buyToken: address
+ *  - minValidTo: number
  */
 export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
   const { networkId, ...searchParams } = params
-  const { owner, sellToken, buyToken } = searchParams
+  const { owner, sellToken, buyToken, minValidTo } = searchParams
+  const defaultValues = {
+    includeFullyExecuted: 'true',
+    includeInvalidated: 'true',
+    includeInsufficientBalance: 'true',
+    includePresignaturePending: 'true',
+    includeUnsupportedTokens: 'true',
+  }
 
   console.log(
     `[getOrders] Fetching orders on network ${networkId} with filters: owner=${owner} sellToken=${sellToken} buyToken=${buyToken}`,
   )
 
-  const searchString = buildSearchString({ ...searchParams })
+  const searchString = buildSearchString({ ...searchParams, ...defaultValues, minValidTo: String(minValidTo) })
 
   const queryString = '/orders/' + searchString
+
+  return _fetchQuery(networkId, queryString)
+}
+
+/**
+ * Gets a list of orders of one user paginated
+ *
+ * Optional filters:
+ *  - owner: address
+ *  - offset: int
+ *  - limit: int
+ */
+export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
+  const { networkId, owner, offset, limit } = params
+
+  console.log(
+    `[getAccountOrders] Fetching orders on network ${networkId} with filters: owner=${owner} offset=${offset} limit=${limit}`,
+  )
+
+  const searchString = buildSearchString({ offset: String(offset), limit: String(limit) })
+
+  const queryString = `/account/${owner}/orders/` + searchString
 
   return _fetchQuery(networkId, queryString)
 }

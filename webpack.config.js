@@ -32,6 +32,7 @@ const EXPLORER_APP = {
     OPERATOR_URL_PROD_XDAI: 'https://protocol-xdai.gnosis.io/api',
 
     GOOGLE_ANALYTICS_ID: undefined,
+    REACT_APP_SENTRY_DSN: undefined,
   },
 }
 const SAFE_SWAP_APP = {

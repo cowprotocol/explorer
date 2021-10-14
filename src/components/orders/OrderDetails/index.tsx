@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Order, Trade } from 'api/operator'
 
 import { DetailsTable } from 'components/orders/DetailsTable'
-import { RowWithCopyButton } from 'components/orders/RowWithCopyButton'
+import { OrderNotFound } from 'components/orders/OrderNotFound'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
 const Wrapper = styled.div`
   padding: 1.6rem;
@@ -58,16 +59,23 @@ export const OrderDetails: React.FC<Props> = (props) => {
   // Partially fillable order will have a tab only for the trades
   const txHash = order && !order.partiallyFillable && trades && trades.length === 1 ? trades[0].txHash : undefined
 
+  if (!order && !isOrderLoading) {
+    return (
+      <Wrapper>
+        <OrderNotFound />
+      </Wrapper>
+    )
+  }
+
   return (
     <Wrapper>
       <h1>
-        Order details
+        {order && 'Order details'}
         {order && <TitleUid textToCopy={order.uid} contentsToDisplay={order.shortId} />}
       </h1>
       {/* TODO: add tabs (overview/fills) */}
       {order && areTokensLoaded && <DetailsTable order={{ ...order, txHash }} areTradesLoading={areTradesLoading} />}
       {/* TODO: add fills tab for partiallyFillable orders */}
-      {!order && !isOrderLoading && <p>Order not found</p>}
       {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
       {/* TODO: do a better error display. Toast notification maybe? */}
       {Object.keys(errors).map((key) => (

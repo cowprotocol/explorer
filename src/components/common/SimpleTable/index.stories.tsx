@@ -10,7 +10,7 @@ import { SimpleTable, Props } from './'
 export default {
   title: 'Common/SimpleTable',
   component: SimpleTable,
-  decorators: [ThemeToggler, GlobalStyles],
+  decorators: [GlobalStyles, ThemeToggler],
   argTypes: { header: { control: null }, children: { control: null } },
 } as Meta
 
