@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Tabs, { getTabTheme, Props as TabsProps, IndicatorTabSize } from 'components/common/Tabs/Tabs'
+import Tabs, { getTabTheme, Props as TabsProps, IndicatorTabSize, TabList } from 'components/common/Tabs/Tabs'
 import { DARK_COLOURS } from 'theme'
-import { MEDIA } from 'const'
+import { media } from 'theme/styles/media'
 
 const StyledTabs = styled.div`
   display: flex;
@@ -13,13 +13,13 @@ const StyledTabs = styled.div`
   border-radius: 4px;
   min-height: 33rem;
 
-  > div > div.tablist {
+  ${TabList} {
     justify-content: flex-start;
     border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
     box-sizing: border-box;
   }
 
-  > div > div.tablist > button {
+  ${TabList} > button {
     flex: 0 0 auto;
     min-width: 96px;
     padding: 12px 0.8rem;
@@ -32,16 +32,18 @@ const StyledTabs = styled.div`
     height: 100%;
   }
 
-  > div > div.tab-content {
+  .tab-content {
     padding: 20px 16px;
+    ${media.mediumDown} {
+      padding: 0;
+    }
   }
 
   .tab-extra-content {
     width: 100%;
-
-    @media ${MEDIA.mobile} {
-      display: none; /* for now we can hide the extra-content on mobiles */
-    }
+  }
+  ${media.mediumDown} {
+    border: none;
   }
 `
 const tabCustomThemeConfig = getTabTheme({

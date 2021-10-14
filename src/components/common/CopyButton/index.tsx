@@ -64,7 +64,8 @@ export function CopyButton(props: Props): JSX.Element {
   return (
     <CopyToClipboard text={text} onCopy={handleOnCopy}>
       <span>
-        <Icon icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} /> {copied && <span>Copied</span>}
+        <Icon icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} />{' '}
+        {copied && <span className="copy-text">Copied</span>}
       </span>
     </CopyToClipboard>
   )

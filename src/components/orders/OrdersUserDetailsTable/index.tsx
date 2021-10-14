@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { media } from 'theme/styles/media'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { Order } from 'api/operator'
@@ -22,8 +23,69 @@ const Wrapper = styled(StyledUserDetailsTable)`
   > tbody > tr {
     grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
   }
+
+  ${media.mediumDown} {
+    > thead > tr {
+      display: none;
+    }
+    > tbody > tr {
+      grid-template-columns: none;
+      border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
+      box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
+      border-radius: 6px;
+      margin-top: 16px;
+      padding: 12px;
+      &:hover {
+        background: none;
+        backdrop-filter: none;
+      }
+    }
+    tr > td {
+      display: flex;
+      flex: 1;
+      width: 100%;
+      justify-content: space-between;
+      margin: 0;
+      margin-bottom: 18px;
+    }
+    .header-value {
+      flex-wrap: wrap;
+      text-align: end;
+    }
+    .span-copybtn-wrap {
+      display: flex;
+      flex-wrap: nowrap;
+      span {
+        display: flex;
+        align-items: center;
+      }
+      .copy-text {
+        margin-left: 5px;
+      }
+    }
+  }
   overflow: auto;
 `
+
+const HeaderTitle = styled.span`
+  display: none;
+  ${media.mediumDown} {
+    font-weight: 600;
+    align-items: center;
+    display: flex;
+    margin-right: 3rem;
+    svg {
+      margin-left: 5px;
+    }
+  }
+`
+const HeaderValue = styled.span`
+  ${media.mediumDown} {
+    flex-wrap: wrap;
+    text-align: end;
+  }
+`
+
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'
 
@@ -53,11 +115,23 @@ interface RowProps {
 
 const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, shortId, uid } = order
+  const [_isPriceInverted, setIsPriceInverted] = useState(isPriceInverted)
+
+  useEffect(() => {
+    setIsPriceInverted(isPriceInverted)
+  }, [isPriceInverted])
+
+  const invertLimitPrice = (): void => {
+    setIsPriceInverted((previousValue) => !previousValue)
+  }
 
   return (
     <tr key={shortId}>
       <td>
-        {
+        <HeaderTitle>
+          Order ID <HelpTooltip tooltip={tooltip.orderID} />
+        </HeaderTitle>
+        <HeaderValue>
           <RowWithCopyButton
             className="span-copybtn-wrap"
             textToCopy={uid}
@@ -67,23 +141,43 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
               </LinkWithPrefixNetwork>
             }
           />
-        }
+        </HeaderValue>
       </td>
       <td>
-        <TradeOrderType kind={kind} />
+        <HeaderTitle>Type</HeaderTitle>
+        <span className="header-value">
+          <TradeOrderType kind={kind} />
+        </span>
       </td>
       <td>
-        {formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} {sellToken?.symbol}
+        <HeaderTitle>Sell Amount</HeaderTitle>
+        <HeaderValue>
+          {formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} {sellToken?.symbol}
+        </HeaderValue>
       </td>
       <td>
-        {formattedAmount(buyToken, buyAmount)} {buyToken?.symbol}
+        <HeaderTitle>Buy amount</HeaderTitle>
+        <HeaderValue>
+          {formattedAmount(buyToken, buyAmount)} {buyToken?.symbol}
+        </HeaderValue>
       </td>
-      <td>{getLimitPrice(order, isPriceInverted)}</td>
       <td>
-        <DateDisplay date={creationDate} showIcon={true} />
+        <HeaderTitle>
+          Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
+        </HeaderTitle>
+        <HeaderValue>{getLimitPrice(order, _isPriceInverted)}</HeaderValue>
       </td>
       <td>
-        <StatusLabel status={order.status} partiallyFilled={partiallyFilled} />
+        <HeaderTitle>Created</HeaderTitle>
+        <HeaderValue>
+          <DateDisplay date={creationDate} showIcon={true} />
+        </HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Status</HeaderTitle>
+        <HeaderValue>
+          <StatusLabel status={order.status} partiallyFilled={partiallyFilled} />
+        </HeaderValue>
       </td>
     </tr>
   )

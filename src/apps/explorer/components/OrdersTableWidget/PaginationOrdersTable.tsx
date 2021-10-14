@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import styled, { css } from 'styled-components'
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { media } from 'theme/styles/media'
 
 import { Dropdown, DropdownOption } from 'apps/explorer/components/common/Dropdown'
 import { OrdersTableContext } from './context/OrdersTableContext'
@@ -46,6 +47,11 @@ const PaginationText = styled.p`
   margin-right: 0.8rem;
   &.legend {
     margin-left: 2rem;
+  }
+  ${media.mediumDown} {
+    &:not(.legend) {
+      display: none;
+    }
   }
 `
 

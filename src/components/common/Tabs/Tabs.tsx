@@ -53,6 +53,10 @@ const Wrapper = styled.div`
   }
 `
 
+export const TabList = styled.div`
+  /* stylelint-disable no-empty-block */
+`
+
 export const DEFAULT_TAB_THEME: TabTheme = {
   activeBg: 'var(--color-transparent)',
   activeBgAlt: 'initial',
@@ -85,7 +89,7 @@ const Tabs: React.FC<Props> = (props) => {
 
   return (
     <Wrapper>
-      <div role="tablist" className="tablist">
+      <TabList role="tablist" className="tablist">
         {tabItems.map(({ tab, id }) => (
           <TabItem
             key={id}
@@ -97,7 +101,7 @@ const Tabs: React.FC<Props> = (props) => {
           />
         ))}
         <ExtraContent extra={tabBarExtraContent} />
-      </div>
+      </TabList>
       <TabContent tabItems={tabItems} activeTab={activeTab} />
     </Wrapper>
   )
