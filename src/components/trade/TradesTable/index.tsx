@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 
 import { Trade, RawOrder } from 'api/operator'
@@ -24,6 +23,7 @@ import StyledUserDetailsTable, {
 import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { Surplus } from './Surplus'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
@@ -94,7 +94,11 @@ const RowOrder: React.FC<RowProps> = ({ trade, isPriceInverted }) => {
         <RowWithCopyButton
           className="span-copybtn-wrap"
           textToCopy={orderId}
-          contentsToDisplay={<Link to={`/orders/${trade.orderId}`}>{getShortOrderId(orderId)}</Link>}
+          contentsToDisplay={
+            <LinkWithPrefixNetwork to={`/orders/${trade.orderId}`} rel="noopener noreferrer" target="_blank">
+              {getShortOrderId(orderId)}
+            </LinkWithPrefixNetwork>
+          }
         />
       </td>
       <td>
