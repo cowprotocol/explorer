@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import styled from 'styled-components'
-import { Search } from 'components/orders/Search'
+import { Search } from 'apps/explorer/components/common/Search'
 import SupportIcon from 'assets/img/support.png'
 import { MEDIA } from 'const'
 
