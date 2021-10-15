@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { isAnAddressAccount } from 'utils'
 import { usePathPrefix } from 'state/network'
-import { web3 } from 'apps/gp-v1/api'
+import { web3 } from 'apps/explorer/api'
 
 export function pathAccordingTo(query: string): string {
   let path = 'orders'
@@ -23,12 +23,12 @@ export function useSearchSubmit(): (query: string) => void {
       // Orders, transactions, tokens, batches
       const path = pathAccordingTo(query)
       const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
-      if (pathPrefix === 'address') {
+      if (pathPrefix === 'address' && query.match(/[a-zA-Z0-9]+\.[a-zA-Z]+$/)?.input !== undefined) {
         if (web3) {
           web3.eth.ens
             .getAddress(query)
             .then((res) => res && res.length > 0 && history.push(`/${pathPrefix}/${res}`))
-            .catch(() => history.push(`/address/null`))
+            .catch(() => history.push(`/address/${query}`))
         }
       } else {
         query && query.length > 0 && history.push(`/${pathPrefix}/${query}`)

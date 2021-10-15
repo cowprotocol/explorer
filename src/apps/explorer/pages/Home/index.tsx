@@ -27,7 +27,7 @@ const Wrapper = styled.div`
 export const Home: React.FC = () => {
   return (
     <Wrapper>
-      <h1>Search Order ID / Address</h1>
+      <h1>Search Order ID / ETH Address / ENS Address</h1>
       <Search className="home" />
     </Wrapper>
   )
