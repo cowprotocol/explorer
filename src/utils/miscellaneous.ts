@@ -265,4 +265,4 @@ export const isAnOrderId = (text: string): boolean => text.match(/^0x[a-fA-F0-9]
  *
  * @param text Possible address string to check
  */
-export const isAnAddressAccount = (text: string): boolean => text.match(/^0x[a-fA-F0-9]{40}$/)?.input !== undefined
+export const isAnAddressAccount = (text: string): boolean => text.match(/^0x[a-fA-F0-9]{40}$|[a-zA-Z0-9]+\.[a-zA-Z]+$/)?.input !== undefined
