@@ -27,7 +27,13 @@ export function useSearchSubmit(): (query: string) => void {
         if (web3) {
           web3.eth.ens
             .getAddress(query)
-            .then((res) => res && res.length > 0 && history.push(`/${pathPrefix}/${res}`))
+            .then((res) => {
+              if (res && res.length > 0) {
+                history.push(`/address/${res}`)
+              } else {
+                history.push(`/address/${query}`)
+              }
+            })
             .catch(() => history.push(`/address/${query}`))
         }
       } else {
