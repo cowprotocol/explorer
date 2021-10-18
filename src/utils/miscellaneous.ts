@@ -265,4 +265,18 @@ export const isAnOrderId = (text: string): boolean => text.match(/^0x[a-fA-F0-9]
  *
  * @param text Possible address string to check
  */
-export const isAnAddressAccount = (text: string): boolean => text.match(/^0x[a-fA-F0-9]{40}$/)?.input !== undefined
+export const isAnAddressAccount = (text: string): boolean => {
+  if (isEns(text)) {
+    return true
+  } else {
+    return text.match(/^0x[a-fA-F0-9]{40}$/)?.input !== undefined
+  }
+}
+
+/**
+ * Check if string is a valid ENS address against regex
+ *
+ * @param text Possible ENS address string to check
+ * @returns true if valid or false if not
+ */
+export const isEns = (text: string): boolean => text.match(/[a-zA-Z0-9]+\.[a-zA-Z]+$/)?.input !== undefined

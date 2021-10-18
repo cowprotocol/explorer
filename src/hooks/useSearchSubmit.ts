@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
-import { isAnAddressAccount } from 'utils'
+import { isAnAddressAccount, isEns } from 'utils'
 import { usePathPrefix } from 'state/network'
+import { web3 } from 'apps/explorer/api'
 
 export function pathAccordingTo(query: string): string {
   let path = 'orders'
@@ -22,8 +23,22 @@ export function useSearchSubmit(): (query: string) => void {
       // Orders, transactions, tokens, batches
       const path = pathAccordingTo(query)
       const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
-
-      query && query.length > 0 && history.push(`/${pathPrefix}/${query}`)
+      if (path === 'address' && isEns(query)) {
+        if (web3) {
+          web3.eth.ens
+            .getAddress(query)
+            .then((res) => {
+              if (res && res.length > 0) {
+                history.push(`/${pathPrefix}/${res}`)
+              } else {
+                history.push(`/${pathPrefix}/${query}`)
+              }
+            })
+            .catch(() => history.push(`/${pathPrefix}/${query}`))
+        }
+      } else {
+        query && query.length > 0 && history.push(`/${pathPrefix}/${query}`)
+      }
     },
     [history, prefixNetwork],
   )

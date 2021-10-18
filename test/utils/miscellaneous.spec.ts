@@ -1,5 +1,5 @@
 import { tokenList } from '../data'
-import { getToken, isAnAddressAccount, isAnOrderId } from 'utils'
+import { getToken, isAnAddressAccount, isAnOrderId, isEns } from 'utils'
 import BN from 'bn.js'
 import { pathAccordingTo } from 'hooks/useSearchSubmit'
 
@@ -144,5 +144,15 @@ describe('pathAccordingTo', () => {
     const result = pathAccordingTo(text)
 
     expect(result).toBe('address')
+  })
+})
+
+describe('isEns', () => {
+  it('should return true for valid ens addresses', () => {
+    const text = 'vitalik.eth'
+
+    const result = isEns(text)
+
+    expect(result).toBe(true)
   })
 })
