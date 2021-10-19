@@ -300,3 +300,16 @@ export function formatExecutedPriceToDisplay(
 
   return `${formattedPrice} ${baseSymbol}`
 }
+
+/**
+ * @param amount BigNumber integer amount
+ * @param token Erc20 token
+ */
+export function defaultAmountFormatPrecision(amount: BigNumber, token?: TokenErc20 | null): string {
+  return formatSmart({
+    amount: amount.toString(10),
+    precision: token?.decimals || 0,
+    decimals: HIGH_PRECISION_DECIMALS,
+    smallLimit: getMinimumRepresentableValue(HIGH_PRECISION_DECIMALS),
+  })
+}
