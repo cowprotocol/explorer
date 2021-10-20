@@ -7,7 +7,7 @@ import { Order } from 'api/operator'
 
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount } from 'utils'
+import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
 import { StatusLabel } from '../StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import StyledUserDetailsTable, {
@@ -17,6 +17,7 @@ import StyledUserDetailsTable, {
 import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
@@ -152,13 +153,20 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
       <td>
         <HeaderTitle>Sell Amount</HeaderTitle>
         <HeaderValue>
-          {formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} {sellToken?.symbol}
+          <TextWithTooltip
+            textInTooltip={`${formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} ${sellToken?.symbol}`}
+          >
+            {formattedAmount(sellToken, sellAmount.plus(order.feeAmount), FormatAmountPrecision.highPrecision)}{' '}
+            {sellToken?.symbol}
+          </TextWithTooltip>
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
-          {formattedAmount(buyToken, buyAmount)} {buyToken?.symbol}
+          <TextWithTooltip textInTooltip={`${formattedAmount(buyToken, buyAmount)} ${buyToken?.symbol}`}>
+            {formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)} {buyToken?.symbol}
+          </TextWithTooltip>
         </HeaderValue>
       </td>
       <td>
