@@ -1,8 +1,15 @@
 import React from 'react'
 import { Placement } from '@popperjs/core'
+import styled from 'styled-components'
 
 import { Tooltip } from 'components/Tooltip'
 import { usePopperDefault } from 'hooks/usePopper'
+
+const Wrapper = styled.span`
+  > p {
+    margin: 0;
+  }
+`
 
 interface TextTooltipProps {
   children: React.ReactNode
@@ -17,9 +24,9 @@ export const TextWithTooltip: React.FC<TextTooltipProps> = ({
 }): JSX.Element => {
   const { tooltipProps, targetProps } = usePopperDefault<HTMLInputElement>(tooltipPlacement)
   return (
-    <span className="wrap-text-tooltip">
+    <Wrapper>
       <Tooltip {...tooltipProps}>{textInTooltip}</Tooltip>
       <p {...targetProps}>{children}</p>
-    </span>
+    </Wrapper>
   )
 }

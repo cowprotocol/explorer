@@ -154,25 +154,18 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
         <HeaderTitle>Sell Amount</HeaderTitle>
         <HeaderValue>
           <TextWithTooltip
-            textInTooltip={`${formattedAmount(
-              sellToken,
-              sellAmount.plus(order.feeAmount),
-              FormatAmountPrecision.highPrecision,
-            )} ${sellToken?.symbol}`}
+            textInTooltip={`${formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} ${sellToken?.symbol}`}
           >
-            {formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} {sellToken?.symbol}
+            {formattedAmount(sellToken, sellAmount.plus(order.feeAmount), FormatAmountPrecision.highPrecision)}{' '}
+            {sellToken?.symbol}
           </TextWithTooltip>
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip
-            textInTooltip={`${formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)} ${
-              buyToken?.symbol
-            }`}
-          >
-            {formattedAmount(buyToken, buyAmount)} {buyToken?.symbol}
+          <TextWithTooltip textInTooltip={`${formattedAmount(buyToken, buyAmount)} ${buyToken?.symbol}`}>
+            {formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)} {buyToken?.symbol}
           </TextWithTooltip>
         </HeaderValue>
       </td>

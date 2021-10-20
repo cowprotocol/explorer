@@ -11,12 +11,12 @@ import {
   MINIMUM_ATOM_VALUE,
 } from 'const'
 import {
-  DEFAULT_PRECISION_DECIMALS,
+  MIDDLE_PRECISION_DECIMALS,
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from 'apps/explorer/const'
-import { batchIdToDate } from './time'
+import { FormatAmountPrecision, batchIdToDate } from 'utils'
 
 export {
   formatSmart,
@@ -306,11 +306,19 @@ export function formatExecutedPriceToDisplay(
  * @param amount BigNumber integer amount
  * @param token Erc20 token
  */
-export function defaultAmountFormatPrecision(amount: BigNumber, token: TokenErc20 | null): string {
+export function formattingAmountPrecision(
+  amount: BigNumber,
+  token: TokenErc20 | null,
+  typePrecision: FormatAmountPrecision,
+): string {
+  const typeFormatPrecision = {
+    [FormatAmountPrecision.highPrecision]: HIGH_PRECISION_DECIMALS,
+    [FormatAmountPrecision.middlePrecision]: MIDDLE_PRECISION_DECIMALS,
+  }
   return formatSmart({
     amount: amount.toString(10),
     precision: token?.decimals || 0,
-    decimals: DEFAULT_PRECISION_DECIMALS,
-    smallLimit: getMinimumRepresentableValue(DEFAULT_PRECISION_DECIMALS),
+    decimals: typeFormatPrecision[typePrecision],
+    smallLimit: getMinimumRepresentableValue(typeFormatPrecision[typePrecision]),
   })
 }
