@@ -7,7 +7,7 @@ import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { Order, OrderStatus, RawOrder, RawTrade, Trade } from 'api/operator/types'
 
-import { defaultAmountFormatPrecision } from './format'
+import { defaultAmountFormatPrecision, formatSmartMaxPrecision } from './format'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -241,10 +241,23 @@ export function isTokenErc20(token: TokenErc20 | null | undefined): token is Tok
   return (token as TokenErc20)?.address !== undefined
 }
 
-export function formattedAmount(erc20: TokenErc20 | null | undefined, amount: BigNumber): string {
+export enum FormatAmountPrecision {
+  defaultPrecision,
+  highPrecision,
+}
+
+export function formattedAmount(
+  erc20: TokenErc20 | null | undefined,
+  amount: BigNumber,
+  typePrecision: FormatAmountPrecision = FormatAmountPrecision.defaultPrecision,
+): string {
   if (!isTokenErc20(erc20)) return '-'
 
-  return erc20.decimals ? defaultAmountFormatPrecision(amount, erc20) : amount.toString(10)
+  if (!erc20.decimals) return amount.toString(10)
+
+  return typePrecision === FormatAmountPrecision.highPrecision
+    ? formatSmartMaxPrecision(amount, erc20)
+    : defaultAmountFormatPrecision(amount, erc20)
 }
 
 function getReceiverAddress({ owner, receiver }: RawOrder): string {

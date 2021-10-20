@@ -11,6 +11,7 @@ import {
   MINIMUM_ATOM_VALUE,
 } from 'const'
 import {
+  DEFAULT_PRECISION_DECIMALS,
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   NO_ADJUSTMENT_NEEDED_PRECISION,
@@ -305,11 +306,11 @@ export function formatExecutedPriceToDisplay(
  * @param amount BigNumber integer amount
  * @param token Erc20 token
  */
-export function defaultAmountFormatPrecision(amount: BigNumber, token?: TokenErc20 | null): string {
+export function defaultAmountFormatPrecision(amount: BigNumber, token: TokenErc20 | null): string {
   return formatSmart({
     amount: amount.toString(10),
     precision: token?.decimals || 0,
-    decimals: HIGH_PRECISION_DECIMALS,
-    smallLimit: getMinimumRepresentableValue(HIGH_PRECISION_DECIMALS),
+    decimals: DEFAULT_PRECISION_DECIMALS,
+    smallLimit: getMinimumRepresentableValue(DEFAULT_PRECISION_DECIMALS),
   })
 }
