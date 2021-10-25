@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { abbreviateString } from 'utils'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Network } from 'types'
@@ -9,7 +10,7 @@ import TokenImg from 'components/common/TokenImg'
 
 import { getImageAddress, isNativeToken } from 'utils'
 
-export type Props = { erc20: TokenErc20; network: Network }
+export type Props = { erc20: TokenErc20; network: Network; showAbbreviated?: boolean }
 
 const Wrapper = styled.div`
   display: flex;
@@ -29,11 +30,13 @@ const StyledImg = styled(TokenImg)`
 `
 
 export function TokenDisplay(props: Props): JSX.Element {
-  const { erc20, network } = props
+  const { erc20, network, showAbbreviated } = props
 
   // Name and symbol are optional on ERC20 spec. Fallback to address when no name,
   // and show no symbol when that's not set
-  const tokenLabel = `${erc20.name || erc20.address}${erc20.symbol ? ` (${erc20.symbol})` : ''}`
+  const tokenLabel = showAbbreviated
+    ? `${erc20.symbol || erc20.name || abbreviateString(erc20.address, 6, 4)}`
+    : `${erc20.name || erc20.address}${erc20.symbol ? ` (${erc20.symbol})` : ''}`
   const imageAddress = getImageAddress(erc20.address, network)
 
   return (
