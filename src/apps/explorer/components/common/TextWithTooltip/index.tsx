@@ -5,12 +5,13 @@ import styled from 'styled-components'
 import { Tooltip } from 'components/Tooltip'
 import { usePopperDefault } from 'hooks/usePopper'
 
-const Wrapper = styled.span`
-  > p {
+const Wrapper = styled.div`
+  > span {
     margin: 0;
+    display: flex;
+    flex-wrap: wrap;
   }
 `
-
 interface TextTooltipProps {
   children: React.ReactNode
   textInTooltip: string
@@ -26,7 +27,9 @@ export const TextWithTooltip: React.FC<TextTooltipProps> = ({
   return (
     <Wrapper>
       <Tooltip {...tooltipProps}>{textInTooltip}</Tooltip>
-      <p {...targetProps}>{children}</p>
+      <span className="span-inside-tooltip" {...targetProps}>
+        {children}
+      </span>
     </Wrapper>
   )
 }

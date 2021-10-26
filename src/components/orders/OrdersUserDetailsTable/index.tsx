@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { safeTokenName } from '@gnosis.pm/dex-js'
 
 import { Order } from 'api/operator'
 import { useNetworkId } from 'state/network'
@@ -27,7 +28,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
     grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
   }
   tr > td {
-    p {
+    span.span-inside-tooltip {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -59,7 +60,8 @@ const Wrapper = styled(StyledUserDetailsTable)`
       justify-content: space-between;
       margin: 0;
       margin-bottom: 18px;
-      p {
+      min-height: 32px;
+      span.span-inside-tooltip {
         align-items: flex-end;
         flex-direction: column;
         img {
@@ -136,6 +138,9 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, shortId, uid } = order
   const [_isPriceInverted, setIsPriceInverted] = useState(isPriceInverted)
   const network = useNetworkId()
+  const buyTokenSymbol = buyToken ? safeTokenName(buyToken) : ''
+  const sellTokenSymbol = sellToken ? safeTokenName(sellToken) : ''
+
   useEffect(() => {
     setIsPriceInverted(isPriceInverted)
   }, [isPriceInverted])
@@ -172,7 +177,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
         <HeaderTitle>Sell Amount</HeaderTitle>
         <HeaderValue>
           <TextWithTooltip
-            textInTooltip={`${formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} ${sellToken?.symbol}`}
+            textInTooltip={`${formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} ${sellTokenSymbol}`}
           >
             {formattedAmount(sellToken, sellAmount.plus(order.feeAmount), FormatAmountPrecision.highPrecision)}{' '}
             {sellToken && network && <TokenDisplay showAbbreviated erc20={sellToken} network={network} />}
@@ -182,7 +187,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip textInTooltip={`${formattedAmount(buyToken, buyAmount)} ${buyToken?.symbol}`}>
+          <TextWithTooltip textInTooltip={`${formattedAmount(buyToken, buyAmount)} ${buyTokenSymbol}`}>
             {formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)}{' '}
             {buyToken && network && <TokenDisplay showAbbreviated erc20={buyToken} network={network} />}
           </TextWithTooltip>
