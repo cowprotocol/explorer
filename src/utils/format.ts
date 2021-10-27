@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { parseBytes32String } from '@ethersproject/strings'
+import { arrayify } from 'ethers/lib/utils'
 
 import { TokenErc20, formatSmart, safeTokenName } from '@gnosis.pm/dex-js'
 
@@ -321,4 +323,15 @@ export function formattingAmountPrecision(
     decimals: typeFormatPrecision[typePrecision],
     smallLimit: getMinimumRepresentableValue(typeFormatPrecision[typePrecision]),
   })
+}
+
+// parse a name or symbol from a token response
+const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
+
+export function parseStringOrBytes32(value: string | undefined, defaultValue: string): string {
+  return value && BYTES32_REGEX.test(value) && arrayify(value)[31] === 0
+    ? parseBytes32String(value)
+    : value && value.length > 0
+    ? value
+    : defaultValue
 }

@@ -2,6 +2,7 @@ import BN from 'bn.js'
 import { AbiItem } from 'web3-utils'
 import { Erc20Contract, toBN } from '@gnosis.pm/dex-js'
 import erc20Abi from '@gnosis.pm/dex-js/build/contracts/abi/Erc20.json'
+import erc20_bytes32Abi from 'abis/erc20_bytes32.json'
 
 import { TxOptionalParams, Receipt } from 'types'
 import { ZERO } from 'const'
@@ -63,7 +64,11 @@ export interface TransferFromParams extends TransferParams {
  */
 export interface Erc20Api {
   name(params: NameParams): Promise<string>
+  name32Bytes(params: NameParams): Promise<string>
+
   symbol(params: SymbolParams): Promise<string>
+  symbol32Bytes(params: SymbolParams): Promise<string>
+
   decimals(params: DecimalsParams): Promise<number>
   totalSupply(params: TotalSupplyParams): Promise<BN>
 
@@ -87,6 +92,7 @@ export interface Erc20ApiDependencies {
  */
 export class Erc20ApiImpl implements Erc20Api {
   private _contractPrototype: Erc20Contract
+  private _contract32BytesPrototype: Erc20Contract
   private web3: Web3
   private readonly localErc20Details: Erc20Details
 
@@ -101,10 +107,23 @@ export class Erc20ApiImpl implements Erc20Api {
     this.localErc20Details = ERC20_DETAILS
 
     this._contractPrototype = new this.web3.eth.Contract(erc20Abi as AbiItem[]) as unknown as Erc20Contract
+    this._contract32BytesPrototype = new this.web3.eth.Contract(
+      erc20_bytes32Abi as AbiItem[],
+    ) as unknown as Erc20Contract
 
     // TODO remove later
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ;(window as any).erc20 = this._contractPrototype
+  }
+
+  public async name32Bytes({ tokenAddress }: NameParams): Promise<string> {
+    this._contract32BytesPrototype.options.address = tokenAddress
+    return this._contract32BytesPrototype.methods.name().call()
+  }
+
+  public async symbol32Bytes({ tokenAddress }: NameParams): Promise<string> {
+    this._contract32BytesPrototype.options.address = tokenAddress
+    return this._contract32BytesPrototype.methods.symbol().call()
   }
 
   public async balanceOf({ networkId, tokenAddress, userAddress }: BalanceOfParams): Promise<BN> {
@@ -125,7 +144,10 @@ export class Erc20ApiImpl implements Erc20Api {
 
     const erc20 = this._getERC20AtAddress(networkId, tokenAddress)
 
-    return erc20.methods.name().call()
+    return erc20.methods
+      .name()
+      .call()
+      .catch(() => this.name32Bytes({ tokenAddress, networkId }))
   }
 
   public async symbol({ tokenAddress, networkId }: SymbolParams): Promise<string> {
@@ -136,7 +158,10 @@ export class Erc20ApiImpl implements Erc20Api {
 
     const erc20 = this._getERC20AtAddress(networkId, tokenAddress)
 
-    return erc20.methods.symbol().call()
+    return erc20.methods
+      .symbol()
+      .call()
+      .catch(() => this.symbol32Bytes({ tokenAddress, networkId }))
   }
 
   public async decimals({ tokenAddress, networkId }: DecimalsParams): Promise<number> {
