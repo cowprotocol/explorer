@@ -53,7 +53,7 @@ const UserDetails: React.FC = () => {
             contentsToDisplay={<BlockExplorerLink type="address" networkId={networkId} identifier={address} />}
           />
         </h1>
-        <OrdersTableWidget ownerAddress={address} />
+        <OrdersTableWidget ownerAddress={address} networkId={networkId} />
       </Wrapper>
     )
   }

@@ -126,7 +126,8 @@ const tooltip = {
 }
 
 export type Props = StyledUserDetailsTableProps & {
-  orders: Order[]
+  orders: Order[] | undefined
+  messageWhenEmpty?: string | React.ReactNode
 }
 
 interface RowProps {
@@ -216,19 +217,19 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
 }
 
 const OrdersUserDetailsTable: React.FC<Props> = (props) => {
-  const { orders, showBorderTable = false } = props
+  const { orders, showBorderTable = false, messageWhenEmpty } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)
 
   const invertLimitPrice = (): void => {
     setIsPriceInverted((previousValue) => !previousValue)
   }
 
-  const orderItems = (items: Order[]): JSX.Element => {
-    if (items.length === 0)
+  const orderItems = (items: Order[] | undefined): JSX.Element => {
+    if (!items?.length)
       return (
         <tr className="row-empty">
           <td className="row-td-empty">
-            <EmptyItemWrapper>No Orders.</EmptyItemWrapper>
+            <EmptyItemWrapper>{messageWhenEmpty || 'No orders.'}</EmptyItemWrapper>
           </td>
         </tr>
       )

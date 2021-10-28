@@ -8,8 +8,7 @@ import { useNetworkId } from 'state/network'
 
 import { useMultipleErc20 } from './useErc20'
 import { Network } from 'types'
-
-const NETWORK_ID_SEARCH_LIST = [Network.Mainnet, Network.xDAI, Network.Rinkeby]
+import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
 
 type UseOrderResult = {
   order: Order | null

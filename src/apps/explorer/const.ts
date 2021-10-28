@@ -1,4 +1,4 @@
-import { AnalyticsDimension } from 'types'
+import { AnalyticsDimension, Network } from 'types'
 
 /** Explorer app constants */
 export const ORDER_QUERY_INTERVAL = 10000 // in ms
@@ -20,3 +20,5 @@ export const DIMENSION_NAMES = {
   [AnalyticsDimension.NETWORK]: 'dimension1',
   [AnalyticsDimension.BROWSER_TYPE]: 'dimension2',
 }
+
+export const NETWORK_ID_SEARCH_LIST = [Network.Mainnet, Network.xDAI, Network.Rinkeby]
