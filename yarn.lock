@@ -15555,10 +15555,10 @@ playwright-cli@^0.152.0:
     highlight.js "^10.1.2"
     playwright "=1.5.2"
 
-playwright-core@=1.16.1:
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.16.1.tgz#f8564359c9b0881eab1de55ca7723b21539eb585"
-  integrity sha512-SdThyChaLkvFkVEPZ/pfhiaaD4pnBTts2MYZzRMS+fYeyHzPy/FI+NUTj5Rgs+ZN9BCIrbJhfzvfYBxco/4X4A==
+playwright-core@=1.16.3:
+  version "1.16.3"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.16.3.tgz#f466be9acaffb698654adfb0a17a4906ba936895"
+  integrity sha512-16hF27IvQheJee+DbhC941AUZLjbJgfZFWi9YPS4LKEk/lKFhZI+9TiFD0sboYqb9eaEWvul47uR5xxTVbE4iw==
   dependencies:
     commander "^8.2.0"
     debug "^4.1.1"
@@ -15595,11 +15595,11 @@ playwright@=1.5.2:
     ws "^7.3.1"
 
 playwright@^1.5.2:
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.16.1.tgz#c3518b02448f7fd0246e8f4ccdc38ac4f74b428d"
-  integrity sha512-D7o7itqxsJ4vx4OlcPv9brOe74M2J4gDDt9qVI9ptgtHtxCi48I8tSXE/trX1PoHFuJeeVlo+tGvhtisvPGu1A==
+  version "1.16.3"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.16.3.tgz#27a292d9fa54fbac923998d3af58cd2b691f5ebe"
+  integrity sha512-nfJx/OpIb/8OexL3rYGxNN687hGyaM3XNpfuMzoPlrekURItyuiHHsNhC9oQCx3JDmCn5O3EyyyFCnrZjH6MpA==
   dependencies:
-    playwright-core "=1.16.1"
+    playwright-core "=1.16.3"
 
 please-upgrade-node@^3.2.0:
   version "3.2.0"
