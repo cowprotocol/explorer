@@ -13,6 +13,8 @@ import { formatSmartMaxPrecision } from 'utils'
 
 import { TokenDisplay } from 'components/common/TokenDisplay'
 
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+
 import { RowContents, RowTitle, /*UsdAmount,*/ Wrapper } from './styled'
 
 type RowProps = {
@@ -40,7 +42,10 @@ function Row(props: RowProps): JSX.Element {
       <RowContents>
         <span>{formattedAmount}</span>
         {/* <UsdAmount>(~${usdAmount})</UsdAmount> */}
-        <TokenDisplay erc20={erc20} network={network} />
+        <RowWithCopyButton
+          textToCopy={erc20.address}
+          contentsToDisplay={<TokenDisplay erc20={erc20} network={network} />}
+        />
       </RowContents>
     </>
   )
