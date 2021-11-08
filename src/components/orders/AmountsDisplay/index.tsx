@@ -1,5 +1,6 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
+import { isNativeToken } from 'utils'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
@@ -44,6 +45,7 @@ function Row(props: RowProps): JSX.Element {
         {/* <UsdAmount>(~${usdAmount})</UsdAmount> */}
         <RowWithCopyButton
           textToCopy={erc20.address}
+          visible={!isNativeToken(erc20.address)}
           contentsToDisplay={<TokenDisplay erc20={erc20} network={network} />}
         />
       </RowContents>
