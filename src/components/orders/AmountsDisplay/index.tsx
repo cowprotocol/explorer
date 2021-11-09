@@ -1,5 +1,6 @@
 import React from 'react'
 import BigNumber from 'bignumber.js'
+import { isNativeToken } from 'utils'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
@@ -12,6 +13,8 @@ import { useNetworkId } from 'state/network'
 import { formatSmartMaxPrecision } from 'utils'
 
 import { TokenDisplay } from 'components/common/TokenDisplay'
+
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
 import { RowContents, RowTitle, /*UsdAmount,*/ Wrapper } from './styled'
 
@@ -31,7 +34,7 @@ function Row(props: RowProps): JSX.Element {
 
   // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
   const formattedAmount = erc20.decimals ? formatSmartMaxPrecision(amount, erc20) : amount.toString(10)
-
+  const tokenDisplay = <TokenDisplay erc20={erc20} network={network} />
   return (
     <>
       <RowTitle>
@@ -40,7 +43,11 @@ function Row(props: RowProps): JSX.Element {
       <RowContents>
         <span>{formattedAmount}</span>
         {/* <UsdAmount>(~${usdAmount})</UsdAmount> */}
-        <TokenDisplay erc20={erc20} network={network} />
+        {isNativeToken(erc20.address) ? (
+          tokenDisplay
+        ) : (
+          <RowWithCopyButton textToCopy={erc20.address} contentsToDisplay={tokenDisplay} />
+        )}
       </RowContents>
     </>
   )
