@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
-import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 
 import { Order } from 'api/operator'
@@ -21,6 +21,7 @@ import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
@@ -141,6 +142,9 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   const network = useNetworkId()
   const buyTokenSymbol = buyToken ? safeTokenName(buyToken) : ''
   const sellTokenSymbol = sellToken ? safeTokenName(sellToken) : ''
+  const sellFormattedAmount = formattedAmount(sellToken, sellAmount.plus(order.feeAmount))
+  const buyFormattedAmount = formattedAmount(buyToken, buyAmount)
+  const limitPriceSettled = getLimitPrice(order, _isPriceInverted)
 
   useEffect(() => {
     setIsPriceInverted(isPriceInverted)
@@ -148,6 +152,10 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
 
   const invertLimitPrice = (): void => {
     setIsPriceInverted((previousValue) => !previousValue)
+  }
+
+  const renderSpinnerWhenNoValue = (textValue: string): JSX.Element | void => {
+    if (textValue === '-') return <FontAwesomeIcon icon={faSpinner} spin size="1x" />
   }
 
   return (
@@ -177,28 +185,30 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
       <td>
         <HeaderTitle>Sell Amount</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip
-            textInTooltip={`${formattedAmount(sellToken, sellAmount.plus(order.feeAmount))} ${sellTokenSymbol}`}
-          >
-            {formattedAmount(sellToken, sellAmount.plus(order.feeAmount), FormatAmountPrecision.highPrecision)}{' '}
-            {sellToken && network && <TokenDisplay showAbbreviated erc20={sellToken} network={network} />}
-          </TextWithTooltip>
+          {renderSpinnerWhenNoValue(sellFormattedAmount) || (
+            <TextWithTooltip textInTooltip={`${sellFormattedAmount} ${sellTokenSymbol}`}>
+              {formattedAmount(sellToken, sellAmount.plus(order.feeAmount), FormatAmountPrecision.highPrecision)}{' '}
+              {sellToken && network && <TokenDisplay showAbbreviated erc20={sellToken} network={network} />}
+            </TextWithTooltip>
+          )}
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip textInTooltip={`${formattedAmount(buyToken, buyAmount)} ${buyTokenSymbol}`}>
-            {formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)}{' '}
-            {buyToken && network && <TokenDisplay showAbbreviated erc20={buyToken} network={network} />}
-          </TextWithTooltip>
+          {renderSpinnerWhenNoValue(buyFormattedAmount) || (
+            <TextWithTooltip textInTooltip={`${buyFormattedAmount} ${buyTokenSymbol}`}>
+              {formattedAmount(buyToken, buyAmount, FormatAmountPrecision.highPrecision)}{' '}
+              {buyToken && network && <TokenDisplay showAbbreviated erc20={buyToken} network={network} />}
+            </TextWithTooltip>
+          )}
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>
           Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
         </HeaderTitle>
-        <HeaderValue>{getLimitPrice(order, _isPriceInverted)}</HeaderValue>
+        <HeaderValue>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Created</HeaderTitle>
