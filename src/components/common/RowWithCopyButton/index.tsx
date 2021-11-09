@@ -22,19 +22,18 @@ type Props = {
   textToCopy: string
   contentsToDisplay: string | JSX.Element
   className?: string
-  visible?: boolean
   onCopy?: (value: string) => void
 }
 
 export function RowWithCopyButton(props: Props): JSX.Element {
-  const { textToCopy, contentsToDisplay, className, onCopy, visible } = props
+  const { textToCopy, contentsToDisplay, className, onCopy } = props
 
   // Wrap contents in a <span> if it's a raw string for proper CSS spacing
   const contentsComponent = typeof contentsToDisplay === 'string' ? <span>{contentsToDisplay}</span> : contentsToDisplay
 
   return (
     <Wrapper className={className}>
-      <Content>{contentsComponent}</Content> {visible && <CopyButton text={textToCopy} onCopy={onCopy} />}
+      <Content>{contentsComponent}</Content> <CopyButton text={textToCopy} onCopy={onCopy} />
     </Wrapper>
   )
 }

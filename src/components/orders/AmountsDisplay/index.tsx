@@ -34,7 +34,7 @@ function Row(props: RowProps): JSX.Element {
 
   // Decimals are optional on ERC20 spec. In that unlikely case, graceful fallback to raw amount
   const formattedAmount = erc20.decimals ? formatSmartMaxPrecision(amount, erc20) : amount.toString(10)
-
+  const tokenDisplay = <TokenDisplay erc20={erc20} network={network} />
   return (
     <>
       <RowTitle>
@@ -43,11 +43,11 @@ function Row(props: RowProps): JSX.Element {
       <RowContents>
         <span>{formattedAmount}</span>
         {/* <UsdAmount>(~${usdAmount})</UsdAmount> */}
-        <RowWithCopyButton
-          textToCopy={erc20.address}
-          visible={!isNativeToken(erc20.address)}
-          contentsToDisplay={<TokenDisplay erc20={erc20} network={network} />}
-        />
+        {isNativeToken(erc20.address) ? (
+          tokenDisplay
+        ) : (
+          <RowWithCopyButton textToCopy={erc20.address} contentsToDisplay={tokenDisplay} />
+        )}
       </RowContents>
     </>
   )
