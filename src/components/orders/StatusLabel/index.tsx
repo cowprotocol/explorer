@@ -1,7 +1,14 @@
 import React from 'react'
-import styled, { DefaultTheme } from 'styled-components'
+import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faCircleNotch, faClock, faTimesCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCheckCircle,
+  faCircleNotch,
+  faClock,
+  faTimesCircle,
+  IconDefinition,
+  faKey,
+} from '@fortawesome/free-solid-svg-icons'
 
 import { OrderStatus } from 'api/operator'
 
@@ -12,7 +19,7 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
 
   switch (status) {
     case 'expired':
-    case 'canceled':
+    case 'cancelled':
       text = theme.orange
       background = theme.orangeOpacity
       break
@@ -21,6 +28,7 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
       background = theme.greenOpacity
       break
     case 'open':
+    case 'signing':
       text = theme.labelTextOpen
       background = theme.labelBgOpen
       break
@@ -37,8 +45,16 @@ const Wrapper = styled.div`
   align-items: center;
   font-size: ${({ theme }): string => theme.fontSizeDefault};
 `
+const frameAnimation = keyframes`
+    100% {
+      -webkit-mask-position: left;
+    }
+`
+type ShimmingProps = {
+  shimming?: boolean
+}
 
-const Label = styled.div<DisplayProps>`
+const Label = styled.div<DisplayProps & ShimmingProps>`
   font-weight: ${({ theme }): string => theme.fontBold};
   text-transform: capitalize;
   border-radius: 0.4rem;
@@ -47,6 +63,17 @@ const Label = styled.div<DisplayProps>`
   display: flex;
   align-items: center;
   ${({ theme, status }): string => setStatusColors({ theme, status })}
+  ${({ shimming }): FlattenSimpleInterpolation | null =>
+    shimming
+      ? css`
+          display: inline-block;
+          -webkit-mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
+          mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
+          background-repeat: no-repeat;
+          animation: shimmer 1.5s infinite;
+          animation-name: ${frameAnimation};
+        `
+      : null}
 `
 
 const StyledFAIcon = styled(FontAwesomeIcon)`
@@ -65,8 +92,10 @@ function getStatusIcon(status: OrderStatus): IconDefinition {
       return faClock
     case 'filled':
       return faCheckCircle
-    case 'canceled':
+    case 'cancelled':
       return faTimesCircle
+    case 'signing':
+      return faKey
     case 'open':
       return faCircleNotch
   }
@@ -83,10 +112,11 @@ export type Props = DisplayProps & { partiallyFilled: boolean }
 
 export function StatusLabel(props: Props): JSX.Element {
   const { status, partiallyFilled } = props
+  const shimming = status === 'signing'
 
   return (
     <Wrapper>
-      <Label status={status}>
+      <Label status={status} shimming={shimming}>
         <StatusIcon status={status} />
         {status}
       </Label>

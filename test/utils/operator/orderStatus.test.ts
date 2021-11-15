@@ -1,4 +1,4 @@
-import { RawOrder } from 'api/operator'
+import { RawOrder, RawOrderStatusFromAPI } from 'api/operator'
 
 import { getOrderStatus } from 'utils'
 
@@ -121,7 +121,7 @@ describe('Canceled status', () => {
       buyAmount: '10000',
       invalidated: true,
     }
-    expect(getOrderStatus(order)).toEqual('canceled')
+    expect(getOrderStatus(order)).toEqual('cancelled')
   })
   test('Sell order', () => {
     const order: RawOrder = {
@@ -130,7 +130,7 @@ describe('Canceled status', () => {
       sellAmount: '10000',
       invalidated: true,
     }
-    expect(getOrderStatus(order)).toEqual('canceled')
+    expect(getOrderStatus(order)).toEqual('cancelled')
   })
   test('Expired and invalidated', () => {
     const order: RawOrder = {
@@ -140,7 +140,7 @@ describe('Canceled status', () => {
       invalidated: true,
       validTo: _getPastTimestamp(),
     }
-    expect(getOrderStatus(order)).toEqual('canceled')
+    expect(getOrderStatus(order)).toEqual('cancelled')
   })
 })
 
@@ -238,6 +238,52 @@ describe('Open status', () => {
         validTo: _getCurrentTimestamp(),
       }
       expect(getOrderStatus(order)).toEqual('open')
+    })
+  })
+})
+
+describe('Presignature pending status', () => {
+  describe('Buy order', () => {
+    test('signature is pending', () => {
+      const statusFetched: RawOrderStatusFromAPI = 'presignaturePending'
+
+      const order: RawOrder = {
+        ...RAW_ORDER,
+        kind: 'buy',
+        status: statusFetched,
+        buyAmount: '10000',
+        executedBuyAmount: '0',
+        validTo: _getCurrentTimestamp(),
+      }
+      expect(getOrderStatus(order)).toEqual('signing')
+    })
+    test('signature is not pending', () => {
+      const statusFetched: RawOrderStatusFromAPI = 'open'
+
+      const order: RawOrder = {
+        ...RAW_ORDER,
+        kind: 'buy',
+        status: statusFetched,
+        buyAmount: '10000',
+        executedBuyAmount: '0',
+        validTo: _getCurrentTimestamp(),
+      }
+      expect(getOrderStatus(order)).not.toEqual('signing')
+    })
+  })
+  describe('Sell order', () => {
+    test('signature is pending', () => {
+      const statusFetched: RawOrderStatusFromAPI = 'presignaturePending'
+
+      const order: RawOrder = {
+        ...RAW_ORDER,
+        kind: 'sell',
+        status: statusFetched,
+        sellAmount: '10000',
+        executedSellAmount: '0',
+        validTo: _getCurrentTimestamp(),
+      }
+      expect(getOrderStatus(order)).toEqual('signing')
     })
   })
 })

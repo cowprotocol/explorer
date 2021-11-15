@@ -40,13 +40,19 @@ function isOrderPartiallyFilled(order: RawOrder): boolean {
   }
 }
 
+function isOrderPresigning(order: RawOrder): boolean {
+  return order.status === 'presignaturePending'
+}
+
 export function getOrderStatus(order: RawOrder): OrderStatus {
   if (isOrderFilled(order)) {
     return 'filled'
   } else if (order.invalidated) {
-    return 'canceled'
+    return 'cancelled'
   } else if (isOrderExpired(order)) {
     return 'expired'
+  } else if (isOrderPresigning(order)) {
+    return 'signing'
   } else {
     return 'open'
   }
