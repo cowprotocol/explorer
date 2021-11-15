@@ -40,10 +40,11 @@ export async function getErc20Info({ tokenAddress, networkId, erc20Api, web3 }: 
     silentPromise(erc20Api.name({ tokenAddress, networkId }), errorMsg),
     silentPromise(erc20Api.decimals({ tokenAddress, networkId }), errorMsg),
   ])
+
   return {
     address: tokenAddress,
     symbol: parseStringOrBytes32(symbol, 'UNKNOWN'),
     name: parseStringOrBytes32(name, 'Unknown Token'),
-    decimals: decimals || DEFAULT_PRECISION,
+    decimals: decimals ?? DEFAULT_PRECISION,
   }
 }
