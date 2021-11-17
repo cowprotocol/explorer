@@ -8,7 +8,7 @@ import { useGetOrders } from './useGetOrders'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { useTable } from './useTable'
 import { OrdersTableWithData } from './OrdersTableWithData'
-import { OrdersTableContext } from './context/OrdersTableContext'
+import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
 import PaginationOrdersTable from './PaginationOrdersTable'
 
 const StyledTabLoader = styled.span`
@@ -44,9 +44,10 @@ const ExtraComponentNode: React.ReactNode = (
 )
 interface Props {
   ownerAddress: string
+  networkId: BlockchainNetwork
 }
 
-const OrdersTableWidget: React.FC<Props> = ({ ownerAddress }) => {
+const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
   const {
     state: tableState,
     setPageSize,
@@ -60,10 +61,20 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress }) => {
     isThereNext: isThereNextOrder,
   } = useGetOrders(ownerAddress, tableState.pageSize, tableState.pageOffset, tableState.pageIndex)
   tableState['hasNextPage'] = isThereNextOrder
+  const addressAccountParams = { ownerAddress, networkId }
 
   return (
     <OrdersTableContext.Provider
-      value={{ orders, error, isOrdersLoading, tableState, setPageSize, handleNextPage, handlePreviousPage }}
+      value={{
+        addressAccountParams,
+        orders,
+        error,
+        isOrdersLoading,
+        tableState,
+        setPageSize,
+        handleNextPage,
+        handlePreviousPage,
+      }}
     >
       <ExplorerTabs tabItems={tabItems(isOrdersLoading)} extra={ExtraComponentNode} />
     </OrdersTableContext.Provider>

@@ -27,7 +27,7 @@ export const Search: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) =>
         name="query"
         value={query}
         onChange={(e): void => setQuery(e.target.value.trim())}
-        placeholder="Search by Order ID / Address"
+        placeholder="Search by Order ID / ETH Address / ENS Address"
         aria-label="Search the GP explorer for orders, batches and transactions"
       />
     </Wrapper>

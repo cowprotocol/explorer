@@ -114,11 +114,11 @@ const PaginationOrdersTable: React.FC = () => {
   const quantityPerPage = [10, 20, 30, 50]
 
   const renderPageLegend = (): string => {
-    if (isLoading && !rows.length) return '.. - ..'
+    if (isLoading && !rows?.length) return '.. - ..'
 
     let startPageCount = 0
     let endPageCount = 0
-    if (rows.length) {
+    if (rows?.length) {
       startPageCount = pageOffset + 1
       endPageCount = pageOffset + rows.length
     }

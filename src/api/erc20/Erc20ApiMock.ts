@@ -29,7 +29,9 @@ interface Allowances {
 
 interface Erc20Info {
   name?: string
+  name32Bytes?: string
   symbol?: string
+  symbol32Bytes?: string
   decimals?: number
 }
 
@@ -51,6 +53,21 @@ export class Erc20ApiMock implements Erc20Api {
     this._allowances = allowances
     this._totalSupply = totalSupply
     this._tokens = tokens
+  }
+  public async name32Bytes({ tokenAddress }: NameParams): Promise<string> {
+    const erc20Info = this._initTokens(tokenAddress)
+    // Throws when token without `name32Bytes` to mock contract behavior
+    assert(erc20Info.name32Bytes, "token does not implement 'name32Bytes'")
+
+    return erc20Info.name32Bytes
+  }
+  public async symbol32Bytes({ tokenAddress }: NameParams): Promise<string> {
+    const erc20Info = this._initTokens(tokenAddress)
+
+    // Throws when token without `symbol` to mock contract behavior
+    assert(erc20Info.symbol32Bytes, "token does not implement 'symbol32Bytes'")
+
+    return erc20Info.symbol32Bytes
   }
 
   public async balanceOf({ tokenAddress, userAddress }: BalanceOfParams): Promise<BN> {

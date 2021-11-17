@@ -26,6 +26,7 @@ export const RAW_ORDER: RawOrder = {
   partiallyFillable: false,
   signature:
     '0x04dca25f59e9ac744c4093530a38f1719c4e0b1ce8e4b68c8018b6b05fd4a6944e1dcf2a009df2d5932f7c034b4a24da0999f9309dd5108d51d54236b605ed991c',
+  status: 'open',
 }
 
 export const RICH_ORDER: Order = {

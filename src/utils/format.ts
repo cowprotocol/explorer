@@ -1,4 +1,6 @@
 import BigNumber from 'bignumber.js'
+import { parseBytes32String } from '@ethersproject/strings'
+import { arrayify } from 'ethers/lib/utils'
 
 import { TokenErc20, formatSmart, safeTokenName } from '@gnosis.pm/dex-js'
 
@@ -11,11 +13,12 @@ import {
   MINIMUM_ATOM_VALUE,
 } from 'const'
 import {
+  MIDDLE_PRECISION_DECIMALS,
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from 'apps/explorer/const'
-import { batchIdToDate } from './time'
+import { FormatAmountPrecision, batchIdToDate } from 'utils'
 
 export {
   formatSmart,
@@ -299,4 +302,36 @@ export function formatExecutedPriceToDisplay(
   const baseSymbol = isPriceInverted ? sellSymbol : buySymbol
 
   return `${formattedPrice} ${baseSymbol}`
+}
+
+/**
+ * @param amount BigNumber integer amount
+ * @param token Erc20 token
+ */
+export function formattingAmountPrecision(
+  amount: BigNumber,
+  token: TokenErc20 | null,
+  typePrecision: FormatAmountPrecision,
+): string {
+  const typeFormatPrecision = {
+    [FormatAmountPrecision.highPrecision]: HIGH_PRECISION_DECIMALS,
+    [FormatAmountPrecision.middlePrecision]: MIDDLE_PRECISION_DECIMALS,
+  }
+  return formatSmart({
+    amount: amount.toString(10),
+    precision: token?.decimals || 0,
+    decimals: typeFormatPrecision[typePrecision],
+    smallLimit: getMinimumRepresentableValue(typeFormatPrecision[typePrecision]),
+  })
+}
+
+// parse a name or symbol from a token response
+const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
+
+export function parseStringOrBytes32(value: string | undefined, defaultValue: string): string {
+  return value && BYTES32_REGEX.test(value) && arrayify(value)[31] === 0
+    ? parseBytes32String(value)
+    : value && value.length > 0
+    ? value
+    : defaultValue
 }
