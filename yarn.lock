@@ -23,9 +23,9 @@
     xlsx "^0.17.0"
 
 "@apollo/client@^3.1.5":
-  version "3.5.2"
-  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.5.2.tgz#f0a4d8cb42f045e0527f081da9bb21c4fb53aeaf"
-  integrity sha512-STC7ZQthcOGU+MXRIzcb3s1ULW9QQFEhXFEIUaK3Jdwy0RxncxYkg2LpwxXV0FqlYUjKEW92f+NUIZ2FhpKGug==
+  version "3.5.3"
+  resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.5.3.tgz#938181be042cdd31152948fd6ac915bae0dc1f70"
+  integrity sha512-Zo6OzaKIoLADsq0afpnuq0x/SI+gr9TXukDN5AvaIfU5Jwm37TNpzayDUx3Xgu1G4lmt5UBDTg7MUoaBa53yoQ==
   dependencies:
     "@graphql-typed-document-node/core" "^3.0.0"
     "@wry/context" "^0.6.0"
