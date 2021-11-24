@@ -23,6 +23,9 @@ Expired.args = { status: 'expired' }
 export const Cancelled = Template.bind({})
 Cancelled.args = { status: 'cancelled' }
 
+export const Cancelling = Template.bind({})
+Cancelling.args = { status: 'cancelling' }
+
 export const Open = Template.bind({})
 Open.args = { status: 'open' }
 
@@ -35,3 +38,5 @@ export const ExpiredPartiallyFilled = Template.bind({})
 ExpiredPartiallyFilled.args = { status: 'expired', partiallyFilled: true }
 export const CancelledPartiallyFilled = Template.bind({})
 CancelledPartiallyFilled.args = { status: 'cancelled', partiallyFilled: true }
+export const CancellingPartiallyFilled = Template.bind({})
+CancellingPartiallyFilled.args = { status: 'cancelling', partiallyFilled: true }
