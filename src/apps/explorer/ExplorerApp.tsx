@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch, Redirect } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
@@ -57,6 +57,14 @@ const NotFound = React.lazy(
     ),
 )
 
+const SearchNotFound = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "SearchNotFound_chunk"*/
+      './pages/SearchNotFound'
+    ),
+)
+
 const Home = React.lazy(
   () =>
     import(
@@ -108,8 +116,14 @@ const AppContent = (): JSX.Element => {
 
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
+          <Route
+            path={[pathPrefix + '/address/', pathPrefix + '/orders/']}
+            exact
+            component={(): JSX.Element => <Redirect to={pathPrefix + '/search/'} />}
+          />
           <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
           <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
+          <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
           <Route component={NotFound} />
         </Switch>
       </React.Suspense>

@@ -130,12 +130,12 @@ describe('isAnAddressAccount', () => {
 })
 
 describe('pathAccordingTo', () => {
-  it('should return the orders word when it does not match', () => {
+  it('should return the search word when it does not match', () => {
     const text = 'Invalid Search'
 
     const result = pathAccordingTo(text)
 
-    expect(result).toBe('orders')
+    expect(result).toBe('search')
   })
 
   it('should return the address word when it match', () => {

@@ -1,6 +1,6 @@
 import { useHistory, useParams, useRouteMatch } from 'react-router'
 
-function useOrderIdParam(): string {
+export function useOrderIdParam(): string {
   const { orderId } = useParams<{ orderId: string }>()
 
   return orderId

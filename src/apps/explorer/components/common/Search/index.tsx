@@ -1,14 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Wrapper, Button, Input, SearchIcon } from './Search.styled'
 import { useSearchSubmit } from 'hooks/useSearchSubmit'
 
 // assets
 import searchImg from 'assets/img/search2.svg'
 
-export const Search: React.FC<React.HTMLAttributes<HTMLDivElement>> = (props) => {
+interface SearchProps {
+  searchString?: string
+  submitSearchImmediatly?: boolean
+}
+
+export const Search: React.FC<React.HTMLAttributes<HTMLDivElement> & SearchProps> = (props) => {
+  const { className, searchString = '', submitSearchImmediatly = false } = props
   const [query, setQuery] = useState('')
   const handleSubmit = useSearchSubmit()
-  const { className } = props
+
+  useEffect(() => {
+    if (searchString && submitSearchImmediatly) {
+      handleSubmit(searchString)
+    }
+  }, [handleSubmit, searchString, submitSearchImmediatly])
 
   return (
     <Wrapper

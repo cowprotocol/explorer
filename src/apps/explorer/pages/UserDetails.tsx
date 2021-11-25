@@ -5,11 +5,11 @@ import styled from 'styled-components'
 import { isAddress } from 'web3-utils'
 
 import { media } from 'theme/styles/media'
-import NotFound from './NotFound'
 import OrdersTableWidget from '../components/OrdersTableWidget'
 import { useNetworkId } from 'state/network'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import RedirectToSearch from 'components/RedirectToSearch'
 
 const Wrapper = styled.div`
   padding: 1.6rem;
@@ -42,21 +42,21 @@ const UserDetails: React.FC = () => {
   const networkId = useNetworkId() || undefined
 
   if (!isAddress(address)) {
-    return <NotFound />
-  } else {
-    return (
-      <Wrapper>
-        <h1>
-          User details
-          <TitleAddress
-            textToCopy={address}
-            contentsToDisplay={<BlockExplorerLink type="address" networkId={networkId} identifier={address} />}
-          />
-        </h1>
-        <OrdersTableWidget ownerAddress={address} networkId={networkId} />
-      </Wrapper>
-    )
+    return <RedirectToSearch from="address" />
   }
+
+  return (
+    <Wrapper>
+      <h1>
+        User details
+        <TitleAddress
+          textToCopy={address}
+          contentsToDisplay={<BlockExplorerLink type="address" networkId={networkId} identifier={address} />}
+        />
+      </h1>
+      <OrdersTableWidget ownerAddress={address} networkId={networkId} />
+    </Wrapper>
+  )
 }
 
 export default UserDetails
