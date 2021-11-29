@@ -195,7 +195,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.submission} /> Submission Time
             </td>
             <td>
-              <DateDisplay date={creationDate} />
+              <DateDisplay date={creationDate} showIcon={true} />
             </td>
           </tr>
           <tr>
@@ -203,7 +203,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.expiration} /> Expiration Time
             </td>
             <td>
-              <DateDisplay date={expirationDate} />
+              <DateDisplay date={expirationDate} showIcon={true} />
             </td>
           </tr>
           <tr>
