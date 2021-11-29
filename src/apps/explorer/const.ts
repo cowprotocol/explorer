@@ -2,7 +2,7 @@ import { AnalyticsDimension, Network } from 'types'
 
 /** Explorer app constants */
 export const ORDER_QUERY_INTERVAL = 10000 // in ms
-export const ORDERS_QUERY_INTERVAL = 30000 // in ms
+export const ORDERS_QUERY_INTERVAL = 8000 // in ms (back to 30000)
 export const ORDERS_HISTORY_MINUTES_AGO = 10 // in minutes
 
 export const DISPLAY_TEXT_COPIED_CHECK = 1000 // in ms
