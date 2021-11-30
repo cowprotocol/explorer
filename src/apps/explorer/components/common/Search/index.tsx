@@ -39,7 +39,7 @@ export const Search: React.FC<React.HTMLAttributes<HTMLDivElement> & SearchProps
         name="query"
         value={query}
         onChange={(e): void => setQuery(e.target.value.trim())}
-        placeholder="Search by Order ID / ETH Address / ENS Address"
+        placeholder="Order ID / ETH Address / ENS Address"
         aria-label="Search the GP explorer for orders, batches and transactions"
       />
       <Placeholder isActive={showPlaceholder}>Order ID / ETH Address / ENS Address</Placeholder>

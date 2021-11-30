@@ -92,6 +92,10 @@ export const SearchIcon = styled(SVG)`
 `
 
 export const Placeholder = styled.span<Partial<CSS.Properties & { isActive: boolean }>>`
+  ${media.mobile} {
+    display: flex;
+    font-size: 1.4rem;
+  }
   display: none;
   font-size: 1.6rem;
   line-height: 1;
@@ -100,14 +104,13 @@ export const Placeholder = styled.span<Partial<CSS.Properties & { isActive: bool
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  padding-left: 5rem;
+  padding: 1.6rem 1.6rem 1.6rem 5rem;
+  max-height: 5rem;
   pointer-events: none;
+  align-items: center;
+  justify-content: center;
   ${({ isActive }): string =>
     isActive
       ? 'z-index: -1; opacity: 0; transition: all 0.2s ease-in-out;'
       : 'z-index: 1; opacity: 1; transition: all 0.2s ease-in-out;'};
-  ${media.mobile} {
-    display: flex;
-    font-size: 1.4rem;
-  }
 `
