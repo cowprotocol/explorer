@@ -13,14 +13,15 @@ interface SearchProps {
 export const Search: React.FC<React.HTMLAttributes<HTMLDivElement> & SearchProps> = (props) => {
   const { className, searchString = '', submitSearchImmediatly = false } = props
   const [query, setQuery] = useState('')
+  const [showPlaceholder, setShowPlaceholder] = useState(true)
   const handleSubmit = useSearchSubmit()
 
   useEffect(() => {
     if (searchString && submitSearchImmediatly) {
       handleSubmit(searchString)
     }
-  }, [handleSubmit, searchString, submitSearchImmediatly])
-
+    query.length > 0 ? setShowPlaceholder(true) : setShowPlaceholder(false)
+  }, [handleSubmit, searchString, submitSearchImmediatly, query])
   return (
     <Wrapper
       onSubmit={(e): void => {
@@ -41,7 +42,7 @@ export const Search: React.FC<React.HTMLAttributes<HTMLDivElement> & SearchProps
         placeholder="Search by Order ID / ETH Address / ENS Address"
         aria-label="Search the GP explorer for orders, batches and transactions"
       />
-      <Placeholder>Search by Order ID / ETH Address / ENS Address</Placeholder>
+      <Placeholder isActive={showPlaceholder}>Order ID / ETH Address / ENS Address</Placeholder>
     </Wrapper>
   )
 }

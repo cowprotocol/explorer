@@ -1,6 +1,7 @@
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import SVG from 'react-inlinesvg'
 import { media } from 'theme/styles/media'
+import * as CSS from 'csstype'
 
 export const Wrapper = styled.form`
   display: flex;
@@ -90,7 +91,7 @@ export const SearchIcon = styled(SVG)`
   }
 `
 
-export const Placeholder = styled.span`
+export const Placeholder = styled.span<Partial<CSS.Properties & { isActive: boolean }>>`
   ${media.mobile} {
     display: flex;
   }
@@ -104,4 +105,8 @@ export const Placeholder = styled.span`
   transform: translateY(-50%);
   padding-left: 5rem;
   pointer-events: none;
+  ${({ isActive }): string =>
+    isActive
+      ? 'z-index: -1; opacity: 0; transition: all 0.2s ease-in-out;'
+      : 'z-index: 1; opacity: 1; transition: all 0.2s ease-in-out;'};
 `
