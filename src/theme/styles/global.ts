@@ -34,6 +34,10 @@ export const StaticGlobalStyle = createGlobalStyle`
     display: none !important
   }
 
+  body {
+    width: 100vw !important;
+  }
+
   html, body {  
     width: 100%;
     margin: 0;
