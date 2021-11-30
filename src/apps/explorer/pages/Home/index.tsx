@@ -24,18 +24,15 @@ const Wrapper = styled.div`
 
   ${media.mobile} {
     > h1 {
-      text-align: left;
-      font-size: 1.8rem;
-      color: ${({ theme }): string => theme.textSecondary2};
-      font-weight: ${({ theme }): string => theme.fontMedium};
+      text-align: center;
       line-height: 1.2;
-      margin: 0 0 1rem;
+      color: ${({ theme }): string => theme.textPrimary1};
+      font-size: 3.2rem;
+      display: block;
+      margin-bottom: 1rem;
+      font-weight: ${({ theme }): string => theme.fontBold};
       span {
-        color: ${({ theme }): string => theme.textPrimary1};
-        font-size: 3.2rem;
-        display: block;
-        margin-bottom: 1rem;
-        font-weight: ${({ theme }): string => theme.fontBold};
+        display: none;
       }
     }
   }
@@ -45,7 +42,7 @@ export const Home: React.FC = () => {
   return (
     <Wrapper>
       <h1>
-        <span>Search</span> Order ID / ETH Address / ENS Address
+        Search <span>Order ID / ETH Address / ENS Address</span>
       </h1>
       <Search className="home" />
     </Wrapper>

@@ -92,9 +92,6 @@ export const SearchIcon = styled(SVG)`
 `
 
 export const Placeholder = styled.span<Partial<CSS.Properties & { isActive: boolean }>>`
-  ${media.mobile} {
-    display: flex;
-  }
   display: none;
   font-size: 1.6rem;
   line-height: 1;
@@ -109,4 +106,8 @@ export const Placeholder = styled.span<Partial<CSS.Properties & { isActive: bool
     isActive
       ? 'z-index: -1; opacity: 0; transition: all 0.2s ease-in-out;'
       : 'z-index: 1; opacity: 1; transition: all 0.2s ease-in-out;'};
+  ${media.mobile} {
+    display: flex;
+    font-size: 1.4rem;
+  }
 `
