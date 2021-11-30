@@ -1,5 +1,6 @@
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import SVG from 'react-inlinesvg'
+import { media } from 'theme/styles/media'
 
 export const Wrapper = styled.form`
   display: flex;
@@ -9,6 +10,7 @@ export const Wrapper = styled.form`
           width: 100%;
           max-width: 50rem;
           margin: 0 auto;
+          flex-direction: column-reverse;
         `
       : css`
           width: 60rem;
@@ -41,10 +43,18 @@ export const Input = styled.input`
   &::placeholder {
     color: inherit;
     transition: color 0.2s ease-in-out;
+    ${media.mobile} {
+      color: transparent;
+    }
   }
 
   &:focus::placeholder {
     color: transparent;
+  }
+  &:focus ~ span {
+    z-index: -1;
+    opacity: 0;
+    transition: all 0.2s ease-in-out;
   }
 `
 
@@ -78,4 +88,20 @@ export const SearchIcon = styled(SVG)`
   &:hover {
     opacity: 1;
   }
+`
+
+export const Placeholder = styled.span`
+  ${media.mobile} {
+    display: flex;
+  }
+  display: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: ${({ theme }): string => theme.greyShade};
+  transition: all 0.2s ease-in-out;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding-left: 5rem;
+  pointer-events: none;
 `
