@@ -151,7 +151,7 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
 
 function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {}, baseUrl = '/' } = {}) {
   const { name: appTitle, templatePath, logoPath } = config
-  const isProduction = process.env.NODE_ENV == 'production'
+  const isProduction = process.env.NODE_ENV === 'production'
 
   assert(apps.length > 0, 'At least one app is required')
   assert(appTitle, '"name" missing in config')
