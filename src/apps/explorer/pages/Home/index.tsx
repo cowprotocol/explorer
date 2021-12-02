@@ -18,14 +18,13 @@ const Wrapper = styled.div`
     font-weight: ${({ theme }): string => theme.fontBold};
     width: 100%;
     margin: 0 0 2.4rem;
-    font-size: 4.2rem;
+    font-size: 2rem;
     line-height: 1;
   }
 
   ${media.mobile} {
     > h1 {
       line-height: 1.2;
-      font-size: 3.2rem;
       margin-bottom: 1rem;
     }
   }
@@ -34,7 +33,7 @@ const Wrapper = styled.div`
 export const Home: React.FC = () => {
   return (
     <Wrapper>
-      <h1>Search</h1>
+      <h1>Search on Gnosis&nbsp;Protocol&nbsp;Explorer</h1>
       <Search className="home" />
     </Wrapper>
   )
