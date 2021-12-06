@@ -20,7 +20,7 @@ export const Search: React.FC<React.HTMLAttributes<HTMLDivElement> & SearchProps
     if (searchString && submitSearchImmediatly) {
       handleSubmit(searchString)
     }
-    query.length > 0 ? setShowPlaceholder(true) : setShowPlaceholder(false)
+    setShowPlaceholder(query.length > 0)
   }, [handleSubmit, searchString, submitSearchImmediatly, query])
   return (
     <Wrapper
