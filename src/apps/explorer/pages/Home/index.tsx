@@ -34,7 +34,7 @@ const Wrapper = styled.div`
 export const Home: React.FC = () => {
   return (
     <Wrapper>
-      <h1>Search on Gnosis&nbsp;Protocol&nbsp;Explorer</h1>
+      <h1>Search on Gnosis Protocol Explorer</h1>
       <Search className="home" />
     </Wrapper>
   )
