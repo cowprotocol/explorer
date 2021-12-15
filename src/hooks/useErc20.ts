@@ -16,7 +16,7 @@ import { getErc20Info } from 'services/helpers'
 import { web3, erc20Api } from 'apps/explorer/api'
 
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
-import { isNativeToken } from 'utils'
+import { isNativeToken, retry } from 'utils'
 
 async function _fetchErc20FromNetwork(params: {
   address: string
@@ -34,7 +34,7 @@ async function _fetchErc20FromNetwork(params: {
   }
 
   try {
-    return getErc20Info({ tokenAddress: address, networkId, web3, erc20Api })
+    return await retry(() => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api }))
   } catch (e) {
     const msg = `Failed to fetch erc20 details for ${address} on network ${networkId}`
     console.error(msg, e)

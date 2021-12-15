@@ -17,7 +17,19 @@ export function createWeb3Api(provider?: string): Web3 {
     return web3cache[_provider]
   }
   // TODO: Create an `EthereumApi` https://github.com/gnosis/gp-v1-ui/issues/331
-  const web3 = new Web3(_provider)
+  const web3 = new Web3(
+    _provider.startsWith('wss:')
+      ? new Web3.providers.WebsocketProvider(_provider, {
+          reconnect: {
+            auto: true,
+            delay: 5000,
+            maxAttempts: 5,
+            onTimeout: false,
+          },
+        })
+      : _provider,
+  )
+
   // `handleRevert = true` makes `require` failures to throw
   // For more details see https://github.com/gnosis/gp-v1-ui/issues/511
   web3.eth['handleRevert'] = true
