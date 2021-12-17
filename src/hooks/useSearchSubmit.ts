@@ -15,6 +15,18 @@ export function pathAccordingTo(query: string): string {
   return path
 }
 
+export async function resolveENS(name: string): Promise<string | null> {
+  if (!web3) return null
+
+  try {
+    const address = await web3.eth.ens.getAddress(name)
+    return address && address.length > 0 ? address : null
+  } catch (e) {
+    console.error(`[web3:api] Could not resolve ${name} ENS. `, e)
+    return null
+  }
+}
+
 export function useSearchSubmit(): (query: string) => void {
   const history = useHistory()
   const prefixNetwork = usePathPrefix()
@@ -27,18 +39,7 @@ export function useSearchSubmit(): (query: string) => void {
       const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
 
       if (path === 'address' && isEns(query)) {
-        if (web3) {
-          web3.eth.ens
-            .getAddress(query)
-            .then((res) => {
-              if (res && res.length > 0) {
-                history.push(`/${pathPrefix}/${res}`)
-              } else {
-                history.push(`/${pathPrefix}/${query}`)
-              }
-            })
-            .catch(() => history.push(`/${pathPrefix}/${query}`))
-        }
+        history.push(`/${path}/${query}`)
       } else {
         query && query.length > 0 && history.push(`/${pathPrefix}/${query}`)
       }

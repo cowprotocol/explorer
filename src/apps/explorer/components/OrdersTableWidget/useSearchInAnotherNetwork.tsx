@@ -2,11 +2,14 @@ import React, { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
+import { abbreviateString } from 'utils'
 import { Network } from 'types'
 import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
 import { BlockchainNetwork } from './context/OrdersTableContext'
 import { Order, getAccountOrders } from 'api/operator'
 import Spinner from 'components/common/Spinner'
+import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { MEDIA } from 'const'
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,10 +17,6 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-
-  > p {
-    font-weight: 550;
-  }
 
   > section {
     display: flex;
@@ -31,7 +30,7 @@ const Wrapper = styled.div`
   }
 
   ul {
-    padding: 0 0.8rem 0 0;
+    padding: 0;
     margin: 0;
     > li {
       list-style: none;
@@ -40,6 +39,14 @@ const Wrapper = styled.div`
         padding-bottom: 0;
       }
     }
+  }
+`
+const StyledBlockExplorerLink = styled(BlockExplorerLink)`
+  margin-top: 1rem;
+
+  @media ${MEDIA.xSmallDown} {
+    display: flex;
+    justify-content: center;
   }
 `
 interface OrdersInNetwork {
@@ -77,7 +84,13 @@ export const EmptyOrdersMessage = ({
       ) : (
         <>
           <p>
-            No orders found on <strong>{Network[networkId]}</strong>.
+            No orders found on <strong>{Network[networkId]}</strong> for:{' '}
+            <StyledBlockExplorerLink
+              identifier={ownerAddress}
+              type="address"
+              label={abbreviateString(ownerAddress, 4, 4)}
+              networkId={networkId}
+            />
           </p>
           <section>
             {' '}

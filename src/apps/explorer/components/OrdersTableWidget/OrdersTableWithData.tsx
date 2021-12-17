@@ -1,6 +1,4 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import OrdersTable from 'components/orders/OrdersUserDetailsTable'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
@@ -8,6 +6,7 @@ import { OrdersTableContext } from './context/OrdersTableContext'
 import useFirstRender from 'hooks/useFirstRender'
 import { DEFAULT_TIMEOUT } from 'const'
 import { useSearchInAnotherNetwork, EmptyOrdersMessage } from './useSearchInAnotherNetwork'
+import Spinner from 'components/common/Spinner'
 
 export const OrdersTableWithData: React.FC = () => {
   const {
@@ -43,7 +42,7 @@ export const OrdersTableWithData: React.FC = () => {
 
   return isFirstRender || isFirstLoading ? (
     <EmptyItemWrapper>
-      <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+      <Spinner spin size="3x" />
     </EmptyItemWrapper>
   ) : (
     <OrdersTable
