@@ -23,6 +23,10 @@ export const OrdersTableWithData: React.FC = () => {
   } = useSearchInAnotherNetwork(networkId, ownerAddress, orders)
 
   useEffect(() => {
+    setIsFirstLoading(true)
+  }, [networkId])
+
+  useEffect(() => {
     let timeOutMs = 0
     if (!orders) {
       timeOutMs = DEFAULT_TIMEOUT

@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
+import { getNetworkFromId } from '@gnosis.pm/dex-js'
+import { useNetworkId } from 'state/network'
+
 const Wrapper = styled.div`
   max-width: 118rem;
   margin: 0 auto;
@@ -55,14 +58,19 @@ const StyledLink = styled(Link)`
     text-decoration: none;
   }
 `
-const NotFound2: React.FC = () => (
-  <Wrapper>
-    <Title>Page not found</Title>
-    <Content>
-      <p>We&apos;re sorry, the page you requested could not be found.</p>
-      <StyledLink to="/">Back Home</StyledLink>
-    </Content>
-  </Wrapper>
-)
+const NotFoundRequestPage: React.FC = () => {
+  const networkId = useNetworkId() || 1
+  const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : ''
 
-export default NotFound2
+  return (
+    <Wrapper>
+      <Title>Page not found</Title>
+      <Content>
+        <p>We&apos;re sorry, the page you requested could not be found.</p>
+        <StyledLink to={`/${network}`}>Back Home</StyledLink>
+      </Content>
+    </Wrapper>
+  )
+}
+
+export default NotFoundRequestPage

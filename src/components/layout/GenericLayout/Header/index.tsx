@@ -10,6 +10,7 @@ import LogoImage from 'assets/img/logo-v2.svg'
 const HeaderStyled = styled.header`
   height: auto;
   margin: 2.2rem auto 0;
+  position: relative;
   display: flex;
   align-items: center;
   box-sizing: border-box;
