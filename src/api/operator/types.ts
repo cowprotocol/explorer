@@ -5,6 +5,7 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 
 export type OrderID = string
+export type TxHash = string
 
 export interface OrderPostError {
   errorType: 'MissingOrderData' | 'InvalidSignature' | 'DuplicateOrder' | 'InsufficientFunds'
@@ -131,6 +132,10 @@ export type GetOrdersParams = WithNetworkId & {
   minValidTo: number
   sellToken?: string
   buyToken?: string
+}
+
+export type GetTxOrdersParams = WithNetworkId & {
+  txHash: TxHash
 }
 
 export type GetTradesParams = WithNetworkId & {
