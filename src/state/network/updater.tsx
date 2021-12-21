@@ -12,10 +12,10 @@ import { web3 } from 'apps/explorer/api'
 const MAINNET_PREFIX = ''
 const NETWORK_PREFIXES_RAW: [Network, string][] = [
   [Network.Mainnet, ''],
-  [Network.xDAI, 'xdai'],
+  [Network.xDAI, 'gc'],
   [Network.Rinkeby, 'rinkeby'],
 ]
-const PREFIX_BY_NETWORK_ID: Map<Network, string> = new Map(NETWORK_PREFIXES_RAW)
+export const PREFIX_BY_NETWORK_ID: Map<Network, string> = new Map(NETWORK_PREFIXES_RAW)
 const NETWORK_ID_BY_PREFIX: Map<string, Network> = new Map(NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]))
 
 function getNetworkId(network = MAINNET_PREFIX): Network {
@@ -29,13 +29,13 @@ function getNetworkPrefix(network: Network): string {
 }
 
 /**
- * Decompose URL pathname like /xdai/orders/123
+ * Decompose URL pathname like /gc/orders/123
  *
- * @returns ['xdai', 'orders/123']
+ * @returns ['gc', 'orders/123']
  */
 export const useDecomposedPath = (): [string, string] | [] => {
   const { pathname } = useLocation()
-  const pathMatchArray = pathname.match('/(rinkeby|xdai|mainnet)?/?(.*)')
+  const pathMatchArray = pathname.match('/(rinkeby|xdai|mainnet|gc)?/?(.*)')
 
   return pathMatchArray == null ? [] : [pathMatchArray[1], pathMatchArray[2]]
 }
@@ -59,12 +59,24 @@ export const RedirectToNetwork = (props: { networkId: Network }): JSX.Element | 
   return <Redirect push={false} to={newPath} />
 }
 
-/** Redirects to the canonnical URL for mainnet */
-export const RedirectMainnet = (): JSX.Element => {
+/** Replace Network name in URL from X to Y */
+export const SubstituteNetworkName = (from: string, toNetworkName = ''): string => {
   const { pathname } = useLocation()
 
-  const pathMatchArray = pathname.match('/mainnet(.*)')
-  const newPath = pathMatchArray && pathMatchArray.length > 0 ? pathMatchArray[1] : '/'
+  const pathMatchArray = pathname.match(`/${from}(.*)`)
+  return pathMatchArray && pathMatchArray.length > 0 ? `${toNetworkName}${pathMatchArray[1]}` : '/'
+}
+
+/** Redirects to the canonnical URL for mainnet */
+export const RedirectMainnet = (): JSX.Element => {
+  const newPath = SubstituteNetworkName('mainnet')
+
+  return <Redirect push={false} to={newPath} />
+}
+
+/** Redirects to the xDai to the GnosisChain new name */
+export const RedirectXdai = (): JSX.Element => {
+  const newPath = SubstituteNetworkName('xdai', '/gc')
 
   return <Redirect push={false} to={newPath} />
 }
@@ -77,7 +89,7 @@ export const NetworkUpdater: React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    const networkMatchArray = location.pathname.match('^/(rinkeby|xdai)')
+    const networkMatchArray = location.pathname.match('^/(rinkeby|gc)')
     const network = networkMatchArray && networkMatchArray.length > 0 ? networkMatchArray[1] : undefined
     const networkId = getNetworkId(network)
 

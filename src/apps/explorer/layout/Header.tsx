@@ -3,8 +3,7 @@ import React from 'react'
 import { Navigation } from 'components/layout/GenericLayout/Navigation'
 import { Header as GenericHeader } from 'components/layout/GenericLayout/Header'
 import { NetworkSelector } from 'components/NetworkSelector'
-import { getNetworkFromId } from '@gnosis.pm/dex-js'
-import { useNetworkId } from 'state/network'
+import { PREFIX_BY_NETWORK_ID, useNetworkId } from 'state/network'
 import styled from 'styled-components'
 
 const Logo = styled.span`
@@ -36,10 +35,10 @@ export const Header: React.FC = () => {
     return null
   }
 
-  const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : null
+  const prefixNetwork = PREFIX_BY_NETWORK_ID.get(networkId)
 
   return (
-    <GenericHeader logoAlt="Gnosis Protocol" linkTo={`/${network || ''}`} label={<Logo>Gnosis Protocol</Logo>}>
+    <GenericHeader logoAlt="Gnosis Protocol" linkTo={`/${prefixNetwork || ''}`} label={<Logo>Gnosis Protocol</Logo>}>
       <Navigation>
         <NetworkSelector networkId={networkId} />
         {/*      

@@ -1,6 +1,7 @@
 import BN from 'bn.js'
 import BigNumber from 'bignumber.js'
 import Web3 from 'web3'
+import { TEN, ZERO } from '@gnosis.pm/dex-js'
 
 const toChecksumAddress = Web3.utils.toChecksumAddress
 
@@ -9,7 +10,6 @@ import { AssertionError } from 'assert'
 import { AuctionElement, Trade, Order } from 'api/exchange/ExchangeApi'
 import { batchIdToDate } from './time'
 import { ORDER_FILLED_FACTOR, MINIMUM_ALLOWANCE_DECIMALS, DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
-import { TEN, ZERO } from '@gnosis.pm/dex-js'
 
 export function assertNonNull<T>(val: T, message: string): asserts val is NonNullable<T> {
   if (val === undefined || val === null) {
@@ -280,3 +280,10 @@ export const isAnAddressAccount = (text: string): boolean => {
  * @returns true if valid or false if not
  */
 export const isEns = (text: string): boolean => text.match(/[a-zA-Z0-9]+\.[a-zA-Z]+$/)?.input !== undefined
+
+/** Convert string to lowercase and remove whitespace */
+export function cleanNetworkName(networkName: string | undefined): string {
+  if (!networkName) return ''
+
+  return networkName.replace(/\s+/g, '').toLowerCase()
+}

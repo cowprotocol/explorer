@@ -1,5 +1,5 @@
 import { tokenList } from '../data'
-import { getToken, isAnAddressAccount, isAnOrderId, isEns } from 'utils'
+import { cleanNetworkName, getToken, isAnAddressAccount, isAnOrderId, isEns } from 'utils'
 import BN from 'bn.js'
 import { pathAccordingTo } from 'hooks/useSearchSubmit'
 
@@ -154,5 +154,22 @@ describe('isEns', () => {
     const result = isEns(text)
 
     expect(result).toBe(true)
+  })
+})
+
+describe('cleanNetworkName', () => {
+  it('should return empty string for undefined input', () => {
+    const text = undefined
+
+    const result = cleanNetworkName(text)
+
+    expect(result).toBe('')
+  })
+  it('should return lowercase withouth white space', () => {
+    const text = 'Gnosis Chain'
+
+    const result = cleanNetworkName(text)
+
+    expect(result).toBe('gnosischain')
   })
 })
