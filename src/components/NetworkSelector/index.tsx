@@ -6,6 +6,7 @@ import { SelectorContainer, OptionsContainer, Option, NetworkLabel, StyledFAIcon
 import { replaceURL } from 'utils/url'
 import { NO_REDIRECT_HOME_ROUTES } from 'const'
 import { Network } from 'types'
+import { cleanNetworkName } from 'utils'
 
 type networkSelectorProps = {
   networkId: number
@@ -17,7 +18,7 @@ type NetworkOptions = {
   url: string
 }
 
-const networkOptions: NetworkOptions[] = [
+export const networkOptions: NetworkOptions[] = [
   {
     id: Network.Mainnet,
     name: 'Ethereum',
@@ -25,8 +26,8 @@ const networkOptions: NetworkOptions[] = [
   },
   {
     id: Network.xDAI,
-    name: 'xDAI',
-    url: 'xdai',
+    name: 'Gnosis Chain',
+    url: 'gc',
   },
   {
     id: Network.Rinkeby,
@@ -70,13 +71,13 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   }
   return (
     <SelectorContainer ref={selectContainer} onClick={(): void => setOpen(!open)}>
-      <NetworkLabel className={name}>{name}</NetworkLabel>
+      <NetworkLabel className={cleanNetworkName(name)}>{name}</NetworkLabel>
       <span className={`arrow ${open && 'open'}`} />
       {open && (
         <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
           {networkOptions.map((network) => (
             <Option onClick={(): void => redirectToNetwork(network.url, networkId)} key={network.id}>
-              <div className={`dot ${network.name.toLowerCase()} `} />
+              <div className={`dot ${cleanNetworkName(network.name)} `} />
               <div className={`name ${network.id === networkId && 'selected'}`}>{network.name}</div>
               {network.id === networkId && <StyledFAIcon icon={faCheck} />}
             </Option>

@@ -12,7 +12,7 @@ import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 import { media } from 'theme/styles/media'
 
-import { NetworkUpdater, RedirectMainnet } from 'state/network'
+import { NetworkUpdater, RedirectMainnet, RedirectXdai } from 'state/network'
 import { initAnalytics } from 'api/analytics'
 import RouteAnalytics from 'components/analytics/RouteAnalytics'
 import NetworkAnalytics from 'components/analytics/NetworkAnalytics'
@@ -167,7 +167,8 @@ export const ExplorerApp: React.FC = () => {
         <StateUpdaters />
         <Switch>
           <Route path="/mainnet" component={RedirectMainnet} />
-          <Route path={['/xdai', '/rinkeby', '/']} component={AppContent} />
+          <Route path="/xdai" component={RedirectXdai} />
+          <Route path={['/gc', '/rinkeby', '/']} component={AppContent} />
         </Switch>
       </Router>
       {process.env.NODE_ENV === 'development' && <Console />}

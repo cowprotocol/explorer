@@ -10,6 +10,8 @@ import { Order, getAccountOrders } from 'api/operator'
 import Spinner from 'components/common/Spinner'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { MEDIA } from 'const'
+import { PREFIX_BY_NETWORK_ID } from 'state/network'
+import { networkOptions } from 'components/NetworkSelector'
 
 const Wrapper = styled.div`
   display: flex;
@@ -50,7 +52,7 @@ const StyledBlockExplorerLink = styled(BlockExplorerLink)`
   }
 `
 interface OrdersInNetwork {
-  network: string
+  network: number
 }
 
 interface ResultSeachInAnotherNetwork {
@@ -62,6 +64,10 @@ interface ResultSeachInAnotherNetwork {
 type EmptyMessageProps = ResultSeachInAnotherNetwork & {
   networkId: BlockchainNetwork
   ownerAddress: string
+}
+
+const _findNetworkName = (networkId: number): string => {
+  return networkOptions.find((e) => e.id === networkId)?.name || 'Unknown network'
 }
 
 export const EmptyOrdersMessage = ({
@@ -84,7 +90,7 @@ export const EmptyOrdersMessage = ({
       ) : (
         <>
           <p>
-            No orders found on <strong>{Network[networkId]}</strong> for:{' '}
+            No orders found on <strong>{_findNetworkName(networkId)}</strong> for:{' '}
             <StyledBlockExplorerLink
               identifier={ownerAddress}
               type="address"
@@ -100,10 +106,10 @@ export const EmptyOrdersMessage = ({
                 {ordersInNetworks.map((e) => (
                   <li key={e.network}>
                     <Link
-                      to={`/${e.network.toLowerCase()}/address/${ownerAddress}`}
+                      to={`/${PREFIX_BY_NETWORK_ID.get(e.network)}/address/${ownerAddress}`}
                       onClick={(): void => setLoadingState(true)}
                     >
-                      {e.network}
+                      {_findNetworkName(e.network)}
                     </Link>
                   </li>
                 ))}
@@ -137,7 +143,7 @@ export const useSearchInAnotherNetwork = (
           .then((response) => {
             if (!response.length) return
 
-            return { network: Network[network] }
+            return { network }
           })
           .catch((e) => {
             console.error(`Failed to fetch order in ${Network[network]}`, e)
