@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router'
+import { useLocation, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { Search } from 'apps/explorer/components/common/Search'
 import SupportIcon from 'assets/img/support.png'
@@ -69,21 +70,46 @@ const Support = styled.a`
     text-decoration: none;
   }
 `
+interface LocationState {
+  referrer: string
+}
+export const OrderAddressNotFound: React.FC = (): JSX.Element => {
+  const { searchString } = useParams<{ searchString: string }>()
+  const location = useLocation<LocationState>()
+  const history = useHistory()
+  const { referrer } = location.state || { referrer: null }
+  const wasRedirected = referrer ? true : false
 
-export const OrderNotFound: React.FC = () => {
-  const { orderId } = useParams<{ orderId: string }>()
+  // used after refresh by remove referrer state if was redirected
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => {
+      history.replace(location.pathname, null)
+    })
+
+    return (): void => {
+      window.removeEventListener('beforeunload', () => {
+        history.replace(location.pathname, null)
+      })
+    }
+  }, [history, location.pathname])
 
   return (
     <>
-      <Title>Order not found</Title>
+      <Title>Order or Address not found</Title>
       <Content>
-        <p>Sorry, no matches found for:</p>
-        <p>
-          <strong>&quot;{orderId}&quot;</strong>
-        </p>
+        {searchString ? (
+          <>
+            <p>Sorry, no matches found for:</p>
+            <p>
+              <strong>&quot;{searchString}&quot;</strong>
+            </p>
+          </>
+        ) : (
+          <p>The search cannot be empty</p>
+        )}
         <SearchSection>
           <SearchContent>
-            <Search />
+            <Search searchString={wasRedirected ? '' : searchString} submitSearchImmediatly={!wasRedirected} />
             <p>or</p>
             <Support href="https://chat.cowswap.exchange/" target="_blank" rel="noopener noreferrer">
               Get Support

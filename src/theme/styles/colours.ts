@@ -45,9 +45,11 @@ export interface Colors {
   yellow1: Color
   yellow2: Color
   yellow3?: Color
+  yellow4: Color
   blue1: Color
   blue2: Color
   blue3?: Color
+  blue4: Color
   orange: Color
   orangeOpacity: Color
   orange1: Color
@@ -65,8 +67,10 @@ export const BASE_COLOURS = {
   green3: '#a9ffcd',
   yellow1: '#f1851d',
   yellow2: '#f1851d',
+  yellow4: '#f6c343',
   blue1: '#2172E5',
   blue2: '#3F77FF',
+  blue4: '#62688F',
   orange1: '#D96D49',
 }
 

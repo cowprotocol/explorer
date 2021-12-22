@@ -7,7 +7,7 @@ const getWebpackConfig = require('./getWebpackConfig')
 const loadConfig = require('./src/loadConfig')
 const overrideEnvConfig = require('./src/overrideEnvConfig')
 
-const isProduction = process.env.NODE_ENV == 'production'
+const isProduction = process.env.NODE_ENV === 'production'
 const baseUrl = isProduction ? '' : '/'
 
 // FIXME: The apps right now depend on config they don't, se below attempt to check what was required. One example of something that is required but we don't need is --> for some reason "createTheGraphApi" it's being executed
@@ -23,6 +23,7 @@ const EXPLORER_APP = {
     EXPLORER_APP_DOMAIN_REGEX_DEV: '^protocol-explorer\\.dev|^localhost:\\d{2,5}|^pr\\d+--gpui\\.review',
     EXPLORER_APP_DOMAIN_REGEX_STAGING: '^protocol-explorer\\.staging',
     EXPLORER_APP_DOMAIN_REGEX_PROD: '^gnosis-protocol\\.io',
+    EXPLORER_APP_DOMAIN_REGEX_BARN: '^barn\\.gnosis-protocol\\.io',
 
     OPERATOR_URL_STAGING_MAINNET: 'https://protocol-mainnet.dev.gnosisdev.com/api',
     OPERATOR_URL_STAGING_RINKEBY: 'https://protocol-rinkeby.dev.gnosisdev.com/api',

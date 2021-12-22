@@ -2,11 +2,16 @@ import React, { useCallback, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 
+import { abbreviateString } from 'utils'
 import { Network } from 'types'
 import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
 import { BlockchainNetwork } from './context/OrdersTableContext'
 import { Order, getAccountOrders } from 'api/operator'
 import Spinner from 'components/common/Spinner'
+import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { MEDIA } from 'const'
+import { PREFIX_BY_NETWORK_ID } from 'state/network'
+import { networkOptions } from 'components/NetworkSelector'
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,10 +19,6 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
-
-  > p {
-    font-weight: 550;
-  }
 
   > section {
     display: flex;
@@ -31,7 +32,7 @@ const Wrapper = styled.div`
   }
 
   ul {
-    padding: 0 0.8rem 0 0;
+    padding: 0;
     margin: 0;
     > li {
       list-style: none;
@@ -42,8 +43,16 @@ const Wrapper = styled.div`
     }
   }
 `
+const StyledBlockExplorerLink = styled(BlockExplorerLink)`
+  margin-top: 1rem;
+
+  @media ${MEDIA.xSmallDown} {
+    display: flex;
+    justify-content: center;
+  }
+`
 interface OrdersInNetwork {
-  network: string
+  network: number
 }
 
 interface ResultSeachInAnotherNetwork {
@@ -55,6 +64,16 @@ interface ResultSeachInAnotherNetwork {
 type EmptyMessageProps = ResultSeachInAnotherNetwork & {
   networkId: BlockchainNetwork
   ownerAddress: string
+}
+
+const _findNetworkName = (networkId: number): string => {
+  return networkOptions.find((e) => e.id === networkId)?.name || 'Unknown network'
+}
+
+const _buildInternalNetworkUrl = (networkId: number, ownerAddress: string): string => {
+  const networkPrefix = PREFIX_BY_NETWORK_ID.get(networkId)
+
+  return `${networkPrefix && '/' + networkPrefix}/address/${ownerAddress}`
 }
 
 export const EmptyOrdersMessage = ({
@@ -77,7 +96,13 @@ export const EmptyOrdersMessage = ({
       ) : (
         <>
           <p>
-            No orders found on <strong>{Network[networkId]}</strong>.
+            No orders found on <strong>{_findNetworkName(networkId)}</strong> for:{' '}
+            <StyledBlockExplorerLink
+              identifier={ownerAddress}
+              type="address"
+              label={abbreviateString(ownerAddress, 4, 4)}
+              networkId={networkId}
+            />
           </p>
           <section>
             {' '}
@@ -87,10 +112,10 @@ export const EmptyOrdersMessage = ({
                 {ordersInNetworks.map((e) => (
                   <li key={e.network}>
                     <Link
-                      to={`/${e.network.toLowerCase()}/address/${ownerAddress}`}
+                      to={_buildInternalNetworkUrl(e.network, ownerAddress)}
                       onClick={(): void => setLoadingState(true)}
                     >
-                      {e.network}
+                      {_findNetworkName(e.network)}
                     </Link>
                   </li>
                 ))}
@@ -124,7 +149,7 @@ export const useSearchInAnotherNetwork = (
           .then((response) => {
             if (!response.length) return
 
-            return { network: Network[network] }
+            return { network }
           })
           .catch((e) => {
             console.error(`Failed to fetch order in ${Network[network]}`, e)

@@ -1,7 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTab'
 import { useGetOrders } from './useGetOrders'
@@ -10,6 +8,7 @@ import { useTable } from './useTable'
 import { OrdersTableWithData } from './OrdersTableWithData'
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
 import PaginationOrdersTable from './PaginationOrdersTable'
+import Spinner from 'components/common/Spinner'
 
 const StyledTabLoader = styled.span`
   padding-left: 4px;
@@ -22,7 +21,7 @@ const tabItems = (isLoadingOrders: boolean): TabItemInterface[] => {
       tab: (
         <>
           Orders
-          <StyledTabLoader>{isLoadingOrders && <FontAwesomeIcon icon={faSpinner} spin size="1x" />}</StyledTabLoader>
+          <StyledTabLoader>{isLoadingOrders && <Spinner spin size="1x" />}</StyledTabLoader>
         </>
       ),
       content: <OrdersTableWithData />,

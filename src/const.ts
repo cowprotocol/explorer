@@ -245,3 +245,5 @@ export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
   '4': ETH,
   '100': XDAI,
 }
+
+export const NO_REDIRECT_HOME_ROUTES: Array<string> = ['/address']

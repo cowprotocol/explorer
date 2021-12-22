@@ -1,5 +1,5 @@
 import { tokenList } from '../data'
-import { getToken, isAnAddressAccount, isAnOrderId, isEns } from 'utils'
+import { cleanNetworkName, getToken, isAnAddressAccount, isAnOrderId, isEns } from 'utils'
 import BN from 'bn.js'
 import { pathAccordingTo } from 'hooks/useSearchSubmit'
 
@@ -130,12 +130,12 @@ describe('isAnAddressAccount', () => {
 })
 
 describe('pathAccordingTo', () => {
-  it('should return the orders word when it does not match', () => {
+  it('should return the search word when it does not match', () => {
     const text = 'Invalid Search'
 
     const result = pathAccordingTo(text)
 
-    expect(result).toBe('orders')
+    expect(result).toBe('search')
   })
 
   it('should return the address word when it match', () => {
@@ -154,5 +154,22 @@ describe('isEns', () => {
     const result = isEns(text)
 
     expect(result).toBe(true)
+  })
+})
+
+describe('cleanNetworkName', () => {
+  it('should return empty string for undefined input', () => {
+    const text = undefined
+
+    const result = cleanNetworkName(text)
+
+    expect(result).toBe('')
+  })
+  it('should return lowercase withouth white space', () => {
+    const text = 'Gnosis Chain'
+
+    const result = cleanNetworkName(text)
+
+    expect(result).toBe('gnosischain')
   })
 })

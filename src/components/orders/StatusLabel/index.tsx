@@ -20,6 +20,7 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
   switch (status) {
     case 'expired':
     case 'cancelled':
+    case 'cancelling':
       text = theme.orange
       background = theme.orangeOpacity
       break
@@ -66,7 +67,6 @@ const Label = styled.div<DisplayProps & ShimmingProps>`
   ${({ shimming }): FlattenSimpleInterpolation | null =>
     shimming
       ? css`
-          display: inline-block;
           -webkit-mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
           mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
           background-repeat: no-repeat;
@@ -94,6 +94,8 @@ function getStatusIcon(status: OrderStatus): IconDefinition {
       return faCheckCircle
     case 'cancelled':
       return faTimesCircle
+    case 'cancelling':
+      return faTimesCircle
     case 'signing':
       return faKey
     case 'open':
@@ -112,7 +114,7 @@ export type Props = DisplayProps & { partiallyFilled: boolean }
 
 export function StatusLabel(props: Props): JSX.Element {
   const { status, partiallyFilled } = props
-  const shimming = status === 'signing'
+  const shimming = status === 'signing' || status === 'cancelling'
 
   return (
     <Wrapper>

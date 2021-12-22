@@ -2,8 +2,8 @@ import React from 'react'
 
 import { Navigation } from 'components/layout/GenericLayout/Navigation'
 import { Header as GenericHeader } from 'components/layout/GenericLayout/Header'
-import { getNetworkFromId } from '@gnosis.pm/dex-js'
-import { useNetworkId } from 'state/network'
+import { NetworkSelector } from 'components/NetworkSelector'
+import { PREFIX_BY_NETWORK_ID, useNetworkId } from 'state/network'
 import styled from 'styled-components'
 
 const Logo = styled.span`
@@ -29,40 +29,18 @@ const Logo = styled.span`
   }
 `
 
-const NetworkLabel = styled.span`
-  border-radius: 0.6rem;
-  display: flex;
-  margin: 0 0.5rem;
-  font-size: 1.1rem;
-  text-align: center;
-  padding: 0.7rem;
-  text-transform: uppercase;
-  font-weight: ${({ theme }): string => theme.fontBold};
-  letter-spacing: 0.1rem;
-
-  &.rinkeby {
-    background: ${({ theme }): string => theme.borderPrimary};
-    color: ${({ theme }): string => theme.textSecondary1};
-  }
-
-  &.xdai {
-    background: ${({ theme }): string => theme.orangeOpacity};
-    color: ${({ theme }): string => theme.orange};
-  }
-`
-
 export const Header: React.FC = () => {
   const networkId = useNetworkId()
   if (!networkId) {
     return null
   }
 
-  const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : null
+  const prefixNetwork = PREFIX_BY_NETWORK_ID.get(networkId)
 
   return (
-    <GenericHeader logoAlt="Gnosis Protocol" linkTo={`/${network || ''}`} label={<Logo>Gnosis Protocol</Logo>}>
+    <GenericHeader logoAlt="Gnosis Protocol" linkTo={`/${prefixNetwork || ''}`} label={<Logo>Gnosis Protocol</Logo>}>
       <Navigation>
-        {network && <NetworkLabel className={network}>{network}</NetworkLabel>}
+        <NetworkSelector networkId={networkId} />
         {/*      
         <li>
           <Link to="/">Batches</Link>

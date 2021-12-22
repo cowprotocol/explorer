@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Search } from 'apps/explorer/components/common/Search'
+import { media } from 'theme/styles/media'
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,22 +13,28 @@ const Wrapper = styled.div`
   width: 100%;
 
   > h1 {
-    display: flex;
+    text-align: center;
     padding: 2.4rem 0 0.75rem;
-    align-items: center;
-    justify-content: center;
     font-weight: ${({ theme }): string => theme.fontBold};
     width: 100%;
     margin: 0 0 2.4rem;
-    font-size: 2.4rem;
+    font-size: 2rem;
     line-height: 1;
+  }
+
+  ${media.mobile} {
+    > h1 {
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      font-size: 1.7rem;
+    }
   }
 `
 
 export const Home: React.FC = () => {
   return (
     <Wrapper>
-      <h1>Search Order ID / ETH Address / ENS Address</h1>
+      <h1>Search on Gnosis Protocol Explorer</h1>
       <Search className="home" />
     </Wrapper>
   )

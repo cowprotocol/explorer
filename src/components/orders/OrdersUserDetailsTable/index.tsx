@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
-import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 
 import { Order } from 'api/operator'
@@ -21,7 +21,7 @@ import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import Spinner from 'components/common/Spinner'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
@@ -155,7 +155,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   }
 
   const renderSpinnerWhenNoValue = (textValue: string): JSX.Element | void => {
-    if (textValue === '-') return <FontAwesomeIcon icon={faSpinner} spin size="1x" />
+    if (textValue === '-') return <Spinner spin size="1x" />
   }
 
   return (

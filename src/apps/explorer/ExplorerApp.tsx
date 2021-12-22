@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch, Redirect } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
@@ -12,7 +12,7 @@ import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 import { media } from 'theme/styles/media'
 
-import { NetworkUpdater, RedirectMainnet } from 'state/network'
+import { NetworkUpdater, RedirectMainnet, RedirectXdai } from 'state/network'
 import { initAnalytics } from 'api/analytics'
 import RouteAnalytics from 'components/analytics/RouteAnalytics'
 import NetworkAnalytics from 'components/analytics/NetworkAnalytics'
@@ -54,6 +54,14 @@ const NotFound = React.lazy(
     import(
       /* webpackChunkName: "Extra_routes_chunk"*/
       './pages/NotFound'
+    ),
+)
+
+const SearchNotFound = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "SearchNotFound_chunk"*/
+      './pages/SearchNotFound'
     ),
 )
 
@@ -108,8 +116,14 @@ const AppContent = (): JSX.Element => {
 
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
+          <Route
+            path={[pathPrefix + '/address/', pathPrefix + '/orders/']}
+            exact
+            component={(): JSX.Element => <Redirect to={pathPrefix + '/search/'} />}
+          />
           <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
           <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
+          <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
           <Route component={NotFound} />
         </Switch>
       </React.Suspense>
@@ -144,7 +158,8 @@ export const ExplorerApp: React.FC = () => {
         <StateUpdaters />
         <Switch>
           <Route path="/mainnet" component={RedirectMainnet} />
-          <Route path={['/xdai', '/rinkeby', '/']} component={AppContent} />
+          <Route path="/xdai" component={RedirectXdai} />
+          <Route path={['/gc', '/rinkeby', '/']} component={AppContent} />
         </Switch>
       </Router>
       {process.env.NODE_ENV === 'development' && <Console />}
