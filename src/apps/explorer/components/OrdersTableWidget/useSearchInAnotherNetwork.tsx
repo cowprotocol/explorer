@@ -70,6 +70,12 @@ const _findNetworkName = (networkId: number): string => {
   return networkOptions.find((e) => e.id === networkId)?.name || 'Unknown network'
 }
 
+const _buildInternalNetworkUrl = (networkId: number, ownerAddress: string): string => {
+  const networkPrefix = PREFIX_BY_NETWORK_ID.get(networkId)
+
+  return `${networkPrefix && '/' + networkPrefix}/address/${ownerAddress}`
+}
+
 export const EmptyOrdersMessage = ({
   isLoading,
   networkId,
@@ -106,7 +112,7 @@ export const EmptyOrdersMessage = ({
                 {ordersInNetworks.map((e) => (
                   <li key={e.network}>
                     <Link
-                      to={`/${PREFIX_BY_NETWORK_ID.get(e.network)}/address/${ownerAddress}`}
+                      to={_buildInternalNetworkUrl(e.network, ownerAddress)}
                       onClick={(): void => setLoadingState(true)}
                     >
                       {_findNetworkName(e.network)}
