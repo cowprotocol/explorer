@@ -89,6 +89,14 @@ const UserDetails = React.lazy(
     ),
 )
 
+const TransactionDetails = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "TransactionDetails_chunk"*/
+      './pages/TransactionDetails'
+    ),
+)
+
 /**
  * Update the global state
  */
@@ -117,12 +125,13 @@ const AppContent = (): JSX.Element => {
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
           <Route
-            path={[pathPrefix + '/address/', pathPrefix + '/orders/']}
+            path={[pathPrefix + '/address/', pathPrefix + '/orders/', pathPrefix + '/tx/']}
             exact
             component={(): JSX.Element => <Redirect to={pathPrefix + '/search/'} />}
           />
           <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
           <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
+          <Route path={pathPrefix + '/tx/:txHash'} exact component={TransactionDetails} />
           <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
           <Route component={NotFound} />
         </Switch>

@@ -14,6 +14,7 @@ import {
   OrderPostError,
   RawOrder,
   RawTrade,
+  GetTxOrdersParams,
 } from './types'
 
 function getOperatorUrl(): Partial<Record<Network, string>> {
@@ -236,6 +237,19 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const searchString = buildSearchString({ offset: String(offset), limit: String(limit) })
 
   const queryString = `/account/${owner}/orders/` + searchString
+
+  return _fetchQuery(networkId, queryString)
+}
+
+/**
+ * Gets a order list within Tx
+ */
+export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]> {
+  const { networkId, txHash } = params
+
+  console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
+
+  const queryString = `/transactions/${txHash}/orders`
 
   return _fetchQuery(networkId, queryString)
 }
