@@ -21,7 +21,7 @@ describe('Test config defaults', () => {
   })
 
   it('logoPath', () => {
-    expect(CONFIG.logoPath).toEqual('./src/assets/img/logo.svg')
+    expect(CONFIG.logoPath).toEqual('./src/assets/img/CowProtocol-icon.svg')
   })
 
   it('templatePath', () => {
