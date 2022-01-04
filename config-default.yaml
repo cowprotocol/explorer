@@ -24,7 +24,7 @@
 name: Gnosis Protocol v1 Web
 
 # Logo used for the favicon
-logoPath: './src/assets/img/logo.svg'
+logoPath: './src/assets/img/CowProtocol-icon.svg'
 
 # HTML template
 templatePath: './src/html/index.html'

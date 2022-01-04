@@ -5,7 +5,7 @@ import { media } from 'theme/styles/media'
 import { Link } from 'react-router-dom'
 
 // Assets
-import LogoImage from 'assets/img/logo-v2.svg'
+import LogoImage from 'assets/img/CowProtocol-logo-white.svg'
 
 const HeaderStyled = styled.header`
   height: auto;
@@ -27,14 +27,15 @@ const HeaderStyled = styled.header`
 `
 
 const Logo = styled(Link)`
-  height: 2.8rem;
   padding: 0;
+  margin: 0 1rem 0 0;
   display: flex;
   align-content: center;
   justify-content: center;
 
   &:hover {
     text-decoration: none;
+    opacity: 0.85;
   }
 
   > img {
@@ -43,10 +44,10 @@ const Logo = styled(Link)`
     transition: transform 1s ease-in-out;
 
     &:hover {
-      animation-name: spin;
-      animation-duration: 4s;
+      animation-name: bounce;
+      animation-duration: 1s;
       animation-iteration-count: infinite;
-      animation-delay: 0.3s;
+      animation-delay: 0.4s;
     }
 
     background: url(${LogoImage}) no-repeat center/contain;
@@ -65,30 +66,31 @@ const Logo = styled(Link)`
     color: ${({ theme }): string => theme.textPrimary1};
   }
 
-  @keyframes spin {
+  @keyframes bounce {
     0% {
-      transform: perspective(20rem) rotateY(0);
-    }
-    30% {
-      transform: perspective(20rem) rotateY(200deg);
+      transform: scale(1);
+      -webkit-transform: scale(1);
     }
     100% {
-      transform: perspective(20rem) rotateY(720deg);
+      transform: scale(0.9);
+      -webkit-transform: scale(0.9);
+    }
+    50% {
+      transform: scale(1);
+      -webkit-transform: scale(1);
     }
   }
 `
 
 type Props = PropsWithChildren<{
-  label?: React.ReactNode
   linkTo?: string
   logoAlt?: string
 }>
 
-export const Header: React.FC<Props> = ({ children, linkTo, logoAlt, label }) => (
+export const Header: React.FC<Props> = ({ children, linkTo, logoAlt }) => (
   <HeaderStyled>
     <Logo to={linkTo || '/'}>
       <img src={LogoImage} alt={logoAlt || 'Trading interface homepage'} />
-      {label && <span>{label}</span>}
     </Logo>
     {children}
   </HeaderStyled>

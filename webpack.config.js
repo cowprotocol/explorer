@@ -14,10 +14,10 @@ const baseUrl = isProduction ? '' : '/'
 const CONFIG = loadConfig()
 
 const config = overrideEnvConfig(CONFIG)
-const TRADE_APP = { name: 'trade', title: 'Gnosis Protocol Exchange', filename: 'trade.html' }
+const TRADE_APP = { name: 'trade', title: 'CoW Protocol Exchange', filename: 'trade.html' }
 const EXPLORER_APP = {
   name: 'explorer',
-  title: 'Gnosis Protocol Explorer',
+  title: 'CoW Protocol Explorer',
   filename: 'index.html',
   envVars: {
     EXPLORER_APP_DOMAIN_REGEX_DEV: '^protocol-explorer\\.dev|^localhost:\\d{2,5}|^pr\\d+--gpui\\.review',
