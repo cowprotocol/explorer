@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
-import { isAnAddressAccount, isAnOrderId, isEns } from 'utils'
+import { isAnAddressAccount, isAnOrderId, isEns, isATxHash } from 'utils'
 import { usePathPrefix } from 'state/network'
 import { web3 } from 'apps/explorer/api'
 
@@ -10,6 +10,8 @@ export function pathAccordingTo(query: string): string {
     path = 'address'
   } else if (isAnOrderId(query)) {
     path = 'orders'
+  } else if (isATxHash(query)) {
+    path = 'tx'
   }
 
   return path
