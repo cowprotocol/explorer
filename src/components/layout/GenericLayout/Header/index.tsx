@@ -35,21 +35,10 @@ const Logo = styled(Link)`
 
   &:hover {
     text-decoration: none;
-    opacity: 0.85;
+    opacity: 0.9;
   }
 
   > img {
-    transform: perspective(20rem) rotateY(0);
-    transform-style: preserve-3d;
-    transition: transform 1s ease-in-out;
-
-    &:hover {
-      animation-name: bounce;
-      animation-duration: 1s;
-      animation-iteration-count: infinite;
-      animation-delay: 0.4s;
-    }
-
     background: url(${LogoImage}) no-repeat center/contain;
     border: 0;
     object-fit: contain;
@@ -64,21 +53,6 @@ const Logo = styled(Link)`
     align-content: center;
     justify-content: center;
     color: ${({ theme }): string => theme.textPrimary1};
-  }
-
-  @keyframes bounce {
-    0% {
-      transform: scale(1);
-      -webkit-transform: scale(1);
-    }
-    100% {
-      transform: scale(0.9);
-      -webkit-transform: scale(0.9);
-    }
-    50% {
-      transform: scale(1);
-      -webkit-transform: scale(1);
-    }
   }
 `
 
