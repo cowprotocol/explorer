@@ -564,7 +564,7 @@ export class WalletApiImpl implements WalletApi {
     return {
       isConnected,
       userAddress: accounts[0],
-      networkId: isConnected ? +chainId : undefined,
+      networkId: +chainId,
     }
   }
 
