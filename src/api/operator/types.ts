@@ -115,7 +115,7 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   surplusPercentage?: BigNumber
 }
 
-type WithNetworkId = { networkId: Network }
+export type WithNetworkId = { networkId: Network }
 
 export type GetOrderParams = WithNetworkId & {
   orderId: string
