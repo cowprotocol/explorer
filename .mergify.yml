@@ -1,3 +1,8 @@
+queue_rules:
+  - name: default
+    conditions:
+      - check-success=Deploy
+
 pull_request_rules:
   - name: Merge approved and green PRs when tagged with 'Auto-merge'
     conditions:
@@ -5,9 +10,9 @@ pull_request_rules:
       - label="Auto-merge"
       - check-success=Deploy
     actions:
-      merge:
+      queue:
         method: squash
-        strict: smart+fasttrack
+        name: default
         commit_message: title+body
   - name: automatic merge for Dependabot pull requests
     conditions:
@@ -17,8 +22,8 @@ pull_request_rules:
       - check-success=Deploy
       - base=develop
     actions:
-      merge:
+      queue:
         method: squash
-        strict: smart+fasttrack
+        name: default
         commit_message: title+body
     
