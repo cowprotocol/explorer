@@ -3,7 +3,7 @@ export const COLOURS = {
   whiteDark: '#e9e9f0',
   blue: '#3F77FF',
   blueDark: '#185afb',
-  hippieBlue: '#48A9A6',
+  gnosisChainColor: '#04795b',
   purple: '#8958FF',
   bgLight: '#edf2f7',
   bgDark: 'linear-gradient(0deg, #21222E 0.05%, #2C2D3F 100%)',
