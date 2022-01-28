@@ -128,7 +128,7 @@ const tooltip = {
 }
 
 export type Props = StyledUserDetailsTableProps & {
-  orders: Order[]
+  orders: Order[] | undefined
 }
 
 interface RowProps {
@@ -239,7 +239,7 @@ const TransactionTable: React.FC<Props> = (props) => {
     setIsPriceInverted((previousValue) => !previousValue)
   }
 
-  const orderItems = (items: Order[]): JSX.Element => {
+  const orderItems = (items: Order[] | undefined): JSX.Element => {
     let tableContent
     if (!items || items.length === 0) {
       tableContent = (

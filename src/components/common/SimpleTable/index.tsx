@@ -6,7 +6,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   background-color: transparent;
   color: ${({ theme }): string => theme.textPrimary1};
-  height: 100%;
+  height: auto;
   width: 100%;
   margin: 1.6rem auto 0;
   padding: 0;
@@ -113,7 +113,7 @@ const Wrapper = styled.table<{ $numColumns?: number }>`
 
 export type Props = {
   header?: JSX.Element
-  body: JSX.Element
+  body?: JSX.Element
   className?: string
   numColumns?: number
 }

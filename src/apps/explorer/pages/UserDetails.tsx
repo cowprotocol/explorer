@@ -5,9 +5,9 @@ import OrdersTableWidget from '../components/OrdersTableWidget'
 import { useNetworkId } from 'state/network'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import RedirectToSearch from 'components/RedirectToSearch'
-import { TitleAddress, Wrapper } from 'apps/explorer/pages/styled'
 import { useResolveEns } from 'hooks/useResolveEns'
 import Spinner from 'components/common/Spinner'
+import { TitleAddress, Wrapper } from 'apps/explorer/pages/styled'
 
 const UserDetails: React.FC = () => {
   const { address } = useParams<{ address: string }>()
