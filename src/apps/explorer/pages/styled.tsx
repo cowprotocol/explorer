@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import * as CSS from 'csstype'
 import { Link } from 'react-router-dom'
 
 export const Wrapper = styled.div`
@@ -35,6 +36,12 @@ export const TitleAddress = styled(RowWithCopyButton)`
   ${media.tinyDown} {
     font-size: 1.2rem;
   }
+`
+
+export const FlexWrap = styled.div<Partial<CSS.Properties & { grow?: number }>>`
+  display: flex;
+  align-items: center;
+  flex-grow: ${({ grow }): string => `${grow}` || '0'};
 `
 
 export const StyledLink = styled(Link)`
