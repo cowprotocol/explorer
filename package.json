@@ -1,6 +1,6 @@
 {
   "name": "@gnosis.pm/gp-v1",
-  "version": "2.5.1",
+  "version": "2.6.0-rc.1",
   "description": "",
   "main": "src/index.js",
   "sideEffects": false,
@@ -54,7 +54,7 @@
     "@apollo/client": "^3.1.5",
     "@fortawesome/fontawesome-svg-core": "^1.2.26",
     "@fortawesome/free-regular-svg-icons": "^5.12.0",
-    "@fortawesome/free-solid-svg-icons": "^5.12.0",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.8",
     "@gnosis.pm/dex-js": "^0.10.0",
     "@gnosis.pm/gp-v2-contracts": "^1.0.2",

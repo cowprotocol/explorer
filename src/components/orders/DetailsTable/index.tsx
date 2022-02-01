@@ -6,7 +6,6 @@ import { Order } from 'api/operator'
 
 import { capitalize } from 'utils'
 
-import { BlockExplorerLink } from 'apps/explorer/components/common/BlockExplorerLink'
 import { HelpTooltip } from 'components/Tooltip'
 
 import { SimpleTable } from 'components/common/SimpleTable'
@@ -174,7 +173,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
                   <RowWithCopyButton
                     textToCopy={txHash}
                     onCopy={(): void => onCopy('settlementTx')}
-                    contentsToDisplay={<BlockExplorerLink identifier={txHash} type="tx" label={txHash} />}
+                    contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
                   />
                 ) : (
                   '-'

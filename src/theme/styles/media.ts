@@ -5,8 +5,10 @@ export const media = {
   smallScreen: '736px',
   smallScreenUp: '737px',
   mediumScreenSmall: '850px',
+  mediumScreenMd: '960px',
   mediumEnd: '1024px',
   desktopScreen: '1025px',
+  desktopScreenMedium: '1180px',
   desktopScreenLarge: '1366px',
   get tinyDown(): string {
     return `@media only screen and (max-width : ${this.tinyScreen})`
@@ -23,11 +25,17 @@ export const media = {
   get mediumDown(): string {
     return `@media only screen and (max-width : ${this.mediumEnd})`
   },
+  get mediumDownMd(): string {
+    return `@media (max-width: ${this.mediumScreenMd})`
+  },
   get mediumOnly(): string {
     return `@media only screen and (min-width : ${this.smallScreenUp}) and (max-width : ${this.mediumEnd})`
   },
   get desktop(): string {
     return `@media only screen and (min-width : ${this.desktopScreen})`
+  },
+  get desktopMediumDown(): string {
+    return `@media only screen and (max-width : ${this.desktopScreenMedium})`
   },
   get desktopLarge(): string {
     return `@media only screen and (min-width: ${this.desktopScreenLarge})`

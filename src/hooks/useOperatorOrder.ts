@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { Order, getOrder, RawOrder } from 'api/operator'
+import { Order, getOrder, GetOrderParams } from 'api/operator'
 
 import { transformOrder } from 'utils'
 
@@ -8,55 +8,29 @@ import { useNetworkId } from 'state/network'
 
 import { useMultipleErc20 } from './useErc20'
 import { Network } from 'types'
-import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
+import {
+  GetOrderApi,
+  GetOrderResult,
+  SingleOrder,
+  tryGetOrderOnAllNetworks,
+} from 'services/helpers/tryGetOrderOnAllNetworks'
 
 type UseOrderResult = {
   order: Order | null
   error?: string
   isLoading: boolean
   errorOrderPresentInNetworkId: Network | null
-  forceUpdate: () => void
+  forceUpdate?: () => void
 }
 
-interface GetOrderResult {
-  order: RawOrder | null
-  errorOrderPresentInNetworkId?: Network
-}
-
-async function _getOrder(
-  networkId: Network,
-  orderId: string,
-  networkIdSearchListRemaining: Network[] = NETWORK_ID_SEARCH_LIST,
-): Promise<GetOrderResult> {
-  // Get order
-  const order = await getOrder({ networkId, orderId })
-
-  if (order || networkIdSearchListRemaining.length === 0) {
-    // We found the order in the right network
-    // ...or we have no more networks in which to continue looking
-    // so we return the "order" (can be null if it wasn't found in any network)
-    return { order }
+function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<SingleOrder>> {
+  const defaultParams: GetOrderParams = { networkId, orderId }
+  const getOrderApi: GetOrderApi<GetOrderParams, SingleOrder> = {
+    api: (_defaultParams) => getOrder(_defaultParams),
+    defaultParams,
   }
 
-  // If we didn't find the order in the current network, we look in different networks
-  const [nextNetworkId, ...remainingNetworkIds] = networkIdSearchListRemaining.filter((network) => network != networkId)
-
-  // Try to get the oder in another network (to see if the ID is OK, but the network not)
-  const isOrderInDifferentNetwork = await getOrder({ networkId: nextNetworkId, orderId }).then(
-    (order) => order !== null,
-  )
-
-  console.log('is in different network', isOrderInDifferentNetwork)
-  if (isOrderInDifferentNetwork) {
-    // If the order exist in the other network
-    return {
-      order: null,
-      errorOrderPresentInNetworkId: nextNetworkId,
-    }
-  } else {
-    // Keep looking in other networks
-    return _getOrder(nextNetworkId, orderId, remainingNetworkIds)
-  }
+  return tryGetOrderOnAllNetworks<SingleOrder>(networkId, getOrderApi)
 }
 
 export function useOrderByNetwork(orderId: string, networkId: Network | null, updateInterval = 0): UseOrderResult {

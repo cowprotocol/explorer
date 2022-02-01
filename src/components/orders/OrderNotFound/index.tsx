@@ -95,7 +95,7 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <Title>Order or Address not found</Title>
+      <Title>No results found</Title>
       <Content>
         {searchString ? (
           <>

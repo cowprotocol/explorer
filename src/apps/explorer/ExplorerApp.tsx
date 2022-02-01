@@ -7,10 +7,8 @@ import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
 import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
 
-import styled from 'styled-components'
 import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
-import { media } from 'theme/styles/media'
 
 import { NetworkUpdater, RedirectMainnet, RedirectXdai } from 'state/network'
 import { initAnalytics } from 'api/analytics'
@@ -21,6 +19,7 @@ import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { environmentName } from 'utils/env'
 import { version } from '../../../package.json'
+import { GlobalStyle, MainWrapper } from './styled'
 
 const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN
 const SENTRY_TRACES_SAMPLE_RATE = process.env.REACT_APP_SENTRY_TRACES_SAMPLE_RATE
@@ -89,6 +88,14 @@ const UserDetails = React.lazy(
     ),
 )
 
+const TransactionDetails = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "TransactionDetails_chunk"*/
+      './pages/TransactionDetails'
+    ),
+)
+
 /**
  * Update the global state
  */
@@ -117,12 +124,13 @@ const AppContent = (): JSX.Element => {
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
           <Route
-            path={[pathPrefix + '/address/', pathPrefix + '/orders/']}
+            path={[pathPrefix + '/address/', pathPrefix + '/orders/', pathPrefix + '/tx/']}
             exact
             component={(): JSX.Element => <Redirect to={pathPrefix + '/search/'} />}
           />
           <Route path={pathPrefix + '/orders/:orderId'} exact component={Order} />
           <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
+          <Route path={pathPrefix + '/tx/:txHash'} exact component={TransactionDetails} />
           <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
           <Route component={NotFound} />
         </Switch>
@@ -130,20 +138,6 @@ const AppContent = (): JSX.Element => {
     </GenericLayout>
   )
 }
-
-const Wrapper = styled.div`
-  max-width: 118rem;
-  margin: 0 auto;
-
-  ${media.mediumDown} {
-    max-width: 94rem;
-    flex-flow: column wrap;
-  }
-
-  ${media.mobile} {
-    max-width: 100%;
-  }
-`
 
 /**
  * Render Explorer App
@@ -153,17 +147,20 @@ export const ExplorerApp: React.FC = () => {
   useNetworkCheck()
 
   return (
-    <Wrapper>
-      <Router basename={process.env.BASE_URL}>
-        <StateUpdaters />
-        <Switch>
-          <Route path="/mainnet" component={RedirectMainnet} />
-          <Route path="/xdai" component={RedirectXdai} />
-          <Route path={['/gc', '/rinkeby', '/']} component={AppContent} />
-        </Switch>
-      </Router>
-      {process.env.NODE_ENV === 'development' && <Console />}
-    </Wrapper>
+    <>
+      <GlobalStyle />
+      <MainWrapper>
+        <Router basename={process.env.BASE_URL}>
+          <StateUpdaters />
+          <Switch>
+            <Route path="/mainnet" component={RedirectMainnet} />
+            <Route path="/xdai" component={RedirectXdai} />
+            <Route path={['/gc', '/rinkeby', '/']} component={AppContent} />
+          </Switch>
+        </Router>
+        {process.env.NODE_ENV === 'development' && <Console />}
+      </MainWrapper>
+    </>
   )
 }
 

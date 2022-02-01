@@ -13,6 +13,7 @@ export const {
   getOrder,
   getOrders,
   getAccountOrders,
+  getTxOrders,
   getTrades,
   // functions that do not have a mock
   getOrderLink = realApi.getOrderLink,

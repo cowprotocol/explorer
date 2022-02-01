@@ -2,12 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTab'
-import { useGetOrders } from './useGetOrders'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { useTable } from './useTable'
 import { OrdersTableWithData } from './OrdersTableWithData'
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
 import PaginationOrdersTable from './PaginationOrdersTable'
+import { useGetAccountOrders } from 'hooks/useGetOrders'
 import Spinner from 'components/common/Spinner'
 
 const StyledTabLoader = styled.span`
@@ -58,7 +58,7 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     isLoading: isOrdersLoading,
     error,
     isThereNext: isThereNextOrder,
-  } = useGetOrders(ownerAddress, tableState.pageSize, tableState.pageOffset, tableState.pageIndex)
+  } = useGetAccountOrders(ownerAddress, tableState.pageSize, tableState.pageOffset, tableState.pageIndex)
   tableState['hasNextPage'] = isThereNextOrder
   const addressAccountParams = { ownerAddress, networkId }
 

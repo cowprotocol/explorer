@@ -1,5 +1,5 @@
 import { tokenList } from '../data'
-import { cleanNetworkName, getToken, isAnAddressAccount, isAnOrderId, isEns } from 'utils'
+import { cleanNetworkName, getToken, isAnAddressAccount, isAnOrderId, isEns, isATxHash } from 'utils'
 import BN from 'bn.js'
 import { pathAccordingTo } from 'hooks/useSearchSubmit'
 
@@ -154,6 +154,30 @@ describe('isEns', () => {
     const result = isEns(text)
 
     expect(result).toBe(true)
+  })
+})
+
+describe('isATxHash', () => {
+  it('should return true for valid Tx Hash', () => {
+    const text = '0x218ef93e287740cb029f5ca178a9cd21b5fe85a5f9f06795e08ed79b6668a9a0'
+
+    const result = isATxHash(text)
+
+    expect(result).toBe(true)
+  })
+  it('should return true for valid Tx Hash without 0x', () => {
+    const text = '218ef93e287740cb029f5ca178a9cd21b5fe85a5f9f06795e08ed79b6668a9a0'
+
+    const result = isATxHash(text)
+
+    expect(result).toBe(true)
+  })
+  it('should return false for invalid tx Hash', () => {
+    const text = 'invalidTxHash'
+
+    const result = isATxHash(text)
+
+    expect(result).toBe(false)
   })
 })
 

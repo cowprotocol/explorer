@@ -281,6 +281,14 @@ export const isAnAddressAccount = (text: string): boolean => {
  */
 export const isEns = (text: string): boolean => text.match(/[a-zA-Z0-9]+\.[a-zA-Z]+$/)?.input !== undefined
 
+/**
+ * Check if a string is a valid Tx Hash against regex
+ *
+ * @param text Possible TxHash string to check
+ * @returns true if valid or false if not
+ */
+export const isATxHash = (text: string): boolean => text.match(/^(0x)?([a-fA-F0-9]{64})$/)?.input !== undefined
+
 /** Convert string to lowercase and remove whitespace */
 export function cleanNetworkName(networkName: string | undefined): string {
   if (!networkName) return ''

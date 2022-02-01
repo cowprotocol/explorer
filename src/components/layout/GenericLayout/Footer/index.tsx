@@ -7,10 +7,11 @@ import { getGpV2ContractAddress } from 'utils/contract'
 import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 
 // Hooks
-import { useWalletConnection } from 'hooks/useWalletConnection'
+import { useNetworkId } from 'state/network'
 
 // Config
 import { footerConfig } from '../Footer/config'
+import { Network } from 'types'
 
 const FooterStyled = styled.footer`
   display: flex;
@@ -99,10 +100,9 @@ export interface FooterType {
 
 export const Footer: React.FC<FooterType> = (props) => {
   const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
-  const { networkIdOrDefault: networkId } = useWalletConnection()
+  const networkId = useNetworkId() || Network.Mainnet
   const settlementContractAddress = getGpV2ContractAddress(networkId, 'GPv2Settlement')
   const vaultRelayerContractAddress = getGpV2ContractAddress(networkId, 'GPv2VaultRelayer')
-
   return (
     <FooterStyled>
       <BetaWrapper>{isBeta && 'This project is in beta. Use at your own risk.'}</BetaWrapper>
