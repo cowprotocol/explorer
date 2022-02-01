@@ -4,6 +4,7 @@ import { AnalyticsDimension, Network } from 'types'
 export const ORDER_QUERY_INTERVAL = 10000 // in ms
 export const ORDERS_QUERY_INTERVAL = 30000 // in ms
 export const ORDERS_HISTORY_MINUTES_AGO = 10 // in minutes
+export const PENDING_ORDERS_BUFFER = 60 * 1000 //60s in ms
 
 export const DISPLAY_TEXT_COPIED_CHECK = 1000 // in ms
 

@@ -1,4 +1,5 @@
 import { RawOrder, RawOrderStatusFromAPI } from 'api/operator'
+import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 import { getOrderStatus } from 'utils'
 
@@ -13,8 +14,13 @@ function _getPastTimestamp(): number {
   return Math.floor(DATE.getTime() / 1000) - 1
 }
 
-// mockTimes set's Date.now() to DATE const in the test context
-beforeEach(mockTimes)
+function _creationDatePlusMilliseconds(milliseconds: number): Date {
+  const creationDate = new Date(RAW_ORDER.creationDate)
+  return new Date(creationDate.setMilliseconds(creationDate.getMilliseconds() + milliseconds))
+}
+
+// mockTimes set's Date.now() to creationDate plus twice time PendingBuffer const in the test context
+beforeEach(() => mockTimes(_creationDatePlusMilliseconds(PENDING_ORDERS_BUFFER * 2)))
 
 describe('Filled status', () => {
   describe('Buy order', () => {
@@ -141,6 +147,49 @@ describe('Canceled status', () => {
       validTo: _getPastTimestamp(),
     }
     expect(getOrderStatus(order)).toEqual('cancelled')
+  })
+})
+
+describe('Cancelling Status', () => {
+  const milliseconds = 30 * 1000 // The creation time should be less than PENDING_ORDERS_BUFFER constant
+  const newCurrentDate = _creationDatePlusMilliseconds(milliseconds)
+  beforeEach(() => mockTimes(newCurrentDate))
+
+  test('Buy order', () => {
+    const order: RawOrder = {
+      ...RAW_ORDER,
+      kind: 'buy',
+      buyAmount: '10000',
+      invalidated: true,
+      validTo: _getCurrentTimestamp(),
+      status: 'cancelled',
+    }
+    expect(getOrderStatus(order)).toEqual('cancelling')
+  })
+  test('Sell order', () => {
+    const order: RawOrder = {
+      ...RAW_ORDER,
+      kind: 'sell',
+      sellAmount: '10000',
+      invalidated: true,
+      validTo: _getCurrentTimestamp(),
+      status: 'cancelled',
+    }
+    expect(getOrderStatus(order)).toEqual('cancelling')
+  })
+  test('When creationDate is already longer than the pendingOrderBuffer', () => {
+    const millisecondsBefore = -PENDING_ORDERS_BUFFER - milliseconds // ms before the newCurrentDate
+    const newCreationDate = _creationDatePlusMilliseconds(millisecondsBefore)
+    const order: RawOrder = {
+      ...RAW_ORDER,
+      kind: 'sell',
+      sellAmount: '10000',
+      invalidated: true,
+      validTo: _getCurrentTimestamp(),
+      creationDate: newCreationDate.toISOString(),
+    }
+
+    expect(getOrderStatus(order)).not.toEqual('cancelling')
   })
 })
 
