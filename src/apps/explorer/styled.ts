@@ -1,6 +1,5 @@
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { media } from 'theme/styles/media'
-import { createGlobalStyle } from 'styled-components'
 
 export const GlobalStyle = createGlobalStyle`
   html {
@@ -46,10 +45,7 @@ export const MainWrapper = styled.div`
   ${media.xSmallDown} {
     max-width: 100%;
     flex-grow: 1;
-    header {
-      margin-left: auto;
-      margin-right: auto;
-    }
+
     footer {
       flex-direction: column;
       flex-wrap: nowrap;

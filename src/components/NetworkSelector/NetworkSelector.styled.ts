@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { COLOURS } from 'styles'
+import { media } from 'theme/styles/media'
 
 const { fadedGreyishWhiteOpacity, white, gnosisChainColor } = COLOURS
 
@@ -20,6 +21,9 @@ export const SelectorContainer = styled.div`
       transform: rotate(0deg);
       transition: transform 0.1s linear;
     }
+  }
+  ${media.xSmallDown} {
+    padding-right: 2rem;
   }
 `
 
