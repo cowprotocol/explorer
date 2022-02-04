@@ -102,8 +102,8 @@ export const NetworkLabel = styled.span`
   }
 
   &.gnosischain {
-    background: ${(): string => `rgb(4 121 91 / 15%);`};
-    color: ${(): string => gnosisChainColor};
+    background: ${(): string => `rgba(7,121,91,1.00);`};
+    color: ${(): string => white};
   }
 `
 
