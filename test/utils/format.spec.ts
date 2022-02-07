@@ -8,6 +8,6 @@ describe('parse string or bytes32', () => {
 
   test('parseStringOrBytes32 parse bytes32', () => {
     const name = '0x4865646765547261646500000000000000000000000000000000000000000000'
-    expect(parseStringOrBytes32(name, 'Unknown Token')).toMatch(/HedgeTrade/)
+    expect(parseStringOrBytes32(name, 'Token')).toMatch(/HedgeTrade/)
   })
 })
