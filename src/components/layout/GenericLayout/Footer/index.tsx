@@ -130,11 +130,6 @@ export const Footer: React.FC<FooterType> = (props) => {
             Web: v{VERSION}
           </a>
         )}
-        {CONFIG.appId && (
-          <a target="_blank" rel="noopener noreferrer" href={url.appId ?? '#'}>
-            App Id: {CONFIG.appId}
-          </a>
-        )}
         {url.contracts && CONTRACT_VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.contracts + CONTRACT_VERSION}>
             Contracts: v{CONTRACT_VERSION}
