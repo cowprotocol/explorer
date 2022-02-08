@@ -63,6 +63,11 @@ export const Header: React.FC = () => {
               Community
             </ExternalLink>
           </li>
+          <li>
+            <ExternalLink target={'_blank'} href={'https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2'}>
+              Analytics
+            </ExternalLink>
+          </li>
         </Navigation>
       </FlexWrap>
     </GenericHeader>

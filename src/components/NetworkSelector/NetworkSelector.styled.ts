@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { COLOURS } from 'styles'
+import { media } from 'theme/styles/media'
 
 const { fadedGreyishWhiteOpacity, white, gnosisChainColor } = COLOURS
 
@@ -20,6 +21,9 @@ export const SelectorContainer = styled.div`
       transform: rotate(0deg);
       transition: transform 0.1s linear;
     }
+  }
+  ${media.xSmallDown} {
+    padding-right: 2rem;
   }
 `
 
@@ -98,8 +102,8 @@ export const NetworkLabel = styled.span`
   }
 
   &.gnosischain {
-    background: ${(): string => `rgb(4 121 91 / 15%);`};
-    color: ${(): string => gnosisChainColor};
+    background: ${(): string => `rgba(7,121,91,1.00);`};
+    color: ${(): string => white};
   }
 `
 

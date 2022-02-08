@@ -2,8 +2,8 @@ export * from './data'
 import { DATE } from './data'
 import BN from 'bn.js'
 
-export function mockTimes(): void {
-  jest.spyOn(global.Date, 'now').mockImplementation(() => DATE.valueOf())
+export function mockTimes(dateToUse: Date = DATE): void {
+  jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse.valueOf())
 }
 
 /**

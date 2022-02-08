@@ -54,6 +54,12 @@ const Logo = styled(Link)`
     justify-content: center;
     color: ${({ theme }): string => theme.textPrimary1};
   }
+
+  ${media.xSmallDown} {
+    > img {
+      max-width: 11.5rem;
+    }
+  }
 `
 
 type Props = PropsWithChildren<{

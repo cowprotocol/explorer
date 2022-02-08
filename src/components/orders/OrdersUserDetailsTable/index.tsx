@@ -169,7 +169,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
             className="span-copybtn-wrap"
             textToCopy={uid}
             contentsToDisplay={
-              <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_blank">
+              <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
                 {shortId}
               </LinkWithPrefixNetwork>
             }

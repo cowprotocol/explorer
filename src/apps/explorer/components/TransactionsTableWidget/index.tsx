@@ -29,7 +29,7 @@ const tabItems = (isLoadingOrders: boolean): TabItemInterface[] => {
       id: 1,
       tab: (
         <>
-          Transactions
+          Orders
           <StyledTabLoader>{isLoadingOrders && <Spinner spin size="1x" />}</StyledTabLoader>
         </>
       ),
