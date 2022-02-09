@@ -22,7 +22,7 @@ const FooterStyled = styled.footer`
   flex: 1 1 auto;
   color: ${({ theme }): string => theme.textSecondary2};
   width: 100%;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 0 auto;
 
   ${media.mediumDown} {
@@ -105,7 +105,7 @@ export const Footer: React.FC<FooterType> = (props) => {
   const vaultRelayerContractAddress = getGpV2ContractAddress(networkId, 'GPv2VaultRelayer')
   return (
     <FooterStyled>
-      <BetaWrapper>{isBeta && 'This project is in beta. Use at your own risk.'}</BetaWrapper>
+      {isBeta && <BetaWrapper>This project is in beta. Use at your own risk.</BetaWrapper>}
       <ContractsWrapper>
         {settlementContractAddress && (
           <VerifiedButton

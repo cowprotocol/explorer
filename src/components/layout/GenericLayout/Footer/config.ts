@@ -1,5 +1,5 @@
 export const footerConfig = {
-  isBeta: true,
+  isBeta: false,
   url: {
     web: 'https://github.com/gnosis/gp-ui/tree/v',
     // TODO: Pending to move and adapt the wiki
