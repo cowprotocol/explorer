@@ -5,7 +5,7 @@ import { getGpV2ContractAddress } from 'utils/contract'
 
 // Components
 import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
-
+import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 // Hooks
 import { useNetworkId } from 'state/network'
 
@@ -35,6 +35,9 @@ const FooterStyled = styled.footer`
       text-decoration: underline;
     }
   }
+  ${media.xSmallDown} {
+    align-items: flex-start;
+  }
 `
 
 const BetaWrapper = styled.div`
@@ -52,9 +55,12 @@ const BetaWrapper = styled.div`
 
 const ContractsWrapper = styled.div`
   display: flex;
-
-  > :first-child {
+  align-items: center;
+  > :nth-child(2) {
     margin-right: 1rem;
+  }
+  ${media.xSmallDown} {
+    flex-direction: column;
   }
 `
 
@@ -64,9 +70,18 @@ const VerifiedButton = styled(BlockExplorerLink)`
   align-items: center;
   height: 100%;
   padding: 0;
+  flex: 0 0 auto;
+`
 
-  ${media.mediumDown} {
-    margin: 0 0 1.6rem;
+const ContractContainer = styled.div`
+  display: flex;
+  margin: 0 2rem 1.6rem 0;
+  a:nth-of-type(2) {
+    ${media.xSmallDown} {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
   }
 `
 
@@ -74,18 +89,18 @@ const VersionsWrapper = styled.div`
   display: flex;
   margin: 0 0 0 auto;
   align-items: center;
-  padding: 0 0 0 1rem;
-  height: 100%;
 
   ${media.mediumDown} {
     margin: 0 0 1.6rem;
   }
 
-  > a:not(:last-of-type) {
-    margin: 0 1rem 0 0;
-    flex-flow: row nowrap;
+  > a {
     display: flex;
-    position: relative;
+    align-items: center;
+    &:not(:last-of-type) {
+      margin: 0 1rem 0 0;
+      position: relative;
+    }
   }
 `
 export interface FooterType {
@@ -94,7 +109,11 @@ export interface FooterType {
   readonly url?: {
     readonly web: string
     readonly appId: string
-    readonly contracts: string
+    readonly contracts: {
+      readonly repo: string
+      readonly settlement: string
+      readonly vaultRelayer: string
+    }
   }
 }
 
@@ -108,31 +127,38 @@ export const Footer: React.FC<FooterType> = (props) => {
       {isBeta && <BetaWrapper>This project is in beta. Use at your own risk.</BetaWrapper>}
       <ContractsWrapper>
         {settlementContractAddress && (
-          <VerifiedButton
-            type="contract"
-            identifier={settlementContractAddress}
-            networkId={networkId}
-            label="Settlement contract"
-          />
+          <ContractContainer>
+            <VerifiedButton
+              showLogo
+              type="contract"
+              identifier={settlementContractAddress}
+              networkId={networkId}
+              label="Settlement contract"
+            />
+            <a target="_blank" rel="noopener noreferrer" href={url.contracts.settlement}>
+              <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />
+            </a>
+          </ContractContainer>
         )}
         {vaultRelayerContractAddress && (
-          <VerifiedButton
-            type="contract"
-            identifier={vaultRelayerContractAddress}
-            networkId={networkId}
-            label="Vault Relayer contract"
-          />
+          <ContractContainer>
+            <VerifiedButton
+              showLogo
+              type="contract"
+              identifier={vaultRelayerContractAddress}
+              networkId={networkId}
+              label="Vault Relayer contract"
+            />
+            <a target="_blank" rel="noopener noreferrer" href={url.contracts.vaultRelayer}>
+              <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />
+            </a>
+          </ContractContainer>
         )}
       </ContractsWrapper>
       <VersionsWrapper>
         {url.web && VERSION && (
           <a target="_blank" rel="noopener noreferrer" href={url.web + VERSION}>
-            Web: v{VERSION}
-          </a>
-        )}
-        {url.contracts && CONTRACT_VERSION && (
-          <a target="_blank" rel="noopener noreferrer" href={url.contracts + CONTRACT_VERSION}>
-            Contracts: v{CONTRACT_VERSION}
+            Web: v{VERSION} <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />
           </a>
         )}
       </VersionsWrapper>

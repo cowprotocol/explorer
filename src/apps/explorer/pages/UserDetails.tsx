@@ -28,6 +28,7 @@ const UserDetails: React.FC = () => {
               textToCopy={addressAccount.address}
               contentsToDisplay={
                 <BlockExplorerLink
+                  showLogo
                   type="address"
                   networkId={networkId}
                   identifier={address}

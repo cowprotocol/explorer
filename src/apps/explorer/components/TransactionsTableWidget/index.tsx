@@ -71,7 +71,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
         Transaction details
         <TitleAddress
           textToCopy={txHash}
-          contentsToDisplay={<BlockExplorerLink type="tx" networkId={networkId} identifier={txHash} />}
+          contentsToDisplay={<BlockExplorerLink type="tx" networkId={networkId} identifier={txHash} showLogo />}
         />
       </h1>
       <TransactionsTableContext.Provider
