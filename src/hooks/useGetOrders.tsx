@@ -2,11 +2,14 @@ import { useState, useEffect, useCallback } from 'react'
 
 import { Network } from 'types'
 import { useMultipleErc20 } from 'hooks/useErc20'
+import { updateWeb3Provider } from 'api/web3'
+import { web3 } from 'apps/explorer/api'
 import { getAccountOrders, getTxOrders, Order } from 'api/operator'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { useNetworkId } from 'state/network'
 import { transformOrder } from 'utils'
-import { ORDERS_QUERY_INTERVAL } from 'apps/explorer/const'
+import { ORDERS_QUERY_INTERVAL, NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
+import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import {
   GetOrderResult,
   MultipleOrders,
@@ -147,6 +150,39 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
   }, [fetchOrders, networkId, txHash])
 
   return { orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }
+}
+
+export function useTxOrderExplorerLink(
+  txHash: string,
+  isZeroOrders: boolean,
+): ExplorerLinkProps | Record<string, unknown> | undefined {
+  const networkId = useNetworkId() || undefined
+  const [explorerLink, setExplorerLink] = useState<ExplorerLinkProps | Record<string, unknown> | undefined>()
+
+  useEffect(() => {
+    if (!networkId || !isZeroOrders) return
+
+    for (const network of NETWORK_ID_SEARCH_LIST) {
+      //update provider to find tx in network
+      updateWeb3Provider(web3, network)
+      web3.eth.getTransaction(txHash).then((tx) => {
+        if (tx) {
+          setExplorerLink({
+            type: 'tx',
+            networkId: network,
+            identifier: txHash,
+            showLogo: true,
+            label: network === Network.xDAI ? 'Blockscout' : 'Etherscan',
+          })
+        }
+      })
+      if (explorerLink) break
+    }
+    // reset provider
+    updateWeb3Provider(web3, networkId)
+  }, [explorerLink, isZeroOrders, networkId, txHash])
+
+  return explorerLink
 }
 
 export function useGetAccountOrders(

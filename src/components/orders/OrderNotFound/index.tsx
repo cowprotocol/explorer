@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { Search } from 'apps/explorer/components/common/Search'
 import SupportIcon from 'assets/img/support.png'
 import { MEDIA } from 'const'
+import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 
 const Title = styled.h1`
   margin: 0.55rem 0 2.5rem;
@@ -32,6 +33,13 @@ const SearchSection = styled.div`
   padding: 20px;
   border-radius: 0.4rem;
   background-color: ${({ theme }): string => theme.bg2};
+`
+
+const LinkData = styled.p`
+  font-size: 1.6rem;
+  @media ${MEDIA.mobile} {
+    line-height: 1.5;
+  }
 `
 
 const SearchContent = styled.div`
@@ -72,14 +80,15 @@ const Support = styled.a`
 `
 interface LocationState {
   referrer: string
+  data: unknown
 }
 export const OrderAddressNotFound: React.FC = (): JSX.Element => {
   const { searchString } = useParams<{ searchString: string }>()
   const location = useLocation<LocationState>()
   const history = useHistory()
-  const { referrer } = location.state || { referrer: null }
+  const { referrer, data } = location.state || { referrer: null, data: null }
   const wasRedirected = referrer ? true : false
-
+  const showLinkData = referrer === 'tx' && data
   // used after refresh by remove referrer state if was redirected
   useEffect(() => {
     window.addEventListener('beforeunload', () => {
@@ -118,6 +127,11 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
           </SearchContent>
         </SearchSection>
       </Content>
+      {showLinkData && (
+        <LinkData>
+          This is not a CowProtocol transaction. See it on <BlockExplorerLink {...(data as never)} />
+        </LinkData>
+      )}
     </>
   )
 }
