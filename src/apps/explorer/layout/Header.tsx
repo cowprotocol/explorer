@@ -27,7 +27,7 @@ export const Header: React.FC = () => {
   const handleNavigate = (e: React.MouseEvent<HTMLAnchorElement>): void => {
     e.preventDefault()
     setBarActive(false)
-    history.push('/')
+    history.push(`/${prefixNetwork || ''}`)
   }
 
   return (
