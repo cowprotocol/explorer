@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
-import { Network } from 'types'
+import { Errors, Network, UiError } from 'types'
 
 import {
   useErc20 as useErc20State,
@@ -21,7 +21,7 @@ import { isNativeToken, retry } from 'utils'
 async function _fetchErc20FromNetwork(params: {
   address: string
   networkId: number
-  setError: (error: string) => void
+  setError: (error: UiError) => void
 }): Promise<SingleErc20State> {
   const { address, networkId, setError } = params
 
@@ -38,7 +38,7 @@ async function _fetchErc20FromNetwork(params: {
   } catch (e) {
     const msg = `Failed to fetch erc20 details for ${address} on network ${networkId}`
     console.error(msg, e)
-    setError(msg)
+    setError({ message: msg, type: 'error' })
     // When failed, return null for given token
     return null
   }
@@ -46,7 +46,7 @@ async function _fetchErc20FromNetwork(params: {
 
 type UseErc20Params = { address?: string; networkId?: Network }
 
-type Return<E, V> = { isLoading: boolean; error: E; value: V }
+type Return<E, V> = { isLoading: boolean; error?: E; value: V }
 
 /**
  * Fetches single erc20 token details for given network and address
@@ -58,11 +58,11 @@ type Return<E, V> = { isLoading: boolean; error: E; value: V }
  * Returns `isLoading` to indicate whether fetching the value
  * Returns `error` with the error message, if any.
  */
-export function useErc20(params: UseErc20Params): Return<string, SingleErc20State> {
+export function useErc20(params: UseErc20Params): Return<UiError, SingleErc20State> {
   const { address, networkId } = params
 
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<UiError>()
 
   const erc20 = useErc20State({ networkId, address })
   const saveErc20s = useSaveErc20s(networkId)
@@ -73,13 +73,13 @@ export function useErc20(params: UseErc20Params): Return<string, SingleErc20Stat
     }
 
     setIsLoading(true)
-    setError('')
 
     const fetched = await _fetchErc20FromNetwork({ address, networkId, setError })
     if (fetched) {
       saveErc20s([fetched])
     }
 
+    setError(undefined)
     setIsLoading(false)
   }, [address, networkId, saveErc20s])
 
@@ -108,11 +108,11 @@ export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network 
  */
 export function useMultipleErc20(
   params: UseMultipleErc20Params,
-): Return<Record<string, string>, Record<string, SingleErc20State>> {
+): Return<Record<string, UiError>, Record<string, SingleErc20State>> {
   const { addresses, networkId } = params
 
   const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [errors, setErrors] = useState<Errors>({})
 
   const erc20s = useMultipleErc20sState({ networkId, addresses })
   const saveErc20s = useSaveErc20s(networkId)
@@ -136,7 +136,7 @@ export function useMultipleErc20(
       _fetchErc20FromNetwork({
         address,
         networkId,
-        setError: (msg) => setErrors((curr) => ({ ...curr, [address]: msg })),
+        setError: (error) => setErrors((curr) => ({ ...curr, [address]: error })),
       }),
     )
 

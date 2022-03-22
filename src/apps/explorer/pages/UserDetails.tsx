@@ -1,5 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router'
+import styled from 'styled-components'
 
 import OrdersTableWidget from '../components/OrdersTableWidget'
 import { useNetworkId } from 'state/network'
@@ -7,7 +8,13 @@ import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import RedirectToSearch from 'components/RedirectToSearch'
 import { useResolveEns } from 'hooks/useResolveEns'
 import Spinner from 'components/common/Spinner'
-import { TitleAddress, Wrapper } from 'apps/explorer/pages/styled'
+import { TitleAddress, Wrapper as WrapperMod } from 'apps/explorer/pages/styled'
+
+const Wrapper = styled(WrapperMod)`
+  > h1 {
+    padding: 2.4rem 0 0.75rem;
+  }
+`
 
 const UserDetails: React.FC = () => {
   const { address } = useParams<{ address: string }>()

@@ -9,6 +9,9 @@ import { Order, Trade } from 'api/operator'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import RedirectToSearch from 'components/RedirectToSearch'
+import { Notification } from 'components/Notification'
+import { Errors } from 'types'
+import { ConnectionStatus } from 'components/ConnectionStatus'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -24,7 +27,7 @@ export type Props = {
   trades: Trade[]
   isOrderLoading: boolean
   areTradesLoading: boolean
-  errors: Record<string, string>
+  errors: Errors
 }
 
 export const OrderDetails: React.FC<Props> = (props) => {
@@ -58,14 +61,14 @@ export const OrderDetails: React.FC<Props> = (props) => {
         {order && 'Order details'}
         {order && <TitleUid textToCopy={order.uid} contentsToDisplay={order.shortId} />}
       </h1>
+      <ConnectionStatus />
+      {Object.keys(errors).map((key) => (
+        <Notification key={key} type={errors[key].type} message={errors[key].message} />
+      ))}
       {/* TODO: add tabs (overview/fills) */}
       {order && areTokensLoaded && <DetailsTable order={{ ...order, txHash }} areTradesLoading={areTradesLoading} />}
       {/* TODO: add fills tab for partiallyFillable orders */}
       {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-      {/* TODO: do a better error display. Toast notification maybe? */}
-      {Object.keys(errors).map((key) => (
-        <p key={key}>{errors[key]}</p>
-      ))}
       {/* TODO: create common loading indicator */}
       {isLoadingForTheFirstTime && <FontAwesomeIcon icon={faSpinner} spin size="3x" />}
     </>

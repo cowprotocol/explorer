@@ -9,9 +9,15 @@ import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableCont
 import PaginationOrdersTable from './PaginationOrdersTable'
 import { useGetAccountOrders } from 'hooks/useGetOrders'
 import Spinner from 'components/common/Spinner'
+import { ConnectionStatus } from 'components/ConnectionStatus'
+import { Notification } from 'components/Notification'
 
 const StyledTabLoader = styled.span`
   padding-left: 4px;
+`
+
+const StyledExplorerTabs = styled(ExplorerTabs)`
+  margin: 1.6rem auto 0;
 `
 
 const tabItems = (isLoadingOrders: boolean): TabItemInterface[] => {
@@ -75,7 +81,9 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
         handlePreviousPage,
       }}
     >
-      <ExplorerTabs tabItems={tabItems(isOrdersLoading)} extra={ExtraComponentNode} />
+      <ConnectionStatus />
+      {error && <Notification type={error.type} message={error.message} />}
+      <StyledExplorerTabs tabItems={tabItems(isOrdersLoading)} extra={ExtraComponentNode} />
     </OrdersTableContext.Provider>
   )
 }

@@ -13,6 +13,8 @@ import ExplorerTabs from '../common/ExplorerTabs/ExplorerTab'
 import styled from 'styled-components'
 import { TitleAddress } from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { ConnectionStatus } from 'components/ConnectionStatus'
+import { Notification } from 'components/Notification'
 import { useTxBatchTrades } from 'hooks/useTxBatchTrades'
 
 interface Props {
@@ -82,6 +84,8 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
           contentsToDisplay={<BlockExplorerLink type="tx" networkId={networkId} identifier={txHash} showLogo />}
         />
       </h1>
+      <ConnectionStatus />
+      {error && <Notification type={error.type} message={error.message} />}
       <TransactionsTableContext.Provider
         value={{
           orders,
