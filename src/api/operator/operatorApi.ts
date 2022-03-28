@@ -1,17 +1,15 @@
 import { Network } from 'types'
+import { CowSdk, ALL_SUPPORTED_CHAIN_IDS } from '@gnosis.pm/cow-sdk'
 
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
-import { OrderCreation } from './signatures'
+type SupportedChainId = typeof ALL_SUPPORTED_CHAIN_IDS[number]
 import {
-  FeeInformation,
   GetOrderParams,
   GetAccountOrdersParams,
   GetOrdersParams,
   GetTradesParams,
-  OrderID,
-  OrderPostError,
   RawOrder,
   RawTrade,
   GetTxOrdersParams,
@@ -55,21 +53,6 @@ function _getApiBaseUrl(networkId: Network): string {
   }
 }
 
-export function getOrderLink(networkId: Network, orderId: OrderID): string {
-  const baseUrl = _getApiBaseUrl(networkId)
-
-  return baseUrl + `/orders/${orderId}`
-}
-
-function _post(networkId: Network, url: string, data: unknown): Promise<Response> {
-  const baseUrl = _getApiBaseUrl(networkId)
-  return fetch(baseUrl + url, {
-    headers: DEFAULT_HEADERS,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-}
-
 function _get(networkId: Network, url: string): Promise<Response> {
   const baseUrl = _getApiBaseUrl(networkId)
   return fetch(baseUrl + url, {
@@ -77,115 +60,14 @@ function _get(networkId: Network, url: string): Promise<Response> {
   })
 }
 
-async function _getErrorForBadPostOrderRequest(response: Response): Promise<string> {
-  let errorMessage: string
-  try {
-    const orderPostError: OrderPostError = await response.json()
-
-    switch (orderPostError.errorType) {
-      case 'DuplicateOrder':
-        errorMessage = 'There was another identical order already submitted'
-        break
-
-      case 'InsufficientFunds':
-        errorMessage = "The account doesn't have enough funds"
-        break
-
-      case 'InvalidSignature':
-        errorMessage = 'The order signature is invalid'
-        break
-
-      case 'MissingOrderData':
-        errorMessage = 'The order has missing information'
-        break
-
-      default:
-        console.error('Unknown reason for bad order submission', orderPostError)
-        errorMessage = orderPostError.description
-        break
-    }
-  } catch (error) {
-    console.error('Error handling a 400 error. Likely a problem deserialising the JSON response')
-    errorMessage = 'The order was not accepted by the operator'
-  }
-
-  return errorMessage
-}
-
-async function _getErrorForUnsuccessfulPostOrder(response: Response): Promise<string> {
-  let errorMessage: string
-  switch (response.status) {
-    case 400:
-      errorMessage = await _getErrorForBadPostOrderRequest(response)
-      break
-
-    case 403:
-      errorMessage = 'The order cannot be accepted. Your account is deny-listed.'
-      break
-
-    case 429:
-      errorMessage = 'The order cannot be accepted. Too many order placements. Please, retry in a minute'
-      break
-
-    case 500:
-    default:
-      errorMessage = 'Error adding an order'
-  }
-  return errorMessage
-}
-
-export async function postSignedOrder(params: { networkId: Network; order: OrderCreation }): Promise<OrderID> {
-  const { networkId, order } = params
-  console.log('[utils:operator] Post signed order for network', networkId, order)
-
-  // Call API
-  const response = await _post(networkId, `/orders`, order)
-
-  // Handle response
-  if (!response.ok) {
-    // Raise an exception
-    const errorMessage = await _getErrorForUnsuccessfulPostOrder(response)
-    throw new Error(errorMessage)
-  }
-
-  const uid = (await response.json()) as string
-  console.log('[api:operator] Success posting the signed order', uid)
-  return uid
-}
-
-export async function getFeeQuote(networkId: Network, tokenAddress: string): Promise<FeeInformation> {
-  // TODO: I commented out the implementation because the API is not yet implemented. Review the code in the comment below
-  console.log('[api:operator] Get fee for ', networkId, tokenAddress)
-
-  // TODO: Let see if we can incorporate the PRs from the Fee, where they cache stuff and keep it in sync using redux.
-  // if that part is delayed or need more review, we can easily add the cache in this file (we check expiration and cache here)
-
-  let response: Response | undefined
-  try {
-    const responseMaybeOk = await _get(networkId, `/tokens/${tokenAddress}/fee`)
-    response = responseMaybeOk.ok ? responseMaybeOk : undefined
-  } catch (error) {
-    // do nothing
-  }
-
-  if (!response) {
-    throw new Error('Error getting the fee')
-  } else {
-    return response.json()
-  }
-}
-
 /**
  * Gets a single order by id
  */
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
-
-  console.log(`[getOrder] Fetching order id '${orderId}' on network ${networkId}`)
-
-  const queryString = `/orders/${orderId}`
-
-  return _fetchQuery(networkId, queryString, true)
+  const chainId = networkId as unknown as SupportedChainId
+  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
+  return cowInstance.cowApi.getOrder(orderId)
 }
 
 /**
@@ -229,16 +111,9 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  */
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
-
-  console.log(
-    `[getAccountOrders] Fetching orders on network ${networkId} with filters: owner=${owner} offset=${offset} limit=${limit}`,
-  )
-
-  const searchString = buildSearchString({ offset: String(offset), limit: String(limit) })
-
-  const queryString = `/account/${owner}/orders/` + searchString
-
-  return _fetchQuery(networkId, queryString)
+  const chainId = networkId as unknown as SupportedChainId
+  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
+  return cowInstance.cowApi.getOrders({ owner, offset, limit })
 }
 
 /**
@@ -249,9 +124,9 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const queryString = `/transactions/${txHash}/orders`
-
-  return _fetchQuery(networkId, queryString)
+  const chainId = networkId as unknown as SupportedChainId
+  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
+  return cowInstance.cowApi.getTxOrders(txHash)
 }
 
 /**
@@ -264,17 +139,11 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  * Both filters cannot be used at the same time
  */
 export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
-  const { networkId, owner = '', orderId = '' } = params
+  const { networkId, owner = '' } = params
+  const chainId = networkId as unknown as SupportedChainId
+  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
 
-  if (owner && orderId) {
-    throw new Error('Cannot use both `owner` and `orderId` filters at the same time')
-  }
-
-  console.log(`[getTrades] Fetching trades on network ${networkId} with filters: owner=${owner} orderId=${orderId}`)
-
-  const queryString = `/trades/` + buildSearchString({ owner, orderUid: orderId })
-
-  return _fetchQuery(networkId, queryString)
+  return cowInstance.cowApi.getTrades({ owner })
 }
 
 async function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>

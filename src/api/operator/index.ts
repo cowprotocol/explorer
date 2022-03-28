@@ -15,9 +15,5 @@ export const {
   getAccountOrders,
   getTxOrders,
   getTrades,
-  // functions that do not have a mock
-  getOrderLink = realApi.getOrderLink,
-  postSignedOrder = realApi.postSignedOrder,
-  getFeeQuote = realApi.getFeeQuote,
   // functions that only have a mock
 } = useMock ? { ...mockApi } : { ...realApi }

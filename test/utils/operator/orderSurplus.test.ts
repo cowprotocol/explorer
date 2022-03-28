@@ -15,7 +15,7 @@ describe('getOrderSurplus', () => {
   describe('Buy order', () => {
     describe('fillOrKill', () => {
       test('No surplus', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'buy',
           sellAmount: '100',
@@ -23,11 +23,11 @@ describe('getOrderSurplus', () => {
           feeAmount: '0',
           executedFeeAmount: '0',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER })
       })
       test('No matches', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'buy',
           sellAmount: '100',
@@ -35,11 +35,11 @@ describe('getOrderSurplus', () => {
           feeAmount: '0',
           executedFeeAmount: '0',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER })
       })
       test('With fees = 0', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'buy',
           sellAmount: '100',
@@ -47,11 +47,11 @@ describe('getOrderSurplus', () => {
           feeAmount: '0',
           executedFeeAmount: '0',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })
       test('With fees > 0', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'buy',
           sellAmount: '100',
@@ -59,12 +59,12 @@ describe('getOrderSurplus', () => {
           feeAmount: '10',
           executedFeeAmount: '10',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })
     })
     test.skip('partiallyFillable', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
         kind: 'buy',
         sellAmount: '100',
@@ -72,7 +72,7 @@ describe('getOrderSurplus', () => {
         buyAmount: '100',
         executedBuyAmount: '40',
         partiallyFillable: true,
-      }
+      } as RawOrder
       expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
     })
   })
@@ -80,7 +80,7 @@ describe('getOrderSurplus', () => {
   describe('Sell order', () => {
     describe('fillOrKill', () => {
       test('No surplus', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'sell',
           buyAmount: '100',
@@ -88,11 +88,11 @@ describe('getOrderSurplus', () => {
           feeAmount: '0',
           executedFeeAmount: '0',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER })
       })
       test('No matches', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'sell',
           buyAmount: '100',
@@ -100,11 +100,11 @@ describe('getOrderSurplus', () => {
           feeAmount: '0',
           executedFeeAmount: '0',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER })
       })
       test('With fees = 0', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'sell',
           buyAmount: '100',
@@ -112,11 +112,11 @@ describe('getOrderSurplus', () => {
           feeAmount: '0',
           executedFeeAmount: '0',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })
       test('With fees > 0', () => {
-        const order: RawOrder = {
+        const order = {
           ...RAW_ORDER,
           kind: 'sell',
           buyAmount: '100',
@@ -124,12 +124,12 @@ describe('getOrderSurplus', () => {
           feeAmount: '10',
           executedFeeAmount: '10',
           partiallyFillable: false,
-        }
+        } as RawOrder
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })
     })
     test.skip('partiallyFillable', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
         kind: 'sell',
         buyAmount: '100',
@@ -137,7 +137,7 @@ describe('getOrderSurplus', () => {
         sellAmount: '100',
         executedSellAmount: '40',
         partiallyFillable: true,
-      }
+      } as RawOrder
       expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
     })
   })

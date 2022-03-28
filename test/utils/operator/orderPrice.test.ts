@@ -50,13 +50,13 @@ function _assertOrderPriceWithoutFills(_order: RawOrder): void {
 
 describe('Limit price', () => {
   describe('Buy order', () => {
-    const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '100', sellAmount: '1000' }
+    const order = { ...RAW_ORDER, kind: 'buy', buyAmount: '100', sellAmount: '1000' } as RawOrder
 
     _assertOrderPrice(order, getOrderLimitPrice)
   })
 
   describe('Sell order', () => {
-    const order: RawOrder = { ...RAW_ORDER, kind: 'sell', buyAmount: '100', sellAmount: '1000' }
+    const order = { ...RAW_ORDER, kind: 'sell', buyAmount: '100', sellAmount: '1000' } as RawOrder
 
     _assertOrderPrice(order, getOrderLimitPrice)
   })
@@ -64,14 +64,13 @@ describe('Limit price', () => {
 
 describe('Executed price', () => {
   describe('Buy order', () => {
-    const order: RawOrder = {
+    const order = {
       ...RAW_ORDER,
       kind: 'buy',
       executedBuyAmount: '100',
       executedSellAmount: '1010',
       executedFeeAmount: '10',
-    }
-
+    } as RawOrder
     describe('With fills', () => {
       _assertOrderPrice(order, getOrderExecutedPrice)
     })
@@ -81,13 +80,13 @@ describe('Executed price', () => {
   })
 
   describe('Sell order', () => {
-    const order: RawOrder = {
+    const order = {
       ...RAW_ORDER,
       kind: 'sell',
       executedBuyAmount: '100',
       executedSellAmount: '1010',
       executedFeeAmount: '10',
-    }
+    } as RawOrder
 
     describe('With fills', () => {
       _assertOrderPrice(order, getOrderExecutedPrice)

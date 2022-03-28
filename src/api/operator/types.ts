@@ -2,6 +2,8 @@ import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
+import { OrderMetaData, TradeMetaData } from '@gnosis.pm/cow-sdk'
+
 import { Network } from 'types'
 
 export type OrderID = string
@@ -24,27 +26,29 @@ export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expi
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
 
 // Raw API response
-export type RawOrder = {
-  creationDate: string
-  owner: string
-  receiver?: string
-  uid: string
-  executedBuyAmount: string
-  executedSellAmount: string
-  executedFeeAmount: string
-  invalidated: boolean
-  sellToken: string
-  buyToken: string
-  sellAmount: string
-  buyAmount: string
-  validTo: number
-  appData: number
-  feeAmount: string
-  kind: OrderKind
-  partiallyFillable: boolean
-  signature: string
-  status: RawOrderStatusFromAPI
-}
+export type RawOrder =
+  | {
+      creationDate: string
+      owner: string
+      receiver?: string
+      uid: string
+      executedBuyAmount: string
+      executedSellAmount: string
+      executedFeeAmount: string
+      invalidated: boolean
+      sellToken: string
+      buyToken: string
+      sellAmount: string
+      buyAmount: string
+      validTo: number
+      appData: number
+      feeAmount: string
+      kind: OrderKind
+      partiallyFillable: boolean
+      signature: string
+      status: RawOrderStatusFromAPI
+    }
+  | OrderMetaData
 
 /**
  * Enriched Order type.
@@ -80,19 +84,21 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
 /**
  * Raw API trade response type
  */
-export type RawTrade = {
-  blockNumber: number
-  logIndex: number
-  owner: string
-  txHash: string
-  orderUid: string
-  buyAmount: string
-  sellAmount: string
-  sellAmountBeforeFees: string
-  buyToken: string
-  sellToken: string
-  executionTime: string
-}
+export type RawTrade =
+  | {
+      blockNumber: number
+      logIndex: number
+      owner: string
+      txHash: string
+      orderUid: string
+      buyAmount: string
+      sellAmount: string
+      sellAmountBeforeFees: string
+      buyToken: string
+      sellToken: string
+      executionTime: string
+    }
+  | TradeMetaData
 
 /**
  * Enriched Trade type

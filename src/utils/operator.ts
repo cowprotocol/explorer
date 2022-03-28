@@ -2,13 +2,15 @@
 import BigNumber from 'bignumber.js'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import { TradeMetaData } from '@gnosis.pm/cow-sdk'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
-import { Order, OrderStatus, RawOrder, RawTrade, Trade } from 'api/operator/types'
+import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
 import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
+import BN from 'bn.js'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -194,8 +196,8 @@ export type GetRawOrderPriceParams = CommonPriceParams & {
 }
 
 export type GetOrderLimitPriceParams = CommonPriceParams & {
-  buyAmount: string | BigNumber
-  sellAmount: string | BigNumber
+  buyAmount: string | BigNumber | BN
+  sellAmount: string | BigNumber | BN
 }
 
 /**
@@ -350,9 +352,17 @@ export function transformOrder(rawOrder: RawOrder): Order {
 /**
  * Transforms a RawTrade into a Trade object
  */
-export function transformTrade(rawTrade: RawTrade): Trade {
-  const { orderUid, buyAmount, sellAmount, sellAmountBeforeFees, buyToken, sellToken, executionTime, ...rest } =
-    rawTrade
+export function transformTrade(rawTrade: TradeMetaData & { executionTime?: string }): Trade {
+  const {
+    orderUid,
+    buyAmount,
+    sellAmount,
+    sellAmountBeforeFees,
+    buyToken,
+    sellToken,
+    executionTime = '',
+    ...rest
+  } = rawTrade
 
   return {
     ...rest,
