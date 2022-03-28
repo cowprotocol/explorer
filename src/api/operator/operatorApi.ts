@@ -126,6 +126,9 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   const chainId = networkId as unknown as SupportedChainId
   const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  //TO DO: Remove these ts comment lines when the SDK version is bumped with the new changes
   return cowInstance.cowApi.getTxOrders(txHash)
 }
 
