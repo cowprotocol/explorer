@@ -123,7 +123,7 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
           // sentry-cli configuration - can also be done directly through sentry-cli
           // see https://docs.sentry.io/product/cli/configuration/ for details
           authToken: SENTRY_AUTH_TOKEN,
-          org: 'gnosis-protocol',
+          org: 'cowprotocol',
           project: 'gp-explorer',
           release: SENTRY_RELEASE,
           // other SentryWebpackPlugin configuration
