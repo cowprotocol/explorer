@@ -114,7 +114,7 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
   // Production only plugins
   if (isProduction) {
     // Sentry source-maps plugin
-    const SENTRY_RELEASE = 'gp-explorer@v' + version
+    const SENTRY_RELEASE = 'explorer@v' + version
     const SENTRY_AUTH_TOKEN = process.env.REACT_APP_SENTRY_AUTH_TOKEN
 
     if (SENTRY_AUTH_TOKEN) {
@@ -123,8 +123,8 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
           // sentry-cli configuration - can also be done directly through sentry-cli
           // see https://docs.sentry.io/product/cli/configuration/ for details
           authToken: SENTRY_AUTH_TOKEN,
-          org: 'gnosis-protocol',
-          project: 'gp-explorer',
+          org: 'cowprotocol',
+          project: 'explorer',
           release: SENTRY_RELEASE,
           // other SentryWebpackPlugin configuration
           include: './dist',
