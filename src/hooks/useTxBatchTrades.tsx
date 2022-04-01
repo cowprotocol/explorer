@@ -21,7 +21,7 @@ export interface Settlement {
   trades: Array<Trade>
 }
 
-type GetTxBatchTradesResult = {
+export type GetTxBatchTradesResult = {
   txSettlement: Settlement
   error: string
   isLoading: boolean

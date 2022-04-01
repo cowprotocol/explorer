@@ -8,7 +8,7 @@ import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import RedirectToSearch from 'components/RedirectToSearch'
 import { useResolveEns } from 'hooks/useResolveEns'
 import Spinner from 'components/common/Spinner'
-import { TitleAddress, Wrapper as WrapperMod } from 'apps/explorer/pages/styled'
+import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar } from 'apps/explorer/pages/styled'
 
 const Wrapper = styled(WrapperMod)`
   > h1 {
@@ -29,8 +29,8 @@ const UserDetails: React.FC = () => {
     <Wrapper>
       {addressAccount ? (
         <>
-          <h1>
-            User details
+          <FlexContainerVar>
+            <h1>User details</h1>
             <TitleAddress
               textToCopy={addressAccount.address}
               contentsToDisplay={
@@ -43,7 +43,7 @@ const UserDetails: React.FC = () => {
                 />
               }
             />
-          </h1>
+          </FlexContainerVar>
           <OrdersTableWidget ownerAddress={addressAccount.address} networkId={networkId} />
         </>
       ) : (

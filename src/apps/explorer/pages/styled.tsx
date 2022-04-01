@@ -20,10 +20,37 @@ export const Wrapper = styled.div`
 
   > h1 {
     display: flex;
-    padding: 2.4rem 0 2.35rem;
+    padding: 2.4rem 0;
     align-items: center;
     font-weight: ${({ theme }): string => theme.fontBold};
     margin: 0;
+  }
+`
+
+export const StyledTabLoader = styled.span`
+  padding-left: 4px;
+`
+
+export const FlexContainer = styled.div`
+  display: flex;
+  align-items: center;
+  ${media.mobile} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`
+
+export const FlexContainerVar = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  margin: 2.4rem 0;
+
+  ${media.mobile} {
+    /* margin: 0 0 0 1.5rem; */
+    span:nth-child(1) {
+      margin: 0 0 0 1.5rem;
+    }
   }
 `
 
@@ -31,10 +58,13 @@ export const TitleAddress = styled(RowWithCopyButton)`
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   font-weight: ${({ theme }): string => theme.fontNormal};
   margin: 0 0 0 1.5rem;
-  display: flex;
-  align-items: center;
-  ${media.tinyDown} {
+  ${media.mobile} {
     font-size: 1.2rem;
+    margin: 0 0 1.5rem 0;
+  }
+  a {
+    display: flex;
+    align-items: center;
   }
 `
 
@@ -52,6 +82,7 @@ export const StyledLink = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex: 0 1 auto;
   cursor: pointer;
   color: ${({ theme }): string => theme.white} !important;
 
@@ -62,8 +93,20 @@ export const StyledLink = styled(Link)`
 `
 
 export const Title = styled.h1`
-  margin: 3rem 0 2.95rem;
+  margin: 2.4rem 0;
   font-weight: ${({ theme }): string => theme.fontBold};
+`
+
+export const BVButton = styled.a`
+  color: ${({ theme }): string => theme.orange};
+  font-size: 1.3rem;
+  margin-left: auto;
+  svg {
+    margin: 0 0.75rem 0 0;
+  }
+  ${media.mobile} {
+    margin: -3rem 0 1.5rem auto;
+  }
 `
 
 export const ContentCard = styled.div`

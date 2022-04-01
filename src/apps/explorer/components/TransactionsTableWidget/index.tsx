@@ -1,31 +1,28 @@
 import React, { useState, useEffect } from 'react'
 
 import { BlockchainNetwork, TransactionsTableContext } from './context/TransactionsTableContext'
-import { useGetTxOrders } from 'hooks/useGetOrders'
+import { useGetTxOrders, useTxOrderExplorerLink } from 'hooks/useGetOrders'
 import RedirectToSearch from 'components/RedirectToSearch'
 import Spinner from 'components/common/Spinner'
 import { RedirectToNetwork, useNetworkId } from 'state/network'
 import { Order } from 'api/operator'
-import { useTxOrderExplorerLink } from 'hooks/useGetOrders'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTab'
-import styled from 'styled-components'
-import { TitleAddress } from 'apps/explorer/pages/styled'
+import { TitleAddress, FlexContainer, StyledTabLoader, BVButton, Title } from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { useTxBatchTrades } from 'hooks/useTxBatchTrades'
+import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import TransactionBatchGraph from 'apps/explorer/components/TransanctionBatchGraph'
 
 interface Props {
   txHash: string
   networkId: BlockchainNetwork
   transactions?: Order[]
 }
-
-const StyledTabLoader = styled.span`
-  padding-left: 4px;
-`
 
 const tabItems = (isLoadingOrders: boolean): TabItemInterface[] => {
   return [
@@ -46,12 +43,11 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const { orders, isLoading: isTxLoading, errorTxPresentInNetworkId, error } = useGetTxOrders(txHash)
   const networkId = useNetworkId() || undefined
   const [redirectTo, setRedirectTo] = useState(false)
+  const [batchViewer, setBatchViewer] = useState(false)
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
   const notGpv2ExplorerData = useTxOrderExplorerLink(txHash, isZeroOrders)
-  // TODO use on draw tx view
   const txBatchTrades = useTxBatchTrades(networkId, txHash, orders && orders.length)
-  console.log('txBatchTrades', txBatchTrades)
 
   // Avoid redirecting until another network is searched again
   useEffect(() => {
@@ -75,15 +71,22 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
     return <Spinner spin size="3x" />
   }
 
+  const batchViewerButtonName = batchViewer ? 'Show Transactions list' : 'Show Batch Viewer'
+  const batchViewerButtonIcon = batchViewer ? faListUl : faProjectDiagram
+
   return (
     <>
-      <h1>
-        Transaction details
+      <FlexContainer>
+        <Title>Transaction details</Title>
         <TitleAddress
           textToCopy={txHash}
           contentsToDisplay={<BlockExplorerLink type="tx" networkId={networkId} identifier={txHash} showLogo />}
         />
-      </h1>
+        <BVButton onClick={(): void => setBatchViewer(!batchViewer)}>
+          <FontAwesomeIcon icon={batchViewerButtonIcon} />
+          {batchViewerButtonName}
+        </BVButton>
+      </FlexContainer>
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
       <TransactionsTableContext.Provider
@@ -94,7 +97,11 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
           isTxLoading,
         }}
       >
-        <ExplorerTabs tabItems={tabItems(isTxLoading)} />
+        {batchViewer ? (
+          <TransactionBatchGraph txBatchData={txBatchTrades} networkId={networkId} />
+        ) : (
+          <ExplorerTabs tabItems={tabItems(isTxLoading)} />
+        )}
       </TransactionsTableContext.Provider>
     </>
   )

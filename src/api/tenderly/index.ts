@@ -1,3 +1,3 @@
 export * from './tenderlyApi'
 
-export { PublicTrade as Trade, Transfer, Account } from './types'
+export type { PublicTrade as Trade, Transfer, Account } from './types'
