@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState, createRef } from 'react'
 
 import { MenuBarToggle, Navigation } from 'components/layout/GenericLayout/Navigation'
 import { Header as GenericHeader } from 'components/layout/GenericLayout/Header'
@@ -9,21 +9,15 @@ import { faEllipsisH, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FlexWrap } from 'apps/explorer/pages/styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 import { useHistory } from 'react-router'
+import useOnClickOutside from 'hooks/useOnClickOutside'
+import { APP_NAME } from 'const'
 
 export const Header: React.FC = () => {
-  const ref = useRef<HTMLDivElement>(null)
   const history = useHistory()
   const [isBarActive, setBarActive] = useState(false)
+  const flexWrapDivRef = createRef<HTMLDivElement>()
+  useOnClickOutside(flexWrapDivRef, () => isBarActive && setBarActive(false))
 
-  useEffect(() => {
-    const isClickedOutside = (e: any): void => {
-      isBarActive && ref.current && !ref.current.contains(e.target) && setBarActive(false)
-    }
-    document.addEventListener('mousedown', isClickedOutside)
-    return (): void => {
-      document.removeEventListener('mousedown', isClickedOutside)
-    }
-  }, [isBarActive])
   const networkId = useNetworkId()
   if (!networkId) {
     return null
@@ -31,16 +25,16 @@ export const Header: React.FC = () => {
 
   const prefixNetwork = PREFIX_BY_NETWORK_ID.get(networkId)
 
-  const handleNavigate = (e: any): void => {
+  const handleNavigate = (e: React.MouseEvent<HTMLAnchorElement>): void => {
     e.preventDefault()
     setBarActive(false)
-    history.push('/')
+    history.push(`/${prefixNetwork || ''}`)
   }
 
   return (
     <GenericHeader logoAlt="CoW Protocol Explorer" linkTo={`/${prefixNetwork || ''}`}>
       <NetworkSelector networkId={networkId} />
-      <FlexWrap ref={ref} grow={1}>
+      <FlexWrap ref={flexWrapDivRef} grow={1}>
         <MenuBarToggle isActive={isBarActive} onClick={(): void => setBarActive(!isBarActive)}>
           <FontAwesomeIcon icon={isBarActive ? faTimes : faEllipsisH} />
         </MenuBarToggle>
@@ -50,7 +44,7 @@ export const Header: React.FC = () => {
           </li>
           <li>
             <ExternalLink target={'_blank'} href={'https://cow.fi'}>
-              CoW Protocol
+              {APP_NAME}
             </ExternalLink>
           </li>
           <li>

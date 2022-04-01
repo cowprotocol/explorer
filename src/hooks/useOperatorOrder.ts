@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { Order, getOrder, GetOrderParams } from 'api/operator'
 
-import { transformOrder } from 'utils'
+import { getShortOrderId, transformOrder } from 'utils'
 
 import { useNetworkId } from 'state/network'
 
 import { useMultipleErc20 } from './useErc20'
-import { Network } from 'types'
+import { Errors, Network, UiError } from 'types'
 import {
   GetOrderApi,
   GetOrderResult,
@@ -17,7 +17,7 @@ import {
 
 type UseOrderResult = {
   order: Order | null
-  error?: string
+  error?: UiError
   isLoading: boolean
   errorOrderPresentInNetworkId: Network | null
   forceUpdate?: () => void
@@ -35,7 +35,7 @@ function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<
 
 export function useOrderByNetwork(orderId: string, networkId: Network | null, updateInterval = 0): UseOrderResult {
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<UiError>()
   const [order, setOrder] = useState<Order | null>(null)
   const [errorOrderPresentInNetworkId, setErrorOrderPresentInNetworkId] = useState<Network | null>(null)
   // Hack to force component to update itself on demand
@@ -47,7 +47,6 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
       if (!networkId) return
 
       setIsLoading(true)
-      setError('')
 
       try {
         const { order: rawOrder, errorOrderPresentInNetworkId: errorOrderPresentInNetworkIdRaw } = await _getOrder(
@@ -61,10 +60,11 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
         if (errorOrderPresentInNetworkIdRaw) {
           setErrorOrderPresentInNetworkId(errorOrderPresentInNetworkIdRaw)
         }
+        setError(undefined)
       } catch (e) {
-        const msg = `Failed to fetch order: ${orderId}`
-        console.error(msg, e.message)
-        setError(msg)
+        const msg = `Failed to fetch order`
+        console.error(`${msg}: ${orderId}`, e.message)
+        setError({ message: `${msg}: ${getShortOrderId(orderId)}`, type: 'error' })
       } finally {
         setIsLoading(false)
       }
@@ -100,7 +100,7 @@ export function useOrder(orderId: string, updateInterval?: number): UseOrderResu
 type UseOrderAndErc20sResult = {
   order: Order | null
   isLoading: boolean
-  errors: Record<string, string>
+  errors: Errors
   errorOrderPresentInNetworkId: Network | null
 }
 

@@ -27,7 +27,7 @@ ShortPage.args = { children: 'This is a really short page...' }
 const footerProps: FooterType = {
   verifiedText: 'nope',
   isBeta: true,
-  url: { web: 'https://localhost:80', appId: '255', contracts: 'adss' },
+  url: { web: 'https://localhost:80', appId: '255', contracts: { repo: 'adss', settlement: '', vaultRelayer: '' } },
 }
 
 export const WithCustomHeaderAndFooter = Template.bind({})

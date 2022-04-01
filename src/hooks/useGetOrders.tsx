@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from 'react'
 
-import { Network } from 'types'
+import { Network, UiError } from 'types'
 import { useMultipleErc20 } from 'hooks/useErc20'
+import { updateWeb3Provider } from 'api/web3'
+import { web3 } from 'apps/explorer/api'
 import { getAccountOrders, getTxOrders, Order } from 'api/operator'
 import { GetTxOrdersParams, RawOrder } from 'api/operator/types'
 import { useNetworkId } from 'state/network'
 import { transformOrder } from 'utils'
-import { ORDERS_QUERY_INTERVAL } from 'apps/explorer/const'
+import { ORDERS_QUERY_INTERVAL, NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
+import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import {
   GetOrderResult,
   MultipleOrders,
@@ -39,7 +42,7 @@ function filterDuplicateErc20Addresses(ordersFetched: RawOrder[]): string[] {
 
 type Result = {
   orders: Order[] | undefined
-  error: string
+  error?: UiError
   isLoading: boolean
 }
 
@@ -103,14 +106,13 @@ function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTo
 export function useGetTxOrders(txHash: string): GetTxOrdersResult {
   const networkId = useNetworkId() || undefined
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<UiError>()
   const { orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses } = useOrdersWithTokenInfo(networkId)
   const [errorTxPresentInNetworkId, setErrorTxPresentInNetworkId] = useState<Network | null>(null)
 
   const fetchOrders = useCallback(
     async (network: Network, _txHash: string): Promise<void> => {
       setIsLoading(true)
-      setError('')
 
       try {
         const { order: _orders, errorOrderPresentInNetworkId: errorTxPresentInNetworkIdRaw } =
@@ -122,6 +124,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
 
         setOrders(ordersFetched.map((order) => transformOrder(order)))
         setMountNewOrders(true)
+        setError(undefined)
 
         if (errorTxPresentInNetworkIdRaw) {
           console.log({ _orders, errorTxPresentInNetworkIdRaw })
@@ -130,7 +133,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
       } catch (e) {
         const msg = `Failed to fetch tx orders`
         console.error(msg, e)
-        setError(msg)
+        setError({ message: msg, type: 'error' })
       } finally {
         setIsLoading(false)
       }
@@ -149,6 +152,39 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
   return { orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }
 }
 
+export function useTxOrderExplorerLink(
+  txHash: string,
+  isZeroOrders: boolean,
+): ExplorerLinkProps | Record<string, unknown> | undefined {
+  const networkId = useNetworkId() || undefined
+  const [explorerLink, setExplorerLink] = useState<ExplorerLinkProps | Record<string, unknown> | undefined>()
+
+  useEffect(() => {
+    if (!networkId || !isZeroOrders) return
+
+    for (const network of NETWORK_ID_SEARCH_LIST) {
+      //update provider to find tx in network
+      updateWeb3Provider(web3, network)
+      web3.eth.getTransaction(txHash).then((tx) => {
+        if (tx) {
+          setExplorerLink({
+            type: 'tx',
+            networkId: network,
+            identifier: txHash,
+            showLogo: true,
+            label: network === Network.xDAI ? 'Blockscout' : 'Etherscan',
+          })
+        }
+      })
+      if (explorerLink) break
+    }
+    // reset provider
+    updateWeb3Provider(web3, networkId)
+  }, [explorerLink, isZeroOrders, networkId, txHash])
+
+  return explorerLink
+}
+
 export function useGetAccountOrders(
   ownerAddress: string,
   limit = 1000,
@@ -157,14 +193,13 @@ export function useGetAccountOrders(
 ): GetAccountOrdersResult {
   const networkId = useNetworkId() || undefined
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<UiError>()
   const { orders, setOrders, setMountNewOrders, setErc20Addresses } = useOrdersWithTokenInfo(networkId)
   const [isThereNext, setIsThereNext] = useState(false)
 
   const fetchOrders = useCallback(
     async (network: Network, owner: string): Promise<void> => {
       setIsLoading(true)
-      setError('')
       const limitPlusOne = limit + 1
 
       try {
@@ -178,10 +213,11 @@ export function useGetAccountOrders(
 
         setOrders(ordersFetched.map((order) => transformOrder(order)))
         setMountNewOrders(true)
+        setError(undefined)
       } catch (e) {
         const msg = `Failed to fetch orders`
         console.error(msg, e)
-        setError(msg)
+        setError({ message: msg, type: 'error' })
       } finally {
         setIsLoading(false)
       }

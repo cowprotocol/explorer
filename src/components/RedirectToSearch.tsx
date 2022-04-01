@@ -4,9 +4,10 @@ import { Redirect } from 'react-router-dom'
 
 interface RedirectToSearchParams {
   from: string
+  data?: unknown
 }
 
-const RedirectToSearch: React.FC<RedirectToSearchParams> = ({ from }) => {
+const RedirectToSearch: React.FC<RedirectToSearchParams> = ({ from, data }) => {
   const prefix = usePathPrefix() || ''
   const prefixPath = prefix ? `/${prefix}` : ''
   const suffix = usePathSuffix() || ''
@@ -15,7 +16,7 @@ const RedirectToSearch: React.FC<RedirectToSearchParams> = ({ from }) => {
   const newPath =
     pathMatchArray && pathMatchArray.length > 0 ? `${prefixPath}/search${pathMatchArray[1]}` : `${prefixPath}${suffix}`
 
-  return <Redirect push={false} to={{ pathname: newPath, state: { referrer: from } }} />
+  return <Redirect push={false} to={{ pathname: newPath, state: { referrer: from, data } }} />
 }
 
 export default RedirectToSearch
