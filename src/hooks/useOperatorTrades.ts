@@ -1,7 +1,7 @@
 import { getTrades, Order, Trade } from 'api/operator'
 import { useCallback, useEffect, useState } from 'react'
 import { useNetworkId } from 'state/network'
-import { Network } from 'types'
+import { Network, UiError } from 'types'
 import { transformTrade } from 'utils'
 
 type Params = {
@@ -11,7 +11,7 @@ type Params = {
 
 type Result = {
   trades: Trade[]
-  error: string
+  error?: UiError
   isLoading: boolean
 }
 
@@ -23,7 +23,7 @@ export function useTrades(params: Params): Result {
   const { owner, orderId } = params
 
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])
 
   // Here we assume that we are already in the right network
@@ -32,17 +32,17 @@ export function useTrades(params: Params): Result {
 
   const fetchTrades = useCallback(async (networkId: Network, owner?: string, orderId?: string): Promise<void> => {
     setIsLoading(true)
-    setError('')
 
     try {
       const trades = await getTrades({ networkId, owner, orderId })
 
       // TODO: fetch buy/sellToken objects
       setTrades(trades.map((trade) => transformTrade(trade)))
+      setError(undefined)
     } catch (e) {
       const msg = `Failed to fetch trades`
       console.error(msg, e)
-      setError(msg)
+      setError({ message: msg, type: 'error' })
     } finally {
       setIsLoading(false)
     }
@@ -64,7 +64,7 @@ export function useTrades(params: Params): Result {
  */
 export function useOrderTrades(order: Order | null): Result {
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])
 
   // Here we assume that we are already in the right network
@@ -73,7 +73,6 @@ export function useOrderTrades(order: Order | null): Result {
 
   const fetchTrades = useCallback(async (networkId: Network, order: Order): Promise<void> => {
     setIsLoading(true)
-    setError('')
 
     const { uid: orderId, buyToken, sellToken } = order
 
@@ -81,10 +80,11 @@ export function useOrderTrades(order: Order | null): Result {
       const trades = await getTrades({ networkId, orderId })
 
       setTrades(trades.map((trade) => ({ ...transformTrade(trade), buyToken, sellToken })))
+      setError(undefined)
     } catch (e) {
       const msg = `Failed to fetch trades`
       console.error(msg, e)
-      setError(msg)
+      setError({ message: msg, type: 'error' })
     } finally {
       setIsLoading(false)
     }

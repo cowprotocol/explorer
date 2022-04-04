@@ -12,6 +12,25 @@ export const GlobalStyle = createGlobalStyle`
     flex-direction: column;
     flex-grow: 1;
   }
+
+  /* Cystoscape - BatchViewer styles */
+  .target-popper {
+    max-width: 50rem;
+    padding: 1rem;
+    margin: 0 0 1rem 0;
+    text-align: left;
+    font-size: 1.2rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgb(45, 43, 51);
+    background: rgb(60, 62, 78);
+    line-height: 1.4rem;
+    word-break: break-all;
+  }
+  .target-popper tr > td:first-child {
+    font-weight: bold;
+    text-transform: uppercase;
+    width: 6rem;
+}
 `
 
 export const MainWrapper = styled.div`

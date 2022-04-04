@@ -33,6 +33,7 @@ export interface TabTheme {
   readonly indicatorTabSize: IndicatorTabSize
 }
 export interface Props {
+  readonly className?: string
   readonly tabItems: TabItemInterface[]
   readonly tabTheme: TabTheme
   readonly defaultTab?: TabId

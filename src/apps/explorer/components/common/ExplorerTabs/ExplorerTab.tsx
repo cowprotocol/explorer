@@ -65,7 +65,7 @@ type ExplorerTabsProps = Omit<TabsProps, 'tabTheme'>
 
 const ExplorerTabs: React.FC<ExplorerTabsProps> = (props) => {
   return (
-    <StyledTabs>
+    <StyledTabs className={props.className}>
       <Tabs tabTheme={tabCustomThemeConfig} {...props} />
     </StyledTabs>
   )

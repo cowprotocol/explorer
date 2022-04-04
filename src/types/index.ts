@@ -67,3 +67,10 @@ export enum AnalyticsDimension {
   NETWORK,
   BROWSER_TYPE,
 }
+
+export type UiError = {
+  message: string
+  type: 'warn' | 'error'
+}
+
+export type Errors = Record<string, UiError>

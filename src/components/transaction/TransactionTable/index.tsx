@@ -141,7 +141,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
   const {
     buyToken,
     buyAmount,
-    expirationDate,
+    creationDate,
     partiallyFilled = false,
     sellToken,
     sellAmount,
@@ -216,7 +216,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
       <td>
         <HeaderTitle>Created</HeaderTitle>
         <HeaderValue>
-          <DateDisplay date={expirationDate} showIcon={true} />
+          <DateDisplay date={creationDate} showIcon={true} />
         </HeaderValue>
       </td>
       <td>

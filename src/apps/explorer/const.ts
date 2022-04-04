@@ -23,3 +23,8 @@ export const DIMENSION_NAMES = {
 }
 
 export const NETWORK_ID_SEARCH_LIST = [Network.Mainnet, Network.xDAI, Network.Rinkeby]
+
+// Estimation heigh of the header + footer space
+export const HEIGHT_HEADER_FOOTER = 257
+
+export const TOKEN_SYMBOL_UNKNOWN = 'UNKNOWN'
