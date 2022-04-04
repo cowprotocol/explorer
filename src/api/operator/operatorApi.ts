@@ -1,10 +1,8 @@
 import { Network } from 'types'
-import { CowSdk, ALL_SUPPORTED_CHAIN_IDS } from '@gnosis.pm/cow-sdk'
-
+import { COW_SDK } from 'const'
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
-type SupportedChainId = typeof ALL_SUPPORTED_CHAIN_IDS[number]
 import {
   GetOrderParams,
   GetAccountOrdersParams,
@@ -63,11 +61,10 @@ function _get(networkId: Network, url: string): Promise<Response> {
 /**
  * Gets a single order by id
  */
-export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
+export async function getOrder(params: GetOrderParams): Promise<RawOrder | null | undefined> {
   const { networkId, orderId } = params
-  const chainId = networkId as unknown as SupportedChainId
-  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
-  return cowInstance.cowApi.getOrder(orderId)
+  const cowInstance = COW_SDK[networkId]
+  return cowInstance?.cowApi.getOrder(orderId)
 }
 
 /**
@@ -109,27 +106,26 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  *  - offset: int
  *  - limit: int
  */
-export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
+export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[] | undefined> {
   const { networkId, owner, offset, limit } = params
-  const chainId = networkId as unknown as SupportedChainId
-  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
-  return cowInstance.cowApi.getOrders({ owner, offset, limit })
+  const cowInstance = COW_SDK[networkId]
+
+  return cowInstance?.cowApi.getOrders({ owner, offset, limit })
 }
 
 /**
  * Gets a order list within Tx
  */
-export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]> {
+export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[] | undefined> {
   const { networkId, txHash } = params
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const chainId = networkId as unknown as SupportedChainId
-  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
+  const cowInstance = COW_SDK[networkId]
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   //TO DO: Remove these ts comment lines when the SDK version is bumped with the new changes
-  return cowInstance.cowApi.getTxOrders(txHash)
+  return cowInstance?.cowApi.getTxOrders(txHash)
 }
 
 /**
@@ -141,12 +137,11 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  *
  * Both filters cannot be used at the same time
  */
-export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
+export async function getTrades(params: GetTradesParams): Promise<RawTrade[] | undefined> {
   const { networkId, owner = '' } = params
-  const chainId = networkId as unknown as SupportedChainId
-  const cowInstance = new CowSdk(chainId, { isDevEnvironment: !(isProd || isStaging) })
+  const cowInstance = COW_SDK[networkId]
 
-  return cowInstance.cowApi.getTrades({ owner })
+  return cowInstance?.cowApi.getTrades({ owner })
 }
 
 async function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>

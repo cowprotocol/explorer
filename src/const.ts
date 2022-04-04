@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
+import { ALL_SUPPORTED_CHAIN_IDS, CowSdk } from '@gnosis.pm/cow-sdk'
 export {
   UNLIMITED_ORDER_AMOUNT,
   FEE_DENOMINATOR,
@@ -19,6 +20,7 @@ export {
 import { BATCH_TIME } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 import { DisabledTokensMaps, TokenOverride, AddressToOverrideMap } from 'types/config'
+import { isProd, isStaging } from 'utils/env'
 
 export const BATCH_TIME_IN_MS = BATCH_TIME * 1000
 export const DEFAULT_TIMEOUT = 5000
@@ -225,6 +227,24 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
     [Network.xDAI]: {},
   },
 )
+
+type SupportedChainId = typeof ALL_SUPPORTED_CHAIN_IDS[Network]
+
+export const COW_SDK = [Network.Mainnet, Network.Rinkeby, Network.xDAI].reduce<
+  Record<number, CowSdk<SupportedChainId> | null>
+>((acc, networkId) => {
+  try {
+    acc[networkId] = new CowSdk(networkId as unknown as SupportedChainId, {
+      isDevEnvironment: !(isProd || isStaging),
+    })
+  } catch (error) {
+    console.error('Instantiating CowSdk failed', error)
+  }
+
+  console.info(`CowSdk initialized on chain ${networkId}`)
+
+  return acc
+}, {})
 
 export const ETH: TokenErc20 = {
   name: 'ETH',
