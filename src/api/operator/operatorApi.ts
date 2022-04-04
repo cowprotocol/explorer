@@ -61,10 +61,13 @@ function _get(networkId: Network, url: string): Promise<Response> {
 /**
  * Gets a single order by id
  */
-export async function getOrder(params: GetOrderParams): Promise<RawOrder | null | undefined> {
+export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
   const cowInstance = COW_SDK[networkId]
-  return cowInstance?.cowApi.getOrder(orderId)
+
+  if (!cowInstance) return null
+
+  return cowInstance.cowApi.getOrder(orderId)
 }
 
 /**
@@ -106,26 +109,31 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  *  - offset: int
  *  - limit: int
  */
-export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[] | undefined> {
+export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
   const cowInstance = COW_SDK[networkId]
 
-  return cowInstance?.cowApi.getOrders({ owner, offset, limit })
+  if (!cowInstance) return []
+
+  return cowInstance.cowApi.getOrders({ owner, offset, limit })
 }
 
 /**
  * Gets a order list within Tx
  */
-export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[] | undefined> {
+export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]> {
   const { networkId, txHash } = params
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
   const cowInstance = COW_SDK[networkId]
+
+  if (!cowInstance) return []
+
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   //TO DO: Remove these ts comment lines when the SDK version is bumped with the new changes
-  return cowInstance?.cowApi.getTxOrders(txHash)
+  return cowInstance.cowApi.getTxOrders(txHash)
 }
 
 /**
@@ -137,11 +145,13 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  *
  * Both filters cannot be used at the same time
  */
-export async function getTrades(params: GetTradesParams): Promise<RawTrade[] | undefined> {
+export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner = '' } = params
   const cowInstance = COW_SDK[networkId]
 
-  return cowInstance?.cowApi.getTrades({ owner })
+  if (!cowInstance) return []
+
+  return cowInstance.cowApi.getTrades({ owner })
 }
 
 async function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>
