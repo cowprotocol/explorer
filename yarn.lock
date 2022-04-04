@@ -2189,15 +2189,6 @@
     ethers "^5.5.3"
     loglevel "^1.8.0"
 
-"@gnosis.pm/cow-sdk@file:./../cow-sdk":
-  version "0.0.6"
-  dependencies:
-    "@gnosis.pm/gp-v2-contracts" "^1.1.2"
-    ajv "^8.8.2"
-    cross-fetch "^3.1.5"
-    ethers "^5.5.3"
-    loglevel "^1.8.0"
-
 "@gnosis.pm/dex-contracts@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@gnosis.pm/dex-contracts/-/dex-contracts-0.4.3.tgz#b887eb543cae039d1e9607870232394cab5c3be7"
