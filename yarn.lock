@@ -1262,6 +1262,26 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@cowprotocol/cow-sdk@file:../cow-sdk":
+  version "0.0.6"
+  dependencies:
+    "@gnosis.pm/gp-v2-contracts" "^1.1.2"
+    ajv "^8.8.2"
+    cross-fetch "^3.1.5"
+    ethers "^5.5.3"
+    loglevel "^1.8.0"
+    multiformats "^9.6.4"
+
+"@cowprotocol/cow-sdk@file:./../cow-sdk":
+  version "0.0.6"
+  dependencies:
+    "@gnosis.pm/gp-v2-contracts" "^1.1.2"
+    ajv "^8.8.2"
+    cross-fetch "^3.1.5"
+    ethers "^5.5.3"
+    loglevel "^1.8.0"
+    multiformats "^9.6.4"
+
 "@date-io/core@^2.11.0":
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/@date-io/core/-/core-2.11.0.tgz#28580cda1c8228ab2c7ed6aee673ef0495f913e6"
@@ -2179,15 +2199,6 @@
   integrity sha512-aLmzDwC9rEOAJv2UJdMns89VZR5Ry4IHu5dQQh24Z/lWKEm44lfQr1UNalZlkUaQN8d155tNh+CS7ntntj1VMA==
   dependencies:
     prop-types "^15.7.2"
-
-"@gnosis.pm/cow-sdk@file:../cow-sdk":
-  version "0.0.6"
-  dependencies:
-    "@gnosis.pm/gp-v2-contracts" "^1.1.2"
-    ajv "^8.8.2"
-    cross-fetch "^3.1.5"
-    ethers "^5.5.3"
-    loglevel "^1.8.0"
 
 "@gnosis.pm/dex-contracts@^0.4.3":
   version "0.4.3"
@@ -14727,6 +14738,11 @@ multicodec@^1.0.0:
   dependencies:
     buffer "^5.6.0"
     varint "^5.0.0"
+
+multiformats@^9.6.4:
+  version "9.6.4"
+  resolved "https://registry.yarnpkg.com/multiformats/-/multiformats-9.6.4.tgz#5dce1f11a407dbb69aa612cb7e5076069bb759ca"
+  integrity sha512-fCCB6XMrr6CqJiHNjfFNGT0v//dxOBMrOMqUIzpPc/mmITweLEyhvMpY9bF+jZ9z3vaMAau5E8B68DW77QMXkg==
 
 multihashes@^0.4.15, multihashes@~0.4.15:
   version "0.4.21"
