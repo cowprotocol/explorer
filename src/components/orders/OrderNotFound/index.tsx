@@ -120,7 +120,7 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
           <SearchContent>
             <Search searchString={wasRedirected ? '' : searchString} submitSearchImmediatly={!wasRedirected} />
             <span>or</span>
-            <Support href="https://chat.cowswap.exchange/" target="_blank" rel="noopener noreferrer">
+            <Support href="https://discord.gg/cowprotocol/" target="_blank" rel="noopener noreferrer">
               Get Support
               <img src={SupportIcon} />
             </Support>
