@@ -7,7 +7,7 @@ export const footerConfig = {
     // appId: 'https://github.com/gnosis/gp-v1-ui/wiki/App-Ids-for-Forks',
     contracts: {
       settlement: `https://github.com/cowprotocol/contracts/blob/v${CONTRACT_VERSION}/src/contracts/GPv2Settlement.sol`,
-      vaultRelayer: `https://github.com/cowprotocl/contracts/blob/v${CONTRACT_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
+      vaultRelayer: `https://github.com/cowprotocol/contracts/blob/v${CONTRACT_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
     },
   },
 }
