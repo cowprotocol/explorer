@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+
 export type statusType = 'success' | 'danger'
 
 export interface CardContentProps {
@@ -8,10 +10,10 @@ export interface CardContentProps {
   direction?: string
   icon1?: React.ReactElement
   label1: string
-  value1: string
+  value1: string | number
   valueSize?: number
   labelWidth?: number
-  caption1?: string
+  caption1?: string | number
   captionColor?: string
   hint1?: string
   hintColor?: string
@@ -20,6 +22,7 @@ export interface CardContentProps {
   value2?: string
   caption2?: string
   hint2?: string
+  loading?: boolean
 }
 
 const CardBody = styled.div<{
@@ -98,6 +101,7 @@ export const CardContent: React.FC<CardContentProps> = ({
   value2,
   caption2,
   hint2,
+  loading,
 }): JSX.Element => {
   return (
     <CardBody
@@ -114,8 +118,8 @@ export const CardContent: React.FC<CardContentProps> = ({
           {label1}
         </p>
         <div>
-          <h3>{value1}</h3>
-          {caption1 && (
+          {loading ? <ShimmerBar /> : <h3>{value1}</h3>}
+          {!loading && caption1 && (
             <span>
               {caption1}
               <span>{hint1}</span>
@@ -123,7 +127,7 @@ export const CardContent: React.FC<CardContentProps> = ({
           )}
         </div>
       </div>
-      {label2 && (
+      {!loading && label2 && (
         <div>
           <p>
             {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}
