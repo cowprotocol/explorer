@@ -45,6 +45,7 @@ export interface CardBaseProps {
  *
  * An extensible content container.
  */
+
 export const Card: React.FC<CardBaseProps> = ({ children, ...rest }) => {
   return (
     <CardComponent {...rest}>
