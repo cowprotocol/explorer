@@ -1,9 +1,9 @@
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/gnosis/gp-ui)
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cowprotocol/explorer)
 
-[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-ui/badge.svg?branch=master)](https://coveralls.io/github/gnosis/gp-ui?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/cowprotocol/explorer/badge.svg?branch=main)](https://coveralls.io/github/cowprotocol/explorer?branch=main)
 
 Develop:
-[![Coverage Status](https://coveralls.io/repos/github/gnosis/gp-ui/badge.svg?branch=develop)](https://coveralls.io/github/gnosis/gp-ui?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/cowprotocol/explorer/badge.svg?branch=develop)](https://coveralls.io/github/cowprotocol/explorer?branch=develop)
 
 # Gnosis Protocol UI
 

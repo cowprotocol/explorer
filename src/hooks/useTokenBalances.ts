@@ -22,7 +22,7 @@ interface UseBalanceResult {
 function calculateTotalBalance(balance: BN, currentBatchId: number, pendingDeposit: PendingFlux): BN {
   const { amount, batchId } = pendingDeposit
   // Only matured deposits are added to the balance:
-  // https://github.com/gnosis/dex-contracts/blob/master/contracts/EpochTokenLocker.sol#L165
+  // https://github.com/gnosis/dex-contracts/blob/main/contracts/EpochTokenLocker.sol#L165
   // In the UI we always display the pending amount as part of user's balance
   return batchId >= currentBatchId ? balance.add(amount) : balance
 }
