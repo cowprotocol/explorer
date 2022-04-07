@@ -11,7 +11,7 @@ on:
 
 env:
   APP_ID: 1
-  REPO_NAME_SLUG: gpui
+  REPO_NAME_SLUG: explorer
   PR_NUMBER: ${{ github.event.number }}
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
