@@ -18,7 +18,7 @@ const WrapperRow = styled.div`
 `
 const WrapperColumn = styled.div<{ flexValue?: string }>`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-basis: ${({ flexValue }): string => (flexValue ? flexValue : 'auto')};
 `
 const WrapperDoubleContent = styled.div<{ column?: boolean }>`
@@ -49,7 +49,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
   return (
     <Wrapper>
       <WrapperRow>
-        <WrapperColumn>{children}</WrapperColumn>
+        <WrapperColumn flexValue={'66%'}>{children}</WrapperColumn>
         <WrapperColumn>
           <Card>
             <WrapperDoubleContent column>
