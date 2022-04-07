@@ -10,6 +10,7 @@ const Wrapper = styled(WrapperMod)`
   flex-flow: column wrap;
   justify-content: flex-start;
   display: flex;
+  padding-top: 10rem;
 
   > h1 {
     justify-content: center;
@@ -25,20 +26,18 @@ const Wrapper = styled(WrapperMod)`
 `
 
 const SummaryWrapper = styled.section`
-  display: grid;
-  /* grid-template-columns: 35fr 65fr; // There will be 2 sections */
-  grid-gap: 1 rem;
-  padding-bottom: 5rem;
+  display: flex;
+  padding-top: 10rem;
 `
 
 export const Home: React.FC = () => {
   return (
     <Wrapper>
+      <h1>Search on CoW Protocol Explorer</h1>
+      <Search className="home" />
       <SummaryWrapper>
         <StatsSummaryCardsWidget />
       </SummaryWrapper>
-      <h1>Search on CoW Protocol Explorer</h1>
-      <Search className="home" />
     </Wrapper>
   )
 }

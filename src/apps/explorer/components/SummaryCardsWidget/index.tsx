@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 import { SummaryCards } from './SummaryCards'
 
 import summaryData from './summaryGraphResp.json'
@@ -36,8 +37,24 @@ function useGetTotalSummary(): TotalSummaryResponse {
   return summary
 }
 
+const Wrapper = styled.div`
+  display: flex;
+  flex: 1;
+`
+const VolumeChart = styled.div`
+  border: 1px red solid;
+  min-height: 21rem;
+  min-width: 40rem;
+`
+
 export function StatsSummaryCardsWidget(): JSX.Element {
   const summary = useGetTotalSummary()
 
-  return <SummaryCards summaryData={summary} />
+  return (
+    <Wrapper>
+      <SummaryCards summaryData={summary}>
+        <VolumeChart />
+      </SummaryCards>
+    </Wrapper>
+  )
 }

@@ -6,19 +6,26 @@ import { Card, CardContent } from 'components/common/Card'
 import { TotalSummaryResponse } from '.'
 
 const Wrapper = styled.div`
-  display: grid;
-  grid-template-columns: 0.7fr 2.35fr;
-  grid-template-areas: 'one two';
-
-  > div:first-child {
-    justify-content: flex-end;
-  }
+  justify-content: center;
+  align-items: center;
 `
 
+const WrapperRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+`
+const WrapperColumn = styled.div<{ flexValue?: string }>`
+  display: flex;
+  flex-direction: column;
+  flex-basis: ${({ flexValue }): string => (flexValue ? flexValue : 'auto')};
+`
 const WrapperDoubleContent = styled.div<{ column?: boolean }>`
   display: flex;
   flex-direction: ${({ column }): string => (column ? 'column' : 'row')};
-  justify-content: flex-start;
+  justify-content: stretch;
+  align-items: stretch;
   flex: 1;
   gap: 3.5rem;
 
@@ -30,58 +37,54 @@ const WrapperDoubleContent = styled.div<{ column?: boolean }>`
     flex-direction: column;
   }
 `
-const CardRow = styled.div`
-  grid-area: one;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: stretch;
-`
-const WrapperTwo = styled.div`
-  grid-area: two;
-  display: flex;
-  flex: 1;
-`
 
-export function SummaryCards({ summaryData }: { summaryData: TotalSummaryResponse }): JSX.Element {
+interface SummaryCardsProps {
+  summaryData: TotalSummaryResponse
+  children: React.ReactNode
+}
+
+export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
   const { batchInfo, dailyTransactions, totalTokens, dailyFees, isLoading } = summaryData
 
   return (
     <Wrapper>
-      <CardRow>
+      <WrapperRow>
+        <WrapperColumn flexValue={'66%'}>{children}</WrapperColumn>
+        <WrapperColumn>
+          <Card>
+            <WrapperDoubleContent column>
+              <CardContent variant="3row" label1="Last Batch" value1={batchInfo.lastBatchDate} loading={isLoading} />
+              <CardContent variant="3row" label1="Batch ID" value1={batchInfo.batchId} loading={isLoading} />
+            </WrapperDoubleContent>
+          </Card>
+        </WrapperColumn>
+      </WrapperRow>
+      <WrapperRow>
         <Card>
-          <WrapperDoubleContent column>
-            <CardContent variant="3row" label1="Last Batch" value1={batchInfo.lastBatchDate} loading={isLoading} />
-            <CardContent variant="3row" label1="Batch ID" value1={batchInfo.batchId} loading={isLoading} />
-          </WrapperDoubleContent>
+          <CardContent
+            variant="2row"
+            label1="24h Transactions"
+            value1={dailyTransactions.now}
+            caption1={dailyTransactions.before}
+            captionColor="red1"
+            loading={isLoading}
+          />
         </Card>
-      </CardRow>
-      <WrapperTwo>
-        <CardRow>
-          <Card>
-            <CardContent
-              variant="2row"
-              label1="24h Transactions"
-              value1={dailyTransactions.now}
-              caption1={dailyTransactions.before}
-              captionColor="red1"
-              loading={isLoading}
-            />
-          </Card>
-          <Card>
-            <CardContent variant="2row" label1="Total Tokens" value1={totalTokens} loading={isLoading} />
-          </Card>
-          <Card>
-            <CardContent
-              variant="2row"
-              label1="24h fees"
-              value1={dailyFees.now}
-              caption1={dailyFees.before}
-              captionColor="green"
-              loading={isLoading}
-            />
-          </Card>
-          {/** Surdpuls is not yet available */}
-          {/* <Card>
+        <Card>
+          <CardContent variant="2row" label1="Total Tokens" value1={totalTokens} loading={isLoading} />
+        </Card>
+        <Card>
+          <CardContent
+            variant="2row"
+            label1="24h fees"
+            value1={dailyFees.now}
+            caption1={dailyFees.before}
+            captionColor="green"
+            loading={isLoading}
+          />
+        </Card>
+        {/** Surdpuls is not yet available */}
+        {/* <Card>
             <CardContent
               variant="2row"
               label1="30d Surplus"
@@ -91,8 +94,7 @@ export function SummaryCards({ summaryData }: { summaryData: TotalSummaryRespons
               loading={isLoading}
             />
           </Card> */}
-        </CardRow>
-      </WrapperTwo>
+      </WrapperRow>
     </Wrapper>
   )
 }
