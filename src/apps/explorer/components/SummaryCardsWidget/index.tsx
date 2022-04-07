@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { SummaryCards } from './SummaryCards'
+import { media } from 'theme/styles/media'
 
 import summaryData from './summaryGraphResp.json'
 
@@ -45,9 +46,12 @@ const Wrapper = styled.div`
 const VolumeChart = styled.div`
   background: #28f3282c;
   border-radius: 0.4rem;
-  min-height: 16rem;
-  min-width: 42rem;
+  height: 16rem;
+  width: 42rem;
   margin: 1rem;
+  ${media.smallScreen} {
+    width: 32rem;
+  }
 `
 
 export function StatsSummaryCardsWidget(): JSX.Element {

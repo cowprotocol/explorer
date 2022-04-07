@@ -15,6 +15,10 @@ const WrapperRow = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
+
+  ${media.mediumDown} {
+    flex-flow: column wrap;
+  }
 `
 const WrapperColumn = styled.div<{ flexValue?: string }>`
   display: flex;
