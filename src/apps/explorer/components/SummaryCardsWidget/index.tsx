@@ -40,11 +40,14 @@ function useGetTotalSummary(): TotalSummaryResponse {
 const Wrapper = styled.div`
   display: flex;
   flex: 1;
+  justify-content: center;
 `
 const VolumeChart = styled.div`
-  border: 1px red solid;
-  min-height: 21rem;
-  min-width: 40rem;
+  background: #28f3282c;
+  border-radius: 0.4rem;
+  min-height: 12rem;
+  min-width: 42rem;
+  margin: 1rem;
 `
 
 export function StatsSummaryCardsWidget(): JSX.Element {
