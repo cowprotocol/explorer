@@ -20,6 +20,20 @@ const WrapperRow = styled.div`
     flex-flow: column wrap;
   }
 `
+const WrapperRow2 = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+
+  ${media.mediumDown} {
+    /* to improve and use 3 columns */
+    div {
+      min-width: 28%;
+      padding: 0;
+    }
+  }
+`
 const WrapperColumn = styled.div<{ flexValue?: string }>`
   display: flex;
   flex-direction: column;
@@ -38,7 +52,8 @@ const WrapperDoubleContent = styled.div<{ column?: boolean }>`
   }
 
   ${media.mediumDown} {
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-evenly;
   }
 `
 
@@ -63,7 +78,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           </Card>
         </WrapperColumn>
       </WrapperRow>
-      <WrapperRow>
+      <WrapperRow2>
         <Card>
           <CardContent
             variant="2row"
@@ -98,7 +113,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
               loading={isLoading}
             />
           </Card> */}
-      </WrapperRow>
+      </WrapperRow2>
     </Wrapper>
   )
 }
