@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
+import {
+  getMatchingScreenSize,
+  subscribeToScreenSizeChange,
+  MediumDownQueries,
+  TypeMediaQueries,
+} from 'utils/mediaQueries'
 import { Card, CardContent } from 'components/common/Card'
 import { TotalSummaryResponse } from '.'
 
@@ -64,11 +70,14 @@ interface SummaryCardsProps {
 
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
   const { batchInfo, dailyTransactions, totalTokens, dailyFees, isLoading } = summaryData
+  const [resolution, setResolution] = useState<TypeMediaQueries>(getMatchingScreenSize())
+  subscribeToScreenSizeChange(() => setResolution(getMatchingScreenSize()))
+  const isMediumResolution = MediumDownQueries.includes(resolution)
 
   return (
     <Wrapper>
       <WrapperRow>
-        <WrapperColumn flexValue={'66%'}>{children}</WrapperColumn>
+        {isMediumResolution && <WrapperColumn flexValue={'66%'}>{children}</WrapperColumn>}
         <WrapperColumn>
           <Card>
             <WrapperDoubleContent column>
