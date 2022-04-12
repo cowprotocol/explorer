@@ -100,7 +100,6 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
   const valueTextSize = isMediumAndBelowResolution ? 1.65 : 1.8
   const rowsByCard = isMediumAndBelowResolution ? '3row' : '2row'
   const isDesktop = !isMediumAndBelowResolution
-  console.log('resolution', resolution, isDesktop)
 
   useEffect(() => {
     const mediaQuery = subscribeToScreenSizeChange(() => setResolution(getMatchingScreenSize()))
