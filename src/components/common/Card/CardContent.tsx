@@ -61,7 +61,7 @@ const CardBody = styled.div<{
       margin-top: ${({ direction }): string => (direction === 'row' ? '0' : '8px')};
 
       > h3 {
-        font-size: ${({ valueSize }): number => valueSize || 18}px;
+        font-size: ${({ valueSize }): number => valueSize || 1.8}rem;
         margin: 0px;
       }
       > span {

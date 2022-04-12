@@ -7,8 +7,13 @@ import summaryData from './summaryGraphResp.json'
 
 const DELAY_SECONDS = 3 // Emulating API request
 
+export interface BatchInfo {
+  lastBatchDate: string
+  batchId: string
+}
+
 interface TotalSummary {
-  batchInfo: { lastBatchDate: string; batchId: string }
+  batchInfo: BatchInfo
   dailyTransactions: { now: number; before: string }
   totalTokens: number
   dailyFees: { now: string; before: string }
@@ -49,8 +54,9 @@ const VolumeChart = styled.div`
   height: 16rem;
   width: 42rem;
   margin: 1rem;
-  ${media.smallScreen} {
-    width: 32rem;
+
+  ${media.mobile} {
+    max-width: 32rem;
   }
 `
 

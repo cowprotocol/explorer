@@ -8,8 +8,6 @@ export enum TypeMediaQueries {
   XS = 'xs',
 }
 
-export const MediumDownQueries = [TypeMediaQueries.MD, TypeMediaQueries.SM, TypeMediaQueries.XS]
-
 export const MEDIA_QUERY_MATCHES = [
   // must be in descending order for .find to match from largest to smallest
   // as sm will also match for xl and lg, for example
@@ -43,7 +41,10 @@ export const MEDIA_QUERY_NAMES = MEDIA_QUERY_MATCHES.map(({ name }) => name).con
 export const subscribeToScreenSizeChange = (callback: (event: MediaQueryListEvent) => void): Command => {
   const mediaQueryLists = MEDIA_QUERIES.map((query) => window.matchMedia(query))
 
-  mediaQueryLists.forEach((mql) => mql.addListener(callback))
+  mediaQueryLists.forEach((mql) => mql.addEventListener('change', callback))
 
-  return (): void => mediaQueryLists.forEach((mql) => mql.removeListener(callback))
+  return (): void => mediaQueryLists.forEach((mql) => mql.removeEventListener('change', callback))
 }
+
+// media queries below medium size
+export const MediumDownQueries = [TypeMediaQueries.MD, TypeMediaQueries.SM, TypeMediaQueries.XS]

@@ -8,7 +8,7 @@ const { white, fadedGreyishWhite, blackLight } = COLOURS
 
 const DefaultCard = styled.div`
   height: inherit;
-  min-width: 200px;
+  min-width: 15rem;
   min-height: 100px;
   background-color: #f5f5f5;
   border-radius: 6px;

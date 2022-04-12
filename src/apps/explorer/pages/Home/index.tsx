@@ -28,6 +28,10 @@ const Wrapper = styled(WrapperMod)`
 const SummaryWrapper = styled.section`
   display: flex;
   padding-top: 10rem;
+
+  ${media.mobile} {
+    padding-top: 4rem;
+  }
 `
 
 export const Home: React.FC = () => {

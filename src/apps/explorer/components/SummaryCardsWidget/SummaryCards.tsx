@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
@@ -9,7 +9,7 @@ import {
   TypeMediaQueries,
 } from 'utils/mediaQueries'
 import { Card, CardContent } from 'components/common/Card'
-import { TotalSummaryResponse } from '.'
+import { BatchInfo, TotalSummaryResponse } from '.'
 
 const Wrapper = styled.div`
   justify-content: center;
@@ -22,21 +22,20 @@ const WrapperRow = styled.div`
   flex-wrap: wrap;
   width: 100%;
 
-  ${media.mediumDown} {
-    flex-flow: column wrap;
+  > div {
+    min-width: 20rem;
   }
 `
-const WrapperRow2 = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+
+const BlockCards = styled.div`
+  display: grid;
+  grid-template-columns: 2fr 2fr 2fr;
   width: 100%;
 
   ${media.mediumDown} {
-    /* to improve and use 3 columns */
-    div {
-      min-width: 28%;
-      padding: 0;
+    grid-template-columns: 1fr 1fr;
+    > div {
+      min-height: 14.4rem;
     }
   }
 `
@@ -44,21 +43,24 @@ const WrapperColumn = styled.div<{ flexValue?: string }>`
   display: flex;
   flex-direction: column;
   flex-basis: ${({ flexValue }): string => (flexValue ? flexValue : 'auto')};
+  justify-content: center;
+  align-items: center;
 `
 const WrapperDoubleContent = styled.div<{ column?: boolean }>`
   display: flex;
-  flex-direction: ${({ column }): string => (column ? 'column' : 'row')};
+  flex-direction: column;
   justify-content: stretch;
   align-items: stretch;
   flex: 1;
   gap: 3.5rem;
+  min-width: 17rem;
 
   > div {
     text-align: center;
   }
 
   ${media.mediumDown} {
-    flex-direction: row;
+    gap: 2rem;
     justify-content: space-evenly;
   }
 `
@@ -68,51 +70,85 @@ interface SummaryCardsProps {
   children: React.ReactNode
 }
 
+export function cardBlock(batchInfo: BatchInfo, isLoading: boolean, valueTextSize: number): JSX.Element {
+  return (
+    <Card>
+      <WrapperDoubleContent column>
+        <CardContent
+          variant="3row"
+          label1="Last Batch"
+          value1={batchInfo.lastBatchDate}
+          loading={isLoading}
+          valueSize={valueTextSize}
+        />
+        <CardContent
+          variant="3row"
+          label1="Batch ID"
+          value1={batchInfo.batchId}
+          loading={isLoading}
+          valueSize={valueTextSize}
+        />
+      </WrapperDoubleContent>
+    </Card>
+  )
+}
+
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
   const { batchInfo, dailyTransactions, totalTokens, dailyFees, isLoading } = summaryData
   const [resolution, setResolution] = useState<TypeMediaQueries>(getMatchingScreenSize())
-  subscribeToScreenSizeChange(() => setResolution(getMatchingScreenSize()))
-  const isMediumResolution = MediumDownQueries.includes(resolution)
+  const isMediumAndBelowResolution = MediumDownQueries.includes(resolution)
+  const valueTextSize = isMediumAndBelowResolution ? 1.65 : 1.8
+  const rowsByCard = isMediumAndBelowResolution ? '3row' : '2row'
+  const isDesktop = !isMediumAndBelowResolution
+  console.log('resolution', resolution, isDesktop)
+
+  useEffect(() => {
+    const mediaQuery = subscribeToScreenSizeChange(() => setResolution(getMatchingScreenSize()))
+    return (): void => mediaQuery()
+  }, [])
 
   return (
     <Wrapper>
       <WrapperRow>
-        {isMediumResolution && <WrapperColumn flexValue={'66%'}>{children}</WrapperColumn>}
-        <WrapperColumn>
-          <Card>
-            <WrapperDoubleContent column>
-              <CardContent variant="3row" label1="Last Batch" value1={batchInfo.lastBatchDate} loading={isLoading} />
-              <CardContent variant="3row" label1="Batch ID" value1={batchInfo.batchId} loading={isLoading} />
-            </WrapperDoubleContent>
-          </Card>
-        </WrapperColumn>
+        <WrapperColumn flexValue={isDesktop ? '66.45%' : '100%'}>{children}</WrapperColumn>
+        <WrapperColumn>{isDesktop && cardBlock(batchInfo, isLoading, valueTextSize)}</WrapperColumn>
       </WrapperRow>
-      <WrapperRow2>
-        <Card>
-          <CardContent
-            variant="2row"
-            label1="24h Transactions"
-            value1={dailyTransactions.now}
-            caption1={dailyTransactions.before}
-            captionColor="red1"
-            loading={isLoading}
-          />
-        </Card>
-        <Card>
-          <CardContent variant="2row" label1="Total Tokens" value1={totalTokens} loading={isLoading} />
-        </Card>
-        <Card>
-          <CardContent
-            variant="2row"
-            label1="24h fees"
-            value1={dailyFees.now}
-            caption1={dailyFees.before}
-            captionColor="green"
-            loading={isLoading}
-          />
-        </Card>
-        {/** Surdpuls is not yet available */}
-        {/* <Card>
+      <WrapperRow>
+        <BlockCards>
+          {isMediumAndBelowResolution && cardBlock(batchInfo, isLoading, valueTextSize)}
+          <Card>
+            <CardContent
+              variant={rowsByCard}
+              label1="24h Transactions"
+              value1={dailyTransactions.now}
+              caption1={dailyTransactions.before}
+              captionColor="red1"
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          </Card>
+          <Card>
+            <CardContent
+              variant="2row"
+              label1="Total Tokens"
+              value1={totalTokens}
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          </Card>
+          <Card>
+            <CardContent
+              variant={rowsByCard}
+              label1="24h fees"
+              value1={dailyFees.now}
+              caption1={dailyFees.before}
+              captionColor="green"
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          </Card>
+          {/** Surdpuls is not yet available */}
+          {/* <Card>
             <CardContent
               variant="2row"
               label1="30d Surplus"
@@ -120,9 +156,11 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
               caption1={monthSurplus.before}
               captionColor="green"
               loading={isLoading}
+              valueSize={valueTextSize}
             />
           </Card> */}
-      </WrapperRow2>
+        </BlockCards>
+      </WrapperRow>
     </Wrapper>
   )
 }
