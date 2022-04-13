@@ -5,7 +5,7 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { Card, CardContent } from 'components/common/Card'
-import { CardRow, CardRowProps } from '.'
+import { CardRow, CardRowProps } from 'components/common/CardRow'
 
 import QuestionIcon from '../../../assets/img/question1.svg'
 
@@ -45,11 +45,11 @@ const Template: Story<CardRowProps> = (args) => (
       <Card>
         <span>Dummy Card</span>
       </Card>
-      <Card>
+      <Card xs={12} sm={12} md={8} lg={6}>
         <CardContent
           variant="double"
           direction="row"
-          valueSize={14}
+          valueSize={1.4}
           labelWidth={110}
           label1="Limit Price"
           value1="1055.32 DAI per ETH"
