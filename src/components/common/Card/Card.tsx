@@ -14,7 +14,7 @@ const DefaultCard = styled.div`
   background-color: #f5f5f5;
   border-radius: 6px;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 7%), 0 4px 6px -2px rgb(0 0 0 / 5%);
-  margin: 10px;
+  margin: 1rem;
 `
 
 const CardComponent = styled(DefaultCard)`

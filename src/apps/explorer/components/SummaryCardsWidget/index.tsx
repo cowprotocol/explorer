@@ -50,9 +50,8 @@ const Wrapper = styled.div`
 const VolumeChart = styled.div`
   background: #28f3282c;
   border-radius: 0.4rem;
-  height: 16rem;
+  height: 19.6rem;
   width: 100%;
-  margin: 1rem;
 `
 
 export function StatsSummaryCardsWidget(): JSX.Element {

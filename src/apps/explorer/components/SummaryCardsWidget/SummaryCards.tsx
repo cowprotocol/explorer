@@ -12,6 +12,10 @@ import { Card, CardContent } from 'components/common/Card'
 import { CardRow } from 'components/common/CardRow'
 import { TotalSummaryResponse } from '.'
 
+const BatchInfoHeight = '19.6rem'
+const DESKTOP_TEXT_SIZE = 1.8 // rem
+const MOBILE_TEXT_SIZE = 1.65 // rem
+
 const WrapperCardRow = styled(CardRow)`
   max-width: 70%;
 
@@ -21,20 +25,19 @@ const WrapperCardRow = styled(CardRow)`
 `
 
 const DoubleContentSize = css`
-  min-height: 19.6rem;
-`
-const WrapperTransactionsCard = styled(Card)`
-  ${media.mediumDownMd} {
-    ${DoubleContentSize}
-  }
+  min-height: ${BatchInfoHeight};
 `
 const WrapperColumn = styled.div`
-  ${DoubleContentSize}
   /* Equivalent to use lg={8} MUI grid system */
   flex-grow: 0;
   max-width: 66.666667%;
   flex-basis: 66.666667%;
   padding-right: 2rem;
+
+  > div {
+    margin: 1rem;
+    max-height: ${BatchInfoHeight};
+  }
 
   ${media.mediumDownMd} {
     flex-grow: 0;
@@ -42,14 +45,25 @@ const WrapperColumn = styled.div`
     flex-basis: 100%;
   }
 `
-const WrappedDoubleCard = styled(Card)`
+const DoubleCardStyle = css`
   ${DoubleContentSize}
+
+  ${media.mediumDownMd} {
+    min-height: 16rem;
+  }
+`
+const WrappedDoubleCard = styled(Card)`
+  ${DoubleCardStyle}
 `
 
 const WrapperDoubleContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3rem;
+
+  ${media.mediumDownMd} {
+    gap: 2rem;
+  }
 `
 
 interface SummaryCardsProps {
@@ -62,7 +76,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
   const [resolution, setResolution] = useState<TypeMediaQueries>(getMatchingScreenSize())
   const isMediumAndBelowResolution = MediumDownQueries.includes(resolution)
   const isDesktop = !isMediumAndBelowResolution
-  const valueTextSize = isDesktop ? 1.8 : 1.65
+  const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
   const rowsByCard = isDesktop ? '2row' : '3row'
 
   useEffect(() => {
@@ -92,7 +106,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             />
           </WrapperDoubleContent>
         </WrappedDoubleCard>
-        <WrapperTransactionsCard xs={6} lg={4}>
+        <WrappedDoubleCard xs={6} lg={4}>
           <CardContent
             variant={rowsByCard}
             label1="24h Transactions"
@@ -102,7 +116,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             loading={isLoading}
             valueSize={valueTextSize}
           />
-        </WrapperTransactionsCard>
+        </WrappedDoubleCard>
         <Card xs={6} lg={4}>
           <CardContent
             variant="2row"
