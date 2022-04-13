@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Grid, { GridSize } from '@material-ui/core/Grid'
+import { media } from 'theme/styles/media'
 
 import { COLOURS } from 'styles'
 import { Theme } from 'theme'
@@ -15,6 +16,9 @@ const DefaultCard = styled.div`
   border-radius: 6px;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 7%), 0 4px 6px -2px rgb(0 0 0 / 5%);
   margin: 1rem;
+  ${media.xSmallDown} {
+    min-width: 14rem;
+  }
 `
 
 const CardComponent = styled(DefaultCard)`
@@ -35,6 +39,10 @@ const CardContent = styled.div`
   font-size: 15px;
   padding: 16px;
   line-height: normal;
+  ${media.xSmallDown} {
+    padding: 0.2rem;
+    font-size: 1.1rem;
+  }
 `
 
 enum CardSize {
