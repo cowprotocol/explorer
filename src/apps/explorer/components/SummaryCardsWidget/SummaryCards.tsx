@@ -56,6 +56,12 @@ const WrappedDoubleCard = styled(Card)`
   ${DoubleCardStyle}
 `
 
+const CardTransactions = styled(Card)`
+  ${media.mediumDownMd} {
+    ${DoubleCardStyle}
+  }
+`
+
 const WrapperDoubleContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -106,7 +112,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             />
           </WrapperDoubleContent>
         </WrappedDoubleCard>
-        <WrappedDoubleCard xs={6} lg={4}>
+        <CardTransactions xs={6} lg={4}>
           <CardContent
             variant={rowsByCard}
             label1="24h Transactions"
@@ -116,7 +122,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             loading={isLoading}
             valueSize={valueTextSize}
           />
-        </WrappedDoubleCard>
+        </CardTransactions>
         <Card xs={6} lg={4}>
           <CardContent
             variant="2row"
