@@ -8,13 +8,13 @@ import variables from 'components/layout/GenericLayout/variablesCss'
 const selection = css`
   /* CSS for selecting text */
   *::selection {
-    background: #218dff; /* WebKit/Blink Browsers */
+    background-color: var(--color-gradient-2); /* WebKit/Blink Browsers */
   }
   *::-moz-selection {
-    background: #218dff; /* Gecko Browsers */
+    background-color: var(--color-gradient-2); /* Gecko Browsers */
   }
   *::-webkit-selection {
-    background: #218dff; /* Chrome Browsers */
+    background-color: var(--color-gradient-2); /* Chrome Browsers */
   }
   /* End CSS for selecting text */
 `
