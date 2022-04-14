@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { media } from 'theme/styles/media'
 import { formatDistanceToNowStrict } from 'date-fns'
 
-import {
-  getMatchingScreenSize,
-  subscribeToScreenSizeChange,
-  MediumDownQueries,
-  TypeMediaQueries,
-} from 'utils/mediaQueries'
 import { Card, CardContent } from 'components/common/Card'
 import { CardRow } from 'components/common/CardRow'
 import { TotalSummaryResponse } from '.'
 import { abbreviateString } from 'utils'
+import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
@@ -84,11 +79,9 @@ function calcDiff(a: number, b: number): number {
 }
 
 function getColorBySign(n: number): string {
-  const sign = Math.sign(n)
-
-  if (sign === 1) {
+  if (n > 0) {
     return 'green'
-  } else if (sign === -1) {
+  } else if (n < 0) {
     return 'red1'
   }
 
@@ -97,18 +90,11 @@ function getColorBySign(n: number): string {
 
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
   const { batchInfo, dailyTransactions, totalTokens, dailyFees, isLoading } = summaryData || {}
-  const [resolution, setResolution] = useState<TypeMediaQueries>(getMatchingScreenSize())
-  const isMediumAndBelowResolution = MediumDownQueries.includes(resolution)
-  const isDesktop = !isMediumAndBelowResolution
+  const isDesktop = useMediaBreakpoint(['xl', 'lg'])
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
   const rowsByCard = isDesktop ? '2row' : '3row'
   const diffTransactions = (dailyTransactions && calcDiff(dailyTransactions.now, dailyTransactions.before)) || 0
   const diffFees = (dailyFees && calcDiff(dailyFees.now, dailyFees.before)) || 0
-
-  useEffect(() => {
-    const mediaQuery = subscribeToScreenSizeChange(() => setResolution(getMatchingScreenSize()))
-    return (): void => mediaQuery()
-  }, [])
 
   return (
     <WrapperCardRow>
@@ -163,7 +149,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             valueSize={valueTextSize}
           />
         </Card>
-        {/** Surdpuls is not yet available */}
+        {/** Surplus is not yet available */}
         {/* <Card>
             <CardContent
               variant="2row"

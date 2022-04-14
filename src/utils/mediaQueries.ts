@@ -1,38 +1,32 @@
 import { Command } from 'types'
 
-export enum TypeMediaQueries {
-  XL = 'xl',
-  LG = 'lg',
-  MD = 'md',
-  SM = 'sm',
-  XS = 'xs',
-}
+export type Breakpoints = 'xl' | 'lg' | 'md' | 'sm' | 'xs'
 
 export const MEDIA_QUERY_MATCHES = [
   // must be in descending order for .find to match from largest to smallest
   // as sm will also match for xl and lg, for example
   {
-    name: TypeMediaQueries.XL,
+    name: 'xl',
     query: '(min-width:1200px)',
   },
   {
-    name: TypeMediaQueries.LG,
+    name: 'lg',
     query: '(min-width:992px)',
   },
   {
-    name: TypeMediaQueries.MD,
+    name: 'md',
     query: '(min-width:768px)',
   },
   {
-    name: TypeMediaQueries.SM,
+    name: 'sm',
     query: '(min-width:576px)',
   },
   // anything smaller -- xs
 ]
 
-const DEFAULT_QUERY_NAME = TypeMediaQueries.XS
+const DEFAULT_QUERY_NAME: Breakpoints = 'xs'
 
-export const getMatchingScreenSize = (): TypeMediaQueries =>
+export const getMatchingScreenSize = (): string =>
   MEDIA_QUERY_MATCHES.find(({ query }) => window.matchMedia(query).matches)?.name || DEFAULT_QUERY_NAME
 
 export const MEDIA_QUERIES = MEDIA_QUERY_MATCHES.map(({ query }) => query)
@@ -45,6 +39,3 @@ export const subscribeToScreenSizeChange = (callback: (event: MediaQueryListEven
 
   return (): void => mediaQueryLists.forEach((mql) => mql.removeEventListener('change', callback))
 }
-
-// media queries below medium size
-export const MediumDownQueries = [TypeMediaQueries.MD, TypeMediaQueries.SM, TypeMediaQueries.XS]
