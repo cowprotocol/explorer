@@ -1,8 +1,7 @@
 {
 
-  "batchInfo": { "lastBatchDate": "3m 42s Ago", "batchId": "fd3f932" },
-  "dailyTransactions": {"now": 194, "before": "+1.2%"},
+  "batchInfo": { "lastBatchDate":1649881035, "batchId": "0x0003723b9eb1598e12d15c69206bf13c971be0310fa5744cf9601ed79f89e29c" },
+  "dailyTransactions": {"now": 612, "before": 912},
   "totalTokens": 193,
-  "dailyFees": {"now": "$33.3K", "before": "-3.23%"},
-  "monthSurplus": {"now": "$53.9K", "before": "14.49%"}
+  "dailyFees": {"now": 55225.61205047748511254485049406426, "before": 40361.20651840192742698089787142249}
 }

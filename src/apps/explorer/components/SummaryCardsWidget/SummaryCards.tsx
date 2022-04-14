@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { media } from 'theme/styles/media'
+import { formatDistanceToNowStrict } from 'date-fns'
 
 import {
   getMatchingScreenSize,
@@ -11,6 +12,7 @@ import {
 import { Card, CardContent } from 'components/common/Card'
 import { CardRow } from 'components/common/CardRow'
 import { TotalSummaryResponse } from '.'
+import { abbreviateString } from 'utils'
 
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
@@ -73,17 +75,35 @@ const WrapperDoubleContent = styled.div`
 `
 
 interface SummaryCardsProps {
-  summaryData: TotalSummaryResponse
+  summaryData: TotalSummaryResponse | undefined
   children: React.ReactNode
 }
 
+function calcDiff(a: number, b: number): number {
+  return (a - b === 0 ? 0 : (100 * (a - b)) / b) || 0
+}
+
+function getColorBySign(n: number): string {
+  const sign = Math.sign(n)
+
+  if (sign === 1) {
+    return 'green'
+  } else if (sign === -1) {
+    return 'red1'
+  }
+
+  return 'grey'
+}
+
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
-  const { batchInfo, dailyTransactions, totalTokens, dailyFees, isLoading } = summaryData
+  const { batchInfo, dailyTransactions, totalTokens, dailyFees, isLoading } = summaryData || {}
   const [resolution, setResolution] = useState<TypeMediaQueries>(getMatchingScreenSize())
   const isMediumAndBelowResolution = MediumDownQueries.includes(resolution)
   const isDesktop = !isMediumAndBelowResolution
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
   const rowsByCard = isDesktop ? '2row' : '3row'
+  const diffTransactions = (dailyTransactions && calcDiff(dailyTransactions.now, dailyTransactions.before)) || 0
+  const diffFees = (dailyFees && calcDiff(dailyFees.now, dailyFees.before)) || 0
 
   useEffect(() => {
     const mediaQuery = subscribeToScreenSizeChange(() => setResolution(getMatchingScreenSize()))
@@ -99,14 +119,14 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             <CardContent
               variant="3row"
               label1="Last Batch"
-              value1={batchInfo.lastBatchDate}
+              value1={batchInfo && formatDistanceToNowStrict(batchInfo.lastBatchDate)}
               loading={isLoading}
               valueSize={valueTextSize}
             />
             <CardContent
               variant="3row"
               label1="Batch ID"
-              value1={batchInfo.batchId}
+              value1={batchInfo && abbreviateString(batchInfo?.batchId, 0, 6)}
               loading={isLoading}
               valueSize={valueTextSize}
             />
@@ -116,9 +136,9 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           <CardContent
             variant={rowsByCard}
             label1="24h Transactions"
-            value1={dailyTransactions.now}
-            caption1={dailyTransactions.before}
-            captionColor="red1"
+            value1={dailyTransactions?.now}
+            caption1={`${diffTransactions.toFixed(2)}%`}
+            captionColor={getColorBySign(diffTransactions)}
             loading={isLoading}
             valueSize={valueTextSize}
           />
@@ -136,9 +156,9 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           <CardContent
             variant={rowsByCard}
             label1="24h fees"
-            value1={dailyFees.now}
-            caption1={dailyFees.before}
-            captionColor="green"
+            value1={dailyFees?.now.toFixed(2)}
+            caption1={`${diffFees.toFixed(2)}%`}
+            captionColor={getColorBySign(diffFees)}
             loading={isLoading}
             valueSize={valueTextSize}
           />

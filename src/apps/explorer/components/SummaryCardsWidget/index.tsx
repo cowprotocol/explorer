@@ -7,34 +7,48 @@ import summaryData from './summaryGraphResp.json'
 const DELAY_SECONDS = 3 // Emulating API request
 
 export interface BatchInfo {
-  lastBatchDate: string
+  lastBatchDate: Date
   batchId: string
 }
 
+interface PastAndPresentValue {
+  now: number
+  before: number
+}
+
 interface TotalSummary {
-  batchInfo: BatchInfo
-  dailyTransactions: { now: number; before: string }
-  totalTokens: number
-  dailyFees: { now: string; before: string }
-  monthSurplus: { now: string; before: string }
+  batchInfo?: BatchInfo
+  dailyTransactions?: PastAndPresentValue
+  totalTokens?: number
+  dailyFees?: PastAndPresentValue
+}
+
+type RawTotalSummary = Omit<TotalSummary, 'batchInfo'> & {
+  batchInfo: { lastBatchDate: number; batchId: string }
+}
+
+function buildSummary(data: RawTotalSummary): TotalSummary {
+  return {
+    ...data,
+    batchInfo: {
+      ...data.batchInfo,
+      lastBatchDate: new Date(data.batchInfo.lastBatchDate * 1000),
+    },
+  }
 }
 
 export type TotalSummaryResponse = TotalSummary & {
   isLoading: boolean
 }
 
-function useGetTotalSummary(): TotalSummaryResponse {
-  const [summary, setSummary] = useState<TotalSummaryResponse>({
-    batchInfo: { lastBatchDate: '', batchId: '' },
-    dailyTransactions: { now: 0, before: '' },
-    totalTokens: 0,
-    dailyFees: { now: '', before: '' },
-    monthSurplus: { now: '', before: '' },
-    isLoading: true,
-  })
+function useGetTotalSummary(): TotalSummaryResponse | undefined {
+  const [summary, setSummary] = useState<TotalSummaryResponse | undefined>()
 
   useEffect(() => {
-    const timer = setTimeout(() => setSummary({ ...summaryData, isLoading: false }), DELAY_SECONDS * 1000)
+    setSummary((prevState) => {
+      return { ...prevState, isLoading: true }
+    })
+    const timer = setTimeout(() => setSummary({ ...buildSummary(summaryData), isLoading: false }), DELAY_SECONDS * 1000)
 
     return (): void => clearTimeout(timer)
   }, [])

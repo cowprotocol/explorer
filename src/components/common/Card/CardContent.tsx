@@ -10,7 +10,7 @@ export interface CardContentProps {
   direction?: string
   icon1?: React.ReactElement
   label1: string
-  value1: string | number
+  value1: string | number | undefined
   valueSize?: number
   labelWidth?: number
   caption1?: string | number
