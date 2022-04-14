@@ -156,7 +156,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           <CardContent
             variant={rowsByCard}
             label1="24h fees"
-            value1={dailyFees?.now.toFixed(2)}
+            value1={`$${dailyFees?.now.toFixed(2)}`}
             caption1={`${diffFees.toFixed(2)}%`}
             captionColor={getColorBySign(diffFees)}
             loading={isLoading}
