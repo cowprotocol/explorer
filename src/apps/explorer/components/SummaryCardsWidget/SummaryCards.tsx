@@ -118,7 +118,6 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
               loading={isLoading}
               valueSize={valueTextSize}
             />
-            {/*   */}
           </WrapperDoubleContent>
         </WrappedDoubleCard>
         <CardTransactions xs={6} lg={4}>

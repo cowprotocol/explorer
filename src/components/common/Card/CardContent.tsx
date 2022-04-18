@@ -52,6 +52,10 @@ const CardBody = styled.div<{
       justify-content: ${({ variant, direction }): string =>
         variant === 'double' && direction === 'row' ? 'flex-end' : 'center'};
       width: ${({ labelWidth }): string => (labelWidth ? `${labelWidth}px` : 'initial')};
+      flex-direction: row-reverse;
+      span {
+        padding-left: 0.5rem;
+      }
     }
     > div {
       display: flex;
