@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import Grid from '@material-ui/core/Grid'
+import Grid, { GridSize } from '@material-ui/core/Grid'
+import { media } from 'theme/styles/media'
 
 import { COLOURS } from 'styles'
 import { Theme } from 'theme'
@@ -9,12 +10,15 @@ const { white, fadedGreyishWhite, blackLight } = COLOURS
 
 const DefaultCard = styled.div`
   height: inherit;
-  min-width: 200px;
+  min-width: 15rem;
   min-height: 100px;
   background-color: #f5f5f5;
   border-radius: 6px;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 7%), 0 4px 6px -2px rgb(0 0 0 / 5%);
-  margin: 10px;
+  margin: 1rem;
+  ${media.xSmallDown} {
+    min-width: 14rem;
+  }
 `
 
 const CardComponent = styled(DefaultCard)`
@@ -35,16 +39,25 @@ const CardContent = styled.div`
   font-size: 15px;
   padding: 16px;
   line-height: normal;
+  ${media.xSmallDown} {
+    padding: 0.2rem;
+    font-size: 1.1rem;
+  }
 `
 
-type CardBreakdown = boolean | 1 | 'auto' | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | undefined
+enum CardSize {
+  xs = 12,
+  sm = 6,
+  md = 4,
+  lg = 3,
+}
 
 export interface CardBaseProps {
-  children?: React.ReactElement | string
-  xs?: CardBreakdown
-  sm?: CardBreakdown
-  md?: CardBreakdown
-  lg?: CardBreakdown
+  children?: React.ReactNode
+  xs?: GridSize
+  sm?: GridSize
+  md?: GridSize
+  lg?: GridSize
 }
 
 /**
@@ -52,7 +65,14 @@ export interface CardBaseProps {
  *
  * An extensible content container.
  */
-export const Card: React.FC<CardBaseProps> = ({ children, xs = 12, sm = 6, md = 4, lg = 3, ...rest }) => {
+export const Card: React.FC<CardBaseProps> = ({
+  children,
+  xs = CardSize.xs,
+  sm = CardSize.sm,
+  md = CardSize.md,
+  lg = CardSize.lg,
+  ...rest
+}): JSX.Element => {
   return (
     <Grid item xs={xs} sm={sm} md={md} lg={lg}>
       <CardComponent {...rest}>
