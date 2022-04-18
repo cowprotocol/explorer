@@ -130,8 +130,8 @@ export const CardContent: React.FC<CardContentProps> = ({
       {!loading && label2 && (
         <div>
           <p>
-            {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}
             {label2}
+            {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}
           </p>
           <div>
             <h3>{value2}</h3>

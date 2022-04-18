@@ -8,6 +8,7 @@ import { CardRow } from 'components/common/CardRow'
 import { TotalSummaryResponse } from '.'
 import { abbreviateString } from 'utils'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
+import { CopyButton } from 'components/common/CopyButton'
 
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
@@ -110,12 +111,14 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
               valueSize={valueTextSize}
             />
             <CardContent
-              variant="3row"
+              variant={rowsByCard}
               label1="Batch ID"
               value1={batchInfo && abbreviateString(batchInfo?.batchId, 0, 6)}
+              icon1={<CopyButton textToCopy="order-id" contentsToDisplay={''} />}
               loading={isLoading}
               valueSize={valueTextSize}
             />
+            {/*   */}
           </WrapperDoubleContent>
         </WrappedDoubleCard>
         <CardTransactions xs={6} lg={4}>
