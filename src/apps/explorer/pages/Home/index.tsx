@@ -3,12 +3,14 @@ import { Search } from 'apps/explorer/components/common/Search'
 import { Wrapper as WrapperMod } from 'apps/explorer/pages/styled'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
+import { StatsSummaryCardsWidget } from 'apps/explorer/components/SummaryCardsWidget'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
   flex-flow: column wrap;
-  justify-content: center;
+  justify-content: flex-start;
   display: flex;
+  padding-top: 10rem;
 
   > h1 {
     justify-content: center;
@@ -23,11 +25,23 @@ const Wrapper = styled(WrapperMod)`
   }
 `
 
+const SummaryWrapper = styled.section`
+  display: flex;
+  padding-top: 10rem;
+
+  ${media.mobile} {
+    padding-top: 4rem;
+  }
+`
+
 export const Home: React.FC = () => {
   return (
     <Wrapper>
       <h1>Search on CoW Protocol Explorer</h1>
       <Search className="home" />
+      <SummaryWrapper>
+        <StatsSummaryCardsWidget />
+      </SummaryWrapper>
     </Wrapper>
   )
 }

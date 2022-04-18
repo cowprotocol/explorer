@@ -4,9 +4,8 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import { Card } from '../Card/index'
-import { CardRow, CardRowProps } from '.'
-import { CardContent } from '../Card/CardContent'
+import { Card, CardContent } from 'components/common/Card'
+import { CardRow, CardRowProps } from 'components/common/CardRow'
 
 import QuestionIcon from '../../../assets/img/question1.svg'
 
@@ -50,7 +49,7 @@ const Template: Story<CardRowProps> = (args) => (
         <CardContent
           variant="double"
           direction="row"
-          valueSize={14}
+          valueSize={1.4}
           labelWidth={110}
           label1="Limit Price"
           value1="1055.32 DAI per ETH"
