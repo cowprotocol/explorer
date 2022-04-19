@@ -113,8 +113,13 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             <CardContent
               variant={rowsByCard}
               label1="Batch ID"
-              value1={batchInfo && abbreviateString(batchInfo?.batchId, 4, 4)}
-              icon1={<CopyButton text={''} />}
+              value1={
+                batchInfo && (
+                  <>
+                    {abbreviateString(batchInfo?.batchId, 6, 4)} <CopyButton text={batchInfo?.batchId || ''} />
+                  </>
+                )
+              }
               loading={isLoading}
               valueSize={valueTextSize}
             />
