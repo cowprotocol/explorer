@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,11 +13,17 @@ import { DISPLAY_TEXT_COPIED_CHECK } from 'apps/explorer/const'
 //   Which does not like to receive boolean values, with an error like:
 // "Warning: Received `false` for a non-boolean attribute `copied`"
 //   Effectively though, it's treated as a boolean, thus the value doesn't matter
-const Icon = styled(FontAwesomeIcon)<{ copied?: string }>`
+const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
   color: ${({ theme, copied }): string => (copied ? theme.green : theme.grey)};
   transition: color 0.2s ease-in;
   cursor: ${({ copied }): string => (copied ? 'reset' : 'pointer')};
   vertical-align: top;
+
+  ${({ height }): FlattenSimpleInterpolation | undefined | number =>
+    height &&
+    css`
+      height: ${height}rem;
+    `}
 
   &:hover {
     color: ${({ theme, copied }): string => (copied ? theme.green : theme.white)};
@@ -30,7 +36,7 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string }>`
   }
 `
 
-export type Props = { text: string; onCopy?: (value: string) => void }
+export type Props = { text: string; onCopy?: (value: string) => void; heightIcon?: number }
 
 /**
  * Simple CopyButton component.
@@ -41,7 +47,7 @@ export type Props = { text: string; onCopy?: (value: string) => void }
  * then is back to original copy icon
  */
 export function CopyButton(props: Props): JSX.Element {
-  const { text, onCopy } = props
+  const { text, onCopy, heightIcon } = props
 
   const [copied, setCopied] = useState(false)
   const handleOnCopy = (): void => {
@@ -64,7 +70,7 @@ export function CopyButton(props: Props): JSX.Element {
   return (
     <CopyToClipboard text={text} onCopy={handleOnCopy}>
       <span>
-        <Icon icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} />{' '}
+        <Icon height={heightIcon} icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} />{' '}
         {copied && <span className="copy-text">Copied</span>}
       </span>
     </CopyToClipboard>

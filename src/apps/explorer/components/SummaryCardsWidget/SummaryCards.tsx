@@ -9,6 +9,7 @@ import { TotalSummaryResponse } from '.'
 import { abbreviateString } from 'utils'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { CopyButton } from 'components/common/CopyButton'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
@@ -16,6 +17,10 @@ const MOBILE_TEXT_SIZE = 1.65 // rem
 
 const WrapperCardRow = styled(CardRow)`
   max-width: 70%;
+
+  .copy-text {
+    font-size: 1.4rem;
+  }
 
   ${media.mobile} {
     max-width: 100%;
@@ -116,7 +121,10 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
               value1={
                 batchInfo && (
                   <>
-                    {abbreviateString(batchInfo?.batchId, 6, 4)} <CopyButton text={batchInfo?.batchId || ''} />
+                    <LinkWithPrefixNetwork to={`/tx/${batchInfo.batchId}`}>
+                      {abbreviateString(batchInfo?.batchId, 6, 4)}
+                    </LinkWithPrefixNetwork>
+                    <CopyButton heightIcon={1.35} text={batchInfo?.batchId || ''} />
                   </>
                 )
               }
