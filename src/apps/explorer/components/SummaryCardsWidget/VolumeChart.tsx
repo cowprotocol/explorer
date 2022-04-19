@@ -19,10 +19,10 @@ export interface VolumeChartProps {
 }
 
 const Wrapper = styled.div`
-  border: 1px solid green;
+  border: 1px solid red;
   position: relative;
 
-  > .tooltip-volumechart {
+  > .volumechart {
     color: red;
   }
 `
@@ -42,7 +42,7 @@ function formatChartData(data: VolumeData[]): HistogramData[] {
 export function VolumeChart({
   title,
   data,
-  height = 300,
+  height = 200,
   width = 500,
   type = TYPE_CHART_SERIES.AREA,
 }: VolumeChartProps): JSX.Element {
@@ -61,13 +61,10 @@ export function VolumeChart({
         textColor: theme.textPrimary1,
       },
       rightPriceScale: {
-        scaleMargins: {
-          top: 0.2,
-          bottom: 0,
-        },
-        borderVisible: false,
+        visible: false,
       },
       timeScale: {
+        visible: false,
         borderVisible: false,
       },
       grid: {
@@ -87,9 +84,9 @@ export function VolumeChart({
         },
         vertLine: {
           visible: true,
-          style: 0,
-          width: 2,
-          color: 'rgba(32, 38, 46, 0.1)',
+          style: 3,
+          width: 1,
+          color: theme.borderPrimary,
           labelVisible: false,
         },
       },
@@ -112,13 +109,14 @@ export function VolumeChart({
 
     series.setData(formatChartData(data))
     const toolTip = document.createElement('div')
-    toolTip.setAttribute('className', 'tooltip-volumechart')
+    toolTip.className = 'volumechart'
     chartContainerRef.current.appendChild(toolTip)
     toolTip.style.display = 'block'
     toolTip.style.fontWeight = '500'
-    toolTip.style.left = -4 + 'px'
-    toolTip.style.top = '-' + 8 + 'px'
-    toolTip.style.backgroundColor = 'transparent'
+    toolTip.style.position = 'absolute'
+    toolTip.style.zIndex = '10'
+    toolTip.style.padding = '8px'
+    toolTip.style.width = '100%'
 
     function setLastBarText(): void {
       toolTip.innerHTML = `<div style="font-size: 16px; margin: 4px 0px; color: ${theme.white};">${title}</div>`

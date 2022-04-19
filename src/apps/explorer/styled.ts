@@ -30,7 +30,21 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: bold;
     text-transform: uppercase;
     width: 6rem;
-}
+  }
+
+  /* lightweight-charts - Volumechart styles*/
+  .volumechart {
+    width: 100%;
+    height: 70px;
+    position: absolute;
+    padding: 8px;
+    font-size: 12px;
+    color: #20262E;
+    background-color: blue;
+    text-align: left;
+    z-index: 10;
+    pointer-events: none;
+  }
 `
 
 export const MainWrapper = styled.div`
