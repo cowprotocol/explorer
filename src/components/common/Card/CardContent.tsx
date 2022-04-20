@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { media } from 'theme/styles/media'
 
 export type statusType = 'success' | 'danger'
 
@@ -67,6 +68,9 @@ const CardBody = styled.div<{
       > h3 {
         font-size: ${({ valueSize }): number => valueSize || 1.8}rem;
         margin: 0px;
+        ${media.mobile} {
+          font-size: 1.45rem;
+        }
       }
       > span {
         font-weight: bold;

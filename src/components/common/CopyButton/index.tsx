@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CopyToClipboard from 'react-copy-to-clipboard'
 
 import { DISPLAY_TEXT_COPIED_CHECK } from 'apps/explorer/const'
+import { media } from 'theme/styles/media'
 
 // Why is `copied` not a boolean?
 //   Because it's passed down to parent component (`FontAwesomeIcon`) and
@@ -33,7 +34,17 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
   + span {
     color: ${({ theme }): string => theme.green};
     font-weight: ${({ theme }): string => theme.fontMedium};
-    margin: 0 0 0 0.1rem;
+    font-size: 1.2rem;
+    position: absolute;
+    border: 1px solid ${({ theme }): string => theme.green};
+    background-color: ${({ theme }): string => theme.green2};
+    padding: 0.5rem;
+    border-radius: 0.4rem;
+    margin-top: -3rem;
+    margin-left: -3.3rem;
+    ${media.mediumDownMd} {
+      display: none;
+    }
   }
 `
 

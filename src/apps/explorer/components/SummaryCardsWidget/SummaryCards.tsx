@@ -18,10 +18,6 @@ const MOBILE_TEXT_SIZE = 1.65 // rem
 const WrapperCardRow = styled(CardRow)`
   max-width: 70%;
 
-  .copy-text {
-    font-size: 1.4rem;
-  }
-
   ${media.mobile} {
     max-width: 100%;
   }
