@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { SummaryCards } from './SummaryCards'
+import { VolumeChart } from './VolumeChart'
+import volumeData from './volumeData.json'
 
 import summaryData from './summaryGraphResp.json'
 
@@ -61,7 +63,8 @@ const Wrapper = styled.div`
   flex: 1;
   justify-content: center;
 `
-const VolumeChart = styled.div`
+const WrappedVolumeChart = styled(VolumeChart)`
+  border: 1px solid red;
   background: #28f3282c;
   border-radius: 0.4rem;
   height: 19.6rem;
@@ -74,7 +77,7 @@ export function StatsSummaryCardsWidget(): JSX.Element {
   return (
     <Wrapper>
       <SummaryCards summaryData={summary}>
-        <VolumeChart />
+        <WrappedVolumeChart title="CoW Volume" data={volumeData} currentVolume={volumeData[0].volumeUsd.toString()} />
       </SummaryCards>
     </Wrapper>
   )

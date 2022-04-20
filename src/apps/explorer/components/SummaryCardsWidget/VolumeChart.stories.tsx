@@ -1,5 +1,6 @@
 import React from 'react'
 import { Story, Meta } from '@storybook/react'
+import styled from 'styled-components'
 
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 import { VolumeChart, VolumeChartProps } from './VolumeChart'
@@ -19,7 +20,17 @@ export default {
   },
 } as Meta
 
-const Template: Story<VolumeChartProps> = (args) => <VolumeChart {...args} />
+const WrapperVolumeChart = styled.div`
+  border-radius: 0.4rem;
+  height: 19.6rem;
+  width: 61.5594rem;
+`
+
+const Template: Story<VolumeChartProps> = (args) => (
+  <WrapperVolumeChart>
+    <VolumeChart {...args} />
+  </WrapperVolumeChart>
+)
 
 export const Default = Template.bind({})
-Default.args = { title: 'Test Chart (D)', data: volumeData }
+Default.args = { title: 'Test Chart (D)', data: volumeData, currentVolume: '150000' }
