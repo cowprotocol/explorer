@@ -22,9 +22,7 @@ export default {
 } as Meta
 
 const WrapperVolumeChart = styled.div`
-  border-radius: 0.4rem;
   height: 19.6rem;
-  width: 61.5594rem;
 `
 
 const Template: Story<VolumeChartProps> = (args) => (

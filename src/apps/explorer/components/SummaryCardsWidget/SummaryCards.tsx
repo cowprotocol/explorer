@@ -35,6 +35,10 @@ const WrapperColumn = styled.div`
   > div {
     margin: 1rem;
     max-height: ${BatchInfoHeight};
+    width: 100%;
+    border: 1px solid ${({ theme }): string => theme.borderPrimary};
+    border-radius: 0.4rem;
+    overflow: hidden;
   }
 
   ${media.mediumDownMd} {

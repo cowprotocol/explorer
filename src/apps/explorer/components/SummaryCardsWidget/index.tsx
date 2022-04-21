@@ -116,9 +116,6 @@ const Wrapper = styled.div`
   justify-content: center;
 `
 const WrappedVolumeChart = styled(VolumeChart)`
-  border: 1px solid red;
-  background: #28f3282c;
-  border-radius: 0.4rem;
   height: 19.6rem;
   width: 100%;
 `

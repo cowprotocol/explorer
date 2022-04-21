@@ -66,7 +66,7 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>
   left: 1rem;
   > h3 {
     color: ${({ theme }): string => theme.grey};
-    font-size: initial;
+    font-size: small;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 0px;
   }
@@ -77,6 +77,7 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>
     gap: 1rem;
     margin: 0;
     padding: 0;
+    align-items: center;
     > p {
       color: ${({ theme }): string => theme.white};
       font-size: large;
