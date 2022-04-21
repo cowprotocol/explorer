@@ -57,7 +57,11 @@ function buildSummary(data: RawTotalSummary): TotalSummary {
     },
   }
 }
-function buildVolumeData(_data: RawVolumeItem[]): { data: VolumeItem[]; currentVolume: number; changedVolume: number } {
+export function buildVolumeData(_data: RawVolumeItem[]): {
+  data: VolumeItem[]
+  currentVolume: number
+  changedVolume: number
+} {
   return {
     data: _data.map((item) => ({
       id: item.id,

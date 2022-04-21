@@ -151,6 +151,7 @@ export function VolumeChart({
   height = DEFAULT_CHART_HEIGHT,
   width = undefined,
 }: VolumeChartProps): JSX.Element {
+  console.log('VolumeData', volumeData)
   const { data: items, currentVolume, changedVolume } = volumeData || {}
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null>(null)

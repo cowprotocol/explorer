@@ -4,7 +4,8 @@ import styled from 'styled-components'
 
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 import { VolumeChart, VolumeChartProps } from './VolumeChart'
-import volumeData from './volumeData.json'
+import volumeDataJson from './volumeData.json'
+import { buildVolumeData } from '.'
 
 export default {
   title: 'ExplorerApp/Chart',
@@ -33,4 +34,10 @@ const Template: Story<VolumeChartProps> = (args) => (
 )
 
 export const Default = Template.bind({})
-Default.args = { title: 'Test Chart (D)', data: volumeData, currentVolume: '150000', changedVolume: '125000' }
+Default.args = {
+  title: 'Test Chart (D)',
+  volumeData: {
+    ...buildVolumeData(volumeDataJson),
+    isLoading: false,
+  },
+}
