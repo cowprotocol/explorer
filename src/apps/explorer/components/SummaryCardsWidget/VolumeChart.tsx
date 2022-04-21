@@ -151,8 +151,7 @@ export function VolumeChart({
   height = DEFAULT_CHART_HEIGHT,
   width = undefined,
 }: VolumeChartProps): JSX.Element {
-  console.log('VolumeData', volumeData)
-  const { data: items, currentVolume, changedVolume } = volumeData || {}
+  const { data: items, currentVolume, changedVolume, isLoading } = volumeData || {}
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null>(null)
   const theme = useTheme()
@@ -170,6 +169,8 @@ export function VolumeChart({
     series.setData(formatChartData(items))
     setChartCreated(chart)
   }, [chartCreated, height, items, theme, width])
+
+  if (isLoading) return <h2>Loading...</h2>
 
   return (
     <Wrapper ref={chartContainerRef}>
