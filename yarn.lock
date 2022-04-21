@@ -1262,18 +1262,10 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cowprotocol/cow-sdk@file:../cow-sdk":
-  version "0.0.6"
-  dependencies:
-    "@gnosis.pm/gp-v2-contracts" "^1.1.2"
-    ajv "^8.8.2"
-    cross-fetch "^3.1.5"
-    ethers "^5.5.3"
-    loglevel "^1.8.0"
-    multiformats "^9.6.4"
-
-"@cowprotocol/cow-sdk@file:./../cow-sdk":
-  version "0.0.6"
+"@cowprotocol/cow-sdk@0.0.8-RC.0":
+  version "0.0.8-RC.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-0.0.8-RC.0.tgz#4d33dea5ce2978ec319ce3cba653263f15495a35"
+  integrity sha512-cTihi86mEF7Qbba9QKPfyCAx+BoZ/x2X1H3rstlQWszZEZYx8yDuWw/1lzZUw+M4PPbpbVH7o3XmE1Y78WPiNg==
   dependencies:
     "@gnosis.pm/gp-v2-contracts" "^1.1.2"
     ajv "^8.8.2"

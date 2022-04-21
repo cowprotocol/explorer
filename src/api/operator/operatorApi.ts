@@ -150,7 +150,7 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner = '' } = params
   const cowInstance = COW_SDK[networkId]
 
-  if (!cowInstance) return []
+  if (!cowInstance || !owner) return []
 
   return cowInstance.cowApi.getTrades({ owner })
 }
