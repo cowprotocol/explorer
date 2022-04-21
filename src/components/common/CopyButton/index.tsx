@@ -16,7 +16,7 @@ import { media } from 'theme/styles/media'
 //   Effectively though, it's treated as a boolean, thus the value doesn't matter
 const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
   color: ${({ theme, copied }): string => (copied ? theme.green : theme.grey)};
-  transition: color 0.2s ease-in;
+  transition: color 0.1s ease-in;
   cursor: ${({ copied }): string => (copied ? 'reset' : 'pointer')};
   vertical-align: baseline;
   margin: 0 0 0 0.3rem;
@@ -46,6 +46,12 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
       display: none;
     }
   }
+`
+
+const Wrapper = styled.span`
+  width: 1.6rem;
+  height: 1.6rem;
+  display: inline-block;
 `
 
 export type Props = { text: string; onCopy?: (value: string) => void; heightIcon?: number }
@@ -81,10 +87,10 @@ export function CopyButton(props: Props): JSX.Element {
 
   return (
     <CopyToClipboard text={text} onCopy={handleOnCopy}>
-      <span>
+      <Wrapper>
         <Icon height={heightIcon} icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} />{' '}
         {copied && <span className="copy-text">Copied</span>}
-      </span>
+      </Wrapper>
     </CopyToClipboard>
   )
 }
