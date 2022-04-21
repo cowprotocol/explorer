@@ -20,6 +20,7 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
   cursor: ${({ copied }): string => (copied ? 'reset' : 'pointer')};
   vertical-align: baseline;
   margin: 0 0 0 0.3rem;
+  width: 1.6rem !important;
 
   ${({ height }): FlattenSimpleInterpolation | undefined | number =>
     height &&
@@ -46,12 +47,6 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
       display: none;
     }
   }
-`
-
-const Wrapper = styled.span`
-  width: 1.6rem;
-  height: 1.6rem;
-  display: inline-block;
 `
 
 export type Props = { text: string; onCopy?: (value: string) => void; heightIcon?: number }
@@ -87,10 +82,10 @@ export function CopyButton(props: Props): JSX.Element {
 
   return (
     <CopyToClipboard text={text} onCopy={handleOnCopy}>
-      <Wrapper>
+      <span>
         <Icon height={heightIcon} icon={copied ? faCheck : faCopy} copied={copied ? 'true' : undefined} />{' '}
         {copied && <span className="copy-text">Copied</span>}
-      </Wrapper>
+      </span>
     </CopyToClipboard>
   )
 }
