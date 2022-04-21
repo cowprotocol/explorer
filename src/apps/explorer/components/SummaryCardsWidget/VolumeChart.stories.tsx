@@ -33,4 +33,4 @@ const Template: Story<VolumeChartProps> = (args) => (
 )
 
 export const Default = Template.bind({})
-Default.args = { title: 'Test Chart (D)', data: volumeData, currentVolume: '150000' }
+Default.args = { title: 'Test Chart (D)', data: volumeData, currentVolume: '150000', changedVolume: '125000' }

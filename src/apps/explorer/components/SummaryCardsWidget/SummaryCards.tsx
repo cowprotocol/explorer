@@ -8,6 +8,7 @@ import { CardRow } from 'components/common/CardRow'
 import { TotalSummaryResponse } from '.'
 import { abbreviateString } from 'utils'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
+import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
@@ -72,20 +73,6 @@ const WrapperDoubleContent = styled.div`
 interface SummaryCardsProps {
   summaryData: TotalSummaryResponse | undefined
   children: React.ReactNode
-}
-
-function calcDiff(a: number, b: number): number {
-  return (a - b === 0 ? 0 : (100 * (a - b)) / b) || 0
-}
-
-function getColorBySign(n: number): string {
-  if (n > 0) {
-    return 'green'
-  } else if (n < 0) {
-    return 'red1'
-  }
-
-  return 'grey'
 }
 
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
