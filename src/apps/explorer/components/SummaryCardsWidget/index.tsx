@@ -27,7 +27,7 @@ interface TotalSummary {
 
 export interface VolumeItem {
   id: string
-  timestamp: Date
+  timestamp: number
   volumeUsd: number
 }
 
@@ -65,11 +65,11 @@ export function buildVolumeData(_data: RawVolumeItem[]): {
   return {
     data: _data.map((item) => ({
       id: item.id,
-      timestamp: new Date(parseInt(item.timestamp) * 1000),
+      timestamp: parseInt(item.timestamp),
       volumeUsd: parseFloat(item.volumeUsd),
     })),
-    currentVolume: parseFloat(_data[0].volumeUsd),
-    changedVolume: parseFloat(_data[1].volumeUsd),
+    currentVolume: parseFloat(_data[_data.length - 1].volumeUsd),
+    changedVolume: parseFloat(_data[_data.length - 2].volumeUsd),
   }
 }
 
