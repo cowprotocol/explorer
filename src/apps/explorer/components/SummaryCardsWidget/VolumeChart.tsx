@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import styled, { DefaultTheme, useTheme } from 'styled-components'
+import styled, { DefaultTheme, useTheme, css, FlattenSimpleInterpolation } from 'styled-components'
 import { format, fromUnixTime } from 'date-fns'
 
-import { createChart, HistogramData, IChartApi, MouseEventParams, UTCTimestamp } from 'lightweight-charts'
+import { createChart, HistogramData, IChartApi, MouseEventParams, UTCTimestamp, BarPrice } from 'lightweight-charts'
 import { VolumeDataResponse, VolumeItem } from '.'
 import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { formatSmart } from 'utils'
@@ -42,7 +42,7 @@ const Wrapper = styled.div`
 
   > div.floating-tooltip {
     width: 9.6rem;
-    height: 100%;
+    height: 40%;
     position: absolute;
     display: none;
     box-sizing: border-box;
@@ -59,11 +59,11 @@ const Wrapper = styled.div`
     box-shadow: 0 0.2rem 0.5rem 0 rgba(117, 134, 150, 0.45);
     flex-direction: column;
     gap: 1rem;
-    justify-content: center;
+    justify-content: end;
   }
 `
 
-const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
+const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; dateStyle?: boolean }>`
   position: absolute;
   top: 1rem;
   left: 1rem;
@@ -76,11 +76,18 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>
 
   > span {
     display: flex;
-    flex-direction: row;
-    gap: 1rem;
     margin: 0;
     padding: 0;
+    gap: 1rem;
     align-items: center;
+
+    ${({ dateStyle }): FlattenSimpleInterpolation | undefined | false =>
+      dateStyle &&
+      css`
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0rem;
+      `}
     > p {
       color: ${({ theme }): string => theme.white};
       font-size: large;
@@ -88,6 +95,11 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>
       &.caption {
         font-size: 1.1rem;
         color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.grey)};
+      }
+      &.date {
+        margin: 0;
+        color: ${({ theme }): string => theme.grey};
+        font-size: 1.1rem;
       }
     }
   }
@@ -178,6 +190,7 @@ export function VolumeChart({
   const theme = useTheme()
   const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
   const captionColor = getColorBySign(diffPercentageVolume || 0)
+  const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
 
   useEffect(() => {
     if (chartCreated || !chartContainerRef.current || !items) return
@@ -189,25 +202,27 @@ export function VolumeChart({
 
     series.setData(formatChartData(items))
 
-    const toolTip = document.createElement('div')
-    toolTip.setAttribute('class', 'floating-tooltip')
-    chartContainerRef.current.appendChild(toolTip)
     chart.subscribeCrosshairMove(function (param: MouseEventParams) {
       if (param === undefined || param.time === undefined || !param.point || param.point.x < 0 || param.point.y < 0) {
-        toolTip.style.display = 'none'
+        setCrossHairData(null)
         return
       }
 
-      const price = param.seriesPrices.get(series)
-      const date = param.time && format(fromUnixTime(param.time as UTCTimestamp), 'MMM d, yyyy')
-      toolTip.style.display = 'flex'
-      toolTip.innerHTML = `<span>$${
-        price && formatSmart({ amount: price.toString(), precision: 0, decimals: 2 })
-      }</span><span>${date}</span>`
+      const value = param.seriesPrices.get(series) as BarPrice
+      const time = param.time
+      setCrossHairData({ time, value })
     })
 
     setChartCreated(chart)
   }, [chartCreated, height, items, theme, width])
+
+  // resize when window width change
+  useEffect(() => {
+    if (!width || !chartCreated) return
+
+    chartCreated.resize(width, height)
+    chartCreated.timeScale().scrollToPosition(0, false)
+  }, [chartCreated, height, width])
 
   if (isLoading)
     return (
@@ -218,11 +233,20 @@ export function VolumeChart({
 
   return (
     <Wrapper ref={chartContainerRef}>
-      <ContainerTitle captionColor={captionColor}>
+      <ContainerTitle captionColor={captionColor} dateStyle={crossHairData !== null}>
         <h3>Cow Volume</h3>
         <span>
-          <p>${currentVolume && formatSmart({ amount: currentVolume.toString(), precision: 0, decimals: 2 })}</p>
-          <p className="caption">{diffPercentageVolume?.toFixed(2)}%</p>
+          {crossHairData ? (
+            <>
+              <p>${formatSmart({ amount: crossHairData.value.toString(), precision: 0, decimals: 2 })}</p>
+              <p className="date">{format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')}</p>
+            </>
+          ) : (
+            <>
+              <p>${currentVolume && formatSmart({ amount: currentVolume.toString(), precision: 0, decimals: 2 })}</p>
+              <p className="caption">{diffPercentageVolume?.toFixed(2)}%</p>
+            </>
+          )}
         </span>
       </ContainerTitle>
       <ul className="timeSelector">

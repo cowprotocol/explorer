@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 
 import { SummaryCards } from './SummaryCards'
@@ -115,19 +115,43 @@ const Wrapper = styled.div`
   flex: 1;
   justify-content: center;
 `
-const WrappedVolumeChart = styled(VolumeChart)`
+const WrapperVolumeChart = styled.div`
   height: 19.6rem;
-  width: 100%;
 `
+
+export function VolumeChartWidget(): JSX.Element {
+  const volumeData = useGetVolumeData()
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // update the width on a window resize
+  const isClient = typeof window === 'object'
+  const [width, setWidth] = useState(containerRef.current?.getBoundingClientRect().width)
+  React.useLayoutEffect(() => {
+    if (!isClient || containerRef.current === null) return
+
+    function updatePosition(): void {
+      setWidth(containerRef.current?.getBoundingClientRect().width)
+    }
+    window.addEventListener('resize', updatePosition)
+    updatePosition()
+
+    return (): void => window.removeEventListener('resize', updatePosition)
+  }, [isClient, width])
+
+  return (
+    <WrapperVolumeChart ref={containerRef}>
+      <VolumeChart title="CoW Volume" volumeData={volumeData} width={width}></VolumeChart>
+    </WrapperVolumeChart>
+  )
+}
 
 export function StatsSummaryCardsWidget(): JSX.Element {
   const summary = useGetTotalSummary()
-  const volumeData = useGetVolumeData()
 
   return (
     <Wrapper>
       <SummaryCards summaryData={summary}>
-        <WrappedVolumeChart title="CoW Volume" volumeData={volumeData} />
+        <VolumeChartWidget />
       </SummaryCards>
     </Wrapper>
   )

@@ -12,7 +12,6 @@ import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 
-
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
 const MOBILE_TEXT_SIZE = 1.65 // rem
