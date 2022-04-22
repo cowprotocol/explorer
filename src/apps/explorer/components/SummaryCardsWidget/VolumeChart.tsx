@@ -6,6 +6,7 @@ import { createChart, HistogramData, IChartApi } from 'lightweight-charts'
 import { VolumeDataResponse, VolumeItem } from '.'
 import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { formatSmart } from 'utils'
+import GraphSkeleton from 'assets/img/graph-skeleton.svg'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
 
@@ -87,6 +88,23 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>
         color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.grey)};
       }
     }
+  }
+`
+const ChartSkeleton = styled.div`
+  margin: 1rem;
+  height: 100%;
+  width: 100%;
+  border: 1px solid ${({ theme }): string => theme.borderPrimary};
+  border-radius: 0.4rem;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  background: url(${GraphSkeleton}) no-repeat bottom/contain ${({ theme }): string => theme.greyOpacity};
+  opacity: 0.35;
+
+  h2 {
+    margin: 3rem 0;
   }
 `
 
@@ -171,7 +189,12 @@ export function VolumeChart({
     setChartCreated(chart)
   }, [chartCreated, height, items, theme, width])
 
-  if (isLoading) return <h2>Loading...</h2>
+  if (isLoading)
+    return (
+      <ChartSkeleton>
+        <h2>Loading...</h2>
+      </ChartSkeleton>
+    )
 
   return (
     <Wrapper ref={chartContainerRef}>
