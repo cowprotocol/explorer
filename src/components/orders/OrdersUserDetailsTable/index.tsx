@@ -82,7 +82,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
         align-items: center;
       }
       .copy-text {
-        margin-left: 5px;
+        display: none;
       }
     }
   }

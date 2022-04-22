@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { media } from 'theme/styles/media'
 
 export type statusType = 'success' | 'danger'
 
@@ -10,7 +11,7 @@ export interface CardContentProps {
   direction?: string
   icon1?: React.ReactElement
   label1: string
-  value1: string | number | undefined
+  value1: string | number | undefined | React.ReactElement
   valueSize?: number
   labelWidth?: number
   caption1?: string | number
@@ -52,6 +53,10 @@ const CardBody = styled.div<{
       justify-content: ${({ variant, direction }): string =>
         variant === 'double' && direction === 'row' ? 'flex-end' : 'center'};
       width: ${({ labelWidth }): string => (labelWidth ? `${labelWidth}px` : 'initial')};
+      flex-direction: row-reverse;
+      span {
+        padding-left: 0.5rem;
+      }
     }
     > div {
       display: flex;
@@ -63,6 +68,9 @@ const CardBody = styled.div<{
       > h3 {
         font-size: ${({ valueSize }): number => valueSize || 1.8}rem;
         margin: 0px;
+        ${media.mobile} {
+          font-size: 1.45rem;
+        }
       }
       > span {
         font-weight: bold;
@@ -130,8 +138,8 @@ export const CardContent: React.FC<CardContentProps> = ({
       {!loading && label2 && (
         <div>
           <p>
-            {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}
             {label2}
+            {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}
           </p>
           <div>
             <h3>{value2}</h3>
