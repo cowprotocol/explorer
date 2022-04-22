@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled, { DefaultTheme, useTheme } from 'styled-components'
-import { format } from 'date-fns'
+import { format, fromUnixTime } from 'date-fns'
 
-import { createChart, HistogramData, IChartApi } from 'lightweight-charts'
+import { createChart, HistogramData, IChartApi, MouseEventParams, UTCTimestamp } from 'lightweight-charts'
 import { VolumeDataResponse, VolumeItem } from '.'
 import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { formatSmart } from 'utils'
@@ -40,24 +40,26 @@ const Wrapper = styled.div`
     }
   }
 
-  .floating-tooltip {
-    width: 96px;
-    height: 300px;
+  > div.floating-tooltip {
+    width: 9.6rem;
+    height: 100%;
     position: absolute;
     display: none;
-    padding: 8px;
     box-sizing: border-box;
     font-size: 12px;
     color: '#20262E';
     background-color: rgba(255, 255, 255, 0.23);
-    text-align: left;
-    z-index: 1000;
-    top: 12px;
-    left: 12px;
+    text-align: center;
+    z-index: 1;
+    top: 0px;
+    left: 1.2rem;
     pointer-events: none;
-    border-radius: 4px 4px 0px 0px;
     border-bottom: none;
-    box-shadow: 0 2px 5px 0 rgba(117, 134, 150, 0.45);
+    border-radius: 0.2rem;
+    box-shadow: 0 0.2rem 0.5rem 0 rgba(117, 134, 150, 0.45);
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
   }
 `
 
@@ -110,7 +112,7 @@ const ChartSkeleton = styled.div`
 
 function formatChartData(data: VolumeItem[]): HistogramData[] {
   return data?.map((item) => ({
-    time: format(item.timestamp, 'yyyy-MM-dd'),
+    time: item.timestamp as UTCTimestamp,
     value: item.volumeUsd,
   }))
 }
@@ -186,6 +188,24 @@ export function VolumeChart({
     })
 
     series.setData(formatChartData(items))
+
+    const toolTip = document.createElement('div')
+    toolTip.setAttribute('class', 'floating-tooltip')
+    chartContainerRef.current.appendChild(toolTip)
+    chart.subscribeCrosshairMove(function (param: MouseEventParams) {
+      if (param === undefined || param.time === undefined || !param.point || param.point.x < 0 || param.point.y < 0) {
+        toolTip.style.display = 'none'
+        return
+      }
+
+      const price = param.seriesPrices.get(series)
+      const date = param.time && format(fromUnixTime(param.time as UTCTimestamp), 'MMM d, yyyy')
+      toolTip.style.display = 'flex'
+      toolTip.innerHTML = `<span>$${
+        price && formatSmart({ amount: price.toString(), precision: 0, decimals: 2 })
+      }</span><span>${date}</span>`
+    })
+
     setChartCreated(chart)
   }, [chartCreated, height, items, theme, width])
 
