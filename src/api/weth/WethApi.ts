@@ -27,11 +27,11 @@ export interface WethApiDependencies {
 
 function getWethAddressByNetwork(networkId: number): string {
   switch (networkId) {
-    case Network.Mainnet:
+    case Network.MAINNET:
       return WETH_ADDRESS_MAINNET
-    case Network.Rinkeby:
+    case Network.RINKEBY:
       return WETH_ADDRESS_RINKEBY
-    case Network.xDAI:
+    case Network.GNOSIS_CHAIN:
       // Is not wxDAI is not WETH, but it has the same approve/withdraw methods
       // it's just convenient to not rename the API and keep calling it WethApi although it wraps also xDAI
       return WXDAI_ADDRESS_XDAI

@@ -41,7 +41,7 @@ export interface Props {
 }
 
 function getEtherscanUrlPrefix(networkId: Network): string {
-  return !networkId || networkId === Network.Mainnet ? '' : (Network[networkId] || '').toLowerCase() + '.'
+  return !networkId || networkId === Network.MAINNET ? '' : (Network[networkId] || '').toLowerCase() + '.'
 }
 
 function getEtherscanUrlSuffix(type: BlockExplorerLinkType, identifier: string): string {
@@ -61,7 +61,7 @@ function getEtherscanUrlSuffix(type: BlockExplorerLinkType, identifier: string):
 
 function getBlockscoutUrlPrefix(networkId: number): string {
   switch (networkId) {
-    case Network.xDAI:
+    case Network.GNOSIS_CHAIN:
       return 'poa/xdai'
 
     default:
@@ -93,7 +93,7 @@ function getEtherscanUrl(networkId: number, type: BlockExplorerLinkType, identif
 }
 
 function getExplorerUrl(networkId: number, type: BlockExplorerLinkType, identifier: string): string {
-  return networkId === Network.xDAI
+  return networkId === Network.GNOSIS_CHAIN
     ? getBlockscoutUrl(networkId, type, identifier)
     : getEtherscanUrl(networkId, type, identifier)
 }

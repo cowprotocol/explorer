@@ -31,7 +31,7 @@ const Template: Story<Props> = (args) => <BlockExplorerLink {...args} />
 const defaultParams: Props = {
   type: 'tx',
   identifier: TX_EXAMPLE,
-  networkId: Network.Mainnet,
+  networkId: Network.MAINNET,
 }
 
 export const NoNetwork = Template.bind({})
@@ -48,7 +48,7 @@ Mainnet.args = {
 export const Rinkeby = Template.bind({})
 Rinkeby.args = {
   ...defaultParams,
-  networkId: Network.Rinkeby,
+  networkId: Network.RINKEBY,
   type: 'contract',
   label: 'Gnosis Protocol (Rinkeby)',
   identifier: ADDRESS_GNOSIS_PROTOCOL_RINKEBY,
@@ -80,7 +80,7 @@ export const TxXdai = Template.bind({})
 TxXdai.storyName = 'Tx on xDAI'
 TxXdai.args = {
   ...defaultParams,
-  networkId: Network.xDAI,
+  networkId: Network.GNOSIS_CHAIN,
   type: 'tx',
   identifier: TX_XDAI,
 }
@@ -89,7 +89,7 @@ export const ContractXDai = Template.bind({})
 ContractXDai.storyName = 'Contract on xDAI'
 ContractXDai.args = {
   ...defaultParams,
-  networkId: Network.xDAI,
+  networkId: Network.GNOSIS_CHAIN,
   type: 'contract',
   identifier: ADDRESS_GNOSIS_PROTOCOL_XDAI,
 }
@@ -98,7 +98,7 @@ export const TokenXDai = Template.bind({})
 TokenXDai.storyName = 'Token on xDAI'
 TokenXDai.args = {
   ...defaultParams,
-  networkId: Network.xDAI,
+  networkId: Network.GNOSIS_CHAIN,
   type: 'token',
   identifier: ADDRESS_GNO_XDAI,
 }
@@ -107,7 +107,7 @@ export const AddressXDai = Template.bind({})
 AddressXDai.storyName = 'Address on xDAI'
 AddressXDai.args = {
   ...defaultParams,
-  networkId: Network.xDAI,
+  networkId: Network.GNOSIS_CHAIN,
   type: 'address',
   identifier: ADDRESS_ACCOUNT_XDAI,
 }

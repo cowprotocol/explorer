@@ -17,15 +17,15 @@ import { fetchQuery } from 'api/baseApi'
 function getOperatorUrl(): Partial<Record<Network, string>> {
   if (isProd || isStaging) {
     return {
-      [Network.Mainnet]: process.env.OPERATOR_URL_PROD_MAINNET,
-      [Network.Rinkeby]: process.env.OPERATOR_URL_PROD_RINKEBY,
-      [Network.xDAI]: process.env.OPERATOR_URL_PROD_XDAI,
+      [Network.MAINNET]: process.env.OPERATOR_URL_PROD_MAINNET,
+      [Network.RINKEBY]: process.env.OPERATOR_URL_PROD_RINKEBY,
+      [Network.GNOSIS_CHAIN]: process.env.OPERATOR_URL_PROD_XDAI,
     }
   } else {
     return {
-      [Network.Mainnet]: process.env.OPERATOR_URL_STAGING_MAINNET,
-      [Network.Rinkeby]: process.env.OPERATOR_URL_STAGING_RINKEBY,
-      [Network.xDAI]: process.env.OPERATOR_URL_STAGING_XDAI,
+      [Network.MAINNET]: process.env.OPERATOR_URL_STAGING_MAINNET,
+      [Network.RINKEBY]: process.env.OPERATOR_URL_STAGING_RINKEBY,
+      [Network.GNOSIS_CHAIN]: process.env.OPERATOR_URL_STAGING_XDAI,
     }
   }
 }
@@ -131,9 +131,6 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   if (!cowInstance) return []
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  //TO DO: Remove these ts comment lines when the SDK version is bumped with the new changes
   return cowInstance.cowApi.getTxOrders(txHash)
 }
 
@@ -147,12 +144,24 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  * Both filters cannot be used at the same time
  */
 export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
-  const { networkId, owner = '' } = params
+  const { networkId, owner = '', orderId = '' } = params
   const cowInstance = COW_SDK[networkId]
 
-  if (!cowInstance || !owner) return []
+  if (orderId) return getOrderTrades(params)
+
+  if (!cowInstance) return []
 
   return cowInstance.cowApi.getTrades({ owner })
+}
+
+async function getOrderTrades(params: GetTradesParams): Promise<RawTrade[]> {
+  const { networkId, orderId = '' } = params
+
+  console.log(`[getTrades] Fetching trades on network ${networkId} with filter: orderId=${orderId}`)
+
+  const queryString = `/trades/` + buildSearchString({ orderUid: orderId })
+
+  return _fetchQuery(networkId, queryString)
 }
 
 function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>

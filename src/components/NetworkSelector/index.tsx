@@ -20,17 +20,17 @@ type NetworkOptions = {
 
 export const networkOptions: NetworkOptions[] = [
   {
-    id: Network.Mainnet,
+    id: Network.MAINNET,
     name: 'Ethereum',
     url: '',
   },
   {
-    id: Network.xDAI,
+    id: Network.GNOSIS_CHAIN,
     name: 'Gnosis Chain',
     url: 'gc',
   },
   {
-    id: Network.Rinkeby,
+    id: Network.RINKEBY,
     name: 'Rinkeby',
     url: 'rinkeby',
   },

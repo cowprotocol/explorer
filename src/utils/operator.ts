@@ -10,7 +10,6 @@ import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
 import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
-import BN from 'bn.js'
 
 function isOrderFilled(order: RawOrder): boolean {
   let amount, executedAmount
@@ -196,8 +195,8 @@ export type GetRawOrderPriceParams = CommonPriceParams & {
 }
 
 export type GetOrderLimitPriceParams = CommonPriceParams & {
-  buyAmount: string | BigNumber | BN
-  sellAmount: string | BigNumber | BN
+  buyAmount: string | BigNumber
+  sellAmount: string | BigNumber
 }
 
 /**

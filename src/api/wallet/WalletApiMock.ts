@@ -29,7 +29,7 @@ export class WalletApiMock implements WalletApi {
   public constructor() {
     this._connected = process.env.AUTOCONNECT === 'true'
     this._user = USER_1
-    this._networkId = Network.Rinkeby
+    this._networkId = Network.RINKEBY
     this._balance = toWei(new BN(2.75), 'ether')
     this._listeners = []
   }
@@ -113,7 +113,7 @@ export class WalletApiMock implements WalletApi {
   }
 
   public changeNetwork(): void {
-    this._networkId = this._networkId === Network.Rinkeby ? Network.Mainnet : Network.Rinkeby
+    this._networkId = this._networkId === Network.RINKEBY ? Network.MAINNET : Network.RINKEBY
     this._notifyListeners()
   }
 

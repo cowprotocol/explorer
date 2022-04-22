@@ -350,7 +350,7 @@ const TokenSelector: React.FC<Props> = ({ isDisabled, tokens, selected, onChange
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const fallBackNetworkId = networkId || Network.Mainnet
+  const fallBackNetworkId = networkId || Network.MAINNET
 
   return (
     <Wrapper ref={wrapperRef} onKeyDown={stopEnterPropagation}>

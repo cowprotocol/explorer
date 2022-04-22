@@ -86,10 +86,10 @@ function isWebsocketConnection(): boolean {
 // For now only infura provider is available
 export function getProviderByNetwork(networkId: Network | null): string | undefined {
   switch (networkId) {
-    case Network.Mainnet:
-    case Network.Rinkeby:
+    case Network.MAINNET:
+    case Network.RINKEBY:
       return infuraProvider(networkId)
-    case Network.xDAI:
+    case Network.GNOSIS_CHAIN:
       return 'https://dai.poa.network'
     default:
       return undefined

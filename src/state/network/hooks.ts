@@ -11,5 +11,5 @@ export function useNetworkId(): Network | null {
 export function useNetworkOrDefault(): Network {
   const [{ networkId }] = useGlobalState<ExplorerAppState>()
 
-  return networkId || Network.Mainnet
+  return networkId || Network.MAINNET
 }

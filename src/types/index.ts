@@ -9,14 +9,17 @@ export type AnyFunction = (...args: unknown[]) => unknown
 export type Mutation<T> = (original: T) => T
 export type Unpromise<T> = T extends Promise<infer U> ? U : T
 
+//This Enum here is temporary until SupportedChainId is exported
 export enum Network {
-  Mainnet = 1,
-  Ropsten = 3,
-  Rinkeby = 4,
-  Goerli = 5,
-  Kovan = 42,
-  xDAI = 100,
+  MAINNET = 1,
+  RINKEBY = 4,
+  GNOSIS_CHAIN = 100,
 }
+
+/*
+export const Network = SupportedChainId
+export type Network = SupportedChainId
+*/
 
 export interface TokenDetails extends TokenDex {
   label: string

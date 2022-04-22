@@ -6,7 +6,7 @@ import TokenListApiMock from './TokenListApiMock'
 import { tokenList } from '../../../test/data'
 
 export function createTokenListApi(): TokenList {
-  const networkIds = [Network.Mainnet, Network.Rinkeby, Network.xDAI]
+  const networkIds = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN]
 
   let tokenListApi: TokenList
   if (process.env.MOCK_TOKEN_LIST === 'true') {
