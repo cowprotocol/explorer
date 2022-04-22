@@ -16,6 +16,7 @@ const Wrapper = styled.span`
 
 const Content = styled.div`
   display: inline-block;
+  position: relative;
 `
 
 type Props = {

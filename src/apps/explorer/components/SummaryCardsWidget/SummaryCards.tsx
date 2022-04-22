@@ -9,6 +9,9 @@ import { TotalSummaryResponse } from '.'
 import { abbreviateString } from 'utils'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import { CopyButton } from 'components/common/CopyButton'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+
 
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
@@ -99,9 +102,18 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
               valueSize={valueTextSize}
             />
             <CardContent
-              variant="3row"
+              variant={rowsByCard}
               label1="Batch ID"
-              value1={batchInfo && abbreviateString(batchInfo?.batchId, 0, 6)}
+              value1={
+                batchInfo && (
+                  <>
+                    <LinkWithPrefixNetwork to={`/tx/${batchInfo.batchId}`}>
+                      {abbreviateString(batchInfo?.batchId, 6, 4)}
+                    </LinkWithPrefixNetwork>
+                    <CopyButton heightIcon={1.35} text={batchInfo?.batchId || ''} />
+                  </>
+                )
+              }
               loading={isLoading}
               valueSize={valueTextSize}
             />
@@ -130,7 +142,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
         <Card xs={6} lg={4}>
           <CardContent
             variant={rowsByCard}
-            label1="24h fees"
+            label1="24h Fees"
             value1={`$${dailyFees?.now.toFixed(2)}`}
             caption1={`${diffFees.toFixed(2)}%`}
             captionColor={getColorBySign(diffFees)}
