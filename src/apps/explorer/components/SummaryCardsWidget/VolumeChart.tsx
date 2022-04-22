@@ -93,10 +93,9 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>
   }
 `
 const ChartSkeleton = styled.div`
-  margin: 1rem;
   height: 100%;
   min-height: 19.6rem;
-  width: 100%;
+  margin: 1rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.4rem;
   overflow: hidden;

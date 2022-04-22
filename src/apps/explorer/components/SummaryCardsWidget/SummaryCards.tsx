@@ -30,12 +30,10 @@ const WrapperColumn = styled.div`
   flex-grow: 0;
   max-width: 66.666667%;
   flex-basis: 66.666667%;
-  padding-right: 2rem;
 
   > div {
     margin: 1rem;
     max-height: ${BatchInfoHeight};
-    width: 100%;
     border: 1px solid ${({ theme }): string => theme.borderPrimary};
     border-radius: 0.4rem;
     overflow: hidden;
