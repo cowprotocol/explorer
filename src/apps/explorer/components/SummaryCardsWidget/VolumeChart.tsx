@@ -97,7 +97,7 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; d
         color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.grey)};
       }
       &.date {
-        margin: 0;
+        margin: -1rem 0;
         color: ${({ theme }): string => theme.grey};
         font-size: 1.1rem;
       }
