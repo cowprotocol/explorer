@@ -101,7 +101,7 @@ function useGetVolumeData(): VolumeDataResponse | undefined {
     })
     const timer = setTimeout(
       () => setVolumeDataJson({ ...buildVolumeData(volumeDataJson), isLoading: false }),
-      DELAY_SECONDS * 5000,
+      DELAY_SECONDS * 1000,
     )
 
     return (): void => clearTimeout(timer)
