@@ -6,6 +6,7 @@ import { createChart, HistogramData, IChartApi, MouseEventParams, UTCTimestamp, 
 import { VolumeDataResponse, VolumeItem } from '.'
 import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { formatSmart } from 'utils'
+import Spinner from 'components/common/Spinner'
 import GraphSkeleton from 'assets/img/graph-skeleton.svg'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
@@ -57,7 +58,7 @@ const Wrapper = styled.div`
     justify-content: end;
   }
 `
-export const PeriodButton = styled.button<{ active: boolean }>`
+const WrapperPeriodButton = styled.button<{ active: boolean }>`
   background: none;
   border: none;
   font: inherit;
@@ -73,6 +74,21 @@ export const PeriodButton = styled.button<{ active: boolean }>`
     color: ${({ theme }): string => theme.orange};
   }
 `
+
+export function PeriodButton({
+  active,
+  isLoading,
+  children,
+  onClick,
+}: React.PropsWithChildren<{ active: boolean; isLoading: boolean | undefined; onClick: () => void }>): JSX.Element {
+  if (isLoading) return <Spinner spin size="1x" />
+
+  return (
+    <WrapperPeriodButton active={active} onClick={onClick}>
+      {children}
+    </WrapperPeriodButton>
+  )
+}
 
 const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; dateStyle?: boolean }>`
   position: absolute;

@@ -92,7 +92,7 @@ function useGetTotalSummary(): TotalSummaryResponse | undefined {
   return summary
 }
 
-function useGetVolumeData(): VolumeDataResponse | undefined {
+function useGetVolumeData(volumeTimePeriod = VolumePeriod.DAILY): VolumeDataResponse | undefined {
   const [volumeData, setVolumeDataJson] = useState<VolumeDataResponse | undefined>()
 
   useEffect(() => {
@@ -105,7 +105,7 @@ function useGetVolumeData(): VolumeDataResponse | undefined {
     )
 
     return (): void => clearTimeout(timer)
-  }, [])
+  }, [volumeTimePeriod])
 
   return volumeData
 }
@@ -126,8 +126,9 @@ enum VolumePeriod {
 }
 
 export function VolumeChartWidget(): JSX.Element {
-  const volumeData = useGetVolumeData()
   const [volumeTimePeriod, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
+  const volumeData = useGetVolumeData(volumeTimePeriod)
+  console.log('VolumeData', volumeData)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // update the width on a window resize
@@ -149,24 +150,28 @@ export function VolumeChartWidget(): JSX.Element {
     <WrapperVolumeChart ref={containerRef}>
       <VolumeChart title="CoW Volume" volumeData={volumeData} width={width}>
         <PeriodButton
+          isLoading={volumeData?.isLoading}
           active={volumeTimePeriod === VolumePeriod.DAILY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.DAILY)}
         >
           {VolumePeriod.DAILY}
         </PeriodButton>
         <PeriodButton
+          isLoading={volumeData?.isLoading}
           active={volumeTimePeriod === VolumePeriod.WEEKLY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.WEEKLY)}
         >
           {VolumePeriod.WEEKLY}
         </PeriodButton>
         <PeriodButton
+          isLoading={volumeData?.isLoading}
           active={volumeTimePeriod === VolumePeriod.MONTHLY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.MONTHLY)}
         >
           {VolumePeriod.MONTHLY}
         </PeriodButton>
         <PeriodButton
+          isLoading={volumeData?.isLoading}
           active={volumeTimePeriod === VolumePeriod.YEARLY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.YEARLY)}
         >
