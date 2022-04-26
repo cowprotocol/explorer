@@ -9,6 +9,8 @@ import { formatSmart } from 'utils'
 import GraphSkeleton from 'assets/img/graph-skeleton.svg'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
+const LONG_COLOR = 'rgba(0, 196, 110, 0.01)'
+const SHORT_COLOR = 'rgba(255, 48, 91, 0.01)'
 
 export interface VolumeChartProps {
   title: string
@@ -20,7 +22,7 @@ export interface VolumeChartProps {
 const Wrapper = styled.div`
   position: relative;
 
-  .timeSelector {
+  .time-selector {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -30,14 +32,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     font-size: small;
     color: ${({ theme }): string => theme.grey};
-    > li {
-      float: left;
-      display: block;
-      color: white;
-      text-align: center;
-      padding: 0 1.5rem;
-      text-decoration: none;
-    }
+    z-index: 3;
   }
 
   > div.floating-tooltip {
@@ -60,6 +55,22 @@ const Wrapper = styled.div`
     flex-direction: column;
     gap: 1rem;
     justify-content: end;
+  }
+`
+export const PeriodButton = styled.button<{ active: boolean }>`
+  background: none;
+  border: none;
+  font: inherit;
+  outline: inherit;
+  cursor: pointer;
+  float: left;
+  display: block;
+  color: ${({ theme, active }): string => (active ? theme.orange : theme.white)};
+  text-align: center;
+  padding: 0 1.5rem;
+
+  &:hover {
+    color: ${({ theme }): string => theme.orange};
   }
 `
 
@@ -142,11 +153,15 @@ const ChartSkeleton = styled.div<ShimmingProps>`
       : null}
 `
 
-function formatChartData(data: VolumeItem[]): HistogramData[] {
+function _formatChartData(data: VolumeItem[]): HistogramData[] {
   return data?.map((item) => ({
     time: item.timestamp as UTCTimestamp,
     value: item.volumeUsd,
   }))
+}
+
+function _formatAmount(amount: string): string {
+  return formatSmart({ amount, precision: 0, decimals: 0 })
 }
 
 function _buildChart(
@@ -158,6 +173,8 @@ function _buildChart(
   return createChart(chartContainer, {
     width,
     height,
+    handleScroll: false,
+    handleScale: false,
     layout: {
       backgroundColor: 'transparent',
       textColor: theme.textPrimary1,
@@ -203,13 +220,14 @@ export function VolumeChart({
   volumeData,
   height = DEFAULT_CHART_HEIGHT,
   width = undefined,
-}: VolumeChartProps): JSX.Element {
+  children,
+}: React.PropsWithChildren<VolumeChartProps>): JSX.Element {
   const { data: items, currentVolume, changedVolume, isLoading } = volumeData || {}
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null>(null)
   const theme = useTheme()
   const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
-  const captionColor = getColorBySign(diffPercentageVolume || 0)
+  const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
 
   useEffect(() => {
@@ -218,9 +236,12 @@ export function VolumeChart({
     const chart = _buildChart(chartContainerRef.current, width, height, theme)
     const series = chart.addAreaSeries({
       lineWidth: 1,
+      lineColor: theme[captionNameColor],
+      topColor: theme[captionNameColor],
+      bottomColor: captionNameColor === 'red1' ? SHORT_COLOR : LONG_COLOR,
     })
 
-    series.setData(formatChartData(items))
+    series.setData(_formatChartData(items))
 
     chart.subscribeCrosshairMove(function (param: MouseEventParams) {
       if (param === undefined || param.time === undefined || !param.point || param.point.x < 0 || param.point.y < 0) {
@@ -234,7 +255,7 @@ export function VolumeChart({
     })
 
     setChartCreated(chart)
-  }, [chartCreated, height, items, theme, width])
+  }, [captionNameColor, chartCreated, height, items, theme, width])
 
   // resize when window width change
   useEffect(() => {
@@ -252,29 +273,26 @@ export function VolumeChart({
     )
 
   return (
-    <Wrapper ref={chartContainerRef}>
-      <ContainerTitle captionColor={captionColor} dateStyle={crossHairData !== null}>
-        <h3>Cow Volume</h3>
-        <span>
-          {crossHairData ? (
-            <>
-              <p>${formatSmart({ amount: crossHairData.value.toString(), precision: 0, decimals: 2 })}</p>
-              <p className="date">{format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')}</p>
-            </>
-          ) : (
-            <>
-              <p>${currentVolume && formatSmart({ amount: currentVolume.toString(), precision: 0, decimals: 2 })}</p>
-              <p className="caption">{diffPercentageVolume?.toFixed(2)}%</p>
-            </>
-          )}
-        </span>
-      </ContainerTitle>
-      <ul className="timeSelector">
-        <li>1D</li>
-        <li>1W</li>
-        <li>1M</li>
-        <li>1Y</li>
-      </ul>
-    </Wrapper>
+    <>
+      <Wrapper ref={chartContainerRef}>
+        <ContainerTitle captionColor={captionNameColor} dateStyle={crossHairData !== null}>
+          <h3>Cow Volume</h3>
+          <span>
+            {crossHairData ? (
+              <>
+                <p>${_formatAmount(crossHairData.value.toString())}</p>
+                <p className="date">{format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')}</p>
+              </>
+            ) : (
+              <>
+                <p>${currentVolume && _formatAmount(currentVolume.toString())}</p>
+                <p className="caption">{diffPercentageVolume?.toFixed(2)}%</p>
+              </>
+            )}
+          </span>
+        </ContainerTitle>
+        {children && <div className="time-selector">{children}</div>}
+      </Wrapper>
+    </>
   )
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import styled from 'styled-components'
 
 import { SummaryCards } from './SummaryCards'
-import { VolumeChart } from './VolumeChart'
+import { PeriodButton, VolumeChart } from './VolumeChart'
 import volumeDataJson from './volumeData.json'
 import summaryData from './summaryGraphResp.json'
 
@@ -118,9 +118,16 @@ const Wrapper = styled.div`
 const WrapperVolumeChart = styled.div`
   height: 19.6rem;
 `
+enum VolumePeriod {
+  DAILY = '1D',
+  WEEKLY = '1W',
+  MONTHLY = '1M',
+  YEARLY = '1Y',
+}
 
 export function VolumeChartWidget(): JSX.Element {
   const volumeData = useGetVolumeData()
+  const [volumeTimePeriod, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // update the width on a window resize
@@ -140,7 +147,32 @@ export function VolumeChartWidget(): JSX.Element {
 
   return (
     <WrapperVolumeChart ref={containerRef}>
-      <VolumeChart title="CoW Volume" volumeData={volumeData} width={width}></VolumeChart>
+      <VolumeChart title="CoW Volume" volumeData={volumeData} width={width}>
+        <PeriodButton
+          active={volumeTimePeriod === VolumePeriod.DAILY}
+          onClick={(): void => setVolumeTimePeriod(VolumePeriod.DAILY)}
+        >
+          {VolumePeriod.DAILY}
+        </PeriodButton>
+        <PeriodButton
+          active={volumeTimePeriod === VolumePeriod.WEEKLY}
+          onClick={(): void => setVolumeTimePeriod(VolumePeriod.WEEKLY)}
+        >
+          {VolumePeriod.WEEKLY}
+        </PeriodButton>
+        <PeriodButton
+          active={volumeTimePeriod === VolumePeriod.MONTHLY}
+          onClick={(): void => setVolumeTimePeriod(VolumePeriod.MONTHLY)}
+        >
+          {VolumePeriod.MONTHLY}
+        </PeriodButton>
+        <PeriodButton
+          active={volumeTimePeriod === VolumePeriod.YEARLY}
+          onClick={(): void => setVolumeTimePeriod(VolumePeriod.YEARLY)}
+        >
+          {VolumePeriod.YEARLY}
+        </PeriodButton>
+      </VolumeChart>
     </WrapperVolumeChart>
   )
 }
