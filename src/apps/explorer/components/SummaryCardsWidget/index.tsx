@@ -57,19 +57,29 @@ function buildSummary(data: RawTotalSummary): TotalSummary {
     },
   }
 }
-export function buildVolumeData(_data: RawVolumeItem[]): {
+export function buildVolumeData(
+  _data: RawVolumeItem[],
+  volumePeriod: VolumePeriod,
+): {
   data: VolumeItem[]
   currentVolume: number
   changedVolume: number
 } {
+  const periods = {
+    [VolumePeriod.DAILY]: 7,
+    [VolumePeriod.WEEKLY]: 14,
+    [VolumePeriod.MONTHLY]: 30,
+    [VolumePeriod.YEARLY]: 365,
+  }
+  const slicedData = _data.slice(0, periods[volumePeriod])
   return {
-    data: _data.map((item) => ({
+    data: slicedData.map((item) => ({
       id: item.id,
       timestamp: parseInt(item.timestamp),
       volumeUsd: parseFloat(item.volumeUsd),
     })),
-    currentVolume: parseFloat(_data[_data.length - 1].volumeUsd),
-    changedVolume: parseFloat(_data[_data.length - 2].volumeUsd),
+    currentVolume: parseFloat(slicedData[slicedData.length - 1].volumeUsd),
+    changedVolume: parseFloat(slicedData[slicedData.length - 2].volumeUsd),
   }
 }
 
@@ -100,7 +110,7 @@ function useGetVolumeData(volumeTimePeriod = VolumePeriod.DAILY): VolumeDataResp
       return { ...prevState, isLoading: true }
     })
     const timer = setTimeout(
-      () => setVolumeDataJson({ ...buildVolumeData(volumeDataJson), isLoading: false }),
+      () => setVolumeDataJson({ ...buildVolumeData(volumeDataJson, volumeTimePeriod), isLoading: false }),
       DELAY_SECONDS * 1000,
     )
 
@@ -118,7 +128,8 @@ const Wrapper = styled.div`
 const WrapperVolumeChart = styled.div`
   height: 19.6rem;
 `
-enum VolumePeriod {
+
+export enum VolumePeriod {
   DAILY = '1D',
   WEEKLY = '1W',
   MONTHLY = '1M',
@@ -126,9 +137,8 @@ enum VolumePeriod {
 }
 
 export function VolumeChartWidget(): JSX.Element {
-  const [volumeTimePeriod, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
-  const volumeData = useGetVolumeData(volumeTimePeriod)
-  console.log('VolumeData', volumeData)
+  const [periodSelected, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
+  const volumeData = useGetVolumeData(periodSelected)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // update the width on a window resize
@@ -148,31 +158,31 @@ export function VolumeChartWidget(): JSX.Element {
 
   return (
     <WrapperVolumeChart ref={containerRef}>
-      <VolumeChart title="CoW Volume" volumeData={volumeData} width={width}>
+      <VolumeChart title="CoW Volume" volumeData={volumeData} width={width} periodId={periodSelected}>
         <PeriodButton
           isLoading={volumeData?.isLoading}
-          active={volumeTimePeriod === VolumePeriod.DAILY}
+          active={periodSelected === VolumePeriod.DAILY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.DAILY)}
         >
           {VolumePeriod.DAILY}
         </PeriodButton>
         <PeriodButton
           isLoading={volumeData?.isLoading}
-          active={volumeTimePeriod === VolumePeriod.WEEKLY}
+          active={periodSelected === VolumePeriod.WEEKLY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.WEEKLY)}
         >
           {VolumePeriod.WEEKLY}
         </PeriodButton>
         <PeriodButton
           isLoading={volumeData?.isLoading}
-          active={volumeTimePeriod === VolumePeriod.MONTHLY}
+          active={periodSelected === VolumePeriod.MONTHLY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.MONTHLY)}
         >
           {VolumePeriod.MONTHLY}
         </PeriodButton>
         <PeriodButton
           isLoading={volumeData?.isLoading}
-          active={volumeTimePeriod === VolumePeriod.YEARLY}
+          active={periodSelected === VolumePeriod.YEARLY}
           onClick={(): void => setVolumeTimePeriod(VolumePeriod.YEARLY)}
         >
           {VolumePeriod.YEARLY}

@@ -8,8 +8,10 @@ import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { formatSmart } from 'utils'
 import Spinner from 'components/common/Spinner'
 import GraphSkeleton from 'assets/img/graph-skeleton.svg'
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
+const DEFAULT_PERIOD_ID = 'ALL'
 const LONG_COLOR = 'rgba(0, 196, 110, 0.01)'
 const SHORT_COLOR = 'rgba(255, 48, 91, 0.01)'
 
@@ -18,6 +20,7 @@ export interface VolumeChartProps {
   volumeData: VolumeDataResponse | undefined
   height?: number
   width?: number
+  periodId?: string
 }
 
 const Wrapper = styled.div`
@@ -81,11 +84,9 @@ export function PeriodButton({
   children,
   onClick,
 }: React.PropsWithChildren<{ active: boolean; isLoading: boolean | undefined; onClick: () => void }>): JSX.Element {
-  if (isLoading) return <Spinner spin size="1x" />
-
   return (
     <WrapperPeriodButton active={active} onClick={onClick}>
-      {children}
+      {isLoading && active ? <Spinner spin size="1x" /> : children}
     </WrapperPeriodButton>
   )
 }
@@ -94,6 +95,7 @@ const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; d
   position: absolute;
   top: 1rem;
   left: 1rem;
+  z-index: 3;
   > h3 {
     color: ${({ theme }): string => theme.grey};
     font-size: small;
@@ -180,6 +182,16 @@ function _formatAmount(amount: string): string {
   return formatSmart({ amount, precision: 0, decimals: 0 })
 }
 
+function usePreviousLastValueData(value: string): string | undefined {
+  const ref = useRef<string>()
+
+  useEffect(() => {
+    ref.current = value
+  }, [value])
+
+  return ref.current
+}
+
 function _buildChart(
   chartContainer: HTMLDivElement,
   width: number | undefined,
@@ -236,18 +248,27 @@ export function VolumeChart({
   volumeData,
   height = DEFAULT_CHART_HEIGHT,
   width = undefined,
+  periodId = DEFAULT_PERIOD_ID,
   children,
 }: React.PropsWithChildren<VolumeChartProps>): JSX.Element {
   const { data: items, currentVolume, changedVolume, isLoading } = volumeData || {}
   const chartContainerRef = useRef<HTMLDivElement>(null)
-  const [chartCreated, setChartCreated] = useState<IChartApi | null>(null)
+  const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
   const theme = useTheme()
   const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
+  const previousPeriod = usePreviousLastValueData(periodId)
 
   useEffect(() => {
-    if (chartCreated || !chartContainerRef.current || !items) return
+    if (periodId !== previousPeriod && chartCreated) {
+      chartCreated.resize(0, 0)
+      setChartCreated(null)
+    }
+  }, [chartCreated, periodId, previousPeriod])
+
+  useEffect(() => {
+    if (chartCreated || !chartContainerRef.current || !items || isLoading) return
 
     const chart = _buildChart(chartContainerRef.current, width, height, theme)
     const series = chart.addAreaSeries({
@@ -270,8 +291,9 @@ export function VolumeChart({
       setCrossHairData({ time, value })
     })
 
-    setChartCreated(chart)
-  }, [captionNameColor, chartCreated, height, items, theme, width])
+    chart.timeScale().fitContent()
+    if (!isLoading) setChartCreated(chart)
+  }, [captionNameColor, chartCreated, height, isLoading, items, theme, width])
 
   // resize when window width change
   useEffect(() => {
@@ -281,7 +303,7 @@ export function VolumeChart({
     chartCreated.timeScale().scrollToPosition(0, false)
   }, [chartCreated, height, width])
 
-  if (isLoading)
+  if (isLoading && chartCreated === undefined)
     return (
       <ChartSkeleton shimming>
         <h2>Loading...</h2>
@@ -294,7 +316,9 @@ export function VolumeChart({
         <ContainerTitle captionColor={captionNameColor} dateStyle={crossHairData !== null}>
           <h3>Cow Volume</h3>
           <span>
-            {crossHairData ? (
+            {isLoading ? (
+              <ShimmerBar height={2.5} />
+            ) : crossHairData ? (
               <>
                 <p>${_formatAmount(crossHairData.value.toString())}</p>
                 <p className="date">{format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')}</p>
