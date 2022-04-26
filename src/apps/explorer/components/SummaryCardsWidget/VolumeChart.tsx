@@ -9,6 +9,7 @@ import { formatSmart } from 'utils'
 import Spinner from 'components/common/Spinner'
 import GraphSkeleton from 'assets/img/graph-skeleton.svg'
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { media } from 'theme/styles/media'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
 const DEFAULT_PERIOD_ID = 'ALL'
@@ -62,20 +63,36 @@ const Wrapper = styled.div`
   }
 `
 const WrapperPeriodButton = styled.button<{ active: boolean }>`
-  background: none;
-  border: none;
-  font: inherit;
   outline: inherit;
   cursor: pointer;
   float: left;
-  display: block;
+  display: flex;ç
+  align-items: center;
+  justify-content: center;
   color: ${({ theme, active }): string => (active ? theme.orange : theme.white)};
-  text-align: center;
-  padding: 0 1.5rem;
+  background-color: ${({ theme, active }): string => (active ? theme.orangeOpacity : theme.bg1)};
+  border: 1px solid ${({ theme, active }): string => (active ? theme.orange : theme.bg2)};
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  margin: 0 0.5rem;
+  height: 2.5rem;
+  width: 3.8rem;
+
+  ${media.mobile} {
+    padding: 0.5rem 0.8rem;
+    margin: 0 0.5rem;
+    font-size: 1.2rem;
+    width: 3rem;
+  }
 
   &:hover {
     color: ${({ theme }): string => theme.orange};
+    background-color: ${({ theme, active }): string => (active ? theme.bg1 : theme.orangeOpacity)};
   }
+`
+const StyledShimmerBar = styled(ShimmerBar)`
+  margin: 1.2rem 0;
+  min-width: 10rem;
 `
 
 export function PeriodButton({
@@ -317,7 +334,7 @@ export function VolumeChart({
           <h3>Cow Volume</h3>
           <span>
             {isLoading ? (
-              <ShimmerBar height={2.5} />
+              <StyledShimmerBar height={2} />
             ) : crossHairData ? (
               <>
                 <p>${_formatAmount(crossHairData.value.toString())}</p>
