@@ -5,8 +5,9 @@ import { Order, RawOrder, RawTrade, Trade } from 'api/operator'
 import { ZERO_BIG_NUMBER } from 'const'
 
 import { USDT, WETH } from './erc20s'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
-export const RAW_ORDER: RawOrder = {
+export const RAW_ORDER = {
   creationDate: '2021-01-20T23:15:07.892538607Z',
   owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
   receiver: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
@@ -22,12 +23,12 @@ export const RAW_ORDER: RawOrder = {
   buyToken: USDT.address,
   validTo: 0,
   appData: 0,
-  kind: 'sell',
+  kind: 'sell' as OrderKind,
   partiallyFillable: false,
   signature:
     '0x04dca25f59e9ac744c4093530a38f1719c4e0b1ce8e4b68c8018b6b05fd4a6944e1dcf2a009df2d5932f7c034b4a24da0999f9309dd5108d51d54236b605ed991c',
   status: 'open',
-}
+} as RawOrder
 
 export const RICH_ORDER: Order = {
   ...RAW_ORDER,

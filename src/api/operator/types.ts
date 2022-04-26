@@ -22,33 +22,14 @@ export interface FeeInformation {
 
 export type OrderKind = 'sell' | 'buy'
 
+export type SigningSchemeValue = 'eip712' | 'ethsign' | 'eip1271' | 'presign'
 export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expired' | 'signing'
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
 
 // Raw API response
 export type RawOrder =
-  | {
-      creationDate: string
-      owner: string
-      receiver?: string
-      uid: string
-      executedBuyAmount: string
-      executedSellAmount: string
-      executedFeeAmount: string
-      invalidated: boolean
-      sellToken: string
-      buyToken: string
-      sellAmount: string
-      buyAmount: string
-      validTo: number
-      appData: number
-      feeAmount: string
-      kind: OrderKind
-      partiallyFillable: boolean
-      signature: string
-      status: RawOrderStatusFromAPI
-    }
-  | OrderMetaData
+  | (OrderMetaData & { executedSellAmountBeforeFees: string; signingScheme: SigningSchemeValue })
+  | (Omit<OrderMetaData, 'partiallyFillable' | 'invalidated'> & { partiallyFillable: boolean; invalidated: boolean })
 
 /**
  * Enriched Order type.
@@ -84,21 +65,7 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
 /**
  * Raw API trade response type
  */
-export type RawTrade =
-  | {
-      blockNumber: number
-      logIndex: number
-      owner: string
-      txHash: string
-      orderUid: string
-      buyAmount: string
-      sellAmount: string
-      sellAmountBeforeFees: string
-      buyToken: string
-      sellToken: string
-      executionTime: string
-    }
-  | TradeMetaData
+export type RawTrade = TradeMetaData | (TradeMetaData & { executionTime: string })
 
 /**
  * Enriched Trade type

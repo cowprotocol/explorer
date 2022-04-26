@@ -1,3 +1,4 @@
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 import { RawOrder, RawOrderStatusFromAPI } from 'api/operator'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
@@ -121,21 +122,21 @@ describe('Filled status', () => {
 
 describe('Canceled status', () => {
   test('Buy order', () => {
-    const order = {
+    const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'buy',
+      kind: 'buy' as OrderKind,
       buyAmount: '10000',
       invalidated: true,
-    } as RawOrder
+    }
     expect(getOrderStatus(order)).toEqual('cancelled')
   })
   test('Sell order', () => {
-    const order = {
+    const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'sell',
+      kind: 'sell' as OrderKind,
       sellAmount: '10000',
       invalidated: true,
-    } as RawOrder
+    }
     expect(getOrderStatus(order)).toEqual('cancelled')
   })
   test('Expired and invalidated', () => {
@@ -158,7 +159,7 @@ describe('Cancelling Status', () => {
   test('Buy order', () => {
     const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'buy',
+      kind: 'buy' as OrderKind,
       buyAmount: '10000',
       invalidated: true,
       validTo: _getCurrentTimestamp(),
@@ -169,7 +170,7 @@ describe('Cancelling Status', () => {
   test('Sell order', () => {
     const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'sell',
+      kind: 'sell' as OrderKind,
       sellAmount: '10000',
       invalidated: true,
       validTo: _getCurrentTimestamp(),
@@ -180,14 +181,14 @@ describe('Cancelling Status', () => {
   test('When creationDate is already longer than the pendingOrderBuffer', () => {
     const millisecondsBefore = -PENDING_ORDERS_BUFFER - milliseconds // ms before the newCurrentDate
     const newCreationDate = _creationDatePlusMilliseconds(millisecondsBefore)
-    const order = {
+    const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'sell',
+      kind: 'sell' as OrderKind,
       sellAmount: '10000',
       invalidated: true,
       validTo: _getCurrentTimestamp(),
       creationDate: newCreationDate.toISOString(),
-    } as RawOrder
+    }
 
     expect(getOrderStatus(order)).not.toEqual('cancelling')
   })
@@ -298,7 +299,7 @@ describe('Presignature pending status', () => {
 
       const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: 'buy' as OrderKind,
         status: statusFetched,
         buyAmount: '10000',
         executedBuyAmount: '0',
@@ -311,7 +312,7 @@ describe('Presignature pending status', () => {
 
       const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: 'buy' as OrderKind,
         status: statusFetched,
         buyAmount: '10000',
         executedBuyAmount: '0',
@@ -326,7 +327,7 @@ describe('Presignature pending status', () => {
 
       const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: 'sell' as OrderKind,
         status: statusFetched,
         sellAmount: '10000',
         executedSellAmount: '0',
