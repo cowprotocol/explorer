@@ -69,6 +69,11 @@ export const WrapperChart = styled.div`
     gap: 1rem;
     justify-content: end;
   }
+
+  canvas {
+    top: 2rem !important;
+    height: calc(100% - 2rem) !important;
+  }
 `
 
 export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; dateStyle?: boolean }>`
