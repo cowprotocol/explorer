@@ -23,7 +23,6 @@ export const RAW_ORDER = {
   validTo: 0,
   appData: 0,
   kind: OrderKind.SELL,
-  partiallyFillable: false,
   signature:
     '0x04dca25f59e9ac744c4093530a38f1719c4e0b1ce8e4b68c8018b6b05fd4a6944e1dcf2a009df2d5932f7c034b4a24da0999f9309dd5108d51d54236b605ed991c',
   status: 'open',
@@ -45,6 +44,7 @@ export const RICH_ORDER: Order = {
   executedFeeAmount: new BigNumber(RAW_ORDER.executedFeeAmount),
   cancelled: RAW_ORDER.invalidated,
   status: 'open',
+  partiallyFilled: false,
   fullyFilled: false,
   filledAmount: ZERO_BIG_NUMBER,
   filledPercentage: ZERO_BIG_NUMBER,
