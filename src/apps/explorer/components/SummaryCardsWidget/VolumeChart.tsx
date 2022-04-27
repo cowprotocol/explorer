@@ -191,7 +191,7 @@ export function VolumeChart({
     <>
       <WrapperChart ref={chartContainerRef}>
         <ContainerTitle captionColor={captionNameColor} dateStyle={crossHairData !== null}>
-          <h3>Cow Protocol volume</h3>
+          <h3>CoW Protocol volume</h3>
           <span>
             {isLoading ? (
               <StyledShimmerBar height={2} />
