@@ -22,7 +22,6 @@ export interface FeeInformation {
 
 export type OrderKind = 'sell' | 'buy'
 
-export type SigningSchemeValue = 'eip712' | 'ethsign' | 'eip1271' | 'presign'
 export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expired' | 'signing'
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
 
@@ -51,6 +50,7 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
   executedFeeAmount: BigNumber
   cancelled: boolean
   status: OrderStatus
+  partiallyFillable: true
   fullyFilled: boolean
   filledAmount: BigNumber
   filledPercentage: BigNumber
