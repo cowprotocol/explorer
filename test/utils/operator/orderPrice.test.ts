@@ -7,6 +7,7 @@ import { RawOrder } from 'api/operator'
 import { getOrderExecutedPrice, getOrderLimitPrice, GetRawOrderPriceParams, GetOrderLimitPriceParams } from 'utils'
 
 import { RAW_ORDER } from '../../data'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 const ZERO_DOT_ONE = new BigNumber('0.1')
 
@@ -50,13 +51,13 @@ function _assertOrderPriceWithoutFills(_order: RawOrder): void {
 
 describe('Limit price', () => {
   describe('Buy order', () => {
-    const order = { ...RAW_ORDER, kind: 'buy', buyAmount: '100', sellAmount: '1000' } as RawOrder
+    const order = { ...RAW_ORDER, kind: OrderKind.BUY, buyAmount: '100', sellAmount: '1000' }
 
     _assertOrderPrice(order, getOrderLimitPrice)
   })
 
   describe('Sell order', () => {
-    const order = { ...RAW_ORDER, kind: 'sell', buyAmount: '100', sellAmount: '1000' } as RawOrder
+    const order = { ...RAW_ORDER, kind: OrderKind.SELL, buyAmount: '100', sellAmount: '1000' }
 
     _assertOrderPrice(order, getOrderLimitPrice)
   })
@@ -66,11 +67,11 @@ describe('Executed price', () => {
   describe('Buy order', () => {
     const order = {
       ...RAW_ORDER,
-      kind: 'buy',
+      kind: OrderKind.BUY,
       executedBuyAmount: '100',
       executedSellAmount: '1010',
       executedFeeAmount: '10',
-    } as RawOrder
+    }
     describe('With fills', () => {
       _assertOrderPrice(order, getOrderExecutedPrice)
     })
@@ -82,11 +83,11 @@ describe('Executed price', () => {
   describe('Sell order', () => {
     const order = {
       ...RAW_ORDER,
-      kind: 'sell',
+      kind: OrderKind.SELL,
       executedBuyAmount: '100',
       executedSellAmount: '1010',
       executedFeeAmount: '10',
-    } as RawOrder
+    }
 
     describe('With fills', () => {
       _assertOrderPrice(order, getOrderExecutedPrice)

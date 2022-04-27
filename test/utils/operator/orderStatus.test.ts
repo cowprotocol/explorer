@@ -26,94 +26,94 @@ beforeEach(() => mockTimes(_creationDatePlusMilliseconds(PENDING_ORDERS_BUFFER *
 describe('Filled status', () => {
   describe('Buy order', () => {
     test('Filled, within epsilon', () => {
-      const order = { ...RAW_ORDER, kind: 'buy', buyAmount: '10000', executedBuyAmount: '9999' } as RawOrder
+      const order = { ...RAW_ORDER, kind: OrderKind.BUY, buyAmount: '10000', executedBuyAmount: '9999' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, exact amount', () => {
-      const order = { ...RAW_ORDER, kind: 'buy', buyAmount: '100', executedBuyAmount: '100' } as RawOrder
+      const order = { ...RAW_ORDER, kind: OrderKind.BUY, buyAmount: '100', executedBuyAmount: '100' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, not yet expired', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '100',
         executedBuyAmount: '100',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, sell amount does not affect output', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '100',
         executedBuyAmount: '100',
         sellAmount: '100',
         executedSellAmount: '1100',
-      } as RawOrder
+      }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, fee does not affect output', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '100',
         executedBuyAmount: '100',
         sellAmount: '1000',
         executedSellAmount: '1100',
         executedFeeAmount: '100',
-      } as RawOrder
+      }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
   })
   describe('Sell order', () => {
     test('Filled, within epsilon', () => {
-      const order = { ...RAW_ORDER, kind: 'sell', sellAmount: '10000', executedSellAmount: '9999' } as RawOrder
+      const order = { ...RAW_ORDER, kind: OrderKind.SELL, sellAmount: '10000', executedSellAmount: '9999' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, exact amount', () => {
-      const order = { ...RAW_ORDER, kind: 'sell', sellAmount: '100', executedSellAmount: '100' } as RawOrder
+      const order = { ...RAW_ORDER, kind: OrderKind.SELL, sellAmount: '100', executedSellAmount: '100' }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, not yet expired', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '100',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, with fee', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '90',
         executedSellAmount: '100',
         executedFeeAmount: '10',
-      } as RawOrder
+      }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
     test('Filled, buy amount does not affect output', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '100',
         buyAmount: '100',
         executedBuyAmount: '1100',
-      } as RawOrder
+      }
 
       expect(getOrderStatus(order)).toEqual('filled')
     })
@@ -173,11 +173,11 @@ describe('Expired status', () => {
     test('Expired', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '10000',
         executedBuyAmount: '0',
         validTo: _getPastTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('expired')
     })
   })
@@ -185,11 +185,11 @@ describe('Expired status', () => {
     test('Expired', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '10000',
         executedSellAmount: '0',
         validTo: _getPastTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('expired')
     })
   })
@@ -200,33 +200,33 @@ describe('Open status', () => {
     test('Open, no fills', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '10000',
         executedBuyAmount: '0',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('open')
     })
     test('Open, with partial fills', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '10000',
         executedBuyAmount: '10',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('open')
     })
     test('Open, sell amount does not affect output', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '10000',
         executedBuyAmount: '10',
         sellAmount: '10000',
         executedSellAmount: '123',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('open')
     })
   })
@@ -234,33 +234,33 @@ describe('Open status', () => {
     test('Open, no fills', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '10000',
         executedSellAmount: '0',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('open')
     })
     test('Open, with partial fills', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '10000',
         executedSellAmount: '10',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('open')
     })
     test('Open, buy amount does not affect output', () => {
       const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '10000',
         executedSellAmount: '10',
         buyAmount: '10000',
         executedBuyAmount: '323',
         validTo: _getCurrentTimestamp(),
-      } as RawOrder
+      }
       expect(getOrderStatus(order)).toEqual('open')
     })
   })
