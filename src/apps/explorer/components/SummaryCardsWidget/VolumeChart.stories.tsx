@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 import { VolumeChart, VolumeChartProps } from './VolumeChart'
 import volumeDataJson from './volumeData.json'
-import { buildVolumeData, VolumePeriod } from '.'
+import { buildVolumeData, VolumePeriod } from 'apps/explorer/components/SummaryCardsWidget/VolumeChartWidget'
 
 export default {
   title: 'ExplorerApp/Chart',
@@ -33,7 +33,6 @@ const Template: Story<VolumeChartProps> = (args) => (
 
 export const Default = Template.bind({})
 Default.args = {
-  title: 'Test Chart (D)',
   volumeData: {
     ...buildVolumeData(volumeDataJson, VolumePeriod.YEARLY),
     isLoading: false,

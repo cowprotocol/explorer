@@ -1,99 +1,41 @@
 import React, { useEffect, useRef, useState } from 'react'
-import styled, { DefaultTheme, useTheme, keyframes, css, FlattenSimpleInterpolation } from 'styled-components'
+import { DefaultTheme, useTheme } from 'styled-components'
 import { format, fromUnixTime } from 'date-fns'
-
 import { createChart, HistogramData, IChartApi, MouseEventParams, UTCTimestamp, BarPrice } from 'lightweight-charts'
-import { VolumeDataResponse, VolumeItem } from '.'
-import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+
 import { formatSmart } from 'utils'
 import Spinner from 'components/common/Spinner'
-import GraphSkeleton from 'assets/img/graph-skeleton.svg'
-import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
-import { media } from 'theme/styles/media'
+import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import {
+  ChartSkeleton,
+  WrapperChart,
+  ContainerTitle,
+  WrapperPeriodButton,
+  StyledShimmerBar,
+} from 'apps/explorer/components/SummaryCardsWidget/VolumeChart.styled'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
 const DEFAULT_PERIOD_ID = 'ALL'
-const LONG_COLOR = 'rgba(0, 196, 110, 0.01)'
-const SHORT_COLOR = 'rgba(255, 48, 91, 0.01)'
+const COLOR_POSITIVE_DIFFERENCE = 'rgba(0, 196, 110, 0.01)'
+const COLOR_NEGATIVE_DIFFERENCE = 'rgba(255, 48, 91, 0.01)'
+
+export interface VolumeDataResponse {
+  data?: VolumeItem[]
+  currentVolume?: number
+  changedVolume?: number
+  isLoading: boolean
+}
 
 export interface VolumeChartProps {
-  title: string
   volumeData: VolumeDataResponse | undefined
   height?: number
   width?: number
   periodId?: string
 }
 
-const Wrapper = styled.div`
-  position: relative;
-
-  .time-selector {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-size: small;
-    color: ${({ theme }): string => theme.grey};
-    z-index: 3;
-  }
-
-  > div.floating-tooltip {
-    width: 9.6rem;
-    height: 40%;
-    position: absolute;
-    display: none;
-    box-sizing: border-box;
-    font-size: 12px;
-    color: '#20262E';
-    background-color: rgba(255, 255, 255, 0.23);
-    text-align: center;
-    z-index: 1;
-    top: 0px;
-    left: 1.2rem;
-    pointer-events: none;
-    border-bottom: none;
-    border-radius: 0.2rem;
-    box-shadow: 0 0.2rem 0.5rem 0 rgba(117, 134, 150, 0.45);
-    flex-direction: column;
-    gap: 1rem;
-    justify-content: end;
-  }
-`
-const WrapperPeriodButton = styled.button<{ active: boolean }>`
-  outline: inherit;
-  cursor: pointer;
-  float: left;
-  display: flex;ç
-  align-items: center;
-  justify-content: center;
-  color: ${({ theme, active }): string => (active ? theme.orange : theme.white)};
-  background-color: ${({ theme, active }): string => (active ? theme.orangeOpacity : theme.bg1)};
-  border: 1px solid ${({ theme, active }): string => (active ? theme.orange : theme.bg2)};
-  padding: 0.5rem 1rem;
-  border-radius: 0.6rem;
-  margin: 0 0.5rem;
-  height: 2.5rem;
-  width: 3.8rem;
-
-  ${media.mobile} {
-    padding: 0.5rem 0.8rem;
-    margin: 0 0.5rem;
-    font-size: 1.2rem;
-    width: 3rem;
-  }
-
-  &:hover {
-    color: ${({ theme }): string => theme.orange};
-    background-color: ${({ theme, active }): string => (active ? theme.bg1 : theme.orangeOpacity)};
-  }
-`
-const StyledShimmerBar = styled(ShimmerBar)`
-  margin: 1.2rem 0;
-  min-width: 10rem;
-`
+export interface VolumeItem extends HistogramData {
+  id?: string
+}
 
 export function PeriodButton({
   active,
@@ -108,97 +50,14 @@ export function PeriodButton({
   )
 }
 
-const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; dateStyle?: boolean }>`
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  z-index: 3;
-  > h3 {
-    color: ${({ theme }): string => theme.grey};
-    font-size: small;
-    font-weight: ${({ theme }): string => theme.fontMedium};
-    margin: 0px;
-  }
-
-  > span {
-    display: flex;
-    margin: 0;
-    padding: 0;
-    gap: 1rem;
-    align-items: center;
-
-    ${({ dateStyle }): FlattenSimpleInterpolation | undefined | false =>
-      dateStyle &&
-      css`
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0rem;
-      `}
-    > p {
-      color: ${({ theme }): string => theme.white};
-      font-size: large;
-      font-weight: ${({ theme }): string => theme.fontBold};
-      &.caption {
-        font-size: 1.1rem;
-        color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.grey)};
-      }
-      &.date {
-        margin: -1rem 0;
-        color: ${({ theme }): string => theme.grey};
-        font-size: 1.1rem;
-      }
-    }
-  }
-`
-const frameAnimation = keyframes`
-    100% {
-      -webkit-mask-position: left;
-    }
-`
-
-type ShimmingProps = {
-  shimming?: boolean
-}
-
-const ChartSkeleton = styled.div<ShimmingProps>`
-  height: 100%;
-  min-height: 19.6rem;
-  border: 1px solid ${({ theme }): string => theme.borderPrimary};
-  border-radius: 0.4rem;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  background: url(${GraphSkeleton}) no-repeat bottom/contain ${({ theme }): string => theme.greyOpacity};
-  opacity: 0.35;
-
-  h2 {
-    margin: 3rem 0;
-  }
-
-  ${({ shimming }): FlattenSimpleInterpolation | null =>
-    shimming
-      ? css`
-          -webkit-mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
-          mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
-          background-repeat: no-repeat;
-          animation: shimmer 1.5s infinite;
-          animation-name: ${frameAnimation};
-        `
-      : null}
-`
-
-function _formatChartData(data: VolumeItem[]): HistogramData[] {
-  return data?.map((item) => ({
-    time: item.timestamp as UTCTimestamp,
-    value: item.volumeUsd,
-  }))
-}
-
 function _formatAmount(amount: string): string {
   return formatSmart({ amount, precision: 0, decimals: 0 })
 }
 
+/* Store an ID to check if there is new data that
+ * requires the graph to be rendered.
+ *  example: <lastRecordId>-<volumePeriodSelected>
+ * */
 function usePreviousLastValueData(value: string): string | undefined {
   const ref = useRef<string>()
 
@@ -277,6 +136,7 @@ export function VolumeChart({
   const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
   const previousPeriod = usePreviousLastValueData(periodId)
 
+  // reset the chart when the volume period is changed
   useEffect(() => {
     if (periodId !== previousPeriod && chartCreated) {
       chartCreated.resize(0, 0)
@@ -292,10 +152,10 @@ export function VolumeChart({
       lineWidth: 1,
       lineColor: theme[captionNameColor],
       topColor: theme[captionNameColor],
-      bottomColor: captionNameColor === 'red1' ? SHORT_COLOR : LONG_COLOR,
+      bottomColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE : COLOR_POSITIVE_DIFFERENCE,
     })
 
-    series.setData(_formatChartData(items))
+    series.setData(items)
 
     chart.subscribeCrosshairMove(function (param: MouseEventParams) {
       if (param === undefined || param.time === undefined || !param.point || param.point.x < 0 || param.point.y < 0) {
@@ -322,14 +182,14 @@ export function VolumeChart({
 
   if (isLoading && chartCreated === undefined)
     return (
-      <ChartSkeleton shimming>
+      <ChartSkeleton>
         <h2>Loading...</h2>
       </ChartSkeleton>
     )
 
   return (
     <>
-      <Wrapper ref={chartContainerRef}>
+      <WrapperChart ref={chartContainerRef}>
         <ContainerTitle captionColor={captionNameColor} dateStyle={crossHairData !== null}>
           <h3>Cow Volume</h3>
           <span>
@@ -349,7 +209,7 @@ export function VolumeChart({
           </span>
         </ContainerTitle>
         {children && <div className="time-selector">{children}</div>}
-      </Wrapper>
+      </WrapperChart>
     </>
   )
 }
