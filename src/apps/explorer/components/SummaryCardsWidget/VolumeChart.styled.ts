@@ -60,7 +60,7 @@ export const WrapperChart = styled.div`
     background-color: rgba(255, 255, 255, 0.23);
     text-align: center;
     z-index: 1;
-    top: 0px;
+    top: 0;
     left: 1.2rem;
     pointer-events: none;
     border-bottom: none;
@@ -81,7 +81,7 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     color: ${({ theme }): string => theme.grey};
     font-size: small;
     font-weight: ${({ theme }): string => theme.fontMedium};
-    margin: 0px;
+    margin: 0;
   }
 
   > span {
