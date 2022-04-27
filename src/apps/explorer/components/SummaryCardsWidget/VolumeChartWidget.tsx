@@ -43,7 +43,7 @@ export function buildVolumeData(
       value: parseFloat(item.volumeUsd),
     })),
     currentVolume: parseFloat(slicedData[slicedData.length - 1].volumeUsd),
-    changedVolume: parseFloat(slicedData[slicedData.length - 2].volumeUsd),
+    changedVolume: parseFloat(slicedData[0].volumeUsd),
   }
 }
 

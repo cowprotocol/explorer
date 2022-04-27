@@ -169,7 +169,7 @@ export function VolumeChart({
     })
 
     chart.timeScale().fitContent()
-    if (!isLoading) setChartCreated(chart)
+    setChartCreated(chart)
   }, [captionNameColor, chartCreated, height, isLoading, items, theme, width])
 
   // resize when window width change
@@ -191,7 +191,7 @@ export function VolumeChart({
     <>
       <WrapperChart ref={chartContainerRef}>
         <ContainerTitle captionColor={captionNameColor} dateStyle={crossHairData !== null}>
-          <h3>Cow Volume</h3>
+          <h3>Cow Protocol volume</h3>
           <span>
             {isLoading ? (
               <StyledShimmerBar height={2} />
@@ -203,7 +203,7 @@ export function VolumeChart({
             ) : (
               <>
                 <p>${currentVolume && _formatAmount(currentVolume.toString())}</p>
-                <p className="caption">{diffPercentageVolume?.toFixed(2)}%</p>
+                <p className="caption">{diffPercentageVolume && _formatAmount(diffPercentageVolume.toString())}%</p>
               </>
             )}
           </span>
