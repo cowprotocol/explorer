@@ -36,7 +36,7 @@ const WrapperColumn = styled.div`
   > div {
     margin: 1rem;
     max-height: ${BatchInfoHeight};
-    border: 1px solid ${({ theme }): string => theme.borderPrimary};
+    outline: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
     border-radius: 0.4rem;
     overflow: hidden;
   }
