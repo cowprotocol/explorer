@@ -6,7 +6,7 @@ import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const frameAnimation = keyframes`
     100% {
-      -webkit-mask-position: left;
+      mask-position: left;
     }
 `
 export const ChartSkeleton = styled.div`
@@ -26,7 +26,6 @@ export const ChartSkeleton = styled.div`
   }
 
   /* shimmering */
-  -webkit-mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
   mask: linear-gradient(-60deg, #000 30%, #0005, #000 70%) right/300% 100%;
   background-repeat: no-repeat;
   animation: shimmer 1.5s infinite;
