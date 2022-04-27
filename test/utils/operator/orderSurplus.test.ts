@@ -7,6 +7,7 @@ import { RawOrder } from 'api/operator'
 import { getOrderSurplus } from 'utils'
 
 import { RAW_ORDER } from '../../data'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 const ZERO_DOT_ZERO_ONE = new BigNumber('0.01')
 const TWENTY_PERCENT = new BigNumber('0.2')
@@ -64,15 +65,14 @@ describe('getOrderSurplus', () => {
       })
     })
     test.skip('partiallyFillable', () => {
-      const order = {
+      const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         sellAmount: '100',
         executedSellAmount: '50',
         buyAmount: '100',
         executedBuyAmount: '40',
-        partiallyFillable: true,
-      } as RawOrder
+      }
       expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
     })
   })
@@ -129,15 +129,14 @@ describe('getOrderSurplus', () => {
       })
     })
     test.skip('partiallyFillable', () => {
-      const order = {
+      const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         buyAmount: '100',
         executedBuyAmount: '50',
         sellAmount: '100',
         executedSellAmount: '40',
-        partiallyFillable: true,
-      } as RawOrder
+      }
       expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
     })
   })

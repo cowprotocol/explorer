@@ -120,34 +120,31 @@ describe('Filled status', () => {
   })
 })
 
-describe('Canceled status', () => {
+describe('Expired status', () => {
   test('Buy order', () => {
     const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'buy' as OrderKind,
+      kind: OrderKind.BUY,
       buyAmount: '10000',
-      invalidated: true,
     }
-    expect(getOrderStatus(order)).toEqual('cancelled')
+    expect(getOrderStatus(order)).toEqual('expired')
   })
   test('Sell order', () => {
     const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'sell' as OrderKind,
+      kind: OrderKind.SELL,
       sellAmount: '10000',
-      invalidated: true,
     }
-    expect(getOrderStatus(order)).toEqual('cancelled')
+    expect(getOrderStatus(order)).toEqual('expired')
   })
   test('Expired and invalidated', () => {
-    const order = {
+    const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'sell',
+      kind: OrderKind.SELL,
       sellAmount: '10000',
-      invalidated: true,
       validTo: _getPastTimestamp(),
-    } as RawOrder
-    expect(getOrderStatus(order)).toEqual('cancelled')
+    }
+    expect(getOrderStatus(order)).toEqual('expired')
   })
 })
 
@@ -156,36 +153,13 @@ describe('Cancelling Status', () => {
   const newCurrentDate = _creationDatePlusMilliseconds(milliseconds)
   beforeEach(() => mockTimes(newCurrentDate))
 
-  test('Buy order', () => {
-    const order: RawOrder = {
-      ...RAW_ORDER,
-      kind: 'buy' as OrderKind,
-      buyAmount: '10000',
-      invalidated: true,
-      validTo: _getCurrentTimestamp(),
-      status: 'cancelled',
-    }
-    expect(getOrderStatus(order)).toEqual('cancelling')
-  })
-  test('Sell order', () => {
-    const order: RawOrder = {
-      ...RAW_ORDER,
-      kind: 'sell' as OrderKind,
-      sellAmount: '10000',
-      invalidated: true,
-      validTo: _getCurrentTimestamp(),
-      status: 'cancelled',
-    }
-    expect(getOrderStatus(order)).toEqual('cancelling')
-  })
   test('When creationDate is already longer than the pendingOrderBuffer', () => {
     const millisecondsBefore = -PENDING_ORDERS_BUFFER - milliseconds // ms before the newCurrentDate
     const newCreationDate = _creationDatePlusMilliseconds(millisecondsBefore)
     const order: RawOrder = {
       ...RAW_ORDER,
-      kind: 'sell' as OrderKind,
+      kind: OrderKind.SELL,
       sellAmount: '10000',
-      invalidated: true,
       validTo: _getCurrentTimestamp(),
       creationDate: newCreationDate.toISOString(),
     }
@@ -299,7 +273,7 @@ describe('Presignature pending status', () => {
 
       const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'buy' as OrderKind,
+        kind: OrderKind.BUY,
         status: statusFetched,
         buyAmount: '10000',
         executedBuyAmount: '0',
@@ -312,7 +286,7 @@ describe('Presignature pending status', () => {
 
       const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'buy' as OrderKind,
+        kind: OrderKind.BUY,
         status: statusFetched,
         buyAmount: '10000',
         executedBuyAmount: '0',
@@ -327,7 +301,7 @@ describe('Presignature pending status', () => {
 
       const order: RawOrder = {
         ...RAW_ORDER,
-        kind: 'sell' as OrderKind,
+        kind: OrderKind.SELL,
         status: statusFetched,
         sellAmount: '10000',
         executedSellAmount: '0',

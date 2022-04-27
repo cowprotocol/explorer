@@ -17,7 +17,7 @@ export default {
 
 const transactionExBuy: Order = {
   ...RICH_ORDER,
-  kind: 'buy' as OrderKind,
+  kind: OrderKind.BUY,
   buyToken: WETH,
   sellToken: TUSD,
   buyAmount: new BigNumber('1500000000000000000'), // 1.5WETH
@@ -31,7 +31,7 @@ const transactionExBuy: Order = {
 
 const transactionExSell: Order = {
   ...RICH_ORDER,
-  kind: 'sell' as OrderKind,
+  kind: OrderKind.SELL,
   buyToken: WETH,
   sellToken: TUSD,
   buyAmount: new BigNumber('1500000000000000000'), // 1.5WETH

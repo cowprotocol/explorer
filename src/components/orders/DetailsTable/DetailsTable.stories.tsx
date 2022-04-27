@@ -49,14 +49,13 @@ FilledFillOrKill.args = {
 }
 
 export const DefaultPartiallyFillable = Template.bind({})
-DefaultPartiallyFillable.args = { ...defaultProps, order: { ...order, partiallyFillable: true } }
+DefaultPartiallyFillable.args = { ...defaultProps, order }
 
 export const FilledPartiallyFillable = Template.bind({})
 FilledPartiallyFillable.args = {
   ...defaultProps,
   order: {
     ...order,
-    partiallyFillable: true,
     status: 'filled',
     executedBuyAmount: order.buyAmount,
     executedSellAmount: order.sellAmount,

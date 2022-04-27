@@ -27,7 +27,7 @@ const Template: Story<Props> = (args) => (
 
 const order: Order = {
   ...RICH_ORDER,
-  kind: 'buy' as OrderKind,
+  kind: OrderKind.BUY,
   buyAmount: new BigNumber('1000000000000000000'), // 1WETH
   sellAmount: new BigNumber('5000000000'), //5000 USDT
   surplusAmount: new BigNumber('5000000000'),

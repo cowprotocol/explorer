@@ -18,7 +18,7 @@ export default {
 
 const orderBuy: Order = {
   ...RICH_ORDER,
-  kind: 'buy' as OrderKind,
+  kind: OrderKind.BUY,
   buyToken: WETH,
   sellToken: TUSD,
   shortId: 'bdef89ac',

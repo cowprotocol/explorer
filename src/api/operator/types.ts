@@ -27,10 +27,7 @@ export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expi
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
 
 // Raw API response
-export type RawOrder =
-  | (OrderMetaData & { executedSellAmountBeforeFees: string; signingScheme: SigningSchemeValue })
-  | (Omit<OrderMetaData, 'partiallyFillable' | 'invalidated'> & { partiallyFillable: boolean; invalidated: boolean })
-
+export type RawOrder = OrderMetaData
 /**
  * Enriched Order type.
  * Applies some transformations on the raw api data.
@@ -65,7 +62,7 @@ export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'parti
 /**
  * Raw API trade response type
  */
-export type RawTrade = TradeMetaData | (TradeMetaData & { executionTime: string })
+export type RawTrade = TradeMetaData
 
 /**
  * Enriched Trade type
