@@ -8,6 +8,7 @@ import { CardRow } from 'components/common/CardRow'
 import { TotalSummaryResponse } from '.'
 import { abbreviateString } from 'utils'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
+import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 
@@ -31,11 +32,13 @@ const WrapperColumn = styled.div`
   flex-grow: 0;
   max-width: 66.666667%;
   flex-basis: 66.666667%;
-  padding-right: 2rem;
 
   > div {
     margin: 1rem;
     max-height: ${BatchInfoHeight};
+    outline: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+    border-radius: 0.4rem;
+    overflow: hidden;
   }
 
   ${media.mediumDownMd} {
@@ -74,20 +77,6 @@ const WrapperDoubleContent = styled.div`
 interface SummaryCardsProps {
   summaryData: TotalSummaryResponse | undefined
   children: React.ReactNode
-}
-
-function calcDiff(a: number, b: number): number {
-  return (a - b === 0 ? 0 : (100 * (a - b)) / b) || 0
-}
-
-function getColorBySign(n: number): string {
-  if (n > 0) {
-    return 'green'
-  } else if (n < 0) {
-    return 'red1'
-  }
-
-  return 'grey'
 }
 
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {

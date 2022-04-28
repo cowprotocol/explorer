@@ -44,9 +44,9 @@ const CardBody = styled.div<{
     flex-direction: ${({ direction }): string => direction || 'column'};
     > p {
       font-size: 14px;
-      margin: 0px;
+      margin: 0;
       margin-right: ${({ variant, direction }): string =>
-        variant === 'double' && direction === 'row' ? '0.5rem' : '0px'};
+        variant === 'double' && direction === 'row' ? '0.5rem' : '0'};
       color: ${({ theme }): string => theme.grey};
       display: flex;
       align-items: center;
@@ -67,7 +67,7 @@ const CardBody = styled.div<{
 
       > h3 {
         font-size: ${({ valueSize }): number => valueSize || 1.8}rem;
-        margin: 0px;
+        margin: 0;
         ${media.mobile} {
           font-size: 1.45rem;
         }

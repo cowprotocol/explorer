@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { SummaryCards } from './SummaryCards'
 
+import { SummaryCards } from './SummaryCards'
 import summaryData from './summaryGraphResp.json'
+import { VolumeChartWidget } from './VolumeChartWidget'
 
 const DELAY_SECONDS = 3 // Emulating API request
 
@@ -27,6 +28,7 @@ type RawTotalSummary = Omit<TotalSummary, 'batchInfo'> & {
   batchInfo: { lastBatchDate: number; batchId: string }
 }
 
+// TODO move builds to a file where The graph API is called
 function buildSummary(data: RawTotalSummary): TotalSummary {
   return {
     ...data,
@@ -61,12 +63,6 @@ const Wrapper = styled.div`
   flex: 1;
   justify-content: center;
 `
-const VolumeChart = styled.div`
-  background: #28f3282c;
-  border-radius: 0.4rem;
-  height: 19.6rem;
-  width: 100%;
-`
 
 export function StatsSummaryCardsWidget(): JSX.Element {
   const summary = useGetTotalSummary()
@@ -74,7 +70,7 @@ export function StatsSummaryCardsWidget(): JSX.Element {
   return (
     <Wrapper>
       <SummaryCards summaryData={summary}>
-        <VolumeChart />
+        <VolumeChartWidget />
       </SummaryCards>
     </Wrapper>
   )

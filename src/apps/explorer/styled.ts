@@ -30,7 +30,7 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: bold;
     text-transform: uppercase;
     width: 6rem;
-}
+  }
 `
 
 export const MainWrapper = styled.div`

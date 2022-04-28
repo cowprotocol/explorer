@@ -2,7 +2,7 @@ import styled, { keyframes } from 'styled-components'
 
 const ShimmerKeyframe = keyframes`
   0% {
-    background-position: 0px top;
+    background-position: 0 top;
   }
   90% {
     background-position: 300px top;
@@ -12,9 +12,9 @@ const ShimmerKeyframe = keyframes`
   }
 `
 
-const ShimmerBar = styled.div`
+const ShimmerBar = styled.div<{ height?: number }>`
   width: 100%;
-  height: 12px;
+  height: ${({ height = 1.2 }): string => `${height}rem`};
   border-radius: 2px;
   color: white;
   background: ${({ theme }): string =>
