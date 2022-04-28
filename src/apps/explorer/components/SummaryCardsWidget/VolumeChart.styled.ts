@@ -9,7 +9,7 @@ const frameAnimation = keyframes`
       mask-position: left;
     }
 `
-export const ChartSkeleton = styled.div`
+export const ChartSkeleton = styled.div<{ backgroundColor?: 'grey' | 'orange' }>`
   height: 100%;
   min-height: 19.6rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
@@ -18,7 +18,9 @@ export const ChartSkeleton = styled.div`
   display: flex;
   justify-content: center;
   align-content: center;
-  background: url(${GraphSkeleton}) no-repeat bottom/contain ${({ theme }): string => theme.greyOpacity};
+  background: url(${GraphSkeleton}) no-repeat bottom/contain
+    ${({ theme, backgroundColor = 'grey' }): string =>
+      backgroundColor === 'grey' ? theme.greyOpacity : theme.orangeOpacity};
   opacity: 0.35;
 
   h2 {

@@ -210,6 +210,7 @@ export function VolumeChart({
         </ContainerTitle>
         {children && <div className="time-selector">{children}</div>}
       </WrapperChart>
+      {isLoading && <ChartSkeleton backgroundColor="orange" />}
     </>
   )
 }
