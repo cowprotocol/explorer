@@ -21,6 +21,8 @@ import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -82,6 +84,48 @@ const tooltip = {
   filled: 'Indicates what percentage amount this order has been filled and the amount sold/bought.',
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  ${media.mobile} {
+    flex-direction: column;
+  }
+`
+
+const LinkButton = styled(LinkWithPrefixNetwork)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-weight: ${({ theme }): string => theme.fontBold};
+  font-size: 1.3rem;
+  color: ${({ theme }): string => theme.orange1};
+  border: 1px solid ${({ theme }): string => theme.orange1};
+  background-color: ${({ theme }): string => theme.orangeOpacity};
+  border-radius: 0.4rem;
+  padding: 0.8rem 1.5rem;
+  margin: 0 0 0 2rem;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-in-out;
+
+  ${media.mobile} {
+    margin: 1rem 0 0 0;
+  }
+
+  ${media.mediumDown} {
+    min-width: 18rem;
+  }
+
+  :hover {
+    opacity: 0.8;
+    color: ${({ theme }): string => theme.white};
+  }
+
+  svg {
+    margin-right: 0.5rem;
+  }
+`
 
 export type Props = {
   order: Order
@@ -170,11 +214,17 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 {areTradesLoading ? (
                   <Spinner />
                 ) : txHash ? (
-                  <RowWithCopyButton
-                    textToCopy={txHash}
-                    onCopy={(): void => onCopy('settlementTx')}
-                    contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
-                  />
+                  <Wrapper>
+                    <RowWithCopyButton
+                      textToCopy={txHash}
+                      onCopy={(): void => onCopy('settlementTx')}
+                      contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
+                    />
+                    <LinkButton to={`/tx/${txHash}/?tab=graph`}>
+                      <FontAwesomeIcon icon={faProjectDiagram} />
+                      View batch graph
+                    </LinkButton>
+                  </Wrapper>
                 ) : (
                   '-'
                 )}
