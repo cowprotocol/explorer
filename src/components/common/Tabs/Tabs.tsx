@@ -38,6 +38,7 @@ export interface Props {
   readonly tabTheme: TabTheme
   readonly defaultTab?: TabId
   readonly extra?: TabBarExtraContent
+  onChange?: (activeId: TabId) => void
 }
 
 const Wrapper = styled.div`
@@ -84,22 +85,20 @@ const ExtraContent = ({ extra }: ExtraContentProps): JSX.Element | null => {
 }
 
 const Tabs: React.FC<Props> = (props) => {
-  const { tabTheme = DEFAULT_TAB_THEME, tabItems, defaultTab = 1, extra: tabBarExtraContent } = props
+  const { tabTheme = DEFAULT_TAB_THEME, tabItems, defaultTab = 1, extra: tabBarExtraContent, onChange } = props
 
   const [activeTab, setActiveTab] = useState(defaultTab)
+
+  function onTabClick(key: TabId): void {
+    setActiveTab(key)
+    onChange?.(key)
+  }
 
   return (
     <Wrapper>
       <TabList role="tablist" className="tablist">
         {tabItems.map(({ tab, id }) => (
-          <TabItem
-            key={id}
-            id={id}
-            tab={tab}
-            onTabClick={setActiveTab}
-            isActive={activeTab === id}
-            tabTheme={tabTheme}
-          />
+          <TabItem key={id} id={id} tab={tab} onTabClick={onTabClick} isActive={activeTab === id} tabTheme={tabTheme} />
         ))}
         <ExtraContent extra={tabBarExtraContent} />
       </TabList>

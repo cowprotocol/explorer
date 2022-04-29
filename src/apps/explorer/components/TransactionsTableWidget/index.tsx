@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useHistory } from 'react-router-dom'
@@ -12,12 +12,12 @@ import { RedirectToNetwork, useNetworkId } from 'state/network'
 import { Order } from 'api/operator'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
-import ExplorerTabs from '../common/ExplorerTabs/ExplorerTab'
-import { TitleAddress, FlexContainer, StyledTabLoader, BVButton, Title } from 'apps/explorer/pages/styled'
+import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
+import { TitleAddress, FlexContainer, StyledTabLoader, Title } from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
-import { useTxBatchTrades } from 'hooks/useTxBatchTrades'
+import { useTxBatchTrades, GetTxBatchTradesResult } from 'hooks/useTxBatchTrades'
 import TransactionBatchGraph from 'apps/explorer/components/TransanctionBatchGraph'
 
 interface Props {
@@ -26,27 +26,52 @@ interface Props {
   transactions?: Order[]
 }
 
-enum SelectedView {
+enum TabViews {
   GRAPH = 'graph',
-  LIST = 'list',
+  ORDERS = 'orders',
 }
 
-function useQueryViewParams(): { view: string | null } {
+const TAB_VIEW_ID = {
+  [TabViews.ORDERS]: 1,
+  [TabViews.GRAPH]: 2,
+}
+
+const DEFAULT_TAB = TabViews.ORDERS
+
+function useQueryViewParams(): { tab: string } {
   const query = useQuery()
-  return { view: query.get('view') }
+  return { tab: query.get('tab') || DEFAULT_TAB }
 }
 
-const tabItems = (isLoadingOrders: boolean): TabItemInterface[] => {
+const tabItems = (
+  isLoadingOrders: boolean,
+  txBatchTrades: GetTxBatchTradesResult,
+  networkId: BlockchainNetwork,
+): TabItemInterface[] => {
   return [
     {
-      id: 1,
+      id: TAB_VIEW_ID[TabViews.ORDERS],
       tab: (
         <>
-          Orders
+          <span>
+            <FontAwesomeIcon icon={faListUl} /> Orders
+          </span>
           <StyledTabLoader>{isLoadingOrders && <Spinner spin size="1x" />}</StyledTabLoader>
         </>
       ),
       content: <TransactionsTableWithData />,
+    },
+    {
+      id: TAB_VIEW_ID[TabViews.GRAPH],
+      tab: (
+        <>
+          <span>
+            <FontAwesomeIcon icon={faProjectDiagram} /> Graph
+          </span>
+          <StyledTabLoader>{txBatchTrades.isLoading && <Spinner spin size="1x" />}</StyledTabLoader>
+        </>
+      ),
+      content: <TransactionBatchGraph txBatchData={txBatchTrades} networkId={networkId} />,
     },
   ]
 }
@@ -55,8 +80,11 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const { orders, isLoading: isTxLoading, errorTxPresentInNetworkId, error } = useGetTxOrders(txHash)
   const networkId = useNetworkId() || undefined
   const [redirectTo, setRedirectTo] = useState(false)
-  const { view } = useQueryViewParams()
-  const [batchViewer, setBatchViewer] = useState(SelectedView.GRAPH === view)
+  const { tab } = useQueryViewParams()
+  const [tabViewName, setTabViewName] = useState<TabViews>(
+    (Object.values(TabViews).includes(tab as TabViews) && (tab as TabViews)) || TabViews.ORDERS,
+  )
+  const tabSelectedId = useRef(TAB_VIEW_ID[tabViewName])
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
   const notGpv2ExplorerData = useTxOrderExplorerLink(txHash, isZeroOrders)
@@ -74,11 +102,17 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
     return (): void => clearTimeout(timer)
   })
 
-  useEffect(() => {
-    const viewToShow = batchViewer ? SelectedView.GRAPH : SelectedView.LIST
+  const onChangeTab = useCallback((tabId: number) => {
+    const newTabViewName = Object.keys(TAB_VIEW_ID).find((key) => TAB_VIEW_ID[key as TabViews] === tabId)
+    if (!newTabViewName) return
 
-    history.replace({ search: `?view=${viewToShow}` })
-  }, [batchViewer, history])
+    setTabViewName(newTabViewName as TabViews)
+    tabSelectedId.current = tabId
+  }, [])
+
+  useEffect(() => {
+    history.replace({ search: `?tab=${tabViewName}` })
+  }, [history, tabViewName])
 
   if (errorTxPresentInNetworkId && networkId != errorTxPresentInNetworkId) {
     return <RedirectToNetwork networkId={errorTxPresentInNetworkId} />
@@ -91,9 +125,6 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
     return <Spinner spin size="3x" />
   }
 
-  const batchViewerButtonName = batchViewer ? 'Show Transactions list' : 'Show Batch Viewer'
-  const batchViewerButtonIcon = batchViewer ? faListUl : faProjectDiagram
-
   return (
     <>
       <FlexContainer>
@@ -102,10 +133,6 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
           textToCopy={txHash}
           contentsToDisplay={<BlockExplorerLink type="tx" networkId={networkId} identifier={txHash} showLogo />}
         />
-        <BVButton onClick={(): void => setBatchViewer(!batchViewer)}>
-          <FontAwesomeIcon icon={batchViewerButtonIcon} />
-          {batchViewerButtonName}
-        </BVButton>
       </FlexContainer>
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
@@ -117,11 +144,11 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
           isTxLoading,
         }}
       >
-        {batchViewer ? (
-          <TransactionBatchGraph txBatchData={txBatchTrades} networkId={networkId} />
-        ) : (
-          <ExplorerTabs tabItems={tabItems(isTxLoading)} />
-        )}
+        <ExplorerTabs
+          tabItems={tabItems(isTxLoading, txBatchTrades, networkId)}
+          defaultTab={tabSelectedId.current}
+          onChange={(key: number): void => onChangeTab(key)}
+        />
       </TransactionsTableContext.Provider>
     </>
   )
