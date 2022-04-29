@@ -22,9 +22,9 @@ function _urlAvailableNetwork(): Partial<Record<Network, string>> {
   const urlNetwork = (_networkId: Network): string => `${TENDERLY_API_URL}/${_networkId}`
 
   return {
-    [Network.Mainnet]: urlNetwork(Network.Mainnet),
-    [Network.Rinkeby]: urlNetwork(Network.Rinkeby),
-    [Network.xDAI]: urlNetwork(Network.xDAI),
+    [Network.MAINNET]: urlNetwork(Network.MAINNET),
+    [Network.RINKEBY]: urlNetwork(Network.RINKEBY),
+    [Network.GNOSIS_CHAIN]: urlNetwork(Network.GNOSIS_CHAIN),
   }
 }
 

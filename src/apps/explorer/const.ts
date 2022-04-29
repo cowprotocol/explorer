@@ -22,7 +22,7 @@ export const DIMENSION_NAMES = {
   [AnalyticsDimension.BROWSER_TYPE]: 'dimension2',
 }
 
-export const NETWORK_ID_SEARCH_LIST = [Network.Mainnet, Network.xDAI, Network.Rinkeby]
+export const NETWORK_ID_SEARCH_LIST = [Network.MAINNET, Network.GNOSIS_CHAIN, Network.RINKEBY]
 
 // Estimation heigh of the header + footer space
 export const HEIGHT_HEADER_FOOTER = 257

@@ -9,4 +9,4 @@ export const networkMap = Object.entries(Network).reduce<NetworkMap>((acc, [key,
   return acc
 }, {} as NetworkMap)
 
-export const defaultNetworkId = Network.Mainnet
+export const defaultNetworkId = Network.MAINNET

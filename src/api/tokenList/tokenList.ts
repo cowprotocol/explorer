@@ -9,7 +9,7 @@ export function getTokensByNetwork(networkId: number, tokenList: TokenDetailsCon
     if (address) {
       // There's an address for the current network
       const { id, name, symbol, decimals = DEFAULT_PRECISION } = token
-      const addressMainnet = token.addressByNetwork[Network.Mainnet]
+      const addressMainnet = token.addressByNetwork[Network.MAINNET]
 
       acc.push({
         id,

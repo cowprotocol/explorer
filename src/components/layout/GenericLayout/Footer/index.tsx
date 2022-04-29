@@ -119,7 +119,7 @@ export interface FooterType {
 
 export const Footer: React.FC<FooterType> = (props) => {
   const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
-  const networkId = useNetworkId() || Network.Mainnet
+  const networkId = useNetworkId() || Network.MAINNET
   const settlementContractAddress = getGpV2ContractAddress(networkId, 'GPv2Settlement')
   const vaultRelayerContractAddress = getGpV2ContractAddress(networkId, 'GPv2VaultRelayer')
   return (
