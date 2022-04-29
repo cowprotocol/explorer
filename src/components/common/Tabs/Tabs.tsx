@@ -4,6 +4,7 @@ import styled from 'styled-components'
 // Components
 import TabItem from 'components/common/Tabs/TabItem'
 import TabContent from 'components/common/Tabs/TabContent'
+export { default as TabIcon } from 'components/common/Tabs/TabIcon'
 
 type TabId = number
 export enum IndicatorTabSize {

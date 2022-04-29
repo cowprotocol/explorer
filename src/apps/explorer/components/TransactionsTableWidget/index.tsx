@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useHistory } from 'react-router-dom'
 
 import { useQuery } from 'hooks/useQuery'
@@ -11,9 +10,9 @@ import Spinner from 'components/common/Spinner'
 import { RedirectToNetwork, useNetworkId } from 'state/network'
 import { Order } from 'api/operator'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
-import { TabItemInterface } from 'components/common/Tabs/Tabs'
+import { TabItemInterface, TabIcon } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
-import { TitleAddress, FlexContainer, StyledTabLoader, Title } from 'apps/explorer/pages/styled'
+import { TitleAddress, FlexContainer, Title } from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
@@ -43,34 +42,16 @@ function useQueryViewParams(): { tab: string } {
   return { tab: query.get('tab') || DEFAULT_TAB }
 }
 
-const tabItems = (
-  isLoadingOrders: boolean,
-  txBatchTrades: GetTxBatchTradesResult,
-  networkId: BlockchainNetwork,
-): TabItemInterface[] => {
+const tabItems = (txBatchTrades: GetTxBatchTradesResult, networkId: BlockchainNetwork): TabItemInterface[] => {
   return [
     {
       id: TAB_VIEW_ID[TabViews.ORDERS],
-      tab: (
-        <>
-          <span>
-            <FontAwesomeIcon icon={faListUl} /> Orders
-          </span>
-          <StyledTabLoader>{isLoadingOrders && <Spinner spin size="1x" />}</StyledTabLoader>
-        </>
-      ),
+      tab: <TabIcon title="Orders" iconFontName={faListUl} />,
       content: <TransactionsTableWithData />,
     },
     {
       id: TAB_VIEW_ID[TabViews.GRAPH],
-      tab: (
-        <>
-          <span>
-            <FontAwesomeIcon icon={faProjectDiagram} /> Graph
-          </span>
-          <StyledTabLoader>{txBatchTrades.isLoading && <Spinner spin size="1x" />}</StyledTabLoader>
-        </>
-      ),
+      tab: <TabIcon title="Graph" iconFontName={faProjectDiagram} />,
       content: <TransactionBatchGraph txBatchData={txBatchTrades} networkId={networkId} />,
     },
   ]
@@ -145,7 +126,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
         }}
       >
         <ExplorerTabs
-          tabItems={tabItems(isTxLoading, txBatchTrades, networkId)}
+          tabItems={tabItems(txBatchTrades, networkId)}
           defaultTab={tabSelectedId.current}
           onChange={(key: number): void => onChangeTab(key)}
         />
