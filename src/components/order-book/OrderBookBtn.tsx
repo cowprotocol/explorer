@@ -118,7 +118,7 @@ export const OrderBookBtn: React.FC<OrderBookBtnProps> = (props: OrderBookBtnPro
   const { tokens: tokenList } = useTokenList({ networkId })
   const [baseToken, setBaseToken] = useSafeState<TokenDetails>(baseTokenDefault)
   const [quoteToken, setQuoteToken] = useSafeState<TokenDetails>(quoteTokenDefault)
-  const networkDescription = networkId !== Network.Mainnet ? ` (${getNetworkFromId(networkId)})` : ''
+  const networkDescription = networkId !== Network.MAINNET ? ` (${getNetworkFromId(networkId)})` : ''
 
   const [modalHook, toggleModal] = useModal({
     ...DEFAULT_MODAL_OPTIONS,

@@ -1,17 +1,13 @@
 import { Network } from 'types'
-
+import { COW_SDK } from 'const'
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
-import { OrderCreation } from './signatures'
 import {
-  FeeInformation,
   GetOrderParams,
   GetAccountOrdersParams,
   GetOrdersParams,
   GetTradesParams,
-  OrderID,
-  OrderPostError,
   RawOrder,
   RawTrade,
   GetTxOrdersParams,
@@ -21,15 +17,15 @@ import { fetchQuery } from 'api/baseApi'
 function getOperatorUrl(): Partial<Record<Network, string>> {
   if (isProd || isStaging) {
     return {
-      [Network.Mainnet]: process.env.OPERATOR_URL_PROD_MAINNET,
-      [Network.Rinkeby]: process.env.OPERATOR_URL_PROD_RINKEBY,
-      [Network.xDAI]: process.env.OPERATOR_URL_PROD_XDAI,
+      [Network.MAINNET]: process.env.OPERATOR_URL_PROD_MAINNET,
+      [Network.RINKEBY]: process.env.OPERATOR_URL_PROD_RINKEBY,
+      [Network.GNOSIS_CHAIN]: process.env.OPERATOR_URL_PROD_XDAI,
     }
   } else {
     return {
-      [Network.Mainnet]: process.env.OPERATOR_URL_STAGING_MAINNET,
-      [Network.Rinkeby]: process.env.OPERATOR_URL_STAGING_RINKEBY,
-      [Network.xDAI]: process.env.OPERATOR_URL_STAGING_XDAI,
+      [Network.MAINNET]: process.env.OPERATOR_URL_STAGING_MAINNET,
+      [Network.RINKEBY]: process.env.OPERATOR_URL_STAGING_RINKEBY,
+      [Network.GNOSIS_CHAIN]: process.env.OPERATOR_URL_STAGING_XDAI,
     }
   }
 }
@@ -56,21 +52,6 @@ function _getApiBaseUrl(networkId: Network): string {
   }
 }
 
-export function getOrderLink(networkId: Network, orderId: OrderID): string {
-  const baseUrl = _getApiBaseUrl(networkId)
-
-  return baseUrl + `/orders/${orderId}`
-}
-
-function _post(networkId: Network, url: string, data: unknown): Promise<Response> {
-  const baseUrl = _getApiBaseUrl(networkId)
-  return fetch(baseUrl + url, {
-    headers: DEFAULT_HEADERS,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-}
-
 function _get(networkId: Network, url: string): Promise<Response> {
   const baseUrl = _getApiBaseUrl(networkId)
   return fetch(baseUrl + url, {
@@ -78,115 +59,16 @@ function _get(networkId: Network, url: string): Promise<Response> {
   })
 }
 
-async function _getErrorForBadPostOrderRequest(response: Response): Promise<string> {
-  let errorMessage: string
-  try {
-    const orderPostError: OrderPostError = await response.json()
-
-    switch (orderPostError.errorType) {
-      case 'DuplicateOrder':
-        errorMessage = 'There was another identical order already submitted'
-        break
-
-      case 'InsufficientFunds':
-        errorMessage = "The account doesn't have enough funds"
-        break
-
-      case 'InvalidSignature':
-        errorMessage = 'The order signature is invalid'
-        break
-
-      case 'MissingOrderData':
-        errorMessage = 'The order has missing information'
-        break
-
-      default:
-        console.error('Unknown reason for bad order submission', orderPostError)
-        errorMessage = orderPostError.description
-        break
-    }
-  } catch (error) {
-    console.error('Error handling a 400 error. Likely a problem deserialising the JSON response')
-    errorMessage = 'The order was not accepted by the operator'
-  }
-
-  return errorMessage
-}
-
-async function _getErrorForUnsuccessfulPostOrder(response: Response): Promise<string> {
-  let errorMessage: string
-  switch (response.status) {
-    case 400:
-      errorMessage = await _getErrorForBadPostOrderRequest(response)
-      break
-
-    case 403:
-      errorMessage = 'The order cannot be accepted. Your account is deny-listed.'
-      break
-
-    case 429:
-      errorMessage = 'The order cannot be accepted. Too many order placements. Please, retry in a minute'
-      break
-
-    case 500:
-    default:
-      errorMessage = 'Error adding an order'
-  }
-  return errorMessage
-}
-
-export async function postSignedOrder(params: { networkId: Network; order: OrderCreation }): Promise<OrderID> {
-  const { networkId, order } = params
-  console.log('[utils:operator] Post signed order for network', networkId, order)
-
-  // Call API
-  const response = await _post(networkId, `/orders`, order)
-
-  // Handle response
-  if (!response.ok) {
-    // Raise an exception
-    const errorMessage = await _getErrorForUnsuccessfulPostOrder(response)
-    throw new Error(errorMessage)
-  }
-
-  const uid = (await response.json()) as string
-  console.log('[api:operator] Success posting the signed order', uid)
-  return uid
-}
-
-export async function getFeeQuote(networkId: Network, tokenAddress: string): Promise<FeeInformation> {
-  // TODO: I commented out the implementation because the API is not yet implemented. Review the code in the comment below
-  console.log('[api:operator] Get fee for ', networkId, tokenAddress)
-
-  // TODO: Let see if we can incorporate the PRs from the Fee, where they cache stuff and keep it in sync using redux.
-  // if that part is delayed or need more review, we can easily add the cache in this file (we check expiration and cache here)
-
-  let response: Response | undefined
-  try {
-    const responseMaybeOk = await _get(networkId, `/tokens/${tokenAddress}/fee`)
-    response = responseMaybeOk.ok ? responseMaybeOk : undefined
-  } catch (error) {
-    // do nothing
-  }
-
-  if (!response) {
-    throw new Error('Error getting the fee')
-  } else {
-    return response.json()
-  }
-}
-
 /**
  * Gets a single order by id
  */
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
+  const cowInstance = COW_SDK[networkId]
 
-  console.log(`[getOrder] Fetching order id '${orderId}' on network ${networkId}`)
+  if (!cowInstance) return null
 
-  const queryString = `/orders/${orderId}`
-
-  return _fetchQuery(networkId, queryString, true)
+  return cowInstance.cowApi.getOrder(orderId)
 }
 
 /**
@@ -230,16 +112,11 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  */
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
+  const cowInstance = COW_SDK[networkId]
 
-  console.log(
-    `[getAccountOrders] Fetching orders on network ${networkId} with filters: owner=${owner} offset=${offset} limit=${limit}`,
-  )
+  if (!cowInstance) return []
 
-  const searchString = buildSearchString({ offset: String(offset), limit: String(limit) })
-
-  const queryString = `/account/${owner}/orders/` + searchString
-
-  return _fetchQuery(networkId, queryString)
+  return cowInstance.cowApi.getOrders({ owner, offset, limit })
 }
 
 /**
@@ -250,9 +127,11 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const queryString = `/transactions/${txHash}/orders`
+  const cowInstance = COW_SDK[networkId]
 
-  return _fetchQuery(networkId, queryString)
+  if (!cowInstance) return []
+
+  return cowInstance.cowApi.getTxOrders(txHash)
 }
 
 /**
@@ -266,14 +145,21 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  */
 export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner = '', orderId = '' } = params
+  const cowInstance = COW_SDK[networkId]
 
-  if (owner && orderId) {
-    throw new Error('Cannot use both `owner` and `orderId` filters at the same time')
-  }
+  if (orderId) return getOrderTrades(params)
 
-  console.log(`[getTrades] Fetching trades on network ${networkId} with filters: owner=${owner} orderId=${orderId}`)
+  if (!cowInstance) return []
 
-  const queryString = `/trades/` + buildSearchString({ owner, orderUid: orderId })
+  return cowInstance.cowApi.getTrades({ owner })
+}
+
+async function getOrderTrades(params: GetTradesParams): Promise<RawTrade[]> {
+  const { networkId, orderId = '' } = params
+
+  console.log(`[getTrades] Fetching trades on network ${networkId} with filter: orderId=${orderId}`)
+
+  const queryString = `/trades/` + buildSearchString({ orderUid: orderId })
 
   return _fetchQuery(networkId, queryString)
 }

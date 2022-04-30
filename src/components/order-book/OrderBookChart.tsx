@@ -151,7 +151,7 @@ const drawLabels = ({ chart, baseToken, quoteToken, networkId }: DrawLabelsParam
   const quoteTokenLabel = safeTokenName(quoteToken)
   const market = baseTokenLabel + '-' + quoteTokenLabel
 
-  const networkDescription = networkId !== Network.Mainnet ? `${getNetworkFromId(networkId)} ` : ''
+  const networkDescription = networkId !== Network.MAINNET ? `${getNetworkFromId(networkId)} ` : ''
 
   const [xAxis] = chart.xAxes
   const [yAxis] = chart.yAxes

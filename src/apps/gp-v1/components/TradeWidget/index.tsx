@@ -616,7 +616,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({
         const walletInfo = await connectWallet()
 
         // Then place the order if connection was successful
-        if (walletInfo && walletInfo.networkId === Network.Mainnet && walletInfo.userAddress) {
+        if (walletInfo && walletInfo.networkId === Network.MAINNET && walletInfo.userAddress) {
           await _placeOrder({
             ...orderParams,
             networkId: walletInfo.networkId,

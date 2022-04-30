@@ -61,7 +61,7 @@ export const ThemeToggler = (DecoratedStory: () => JSX.Element): JSX.Element => 
 export function NetworkDecorator(DecoratedStory: () => JSX.Element): JSX.Element {
   const Component = withGlobalContext(
     DecoratedStory,
-    () => ({ networkId: Network.Mainnet }),
+    () => ({ networkId: Network.MAINNET }),
     combineReducers({ networkId: networkReducer }),
   )
   return <Component />

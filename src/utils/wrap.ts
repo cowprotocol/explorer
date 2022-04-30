@@ -8,11 +8,11 @@ export interface NativeTokenInfo {
 
 export function getIsWrappable(networkId: number, address: string): boolean {
   switch (networkId) {
-    case Network.Mainnet:
+    case Network.MAINNET:
       return address === WETH_ADDRESS_MAINNET
-    case Network.Rinkeby:
+    case Network.RINKEBY:
       return address === WETH_ADDRESS_RINKEBY
-    case Network.xDAI:
+    case Network.GNOSIS_CHAIN:
       return address === WXDAI_ADDRESS_XDAI
     default:
       return false
@@ -20,7 +20,7 @@ export function getIsWrappable(networkId: number, address: string): boolean {
 }
 
 export function getNativeTokenName(networkId?: number): NativeTokenInfo {
-  if (networkId === Network.xDAI) {
+  if (networkId === Network.GNOSIS_CHAIN) {
     return {
       nativeToken: 'xDAI',
       wrappedToken: 'wxDAI',

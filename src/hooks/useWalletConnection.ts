@@ -14,7 +14,7 @@ const PendingState: PendingStateObject = {
   isConnected: false,
   userAddress: undefined,
   networkId: undefined,
-  networkIdOrDefault: Network.Mainnet,
+  networkIdOrDefault: Network.MAINNET,
 }
 
 const constructPendingState = ({ chainId, account, blockHeader }: BlockchainUpdatePrompt): PendingStateObject => {
@@ -46,7 +46,7 @@ export const useWalletConnection = ():
       ? constructPendingState(walletApi.blockchainState)
       : {
           ...walletInfo,
-          networkIdOrDefault: walletInfo.networkId || Network.Mainnet,
+          networkIdOrDefault: walletInfo.networkId || Network.MAINNET,
           pending: false,
         }
   }, [walletInfo])

@@ -57,7 +57,7 @@ function _createRow({
   const onSubmitWithdraw = jest.fn<Promise<void>, [BN, (hash: string) => void]>()
   return (
     <Row
-      networkId={Network.Mainnet}
+      networkId={Network.MAINNET}
       ethBalance={ethBalance}
       tokenBalances={tokenBalanceDetails}
       onEnableToken={onEnableToken}

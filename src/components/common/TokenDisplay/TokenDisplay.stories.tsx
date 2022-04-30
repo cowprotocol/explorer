@@ -20,7 +20,7 @@ export default {
 
 const Template: Story<Props> = (args) => <TokenDisplay {...args} />
 
-const defaultProps: Props = { erc20: USDT, network: Network.Mainnet }
+const defaultProps: Props = { erc20: USDT, network: Network.MAINNET }
 
 export const Default = Template.bind({})
 Default.args = { ...defaultProps }
@@ -29,4 +29,4 @@ export const NativeMainnet = Template.bind({})
 NativeMainnet.args = { ...defaultProps, erc20: ETH }
 
 export const NativeXDai = Template.bind({})
-NativeXDai.args = { ...defaultProps, erc20: XDAI, network: Network.xDAI }
+NativeXDai.args = { ...defaultProps, erc20: XDAI, network: Network.GNOSIS_CHAIN }

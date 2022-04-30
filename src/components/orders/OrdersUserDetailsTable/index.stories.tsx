@@ -8,6 +8,7 @@ import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/
 
 import { Order } from 'api/operator'
 import { RICH_ORDER, TUSD, WETH } from '../../../../test/data'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 export default {
   title: 'orders/OrdersUserDetailsTable',
@@ -17,7 +18,7 @@ export default {
 
 const orderBuy: Order = {
   ...RICH_ORDER,
-  kind: 'buy',
+  kind: OrderKind.BUY,
   buyToken: WETH,
   sellToken: TUSD,
   shortId: 'bdef89ac',
