@@ -122,9 +122,6 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
 
 const ChartWrapper = styled.div`
   position: relative;
-  tv-lightweight-charts {
-    overflow: visible;
-  }
   ${media.desktopMediumDown} {
     table > tr > td:first-child {
       display: none;
