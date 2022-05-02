@@ -57,7 +57,7 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   if (!txSettlement.accounts) return []
 
   const networkName = networkOptions.find((network) => network.id === networkId)?.name
-  const networkNode = { alias: networkName || '' }
+  const networkNode = { alias: `${networkName} Liquidity` || '' }
   const builder = new ElementsBuilder(heightSize)
   builder.node({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
 
