@@ -25,7 +25,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         width: 2,
         'target-arrow-shape': 'triangle',
         'target-arrow-color': theme.grey,
-        'curve-style': 'unbundled-bezier',
+        'curve-style': 'bezier',
         color: theme.black,
         'line-color': theme.grey,
         'line-opacity': 0.8,
