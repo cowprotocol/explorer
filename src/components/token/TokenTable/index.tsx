@@ -1,7 +1,10 @@
-import React from 'react'
-import styled from 'styled-components'
+import React, { useEffect, useRef, useState } from 'react'
+import styled, { DefaultTheme, useTheme } from 'styled-components'
+import { createChart, IChartApi } from 'lightweight-charts'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Token } from 'api/operator'
+import { useNetworkId } from 'state/network'
 
 import StyledUserDetailsTable, {
   StyledUserDetailsTableProps,
@@ -9,13 +12,13 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-
-//import { useNetworkId } from 'state/network'
+import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import { TokenDisplay } from 'components/common/TokenDisplay'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
+    grid-template-columns: 21rem 14rem repeat(2, minmax(10rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
   }
   tr > td {
     span.span-inside-tooltip {
@@ -90,10 +93,42 @@ const HeaderTitle = styled.span`
     }
   }
 `
-const HeaderValue = styled.span`
+
+const TokenWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  a {
+    display: none;
+  }
+  img {
+    width: 2.5rem;
+    height: auto;
+  }
+`
+const StyledID = styled.span`
+  margin-right: 10px;
+  ${media.desktopMediumDown} {
+    display: none;
+  }
+`
+const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
+  color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
+
   ${media.desktopMediumDown} {
     flex-wrap: wrap;
     text-align: end;
+  }
+`
+
+const ChartWrapper = styled.div`
+  position: relative;
+  tv-lightweight-charts {
+    overflow: visible;
+  }
+  ${media.desktopMediumDown} {
+    table > tr > td:first-child {
+      display: none;
+    }
   }
 `
 
@@ -105,15 +140,109 @@ interface RowProps {
   token: Token
 }
 
+function _buildChart(
+  chartContainer: HTMLDivElement,
+  width: number | undefined,
+  height: number,
+  theme: DefaultTheme,
+): IChartApi {
+  return createChart(chartContainer, {
+    width,
+    height,
+    handleScroll: false,
+    handleScale: false,
+    layout: {
+      backgroundColor: 'transparent',
+      textColor: theme.textPrimary1,
+    },
+    rightPriceScale: {
+      scaleMargins: {
+        top: 0.5,
+        bottom: 0.2,
+      },
+      visible: false,
+    },
+    leftPriceScale: {
+      visible: false,
+    },
+    timeScale: {
+      visible: false,
+    },
+    grid: {
+      horzLines: {
+        visible: false,
+      },
+      vertLines: {
+        visible: false,
+      },
+    },
+    crosshair: {
+      horzLine: {
+        visible: false,
+        labelVisible: false,
+      },
+      vertLine: {
+        visible: true,
+        style: 3,
+        width: 1,
+        color: theme.borderPrimary,
+        labelVisible: true,
+      },
+    },
+  })
+}
+
 const RowToken: React.FC<RowProps> = ({ token }) => {
-  const { id, name, symbol, price, last24hours, last7Days, sevenDays, lastDayVolume } = token
-  //const network = useNetworkId()
+  const {
+    id,
+    name,
+    symbol,
+    address,
+    decimals,
+    price,
+    last24hours,
+    last7Days: { currentVolume, changedVolume, values },
+    sevenDays,
+    lastDayVolume,
+  } = token
+  const erc20 = { name, address, decimals } as TokenErc20
+  const diffPercentageVolume = token && calcDiff(currentVolume, changedVolume)
+  const captionNameColor = getColorBySign(diffPercentageVolume || 0)
+  const network = useNetworkId()
+  const theme = useTheme()
+  const chartContainerRef = useRef<HTMLDivElement>(null)
+  const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
+
+  useEffect(() => {
+    if (chartCreated || !chartContainerRef.current || !token) return
+    const chart = _buildChart(chartContainerRef.current, 50, 50, theme)
+
+    const series = chart.addLineSeries({
+      lineWidth: 1,
+      color: theme[captionNameColor],
+      lastValueVisible: false,
+      priceLineVisible: false,
+    })
+
+    series.setData(values)
+
+    chart.timeScale().fitContent()
+    setChartCreated(chart)
+  }, [token, theme, chartCreated, captionNameColor, values])
+
+  if (!network) {
+    return null
+  }
 
   return (
     <tr key={id}>
       <td>
+        <StyledID>{id}</StyledID>
         <HeaderTitle>Name</HeaderTitle>
-        <HeaderValue>{name}</HeaderValue>
+        <TokenWrapper>
+          <TokenDisplay erc20={erc20} network={network} />
+          <HeaderValue>{name}</HeaderValue>
+        </TokenWrapper>
       </td>
       <td>
         <HeaderTitle>Symbol</HeaderTitle>
@@ -125,11 +254,11 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
-        <HeaderValue>{last24hours}</HeaderValue>
+        <HeaderValue captionColor={getColorBySign(last24hours)}>{last24hours}%</HeaderValue>
       </td>
       <td>
         <HeaderTitle>7d</HeaderTitle>
-        <HeaderValue>{sevenDays}</HeaderValue>
+        <HeaderValue captionColor={getColorBySign(sevenDays)}>{sevenDays}%</HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h volume</HeaderTitle>
@@ -137,7 +266,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
-        <HeaderValue>{last7Days}</HeaderValue>
+        <ChartWrapper ref={chartContainerRef} />
       </td>
     </tr>
   )

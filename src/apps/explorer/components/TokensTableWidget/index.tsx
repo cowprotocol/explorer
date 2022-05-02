@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { Index } from 'flexsearch'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
 import Spinner from 'components/common/Spinner'
-import { Wrapper, Input, SearchIcon } from 'apps/explorer/components/common/Search/Search.styled'
-
 import { useNetworkId } from 'state/network'
 import { useGetTokens } from 'hooks/useGetTokens'
+import { useFlexSearch } from 'hooks/useFlexSearch'
+import { Token } from 'api/operator/types'
 import { TokensTableWithData } from 'apps/explorer/components/TokensTableWidget/TokensTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTab'
@@ -15,19 +14,17 @@ import { ConnectionStatus } from 'components/ConnectionStatus'
 import { TabList } from 'components/common/Tabs/Tabs'
 import PaginationTokensTable from './PaginationTokensTable'
 import { useTable } from './useTable'
-
-// assets
-import searchImg from 'assets/img/search2.svg'
-
-const SEARCH_INDEX = new Index({
-  tokenize: 'forward',
-})
+import { TableSearch } from 'components/common/TableSearch/TableSearch'
 
 const WrapperExtraComponents = styled.div`
   align-items: center;
   display: flex;
   justify-content: flex-end;
   height: 100%;
+`
+
+const TableWrapper = styled.div`
+  margin-top: 10px;
 `
 
 const ExplorerCustomTab = styled(ExplorerTabs)`
@@ -47,40 +44,6 @@ interface Props {
   networkId: BlockchainNetwork
 }
 
-interface SearchProps {
-  query: string
-  setQuery: (query: string) => void
-}
-
-const SearchWrapped = styled(Wrapper)`
-  margin-left: 10px;
-  max-width: 400px;
-  ${SearchIcon} {
-    width: 20px;
-    position: absolute;
-    left: 20px;
-  }
-  ${Input} {
-    height: 4rem;
-    font-size: 1.5rem;
-  }
-`
-
-const FlexSearchComponent: React.FC<SearchProps> = ({ query, setQuery }) => (
-  <SearchWrapped>
-    <SearchIcon src={searchImg} />
-    <Input
-      autoComplete="off"
-      type="search"
-      name="query"
-      value={query}
-      onChange={(e): void => setQuery(e.target.value.trim())}
-      placeholder={'Search token by name, symbol or hash'}
-      aria-label="Search token by name, symbol or hash"
-    />
-  </SearchWrapped>
-)
-
 const tabItems = (isLoadingTokens: boolean, query: string, setQuery: (query: string) => void): TabItemInterface[] => {
   return [
     {
@@ -89,7 +52,7 @@ const tabItems = (isLoadingTokens: boolean, query: string, setQuery: (query: str
         <>
           Top Tokens
           <StyledTabLoader>{isLoadingTokens && <Spinner spin size="1x" />}</StyledTabLoader>
-          <FlexSearchComponent query={query} setQuery={setQuery} />
+          <TableSearch query={query} setQuery={setQuery} />
         </>
       ),
       content: <TokensTableWithData />,
@@ -100,7 +63,6 @@ const tabItems = (isLoadingTokens: boolean, query: string, setQuery: (query: str
 export const TokensTableWidget: React.FC<Props> = () => {
   const networkId = useNetworkId() || undefined
   const [query, setQuery] = useState('')
-  const [index, setIndex] = useState(SEARCH_INDEX)
   const {
     state: tableState,
     setPageSize,
@@ -108,35 +70,17 @@ export const TokensTableWidget: React.FC<Props> = () => {
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: 20 } })
   const { tokens, isLoading: isTokensLoading, error } = useGetTokens(networkId)
-  const [filteredTokens, setFilteredTokens] = useState(tokens)
-
-  useEffect(() => {
-    tokens?.forEach((token) => {
-      index.add(token.id, JSON.stringify(token))
-    })
-  }, [index, tokens])
-
-  useEffect(() => {
-    const result = index.search(query)
-    const filteredTokens = tokens?.filter((token) => result.includes(token.id))
-    setFilteredTokens(filteredTokens)
-    searchAndLog(query, index)
-  }, [index, query, tokens])
-
-  useEffect(() => {
-    setIndex(SEARCH_INDEX)
-    setFilteredTokens(tokens)
-  }, [tokens])
+  const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol'])
 
   if (!tokens?.length) {
     return <Spinner spin size="3x" />
   }
 
   return (
-    <>
+    <TableWrapper>
       <TokensTableContext.Provider
         value={{
-          tokens: query ? filteredTokens : tokens,
+          tokens: query ? (filteredTokens as Token[]) : tokens,
           error,
           isTokensLoading,
           networkId,
@@ -147,18 +91,8 @@ export const TokensTableWidget: React.FC<Props> = () => {
         }}
       >
         <ConnectionStatus />
-        <ExplorerCustomTab
-          className="matu"
-          tabItems={tabItems(isTokensLoading, query, setQuery)}
-          extra={ExtraComponentNode}
-        />
+        <ExplorerCustomTab tabItems={tabItems(isTokensLoading, query, setQuery)} extra={ExtraComponentNode} />
       </TokensTableContext.Provider>
-    </>
+    </TableWrapper>
   )
-}
-
-const searchAndLog = (keyword: string, flexsearch: Index): void => {
-  const result = flexsearch.search(keyword)
-
-  console.log(`Searching result of ${keyword}:\t`, result)
 }
