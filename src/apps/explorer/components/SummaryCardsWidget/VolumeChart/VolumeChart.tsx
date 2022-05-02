@@ -15,6 +15,7 @@ import {
 } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChart.styled'
 import { VolumePeriod } from './VolumeChartWidget'
 import { numberFormatter } from '../utils'
+import { useNetworkId } from 'state/network'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
 const COLOR_POSITIVE_DIFFERENCE = 'rgba(0, 196, 110, 0.01)'
@@ -131,15 +132,17 @@ export function VolumeChart({
   const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
+  const network = useNetworkId()
   const previousPeriod = usePreviousLastValueData(period)
+  const previousNetwork = usePreviousLastValueData(network)
 
   // reset the chart when the volume period is changed
   useEffect(() => {
-    if (period !== previousPeriod && chartCreated) {
+    if ((period !== previousPeriod || network !== previousNetwork) && chartCreated) {
       chartCreated.resize(0, 0)
       setChartCreated(null)
     }
-  }, [chartCreated, period, previousPeriod])
+  }, [chartCreated, period, previousPeriod, network])
 
   useEffect(() => {
     if (chartCreated || !chartContainerRef.current || !items || isLoading) return
