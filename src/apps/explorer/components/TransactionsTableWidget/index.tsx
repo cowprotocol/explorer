@@ -9,7 +9,14 @@ import { Order } from 'api/operator'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTab'
-import { TitleAddress, FlexContainer, StyledTabLoader, BVButton, Title } from 'apps/explorer/pages/styled'
+import {
+  TitleAddress,
+  FlexContainer,
+  StyledTabLoader,
+  BVButton,
+  Title,
+  WrapperCenter,
+} from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
@@ -68,7 +75,11 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   }
 
   if (!orders?.length) {
-    return <Spinner spin size="3x" />
+    return (
+      <WrapperCenter>
+        <Spinner spin size="5x" />
+      </WrapperCenter>
+    )
   }
 
   const batchViewerButtonName = batchViewer ? 'Show Transactions list' : 'Show Batch Viewer'

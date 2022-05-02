@@ -22,6 +22,7 @@ import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import { STYLESHEET } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
+import { WrapperCenter } from 'apps/explorer/pages/styled'
 
 Cytoscape.use(popper)
 const PROTOCOL_NAME = APP_NAME
@@ -211,7 +212,12 @@ function TransanctionBatchGraph({
     })
   }, [cytoscapeRef, elements.length])
 
-  if (isLoading) return <Spinner spin size="3x" />
+  if (isLoading)
+    return (
+      <WrapperCenter>
+        <Spinner spin size="3x" />
+      </WrapperCenter>
+    )
 
   const layout = {
     name: 'grid',
