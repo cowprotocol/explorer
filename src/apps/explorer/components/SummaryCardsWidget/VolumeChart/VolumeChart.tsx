@@ -20,6 +20,8 @@ import { useNetworkId } from 'state/network'
 const DEFAULT_CHART_HEIGHT = 196 // px
 const COLOR_POSITIVE_DIFFERENCE = 'rgba(0, 196, 110, 0.01)'
 const COLOR_NEGATIVE_DIFFERENCE = 'rgba(255, 48, 91, 0.01)'
+const COLOR_POSITIVE_DIFFERENCE_LINE = 'rgb(0, 196, 111)'
+const COLOR_NEGATIVE_DIFFERENCE_LINE = 'rgb(255, 48, 89)'
 
 export interface VolumeDataResponse {
   data?: HistogramData[]
@@ -150,7 +152,7 @@ export function VolumeChart({
     const chart = _buildChart(chartContainerRef.current, width, height, theme)
     const series = chart.addAreaSeries({
       lineWidth: 1,
-      lineColor: theme[captionNameColor],
+      lineColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE_LINE : COLOR_POSITIVE_DIFFERENCE_LINE,
       topColor: theme[captionNameColor],
       bottomColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE : COLOR_POSITIVE_DIFFERENCE,
     })
