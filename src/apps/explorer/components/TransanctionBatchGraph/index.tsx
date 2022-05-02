@@ -22,14 +22,18 @@ import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import { STYLESHEET } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
+import { media } from 'theme/styles/media'
 
 Cytoscape.use(popper)
 const PROTOCOL_NAME = APP_NAME
 const WrapperCytoscape = styled(CytoscapeComponent)`
   background-color: ${({ theme }): string => theme.bg1};
   font-weight: ${({ theme }): string => theme.fontMedium};
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
-  border-radius: 0.4rem;
+  border-radius: 0.6rem;
+  ${media.mediumDown} {
+    border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+    margin: 1.6rem 0;
+  }
 `
 
 function getTypeNode(account: Account): TypeNodeOnTx {
