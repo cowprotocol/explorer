@@ -4,7 +4,7 @@ import { BlockchainNetwork, TransactionsTableContext } from './context/Transacti
 import { useGetTxOrders, useTxOrderExplorerLink } from 'hooks/useGetOrders'
 import RedirectToSearch from 'components/RedirectToSearch'
 import Spinner from 'components/common/Spinner'
-import CowLoadingSVG from 'assets/img/cow-loading.svg'
+import CowLoadingSVG from 'assets/img/cowLoading.svg'
 import { RedirectToNetwork, useNetworkId } from 'state/network'
 import { Order } from 'api/operator'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
