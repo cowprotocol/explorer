@@ -175,6 +175,20 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
+function getLayout(): Cytoscape.LayoutOptions {
+  return {
+    name: 'grid',
+    position: function (node: NodeSingular): { row: number; col: number } {
+      return { row: node.data('row'), col: node.data('col') }
+    },
+    fit: true, // whether to fit the viewport to the graph
+    padding: 10, // padding used on fit
+    avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+    avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
+    nodeDimensionsIncludeLabels: false,
+  }
+}
+
 function TransanctionBatchGraph({
   txBatchData: { error, isLoading, txSettlement },
   networkId,
@@ -186,6 +200,8 @@ function TransanctionBatchGraph({
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
       cytoscapeRef.current = ref
+      cytoscapeRef.current.layout(getLayout()).run()
+      cytoscapeRef.current.fit()
     },
     [cytoscapeRef],
   )
@@ -217,22 +233,9 @@ function TransanctionBatchGraph({
 
   if (isLoading) return <Spinner spin size="3x" />
 
-  const layout = {
-    name: 'grid',
-    position: function (node: NodeSingular): { row: number; col: number } {
-      return { row: node.position('y'), col: node.position('x') }
-    },
-    fit: true, // whether to fit the viewport to the graph
-    padding: 10, // padding used on fit
-    avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
-    avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
-    nodeDimensionsIncludeLabels: false,
-  }
-
   return (
     <WrapperCytoscape
       elements={elements}
-      layout={layout}
       style={{ width: '100%', height: heightSize }}
       stylesheet={STYLESHEET(theme)}
       cy={setCytoscape}
