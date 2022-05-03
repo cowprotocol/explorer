@@ -61,15 +61,19 @@ const EyesOpacity = keyframes`
 export const StyledCowLoading = styled(SVG)`
   animation: ${CowBounce} 1.5s infinite ease-in-out;
   animation-delay: -1s;
-  .cowHead {
+
+  path:nth-child(1) {
     fill: ${({ theme }): string => theme.white};
     opacity: 0.4;
   }
-  .eyesBg {
+
+  path:nth-child(2),
+  path:nth-child(3) {
     fill: ${({ theme }): string => theme.bg1};
     opacity: 1;
   }
-  .eyes {
+  path:nth-child(4),
+  path:nth-child(5) {
     fill: ${({ theme }): string => theme.orange};
     animation: ${EyesOpacity} 1.5s ease-in-out infinite;
     filter: blur(1px);
