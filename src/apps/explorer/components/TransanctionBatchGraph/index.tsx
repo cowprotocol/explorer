@@ -11,7 +11,7 @@ import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
 
-import CowLoadingSVG from 'assets/img/cow-loading.svg'
+import CowLoadingSVG from 'assets/img/cowLoading.svg'
 import { GetTxBatchTradesResult as TxBatchData, Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
 import { networkOptions } from 'components/NetworkSelector'
 import { Network } from 'types'
