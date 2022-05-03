@@ -4,7 +4,6 @@ import { BlockchainNetwork, TransactionsTableContext } from './context/Transacti
 import { useGetTxOrders, useTxOrderExplorerLink } from 'hooks/useGetOrders'
 import RedirectToSearch from 'components/RedirectToSearch'
 import Spinner from 'components/common/Spinner'
-import CowLoadingSVG from 'assets/img/cowLoading.svg'
 import { RedirectToNetwork, useNetworkId } from 'state/network'
 import { Order } from 'api/operator'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
@@ -17,7 +16,6 @@ import {
   BVButton,
   Title,
   WrapperCenter,
-  StyledCowLoading,
 } from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
@@ -26,6 +24,7 @@ import { useTxBatchTrades } from 'hooks/useTxBatchTrades'
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import TransactionBatchGraph from 'apps/explorer/components/TransanctionBatchGraph'
+import CowLoading from 'components/common/CowLoading'
 
 interface Props {
   txHash: string
@@ -79,8 +78,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   if (!orders?.length) {
     return (
       <WrapperCenter>
-        {/* <Spinner spin size="3x" /> */}
-        <StyledCowLoading src={CowLoadingSVG} />
+        <CowLoading />
       </WrapperCenter>
     )
   }
@@ -117,8 +115,6 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
           <ExplorerTabs tabItems={tabItems(isTxLoading)} />
         )}
       </TransactionsTableContext.Provider>
-      <h1>(just to expose the animation)</h1>
-      <StyledCowLoading src={CowLoadingSVG} />
     </>
   )
 }
