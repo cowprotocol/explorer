@@ -3,6 +3,7 @@ import { media } from 'theme/styles/media'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import * as CSS from 'csstype'
 import { Link } from 'react-router-dom'
+import SVG from 'react-inlinesvg'
 
 export const Wrapper = styled.div`
   padding: 1.6rem;
@@ -32,6 +33,42 @@ export const WrapperCenter = styled.div`
   align-items: center;
   justify-content: center;
   height: 100%;
+`
+
+export const StyledCowLoading = styled(SVG)`
+  #cow-loading {
+    animation: cow-bounce 1.5s infinite ease-in-out;
+    animation-delay: -1s;
+  }
+  @keyframes cow-bounce {
+    0%,
+    100% {
+      transform: scale(0.95);
+    }
+    50% {
+      transform: scale(1);
+    }
+  }
+  #eyes-bg {
+    fill: ${({ theme }): string => theme.yellow4};
+    filter: blur(1px);
+  }
+  #eyes {
+    fill: ${({ theme }): string => theme.orange1};
+    animation: EyesOpacity 1.5s ease-in-out infinite;
+  }
+  @keyframes EyesOpacity {
+    from {
+      opacity: 0.25;
+    }
+    50% {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0.25;
+    }
+  }
 `
 
 export const StyledTabLoader = styled.span`

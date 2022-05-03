@@ -11,7 +11,7 @@ import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
 
-import Spinner from 'components/common/Spinner'
+import CowLoadingSVG from 'assets/img/cow-loading.svg'
 import { GetTxBatchTradesResult as TxBatchData, Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
 import { networkOptions } from 'components/NetworkSelector'
 import { Network } from 'types'
@@ -22,7 +22,7 @@ import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import { STYLESHEET } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
-import { WrapperCenter } from 'apps/explorer/pages/styled'
+import { StyledCowLoading, WrapperCenter } from 'apps/explorer/pages/styled'
 
 Cytoscape.use(popper)
 const PROTOCOL_NAME = APP_NAME
@@ -215,7 +215,7 @@ function TransanctionBatchGraph({
   if (isLoading)
     return (
       <WrapperCenter>
-        <Spinner spin size="3x" />
+        <StyledCowLoading src={CowLoadingSVG} />
       </WrapperCenter>
     )
 
