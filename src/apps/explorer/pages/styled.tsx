@@ -49,24 +49,29 @@ export const StyledCowLoading = styled(SVG)`
       transform: scale(1);
     }
   }
+  #cow-head {
+    fill: ${({ theme }): string => theme.white};
+    opacity: 0.4;
+  }
   #eyes-bg {
-    fill: ${({ theme }): string => theme.yellow4};
-    filter: blur(1px);
+    fill: ${({ theme }): string => theme.bg1};
+    opacity: 1;
   }
   #eyes {
-    fill: ${({ theme }): string => theme.orange1};
+    fill: ${({ theme }): string => theme.yellow4};
     animation: EyesOpacity 1.5s ease-in-out infinite;
+    filter: blur(1px);
   }
   @keyframes EyesOpacity {
     from {
-      opacity: 0.25;
-    }
-    50% {
       opacity: 1;
+    }
+    30% {
+      opacity: 0.3;
     }
 
     to {
-      opacity: 0.25;
+      opacity: 1;
     }
   }
 `
