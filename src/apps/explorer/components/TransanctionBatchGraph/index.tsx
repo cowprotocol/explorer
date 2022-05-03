@@ -105,10 +105,19 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   )
 }
 
+interface PopperInstance {
+  scheduleUpdate: () => void
+  destroy: () => void
+}
+
 /**
  * This allow bind a tooltip (popper.js) around to a cytoscape elements (node, edge)
  */
-function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition | Cytoscape.EdgeDataDefinition): void {
+function bindPopper(
+  event: EventObject,
+  targetData: Cytoscape.NodeDataDefinition | Cytoscape.EdgeDataDefinition,
+  popperRef: React.MutableRefObject<PopperInstance | null>,
+): void {
   const tooltipId = `popper-target-${targetData.id}`
   const popperClassTarget = 'target-popper'
 
@@ -117,7 +126,7 @@ function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition
   Array.from(existingTooltips).forEach((ele: { remove: () => void }): void => ele && ele.remove())
 
   const target = event.target
-  const popperRef = target.popper({
+  popperRef.current = target.popper({
     content: () => {
       const tooltip = document.createElement('span')
       tooltip.id = tooltipId
@@ -150,9 +159,9 @@ function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition
       placement: 'top-start',
       removeOnDestroy: true,
     },
-  })
+  }) as PopperInstance
 
-  const popperUpdate = (): (() => void) => popperRef.update()
+  const popperUpdate = (): void => popperRef.current?.scheduleUpdate()
 
   target.on('position', () => popperUpdate)
   target.cy().on('pan zoom resize', () => popperUpdate)
@@ -167,6 +176,7 @@ function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition
       if (newTarget) {
         newTarget.remove()
       }
+      popperRef.current?.destroy()
     })
 }
 
@@ -195,6 +205,7 @@ function TransanctionBatchGraph({
 }: GraphBatchTxParams): JSX.Element {
   const [elements, setElements] = useState<ElementDefinition[]>([])
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
+  const cyPopperRef = useRef<PopperInstance | null>(null)
   const theme = useTheme()
   const heightSize = window.innerHeight - HEIGHT_HEADER_FOOTER
   const setCytoscape = useCallback(
@@ -221,7 +232,7 @@ function TransanctionBatchGraph({
       const target = event.target
       const targetData: NodeDataDefinition | EdgeDataDefinition = target.data()
 
-      bindPopper(event, targetData)
+      bindPopper(event, targetData, cyPopperRef)
     })
     cy.on('mouseover', 'edge', (event): void => {
       event.target.addClass('hover')
@@ -236,6 +247,7 @@ function TransanctionBatchGraph({
   return (
     <WrapperCytoscape
       elements={elements}
+      layout={getLayout()}
       style={{ width: '100%', height: heightSize }}
       stylesheet={STYLESHEET(theme)}
       cy={setCytoscape}
