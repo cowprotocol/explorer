@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { media } from 'theme/styles/media'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import * as CSS from 'csstype'
@@ -35,19 +35,33 @@ export const WrapperCenter = styled.div`
   height: 100%;
 `
 
-export const StyledCowLoading = styled(SVG)`
-  #cow-loading {
-    animation: cow-bounce 1.5s infinite ease-in-out;
-    animation-delay: -1s;
-  }
-  @keyframes cow-bounce {
-    0%,
+const CowBounce = keyframes`
+  0%,
     100% {
       transform: scale(0.95);
     }
     50% {
       transform: scale(1);
     }
+`
+
+const EyesOpacity = keyframes`
+  from {
+      opacity: 1;
+    }
+    30% {
+      opacity: 0.3;
+    }
+
+    to {
+      opacity: 1;
+    }
+`
+
+export const StyledCowLoading = styled(SVG)`
+  #cow-loading {
+    animation: ${CowBounce} 1.5s infinite ease-in-out;
+    animation-delay: -1s;
   }
   #cow-head {
     fill: ${({ theme }): string => theme.white};
@@ -59,20 +73,8 @@ export const StyledCowLoading = styled(SVG)`
   }
   #eyes {
     fill: ${({ theme }): string => theme.yellow4};
-    animation: EyesOpacity 1.5s ease-in-out infinite;
+    animation: ${EyesOpacity} 1.5s ease-in-out infinite;
     filter: blur(1px);
-  }
-  @keyframes EyesOpacity {
-    from {
-      opacity: 1;
-    }
-    30% {
-      opacity: 0.3;
-    }
-
-    to {
-      opacity: 1;
-    }
   }
 `
 
