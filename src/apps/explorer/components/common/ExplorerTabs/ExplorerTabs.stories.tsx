@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Meta, Story } from '@storybook/react/types-6-0'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import StyledTabs from './ExplorerTab'
+import StyledTabs from './ExplorerTabs'
 import { Props as TabsProps } from '../../../../../components/common/Tabs/Tabs'
 
 export default {
