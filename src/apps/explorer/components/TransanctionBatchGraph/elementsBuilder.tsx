@@ -49,7 +49,7 @@ export default class ElementsBuilder {
     this._edges.push({
       group: 'edges',
       data: {
-        id: `${source.type}:${source.id}->${target.type}:${target.id}`,
+        id: `${source.type}:${source.id}->${label}->${target.type}:${target.id}`,
         source: `${source.type}:${source.id}`,
         target: `${target.type}:${target.id}`,
         label,
