@@ -12,24 +12,24 @@ export const WrapperCenter = styled.div`
 
 const CowBounce = keyframes`
   0%,
-    100% {
-      transform: scale(0.95);
-    }
-    50% {
-      transform: scale(1);
-    }
+  100% {
+    transform: scale(0.95);
+  }
+  50% {
+    transform: scale(1);
+  }
 `
 
 const EyesOpacity = keyframes`
   from {
-      opacity: 1;
-    }
-    30% {
-      opacity: 0.3;
-    }
-    to {
-      opacity: 1;
-    }
+    opacity: 1;
+  }
+  30% {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
 `
 
 export const StyledCowLoading = styled(SVG)`
