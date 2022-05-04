@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTab'
+import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { useTable } from './useTable'
 import { OrdersTableWithData } from './OrdersTableWithData'

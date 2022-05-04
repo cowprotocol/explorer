@@ -104,18 +104,6 @@ export const Title = styled.h1`
   font-weight: ${({ theme }): string => theme.fontBold};
 `
 
-export const BVButton = styled.a`
-  color: ${({ theme }): string => theme.orange};
-  font-size: 1.3rem;
-  margin-left: auto;
-  svg {
-    margin: 0 0.75rem 0 0;
-  }
-  ${media.mobile} {
-    margin: -3rem 0 1.5rem auto;
-  }
-`
-
 export const ContentCard = styled.div`
   font-size: 1.6rem;
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
