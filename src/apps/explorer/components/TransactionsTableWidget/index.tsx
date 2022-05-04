@@ -25,17 +25,17 @@ interface Props {
   transactions?: Order[]
 }
 
-enum TabViews {
+enum TabView {
   GRAPH = 'graph',
   ORDERS = 'orders',
 }
 
 const TAB_VIEW_ID = {
-  [TabViews.ORDERS]: 1,
-  [TabViews.GRAPH]: 2,
+  [TabView.ORDERS]: 1,
+  [TabView.GRAPH]: 2,
 }
 
-const DEFAULT_TAB = TabViews.ORDERS
+const DEFAULT_TAB = TabView.ORDERS
 
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
@@ -45,12 +45,12 @@ function useQueryViewParams(): { tab: string } {
 const tabItems = (txBatchTrades: GetTxBatchTradesResult, networkId: BlockchainNetwork): TabItemInterface[] => {
   return [
     {
-      id: TAB_VIEW_ID[TabViews.ORDERS],
+      id: TAB_VIEW_ID[TabView.ORDERS],
       tab: <TabIcon title="Orders" iconFontName={faListUl} />,
       content: <TransactionsTableWithData />,
     },
     {
-      id: TAB_VIEW_ID[TabViews.GRAPH],
+      id: TAB_VIEW_ID[TabView.GRAPH],
       tab: <TabIcon title="Graph" iconFontName={faProjectDiagram} />,
       content: <TransactionBatchGraph txBatchData={txBatchTrades} networkId={networkId} />,
     },
@@ -62,9 +62,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const networkId = useNetworkId() || undefined
   const [redirectTo, setRedirectTo] = useState(false)
   const { tab } = useQueryViewParams()
-  const [tabViewName, setTabViewName] = useState<TabViews>(
-    (Object.values(TabViews).includes(tab as TabViews) && (tab as TabViews)) || TabViews.ORDERS,
-  )
+  const [tabViewName, setTabViewName] = useState<TabView>(TabView[tab] || TabView.ORDERS)
   const tabSelectedId = useRef(TAB_VIEW_ID[tabViewName])
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
@@ -84,10 +82,10 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   })
 
   const onChangeTab = useCallback((tabId: number) => {
-    const newTabViewName = Object.keys(TAB_VIEW_ID).find((key) => TAB_VIEW_ID[key as TabViews] === tabId)
+    const newTabViewName = Object.keys(TAB_VIEW_ID).find((key) => TAB_VIEW_ID[key as TabView] === tabId)
     if (!newTabViewName) return
 
-    setTabViewName(newTabViewName as TabViews)
+    setTabViewName(newTabViewName as TabView)
     tabSelectedId.current = tabId
   }, [])
 
