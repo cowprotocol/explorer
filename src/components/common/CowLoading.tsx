@@ -3,6 +3,13 @@ import styled, { keyframes } from 'styled-components'
 import SVG from 'react-inlinesvg'
 import CowLoadingSVG from 'assets/img/cowLoading.svg'
 
+export const WrapperCenter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`
+
 const CowBounce = keyframes`
   0%,
     100% {
@@ -43,6 +50,10 @@ export const StyledCowLoading = styled(SVG)`
   }
 `
 
-export const CowLoading: React.FC = () => <StyledCowLoading src={CowLoadingSVG} />
+export const CowLoading: React.FC = () => (
+  <WrapperCenter>
+    <StyledCowLoading src={CowLoadingSVG} />
+  </WrapperCenter>
+)
 
 export default CowLoading

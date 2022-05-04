@@ -21,7 +21,6 @@ import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import { STYLESHEET } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
-import { WrapperCenter } from 'apps/explorer/pages/styled'
 import CowLoading from 'components/common/CowLoading'
 
 Cytoscape.use(popper)
@@ -212,12 +211,7 @@ function TransanctionBatchGraph({
     })
   }, [cytoscapeRef, elements.length])
 
-  if (isLoading)
-    return (
-      <WrapperCenter>
-        <CowLoading />
-      </WrapperCenter>
-    )
+  if (isLoading) return <CowLoading />
 
   const layout = {
     name: 'grid',

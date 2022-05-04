@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { faSpinner } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
 import { Order, Trade } from 'api/operator'
 
 import { DetailsTable } from 'components/orders/DetailsTable'
@@ -12,6 +9,7 @@ import RedirectToSearch from 'components/RedirectToSearch'
 import { Notification } from 'components/Notification'
 import { Errors } from 'types'
 import { ConnectionStatus } from 'components/ConnectionStatus'
+import CowLoading from 'components/common/CowLoading'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -70,7 +68,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       {/* TODO: add fills tab for partiallyFillable orders */}
       {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
       {/* TODO: create common loading indicator */}
-      {isLoadingForTheFirstTime && <FontAwesomeIcon icon={faSpinner} spin size="3x" />}
+      {isLoadingForTheFirstTime && <CowLoading />}
     </>
   )
 }
