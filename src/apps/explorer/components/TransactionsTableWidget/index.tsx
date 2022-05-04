@@ -6,7 +6,6 @@ import { useQuery } from 'hooks/useQuery'
 import { BlockchainNetwork, TransactionsTableContext } from './context/TransactionsTableContext'
 import { useGetTxOrders, useTxOrderExplorerLink } from 'hooks/useGetOrders'
 import RedirectToSearch from 'components/RedirectToSearch'
-import Spinner from 'components/common/Spinner'
 import { RedirectToNetwork, useNetworkId } from 'state/network'
 import { Order } from 'api/operator'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
@@ -18,6 +17,7 @@ import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { useTxBatchTrades, GetTxBatchTradesResult } from 'hooks/useTxBatchTrades'
 import TransactionBatchGraph from 'apps/explorer/components/TransanctionBatchGraph'
+import CowLoading from 'components/common/CowLoading'
 
 interface Props {
   txHash: string
@@ -94,7 +94,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   }
 
   if (!orders?.length) {
-    return <Spinner spin size="3x" />
+    return <CowLoading />
   }
 
   return (
