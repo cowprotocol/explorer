@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { useHistory } from 'react-router-dom'
 
@@ -26,31 +26,26 @@ interface Props {
 }
 
 enum TabView {
-  GRAPH = 'graph',
-  ORDERS = 'orders',
+  ORDERS = 1,
+  GRAPH,
 }
 
-const TAB_VIEW_ID = {
-  [TabView.ORDERS]: 1,
-  [TabView.GRAPH]: 2,
-}
-
-const DEFAULT_TAB = TabView.ORDERS
+const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
-  return { tab: query.get('tab') || DEFAULT_TAB }
+  return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (txBatchTrades: GetTxBatchTradesResult, networkId: BlockchainNetwork): TabItemInterface[] => {
   return [
     {
-      id: TAB_VIEW_ID[TabView.ORDERS],
+      id: TabView.ORDERS,
       tab: <TabIcon title="Orders" iconFontName={faListUl} />,
       content: <TransactionsTableWithData />,
     },
     {
-      id: TAB_VIEW_ID[TabView.GRAPH],
+      id: TabView.GRAPH,
       tab: <TabIcon title="Graph" iconFontName={faProjectDiagram} />,
       content: <TransactionBatchGraph txBatchData={txBatchTrades} networkId={networkId} />,
     },
@@ -62,8 +57,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const networkId = useNetworkId() || undefined
   const [redirectTo, setRedirectTo] = useState(false)
   const { tab } = useQueryViewParams()
-  const [tabViewName, setTabViewName] = useState<TabView>(TabView[tab] || TabView.ORDERS)
-  const tabSelectedId = useRef(TAB_VIEW_ID[tabViewName])
+  const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
   const notGpv2ExplorerData = useTxOrderExplorerLink(txHash, isZeroOrders)
@@ -82,16 +76,15 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   })
 
   const onChangeTab = useCallback((tabId: number) => {
-    const newTabViewName = Object.keys(TAB_VIEW_ID).find((key) => TAB_VIEW_ID[key as TabView] === tabId)
+    const newTabViewName = TabView[tabId]
     if (!newTabViewName) return
 
-    setTabViewName(newTabViewName as TabView)
-    tabSelectedId.current = tabId
+    setTabViewSelected(TabView[newTabViewName])
   }, [])
 
   useEffect(() => {
-    history.replace({ search: `?tab=${tabViewName}` })
-  }, [history, tabViewName])
+    history.replace({ search: `?tab=${TabView[tabViewSelected].toLowerCase()}` })
+  }, [history, tabViewSelected])
 
   if (errorTxPresentInNetworkId && networkId != errorTxPresentInNetworkId) {
     return <RedirectToNetwork networkId={errorTxPresentInNetworkId} />
@@ -125,7 +118,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
       >
         <ExplorerTabs
           tabItems={tabItems(txBatchTrades, networkId)}
-          defaultTab={tabSelectedId.current}
+          defaultTab={tabViewSelected}
           onChange={(key: number): void => onChangeTab(key)}
         />
       </TransactionsTableContext.Provider>
