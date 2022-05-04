@@ -24,6 +24,7 @@ import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } fr
 
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 
 Cytoscape.use(popper)
 const PROTOCOL_NAME = APP_NAME
@@ -243,7 +244,12 @@ function TransanctionBatchGraph({
     })
   }, [cytoscapeRef, elements.length])
 
-  if (isLoading) return <CowLoading />
+  if (isLoading)
+    return (
+      <EmptyItemWrapper>
+        <CowLoading />
+      </EmptyItemWrapper>
+    )
 
   return (
     <WrapperCytoscape
