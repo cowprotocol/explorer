@@ -27,6 +27,13 @@ export const Wrapper = styled.div`
   }
 `
 
+export const WrapperCenter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`
+
 export const StyledTabLoader = styled.span`
   padding-left: 4px;
 `

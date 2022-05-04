@@ -2,10 +2,10 @@ import React, { useContext, useState, useEffect } from 'react'
 
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useFirstRender from 'hooks/useFirstRender'
+import Spinner from 'components/common/Spinner'
 import { TransactionsTableContext } from 'apps/explorer/components/TransactionsTableWidget/context/TransactionsTableContext'
 import TransactionTable from 'components/transaction/TransactionTable'
 import { DEFAULT_TIMEOUT } from 'const'
-import CowLoading from 'components/common/CowLoading'
 
 export const TransactionsTableWithData: React.FC = () => {
   const {
@@ -36,7 +36,7 @@ export const TransactionsTableWithData: React.FC = () => {
 
   return isFirstRender || isFirstLoading ? (
     <EmptyItemWrapper>
-      <CowLoading />
+      <Spinner spin size="2x" />
     </EmptyItemWrapper>
   ) : (
     <TransactionTable orders={orders} />

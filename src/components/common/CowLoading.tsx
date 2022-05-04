@@ -13,7 +13,7 @@ export const WrapperCenter = styled.div`
 const CowBounce = keyframes`
   0%,
   100% {
-    transform: scale(0.95);
+    transform: scale(0.95) translateX(1px);
   }
   50% {
     transform: scale(1);
@@ -33,9 +33,11 @@ const EyesOpacity = keyframes`
 `
 
 export const StyledCowLoading = styled(SVG)`
-  .cowHead {
+  .cowLoading {
     animation: ${CowBounce} 1.5s infinite ease-in-out;
     animation-delay: -1s;
+  }
+  .cowHead {
     fill: ${({ theme }): string => theme.white};
     opacity: 0.4;
   }
