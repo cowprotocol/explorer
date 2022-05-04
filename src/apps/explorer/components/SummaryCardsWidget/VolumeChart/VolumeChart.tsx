@@ -215,14 +215,10 @@ export function VolumeChart({
             ) : (
               <>
                 <p>${currentVolume && numberFormatter(currentVolume)}</p>
-                {Number.isNaN(diffPercentageVolume) ? (
-                  ''
-                ) : (
-                  <p className="caption">
-                    {(diffPercentageVolume ?? 0) > 0 ? '+' : ''}
-                    {diffPercentageVolume && _formatAmount(diffPercentageVolume.toString())}%
-                  </p>
-                )}
+                <p className="caption">
+                  {(diffPercentageVolume ?? 0) > 0 ? '+' : ''}
+                  {diffPercentageVolume && _formatAmount(diffPercentageVolume.toString())}%
+                </p>
               </>
             )}
           </span>

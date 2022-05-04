@@ -79,11 +79,11 @@ export function buildVolumeData(
       time: Number(item.timestamp) as UTCTimestamp,
       value: Number(item.volumeUsd),
     })),
-    currentVolume: getVolumeAverage(currentPeriodData),
-    changedVolume: getVolumeAverage(previousPeriodData),
+    currentVolume: getAccumulatedVolume(currentPeriodData),
+    changedVolume: getAccumulatedVolume(previousPeriodData),
   }
 }
 
-function getVolumeAverage(data: RawVolumeItem[]): number {
-  return data.reduce((acc, item) => acc + Number(item.volumeUsd), 0) / data.length
+function getAccumulatedVolume(data: RawVolumeItem[]): number {
+  return data.reduce((acc, item) => acc + Number(item.volumeUsd), 0)
 }
