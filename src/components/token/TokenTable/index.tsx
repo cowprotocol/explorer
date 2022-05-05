@@ -122,6 +122,7 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
 
 const ChartWrapper = styled.div`
   position: relative;
+  width: 100%;
   ${media.desktopMediumDown} {
     table > tr > td:first-child {
       display: none;
@@ -212,7 +213,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
 
   useEffect(() => {
     if (chartCreated || !chartContainerRef.current || !token) return
-    const chart = _buildChart(chartContainerRef.current, 50, 50, theme)
+    const chart = _buildChart(chartContainerRef.current, 100, 45, theme)
 
     const series = chart.addLineSeries({
       lineWidth: 1,

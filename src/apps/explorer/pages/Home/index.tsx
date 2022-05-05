@@ -1,5 +1,5 @@
 import React from 'react'
-// import { Search } from 'apps/explorer/components/common/Search'
+import { Search } from 'apps/explorer/components/common/Search'
 import { Wrapper as WrapperMod } from 'apps/explorer/pages/styled'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
@@ -30,6 +30,7 @@ const Wrapper = styled(WrapperMod)`
 const SummaryWrapper = styled.section`
   display: flex;
   flex-direction: column;
+  margin: 5rem 0 0 0;
 
   ${media.mobile} {
     padding-top: 4rem;
@@ -40,8 +41,8 @@ export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
   return (
     <Wrapper>
-      {/*<h1>Search on CoW Protocol Explorer</h1>
-      <Search className="home" />*/}
+      <h1>Search on CoW Protocol Explorer</h1>
+      <Search className="home" />
       <SummaryWrapper>
         <StatsSummaryCardsWidget />
         <TokensTableWidget networkId={networkId} />

@@ -15,22 +15,29 @@ import { TabList } from 'components/common/Tabs/Tabs'
 import PaginationTokensTable from './PaginationTokensTable'
 import { useTable } from './useTable'
 import { TableSearch } from 'components/common/TableSearch/TableSearch'
+import { media } from 'theme/styles/media'
 
 const WrapperExtraComponents = styled.div`
   align-items: center;
   display: flex;
   justify-content: flex-end;
   height: 100%;
+  ${media.mobile} {
+    justify-content: center;
+  }
 `
 
 const TableWrapper = styled.div`
-  margin-top: 10px;
+  margin-top: 5rem;
 `
 
 const ExplorerCustomTab = styled(ExplorerTabs)`
   ${TabList} > button {
     border-bottom: none;
-    font-size: large;
+    font-size: 1.8rem;
+    ${media.mobile} {
+      font-size: 1.5rem;
+    }
   }
 `
 

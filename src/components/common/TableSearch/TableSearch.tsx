@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Wrapper, Input, SearchIcon } from 'apps/explorer/components/common/Search/Search.styled'
+import { media } from 'theme/styles/media'
 
 // assets
 import searchImg from 'assets/img/search2.svg'
@@ -14,6 +15,11 @@ interface SearchProps {
 const SearchWrapped = styled(Wrapper)`
   margin-left: 10px;
   max-width: 400px;
+  ${media.mobile} {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+  }
   ${SearchIcon} {
     width: 20px;
     position: absolute;
