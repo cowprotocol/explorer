@@ -88,7 +88,10 @@ export type Token = {
   id: number
   name: string
   symbol: string
-  price: string
+  totalVolumeUsd: string
+  firstTradeTimestamp: string
+  priceEth: string
+  priceUsd: string
   last24hours: number
   sevenDays: number
   last7Days: {

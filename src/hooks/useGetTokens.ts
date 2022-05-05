@@ -22,7 +22,8 @@ const TOKENS = [
   {
     id: 1,
     ...WRAPPED_ETHER,
-    price: '1,215',
+    priceEth: '0.0002454779306444603682922218067078563',
+    priceUsd: '2574.325',
     last24hours: -3.32,
     sevenDays: -3.32,
     lastDayVolume: '$323.34M',
@@ -40,7 +41,8 @@ const TOKENS = [
   {
     id: 2,
     ...DAI,
-    price: '1,215',
+    priceEth: '0.0002454779306444603682922218067078563',
+    priceUsd: '1',
     last24hours: 3.32,
     sevenDays: 3.32,
     lastDayVolume: '$323.34M',

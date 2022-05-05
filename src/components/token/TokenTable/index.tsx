@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled, { DefaultTheme, useTheme } from 'styled-components'
 import { createChart, IChartApi } from 'lightweight-charts'
-import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Token } from 'api/operator'
 import { useNetworkId } from 'state/network'
@@ -122,10 +123,12 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
 
 const ChartWrapper = styled.div`
   position: relative;
-  width: 100%;
   ${media.desktopMediumDown} {
     table > tr > td:first-child {
       display: none;
+    }
+    table > tr > td {
+      left: 10px;
     }
   }
 `
@@ -197,7 +200,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     symbol,
     address,
     decimals,
-    price,
+    priceUsd,
     last24hours,
     last7Days: { currentVolume, changedVolume, values },
     sevenDays,
@@ -248,7 +251,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue>{price}</HeaderValue>
+        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2 })}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
