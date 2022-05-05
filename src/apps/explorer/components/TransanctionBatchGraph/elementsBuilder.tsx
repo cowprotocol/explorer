@@ -49,7 +49,7 @@ export default class ElementsBuilder {
     this._edges.push({
       group: 'edges',
       data: {
-        id: `${source.type}:${source.id}->${target.type}:${target.id}`,
+        id: `${source.type}:${source.id}->${label}->${target.type}:${target.id}`,
         source: `${source.type}:${source.id}`,
         target: `${target.type}:${target.id}`,
         label,
@@ -144,7 +144,11 @@ export function buildGridLayout(
   const dexes = countTypes.get(TypeNodeOnTx.Dex) || 0
   const _center = {
     ...center,
-    position: { y: middleOfTotalRows, x: getGridPosition(center.data.type, traders, dexes) },
+    data: {
+      ...center.data,
+      row: middleOfTotalRows,
+      col: getGridPosition(center.data.type, traders, dexes),
+    },
   }
 
   let counterRows = { [TypeNodeOnTx.Trader]: 0, [TypeNodeOnTx.Dex]: 0 }
@@ -159,9 +163,10 @@ export function buildGridLayout(
   const _nodes = nodes.map((node) => {
     const _node = {
       ...node,
-      position: {
-        y: counterRows[node.data.type],
-        x: getGridPosition(node.data.type, traders, dexes),
+      data: {
+        ...node.data,
+        row: counterRows[node.data.type],
+        col: getGridPosition(node.data.type, traders, dexes),
       },
     }
 

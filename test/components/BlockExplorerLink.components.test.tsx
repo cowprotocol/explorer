@@ -13,7 +13,7 @@ let networkId: Network | undefined
 jest.mock('hooks/useWalletConnection', () => {
   return {
     useWalletConnection: (): WalletInfo & { networkIdOrDefault: number } => {
-      return { isConnected, networkId, networkIdOrDefault: networkId || Network.Mainnet }
+      return { isConnected, networkId, networkIdOrDefault: networkId || Network.MAINNET }
     },
   }
 })
@@ -25,7 +25,7 @@ describe('<BlockExplorerLink /> general', () => {
 
   it("doesn't change when isConnected == false", () => {
     isConnected = false
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} />)
     expect(wrapper.prop('href')).toMatch(`https://etherscan.io/tx/${TX_HASH}`)
   })
@@ -37,7 +37,7 @@ describe('<BlockExplorerLink /> general', () => {
   })
 
   it('renders provided label', () => {
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const label = <div>Custom label</div>
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} label={label} />)
 
@@ -46,7 +46,7 @@ describe('<BlockExplorerLink /> general', () => {
   })
 
   it('renders url as label', () => {
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} useUrlAsLabel={true} />)
 
     const url = `https://etherscan.io/tx/${TX_HASH}`
@@ -61,7 +61,7 @@ describe('<BlockExplorerLink type="tx"/>', () => {
   })
 
   it('renders the abbreviated tx hash inside a link', () => {
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} />)
     const abbreviatedTxHash = abbreviateString(TX_HASH, 6, 4)
 
@@ -70,18 +70,18 @@ describe('<BlockExplorerLink type="tx"/>', () => {
   })
 
   it('renders link to mainnet', () => {
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} />)
     expect(wrapper.prop('href')).toMatch(`https://etherscan.io/tx/${TX_HASH}`)
   })
 
   it('renders link to rinkeby', () => {
-    networkId = Network.Rinkeby
+    networkId = Network.RINKEBY
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} />)
     expect(wrapper.prop('href')).toMatch(`https://rinkeby.etherscan.io/tx/${TX_HASH}`)
   })
   it('renders link to xDai', () => {
-    networkId = Network.xDAI
+    networkId = Network.GNOSIS_CHAIN
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} />)
     expect(wrapper.prop('href')).toMatch(`https://blockscout.com/poa/xdai/tx/${TX_HASH}`)
   })
@@ -93,13 +93,13 @@ describe('<BlockExplorerLink type="address"/>', () => {
   })
 
   it('renders link to mainnet', () => {
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const wrapper = render(<BlockExplorerLink type="address" identifier={USER_1} />)
     expect(wrapper.prop('href')).toMatch(`https://etherscan.io/address/${USER_1}`)
   })
 
   it('renders link to xDai', () => {
-    networkId = Network.xDAI
+    networkId = Network.GNOSIS_CHAIN
     const wrapper = render(<BlockExplorerLink type="address" identifier={USER_1} />)
     expect(wrapper.prop('href')).toMatch(`https://blockscout.com/poa/xdai/address/${USER_1}/transactions`)
   })
@@ -111,12 +111,12 @@ describe('<BlockExplorerLink type="contract"/>', () => {
   })
 
   it('renders link to mainnet', () => {
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const wrapper = render(<BlockExplorerLink type="contract" identifier={CONTRACT} />)
     expect(wrapper.prop('href')).toMatch(`https://etherscan.io/address/${CONTRACT}#code`)
   })
   it('renders link to xDai', () => {
-    networkId = Network.xDAI
+    networkId = Network.GNOSIS_CHAIN
     const wrapper = render(<BlockExplorerLink type="contract" identifier={CONTRACT} />)
     expect(wrapper.prop('href')).toMatch(`https://blockscout.com/poa/xdai/address/${CONTRACT}/contracts`)
   })
@@ -128,12 +128,12 @@ describe('<BlockExplorerLink type="token"/>', () => {
   })
 
   it('renders link to mainnet', () => {
-    networkId = Network.Mainnet
+    networkId = Network.MAINNET
     const wrapper = render(<BlockExplorerLink type="token" identifier={TOKEN_1} />)
     expect(wrapper.prop('href')).toMatch(`https://etherscan.io/token/${TOKEN_1}`)
   })
   it('renders link to xDai', () => {
-    networkId = Network.xDAI
+    networkId = Network.GNOSIS_CHAIN
     const wrapper = render(<BlockExplorerLink type="token" identifier={TOKEN_1} />)
     expect(wrapper.prop('href')).toMatch(`https://blockscout.com/poa/xdai/tokens/${TOKEN_1}/token-transfers`)
   })

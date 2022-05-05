@@ -12,6 +12,7 @@ import { ONE_BIG_NUMBER } from 'const'
 import { FilledProgress, Props } from '.'
 
 import { RICH_ORDER } from '../../../../test/data'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 export default {
   title: 'Orders/FilledProgress',
@@ -44,7 +45,7 @@ FullyFilledSellOrder.args = {
   ...defaultArgs,
   order: {
     ...order,
-    kind: 'sell',
+    kind: OrderKind.SELL,
     filledAmount: order.sellAmount,
     filledPercentage: ONE_BIG_NUMBER,
     fullyFilled: true,
@@ -54,17 +55,33 @@ FullyFilledSellOrder.args = {
 export const FullyFilledBuyOrder = Template.bind({})
 FullyFilledBuyOrder.args = {
   ...defaultArgs,
-  order: { ...order, kind: 'buy', filledAmount: order.buyAmount, filledPercentage: ONE_BIG_NUMBER, fullyFilled: true },
+  order: {
+    ...order,
+    kind: OrderKind.BUY,
+    filledAmount: order.buyAmount,
+    filledPercentage: ONE_BIG_NUMBER,
+    fullyFilled: true,
+  },
 }
 
 export const PartiallyFilledSellOrder = Template.bind({})
 PartiallyFilledSellOrder.args = {
   ...defaultArgs,
-  order: { ...order, kind: 'sell', filledAmount: order.sellAmount.div(2), filledPercentage: new BigNumber('0.5') },
+  order: {
+    ...order,
+    kind: OrderKind.SELL,
+    filledAmount: order.sellAmount.div(2),
+    filledPercentage: new BigNumber('0.5'),
+  },
 }
 
 export const PartiallyFilledBuyOrder = Template.bind({})
 PartiallyFilledBuyOrder.args = {
   ...defaultArgs,
-  order: { ...order, kind: 'buy', filledAmount: order.buyAmount.div(2), filledPercentage: new BigNumber('0.5') },
+  order: {
+    ...order,
+    kind: OrderKind.BUY,
+    filledAmount: order.buyAmount.div(2),
+    filledPercentage: new BigNumber('0.5'),
+  },
 }

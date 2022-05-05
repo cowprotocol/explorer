@@ -53,7 +53,7 @@ export const Header: React.FC = () => {
             </ExternalLink>
           </li>
           <li>
-            <ExternalLink target={'_blank'} href={'https://chat.cowswap.exchange'}>
+            <ExternalLink target={'_blank'} href={'https://discord.gg/cowprotocol'}>
               Community
             </ExternalLink>
           </li>

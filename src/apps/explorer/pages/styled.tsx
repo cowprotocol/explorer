@@ -27,6 +27,13 @@ export const Wrapper = styled.div`
   }
 `
 
+export const WrapperCenter = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`
+
 export const StyledTabLoader = styled.span`
   padding-left: 4px;
 `
@@ -95,18 +102,6 @@ export const StyledLink = styled(Link)`
 export const Title = styled.h1`
   margin: 2.4rem 0;
   font-weight: ${({ theme }): string => theme.fontBold};
-`
-
-export const BVButton = styled.a`
-  color: ${({ theme }): string => theme.orange};
-  font-size: 1.3rem;
-  margin-left: auto;
-  svg {
-    margin: 0 0.75rem 0 0;
-  }
-  ${media.mobile} {
-    margin: -3rem 0 1.5rem auto;
-  }
 `
 
 export const ContentCard = styled.div`

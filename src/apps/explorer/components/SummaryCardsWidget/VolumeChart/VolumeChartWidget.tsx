@@ -1,9 +1,8 @@
-import { UTCTimestamp } from 'lightweight-charts'
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
+import { useGetVolumeData } from './useGetVolumeData'
 
-import { PeriodButton, VolumeChart, VolumeItem, VolumeDataResponse } from './VolumeChart'
-import volumeDataJson from './volumeData.json'
+import { PeriodButton, VolumeChart } from './VolumeChart'
 
 const WrapperVolumeChart = styled.div`
   height: 19.6rem;
@@ -13,57 +12,6 @@ export enum VolumePeriod {
   WEEKLY = '1W',
   MONTHLY = '1M',
   YEARLY = '1Y',
-}
-
-type RawVolumeItem = Pick<VolumeItem, 'id'> & {
-  timestamp: string
-  volumeUsd: string
-}
-
-// TODO move builds to a file where The graph API is called
-export function buildVolumeData(
-  _data: RawVolumeItem[],
-  volumePeriod: VolumePeriod,
-): {
-  data: VolumeItem[]
-  currentVolume: number
-  changedVolume: number
-} {
-  const periods = {
-    [VolumePeriod.DAILY]: 7,
-    [VolumePeriod.WEEKLY]: 14,
-    [VolumePeriod.MONTHLY]: 30,
-    [VolumePeriod.YEARLY]: 365,
-  }
-  const slicedData = _data.slice(0, periods[volumePeriod])
-  return {
-    data: slicedData.map((item) => ({
-      id: item.id,
-      time: parseInt(item.timestamp) as UTCTimestamp,
-      value: parseFloat(item.volumeUsd),
-    })),
-    currentVolume: parseFloat(slicedData[slicedData.length - 1].volumeUsd),
-    changedVolume: parseFloat(slicedData[0].volumeUsd),
-  }
-}
-
-function useGetVolumeData(volumeTimePeriod = VolumePeriod.DAILY): VolumeDataResponse | undefined {
-  const [volumeData, setVolumeDataJson] = useState<VolumeDataResponse | undefined>()
-  const SECONDS = 2 // Emulating API Request delay
-
-  useEffect(() => {
-    setVolumeDataJson((prevState) => {
-      return { ...prevState, isLoading: true }
-    })
-    const timer = setTimeout(
-      () => setVolumeDataJson({ ...buildVolumeData(volumeDataJson, volumeTimePeriod), isLoading: false }),
-      SECONDS * 1000,
-    )
-
-    return (): void => clearTimeout(timer)
-  }, [volumeTimePeriod])
-
-  return volumeData
 }
 
 export function VolumeChartWidget(): JSX.Element {
@@ -88,7 +36,7 @@ export function VolumeChartWidget(): JSX.Element {
 
   return (
     <WrapperVolumeChart ref={containerRef}>
-      <VolumeChart volumeData={volumeData} width={width} periodId={periodSelected}>
+      <VolumeChart volumeData={volumeData} width={width} period={periodSelected}>
         <PeriodButton
           isLoading={volumeData?.isLoading}
           active={periodSelected === VolumePeriod.DAILY}

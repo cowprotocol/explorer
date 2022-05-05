@@ -11,16 +11,16 @@ import { web3 } from 'apps/explorer/api'
 
 const MAINNET_PREFIX = ''
 const NETWORK_PREFIXES_RAW: [Network, string][] = [
-  [Network.Mainnet, ''],
-  [Network.xDAI, 'gc'],
-  [Network.Rinkeby, 'rinkeby'],
+  [Network.MAINNET, ''],
+  [Network.GNOSIS_CHAIN, 'gc'],
+  [Network.RINKEBY, 'rinkeby'],
 ]
 export const PREFIX_BY_NETWORK_ID: Map<Network, string> = new Map(NETWORK_PREFIXES_RAW)
 const NETWORK_ID_BY_PREFIX: Map<string, Network> = new Map(NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]))
 
 function getNetworkId(network = MAINNET_PREFIX): Network {
   const networkId = NETWORK_ID_BY_PREFIX.get(network)
-  return networkId || Network.Mainnet
+  return networkId || Network.MAINNET
 }
 
 function getNetworkPrefix(network: Network): string {

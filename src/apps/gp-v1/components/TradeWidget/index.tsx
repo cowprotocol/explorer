@@ -58,7 +58,7 @@ import useURLParams from 'hooks/useURLParams'
 import { useTokenBalances } from 'hooks/useTokenBalances'
 import { useWalletConnection } from 'hooks/useWalletConnection'
 import { usePlaceOrder } from 'hooks/usePlaceOrder'
-import { useQuery } from 'hooks/useQuery'
+import { useQueryTradeParams } from 'hooks/useQuery'
 import { useDebounce } from 'hooks/useDebounce'
 import useGlobalState from 'hooks/useGlobalState'
 import { useConnectWallet } from 'hooks/useConnectWallet'
@@ -265,7 +265,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({
     price: priceParam,
     validFrom: validFromParam,
     validUntil: validUntilParam,
-  } = useQuery()
+  } = useQueryTradeParams()
 
   const { connectWallet } = useConnectWallet()
   const { networkId, networkIdOrDefault, isConnected, userAddress } = useWalletConnection()
@@ -616,7 +616,7 @@ const TradeWidget: React.FC<TradeWidgetProps> = ({
         const walletInfo = await connectWallet()
 
         // Then place the order if connection was successful
-        if (walletInfo && walletInfo.networkId === Network.Mainnet && walletInfo.userAddress) {
+        if (walletInfo && walletInfo.networkId === Network.MAINNET && walletInfo.userAddress) {
           await _placeOrder({
             ...orderParams,
             networkId: walletInfo.networkId,

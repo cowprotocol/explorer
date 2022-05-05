@@ -203,7 +203,7 @@ export function getTokensFactory(factoryParams: {
     const compareByLabel: TokenComparator = (a, b) => a.label.localeCompare(b.label)
 
     switch (networkId) {
-      case Network.Mainnet:
+      case Network.MAINNET:
         comparator = (a, b): number => {
           // WETH first
           if (a.address === WETH_ADDRESS_MAINNET) return -1
@@ -211,7 +211,7 @@ export function getTokensFactory(factoryParams: {
           return compareByLabel(a, b)
         }
         break
-      case Network.Rinkeby:
+      case Network.RINKEBY:
         comparator = (a, b): number => {
           // WETH first
           if (a.address === WETH_ADDRESS_RINKEBY) return -1
@@ -219,7 +219,7 @@ export function getTokensFactory(factoryParams: {
           return compareByLabel(a, b)
         }
         break
-      case Network.xDAI:
+      case Network.GNOSIS_CHAIN:
         comparator = (a, b): number => {
           // WXDAI before WETH
           if (a.address === WXDAI_ADDRESS_XDAI && b.address === WETH_ADDRESS_XDAI) return -1
@@ -289,7 +289,7 @@ export function getTokensFactory(factoryParams: {
     const tokensWithNoDetails: TokenDetails[] = []
     const tokensWithDetails = tokensConfig.reduce<TokenDetails[]>((acc, token) => {
       // fill in addressMainnet if not present and on Mainnet
-      if (networkId === Network.Mainnet && !token.addressMainnet) {
+      if (networkId === Network.MAINNET && !token.addressMainnet) {
         token.addressMainnet = token.address
       }
 

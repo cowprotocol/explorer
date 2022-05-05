@@ -17,7 +17,7 @@ export function getPriceEstimationFactory(factoryParams: {
   const { theGraphApi, tokenListApi } = factoryParams
 
   // Only make sense to fetch prices for mainnet, thus we won't accept networkId parameter on this service
-  const networkId = Network.Mainnet
+  const networkId = Network.MAINNET
 
   const tokenIdsSet = new Set(tokenListApi.getTokens(networkId).map((token) => token.id))
   const tokenIds = Array.from(tokenIdsSet).sort()
