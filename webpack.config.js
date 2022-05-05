@@ -20,7 +20,7 @@ const EXPLORER_APP = {
   title: 'CoW Protocol Explorer',
   filename: 'index.html',
   envVars: {
-    EXPLORER_APP_DOMAIN_REGEX_DEV: '^protocol-explorer\\.dev|^localhost:\\d{2,5}|^pr\\d+--gpui\\.review',
+    EXPLORER_APP_DOMAIN_REGEX_DEV: '^protocol-explorer\\.dev|^localhost:\\d{2,5}|^pr\\d+--explorer\\.review',
     EXPLORER_APP_DOMAIN_REGEX_STAGING: '^protocol-explorer\\.staging',
     EXPLORER_APP_DOMAIN_REGEX_PROD: '^explorer\\.cow\\.fi|^gnosis-protocol\\.io',
     EXPLORER_APP_DOMAIN_REGEX_BARN: '^barn\\.explorer\\.cow\\.fi|^barn\\.gnosis-protocol\\.io',
