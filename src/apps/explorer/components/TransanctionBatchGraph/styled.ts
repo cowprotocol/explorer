@@ -25,7 +25,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         width: 2,
         'target-arrow-shape': 'triangle',
         'target-arrow-color': theme.grey,
-        'curve-style': 'bezier',
+        'curve-style': 'unbundled-bezier',
         color: theme.black,
         'line-color': theme.grey,
         'line-opacity': 0.8,
@@ -35,6 +35,14 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'text-background-shape': 'roundrectangle',
         'font-size': '16px',
         'min-zoomed-font-size': 8,
+      },
+    },
+    {
+      selector: 'edge[label].many-bidirectional',
+      style: {
+        'curve-style': 'bezier',
+        'font-size': '15px',
+        'text-background-padding': '3px',
       },
     },
     {
