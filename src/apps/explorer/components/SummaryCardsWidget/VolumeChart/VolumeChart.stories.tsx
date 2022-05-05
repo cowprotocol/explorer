@@ -4,8 +4,9 @@ import styled from 'styled-components'
 
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 import { VolumeChart, VolumeChartProps } from './VolumeChart'
+import { VolumePeriod } from './VolumeChartWidget'
 import volumeDataJson from './volumeData.json'
-import { buildVolumeData, VolumePeriod } from 'apps/explorer/components/SummaryCardsWidget/VolumeChartWidget'
+import { buildVolumeData } from './useGetVolumeData'
 
 export default {
   title: 'ExplorerApp/Chart',

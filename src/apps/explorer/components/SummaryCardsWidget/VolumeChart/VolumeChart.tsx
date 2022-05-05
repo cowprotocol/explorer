@@ -12,15 +12,19 @@ import {
   ContainerTitle,
   WrapperPeriodButton,
   StyledShimmerBar,
-} from 'apps/explorer/components/SummaryCardsWidget/VolumeChart.styled'
+} from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChart.styled'
+import { VolumePeriod } from './VolumeChartWidget'
+import { numberFormatter } from '../utils'
+import { useNetworkId } from 'state/network'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
-const DEFAULT_PERIOD_ID = 'ALL'
 const COLOR_POSITIVE_DIFFERENCE = 'rgba(0, 196, 110, 0.01)'
 const COLOR_NEGATIVE_DIFFERENCE = 'rgba(255, 48, 91, 0.01)'
+const COLOR_POSITIVE_DIFFERENCE_LINE = 'rgb(0, 196, 111)'
+const COLOR_NEGATIVE_DIFFERENCE_LINE = 'rgb(255, 48, 89)'
 
 export interface VolumeDataResponse {
-  data?: VolumeItem[]
+  data?: HistogramData[]
   currentVolume?: number
   changedVolume?: number
   isLoading: boolean
@@ -30,11 +34,7 @@ export interface VolumeChartProps {
   volumeData: VolumeDataResponse | undefined
   height?: number
   width?: number
-  periodId?: string
-}
-
-export interface VolumeItem extends HistogramData {
-  id?: string
+  period?: VolumePeriod
 }
 
 export function PeriodButton({
@@ -58,8 +58,8 @@ function _formatAmount(amount: string): string {
  * requires the graph to be rendered.
  *  example: <lastRecordId>-<volumePeriodSelected>
  * */
-function usePreviousLastValueData(value: string): string | undefined {
-  const ref = useRef<string>()
+function usePreviousLastValueData<T>(value: T): T | undefined {
+  const ref = useRef<T>()
 
   useEffect(() => {
     ref.current = value
@@ -124,7 +124,7 @@ export function VolumeChart({
   volumeData,
   height = DEFAULT_CHART_HEIGHT,
   width = undefined,
-  periodId = DEFAULT_PERIOD_ID,
+  period,
   children,
 }: React.PropsWithChildren<VolumeChartProps>): JSX.Element {
   const { data: items, currentVolume, changedVolume, isLoading } = volumeData || {}
@@ -134,15 +134,17 @@ export function VolumeChart({
   const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
-  const previousPeriod = usePreviousLastValueData(periodId)
+  const network = useNetworkId()
+  const previousPeriod = usePreviousLastValueData(period)
+  const previousNetwork = usePreviousLastValueData(network)
 
   // reset the chart when the volume period is changed
   useEffect(() => {
-    if (periodId !== previousPeriod && chartCreated) {
+    if ((period !== previousPeriod || network !== previousNetwork) && chartCreated) {
       chartCreated.resize(0, 0)
       setChartCreated(null)
     }
-  }, [chartCreated, periodId, previousPeriod])
+  }, [chartCreated, period, previousPeriod, network])
 
   useEffect(() => {
     if (chartCreated || !chartContainerRef.current || !items || isLoading) return
@@ -150,7 +152,7 @@ export function VolumeChart({
     const chart = _buildChart(chartContainerRef.current, width, height, theme)
     const series = chart.addAreaSeries({
       lineWidth: 1,
-      lineColor: theme[captionNameColor],
+      lineColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE_LINE : COLOR_POSITIVE_DIFFERENCE_LINE,
       topColor: theme[captionNameColor],
       bottomColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE : COLOR_POSITIVE_DIFFERENCE,
     })
@@ -180,6 +182,16 @@ export function VolumeChart({
     chartCreated.timeScale().scrollToPosition(0, false)
   }, [chartCreated, height, width])
 
+  const formattedDate = React.useMemo(() => {
+    if (!crossHairData) return ''
+
+    if (period === VolumePeriod.DAILY) {
+      return format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d HH:mm, yyyy')
+    }
+
+    return format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')
+  }, [crossHairData, period])
+
   if (isLoading && chartCreated === undefined)
     return (
       <ChartSkeleton>
@@ -198,12 +210,15 @@ export function VolumeChart({
             ) : crossHairData ? (
               <>
                 <p>${_formatAmount(crossHairData.value.toString())}</p>
-                <p className="date">{format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')}</p>
+                <p className="date">{formattedDate}</p>
               </>
             ) : (
               <>
-                <p>${currentVolume && _formatAmount(currentVolume.toString())}</p>
-                <p className="caption">{diffPercentageVolume && _formatAmount(diffPercentageVolume.toString())}%</p>
+                <p>${currentVolume && numberFormatter(currentVolume)}</p>
+                <p className="caption">
+                  {(diffPercentageVolume ?? 0) > 0 ? '+' : ''}
+                  {diffPercentageVolume && _formatAmount(diffPercentageVolume.toString())}%
+                </p>
               </>
             )}
           </span>

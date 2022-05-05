@@ -5,12 +5,13 @@ import { formatDistanceToNowStrict } from 'date-fns'
 
 import { Card, CardContent } from 'components/common/Card'
 import { CardRow } from 'components/common/CardRow'
-import { TotalSummaryResponse } from '.'
+import { TotalSummaryResponse } from './useGetSummaryData'
 import { abbreviateString } from 'utils'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { numberFormatter } from './utils'
 
 const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
@@ -96,7 +97,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             <CardContent
               variant="3row"
               label1="Last Batch"
-              value1={batchInfo && formatDistanceToNowStrict(batchInfo.lastBatchDate)}
+              value1={batchInfo && formatDistanceToNowStrict(batchInfo.lastBatchDate, { addSuffix: true })}
               loading={isLoading}
               valueSize={valueTextSize}
             />
@@ -122,7 +123,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           <CardContent
             variant={rowsByCard}
             label1="24h Transactions"
-            value1={dailyTransactions?.now}
+            value1={dailyTransactions?.now.toLocaleString()}
             caption1={`${diffTransactions.toFixed(2)}%`}
             captionColor={getColorBySign(diffTransactions)}
             loading={isLoading}
@@ -133,7 +134,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           <CardContent
             variant="2row"
             label1="Total Tokens"
-            value1={totalTokens}
+            value1={totalTokens?.toLocaleString()}
             loading={isLoading}
             valueSize={valueTextSize}
           />
@@ -142,7 +143,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           <CardContent
             variant={rowsByCard}
             label1="24h Fees"
-            value1={`$${dailyFees?.now.toFixed(2)}`}
+            value1={`$${numberFormatter(dailyFees?.now || 0)}`}
             caption1={`${diffFees.toFixed(2)}%`}
             captionColor={getColorBySign(diffFees)}
             loading={isLoading}
