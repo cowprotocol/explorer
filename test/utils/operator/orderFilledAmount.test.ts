@@ -2,11 +2,10 @@ import BigNumber from 'bignumber.js'
 
 import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
-import { RawOrder } from 'api/operator'
-
 import { getOrderFilledAmount } from 'utils'
 
 import { RAW_ORDER } from '../../../test/data'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
 
 const TEN_PERCENT = new BigNumber('0.1')
 const ONE_HUNDRED_PERCENT = ONE_BIG_NUMBER
@@ -14,16 +13,16 @@ const ONE_HUNDRED_PERCENT = ONE_BIG_NUMBER
 describe('Order not filled', () => {
   describe('Buy order', () => {
     test('0% filled', () => {
-      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '100', executedBuyAmount: '0' }
+      const order = { ...RAW_ORDER, kind: OrderKind.BUY, buyAmount: '100', executedBuyAmount: '0' }
 
       expect(getOrderFilledAmount(order)).toEqual({ amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER })
     })
   })
   describe('Sell order', () => {
     test('0% filled', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '0',
         executedFeeAmount: '0',
@@ -37,16 +36,16 @@ describe('Order not filled', () => {
 describe('Order partially filled', () => {
   describe('Buy order', () => {
     test('10% filled', () => {
-      const order: RawOrder = { ...RAW_ORDER, kind: 'buy', buyAmount: '100', executedBuyAmount: '10' }
+      const order = { ...RAW_ORDER, kind: OrderKind.BUY, buyAmount: '100', executedBuyAmount: '10' }
 
       expect(getOrderFilledAmount(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TEN_PERCENT })
     })
   })
   describe('Sell order', () => {
     test('10% filled, without fee', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '10',
         executedFeeAmount: '0',
@@ -55,9 +54,9 @@ describe('Order partially filled', () => {
       expect(getOrderFilledAmount(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TEN_PERCENT })
     })
     test('10% filled, with fee', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '11',
         executedFeeAmount: '1',
@@ -71,9 +70,9 @@ describe('Order partially filled', () => {
 describe('Order filled', () => {
   describe('Buy order', () => {
     test('100% filled, no surplus', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '100',
         executedBuyAmount: '100',
         sellAmount: '100',
@@ -83,9 +82,9 @@ describe('Order filled', () => {
       expect(getOrderFilledAmount(order)).toEqual({ amount: ONE_HUNDRED_BIG_NUMBER, percentage: ONE_HUNDRED_PERCENT })
     })
     test('100% filled, with surplus', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'buy',
+        kind: OrderKind.BUY,
         buyAmount: '100',
         executedBuyAmount: '100',
         sellAmount: '100',
@@ -97,9 +96,9 @@ describe('Order filled', () => {
   })
   describe('Sell order', () => {
     test('100% filled, no surplus, no fee', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '100',
         executedFeeAmount: '0',
@@ -110,9 +109,9 @@ describe('Order filled', () => {
       expect(getOrderFilledAmount(order)).toEqual({ amount: ONE_HUNDRED_BIG_NUMBER, percentage: ONE_HUNDRED_PERCENT })
     })
     test('100% filled, with fee', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '110',
         executedFeeAmount: '10',
@@ -123,9 +122,9 @@ describe('Order filled', () => {
       expect(getOrderFilledAmount(order)).toEqual({ amount: ONE_HUNDRED_BIG_NUMBER, percentage: ONE_HUNDRED_PERCENT })
     })
     test('100% filled, with surplus', () => {
-      const order: RawOrder = {
+      const order = {
         ...RAW_ORDER,
-        kind: 'sell',
+        kind: OrderKind.SELL,
         sellAmount: '100',
         executedSellAmount: '100',
         executedFeeAmount: '0',

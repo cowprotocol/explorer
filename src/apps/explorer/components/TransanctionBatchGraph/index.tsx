@@ -11,7 +11,6 @@ import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
 
-import Spinner from 'components/common/Spinner'
 import { GetTxBatchTradesResult as TxBatchData, Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
 import { networkOptions } from 'components/NetworkSelector'
 import { Network } from 'types'
@@ -23,13 +22,20 @@ import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import { STYLESHEET } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 
+import CowLoading from 'components/common/CowLoading'
+import { media } from 'theme/styles/media'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
+
 Cytoscape.use(popper)
 const PROTOCOL_NAME = APP_NAME
 const WrapperCytoscape = styled(CytoscapeComponent)`
   background-color: ${({ theme }): string => theme.bg1};
   font-weight: ${({ theme }): string => theme.fontMedium};
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
-  border-radius: 0.4rem;
+  border-radius: 0.6rem;
+  ${media.mediumDown} {
+    border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+    margin: 1.6rem 0;
+  }
 `
 
 function getTypeNode(account: Account): TypeNodeOnTx {
@@ -57,7 +63,7 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   if (!txSettlement.accounts) return []
 
   const networkName = networkOptions.find((network) => network.id === networkId)?.name
-  const networkNode = { alias: networkName || '' }
+  const networkNode = { alias: `${networkName} Liquidity` || '' }
   const builder = new ElementsBuilder(heightSize)
   builder.node({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
 
@@ -97,14 +103,23 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   })
 
   return builder.build(
-    buildGridLayout(builder._countTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes),
+    buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes),
   )
+}
+
+interface PopperInstance {
+  scheduleUpdate: () => void
+  destroy: () => void
 }
 
 /**
  * This allow bind a tooltip (popper.js) around to a cytoscape elements (node, edge)
  */
-function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition | Cytoscape.EdgeDataDefinition): void {
+function bindPopper(
+  event: EventObject,
+  targetData: Cytoscape.NodeDataDefinition | Cytoscape.EdgeDataDefinition,
+  popperRef: React.MutableRefObject<PopperInstance | null>,
+): void {
   const tooltipId = `popper-target-${targetData.id}`
   const popperClassTarget = 'target-popper'
 
@@ -113,7 +128,7 @@ function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition
   Array.from(existingTooltips).forEach((ele: { remove: () => void }): void => ele && ele.remove())
 
   const target = event.target
-  const popperRef = target.popper({
+  popperRef.current = target.popper({
     content: () => {
       const tooltip = document.createElement('span')
       tooltip.id = tooltipId
@@ -146,9 +161,9 @@ function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition
       placement: 'top-start',
       removeOnDestroy: true,
     },
-  })
+  }) as PopperInstance
 
-  const popperUpdate = (): (() => void) => popperRef.update()
+  const popperUpdate = (): void => popperRef.current?.scheduleUpdate()
 
   target.on('position', () => popperUpdate)
   target.cy().on('pan zoom resize', () => popperUpdate)
@@ -163,6 +178,7 @@ function bindPopper(event: EventObject, targetData: Cytoscape.NodeDataDefinition
       if (newTarget) {
         newTarget.remove()
       }
+      popperRef.current?.destroy()
     })
 }
 
@@ -171,17 +187,34 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
+function getLayout(): Cytoscape.LayoutOptions {
+  return {
+    name: 'grid',
+    position: function (node: NodeSingular): { row: number; col: number } {
+      return { row: node.data('row'), col: node.data('col') }
+    },
+    fit: true, // whether to fit the viewport to the graph
+    padding: 10, // padding used on fit
+    avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
+    avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
+    nodeDimensionsIncludeLabels: false,
+  }
+}
+
 function TransanctionBatchGraph({
   txBatchData: { error, isLoading, txSettlement },
   networkId,
 }: GraphBatchTxParams): JSX.Element {
   const [elements, setElements] = useState<ElementDefinition[]>([])
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
+  const cyPopperRef = useRef<PopperInstance | null>(null)
   const theme = useTheme()
   const heightSize = window.innerHeight - HEIGHT_HEADER_FOOTER
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
       cytoscapeRef.current = ref
+      cytoscapeRef.current.layout(getLayout()).run()
+      cytoscapeRef.current.fit()
     },
     [cytoscapeRef],
   )
@@ -201,7 +234,7 @@ function TransanctionBatchGraph({
       const target = event.target
       const targetData: NodeDataDefinition | EdgeDataDefinition = target.data()
 
-      bindPopper(event, targetData)
+      bindPopper(event, targetData, cyPopperRef)
     })
     cy.on('mouseover', 'edge', (event): void => {
       event.target.addClass('hover')
@@ -211,24 +244,17 @@ function TransanctionBatchGraph({
     })
   }, [cytoscapeRef, elements.length])
 
-  if (isLoading) return <Spinner spin size="3x" />
-
-  const layout = {
-    name: 'grid',
-    position: function (node: NodeSingular): { row: number; col: number } {
-      return { row: node.position('y'), col: node.position('x') }
-    },
-    fit: true, // whether to fit the viewport to the graph
-    padding: 10, // padding used on fit
-    avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
-    avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
-    nodeDimensionsIncludeLabels: false,
-  }
+  if (isLoading)
+    return (
+      <EmptyItemWrapper>
+        <CowLoading />
+      </EmptyItemWrapper>
+    )
 
   return (
     <WrapperCytoscape
       elements={elements}
-      layout={layout}
+      layout={getLayout()}
       style={{ width: '100%', height: heightSize }}
       stylesheet={STYLESHEET(theme)}
       cy={setCytoscape}

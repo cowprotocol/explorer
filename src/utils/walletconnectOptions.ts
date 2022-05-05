@@ -13,7 +13,7 @@ export interface WCOptions {
 }
 
 const defaultRPC = {
-  [Network.xDAI]: 'https://rpc.xdaichain.com/',
+  [Network.GNOSIS_CHAIN]: 'https://rpc.xdaichain.com/',
 }
 
 export const setCustomWCOptions = (options: WCOptions): boolean => {
@@ -40,9 +40,9 @@ const mapStoredRpc = (rpc?: WCOptions['rpc']): IRPCMap | undefined => {
   const { mainnet, rinkeby, xDAI } = rpc
 
   const rpcMap = {}
-  if (mainnet) rpcMap[Network.Mainnet] = mainnet
-  if (rinkeby) rpcMap[Network.Rinkeby] = rinkeby
-  if (xDAI) rpcMap[Network.xDAI] = xDAI
+  if (mainnet) rpcMap[Network.MAINNET] = mainnet
+  if (rinkeby) rpcMap[Network.RINKEBY] = rinkeby
+  if (xDAI) rpcMap[Network.GNOSIS_CHAIN] = xDAI
 
   return rpcMap
 }

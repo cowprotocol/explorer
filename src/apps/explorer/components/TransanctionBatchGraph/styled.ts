@@ -38,6 +38,14 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'edge[label].many-bidirectional',
+      style: {
+        'curve-style': 'bezier',
+        'font-size': '15px',
+        'text-background-padding': '3px',
+      },
+    },
+    {
       selector: 'edge[label].hover',
       style: {
         width: 3,

@@ -6,19 +6,28 @@ export default class ElementsBuilder {
   _nodes: ElementDefinition[] = []
   _edges: ElementDefinition[] = []
   _SIZE: number
-  _countTypes: Map<string, number>
+  _countNodeTypes: Map<string, number>
+  _countEdgeDirection: Map<string, number>
 
   constructor(heighSize?: number) {
     this._SIZE = heighSize || 600
-    this._countTypes = new Map()
+    this._countNodeTypes = new Map()
+    this._countEdgeDirection = new Map()
   }
 
-  _increaseCounType = (_type: string): void => {
-    const count = this._countTypes.get(_type) || 0
-    this._countTypes.set(_type, count + 1)
+  _increaseCountNodeType = (_type: string): void => {
+    const count = this._countNodeTypes.get(_type) || 0
+    this._countNodeTypes.set(_type, count + 1)
   }
+
+  _increaseCountEdgeDirection = (sourceName: string, targetName: string): void => {
+    const idDirection = `${sourceName}-${targetName}`
+    const count = this._countEdgeDirection.get(idDirection) || 0
+    this._countEdgeDirection.set(idDirection, count + 1)
+  }
+
   _createNodeElement = (node: Node, parent?: string): ElementDefinition => {
-    this._increaseCounType(node.type)
+    this._increaseCountNodeType(node.type)
     return {
       group: 'nodes',
       data: {
@@ -46,12 +55,16 @@ export default class ElementsBuilder {
     label: string,
     tooltip?: InfoTooltip,
   ): this {
+    const sourceName = `${source.type}:${source.id}`
+    const targetName = `${target.type}:${target.id}`
+    this._increaseCountEdgeDirection(sourceName, targetName)
+
     this._edges.push({
       group: 'edges',
       data: {
-        id: `${source.type}:${source.id}->${target.type}:${target.id}`,
-        source: `${source.type}:${source.id}`,
-        target: `${target.type}:${target.id}`,
+        id: `${sourceName}->${label}->${targetName}`,
+        source: sourceName,
+        target: targetName,
         label,
         tooltip,
       },
@@ -63,8 +76,9 @@ export default class ElementsBuilder {
     if (!customLayoutNodes) {
       return this._buildCoseLayout()
     } else {
+      const edges = addClassWithMoreThanOneBidirectional(this._edges, this._countEdgeDirection)
       const { center, nodes } = customLayoutNodes
-      return [center, ...nodes, ...this._edges]
+      return [center, ...nodes, ...edges]
     }
   }
 
@@ -76,7 +90,7 @@ export default class ElementsBuilder {
       ...this._center,
       position: { x: 0, y: 0 },
     }
-    const nTypes = this._countTypes.size
+    const nTypes = this._countNodeTypes.size
 
     const r = this._SIZE / nTypes - 100 // get radio
 
@@ -108,7 +122,7 @@ interface CustomLayoutNodes {
   nodes: ElementDefinition[]
 }
 
-export function getGridPosition(type: TypeNodeOnTx, traderRowsLength: number, dexRowsLenght: number): number {
+export function getGridColumn(type: TypeNodeOnTx, traderRowsLength: number, dexRowsLenght: number): number {
   let col
   const batchOf = 5
   // Add a column for each batch of n
@@ -126,8 +140,7 @@ export function getGridPosition(type: TypeNodeOnTx, traderRowsLength: number, de
 }
 
 /**
- * Build a grid layout using the 'position' attribute
- * using 'x' for the columns and 'y' for the rows.
+ * Build a grid layout using the 'data: {row, col}' attribute
  */
 export function buildGridLayout(
   countTypes: Map<TypeNodeOnTx, number>,
@@ -144,7 +157,11 @@ export function buildGridLayout(
   const dexes = countTypes.get(TypeNodeOnTx.Dex) || 0
   const _center = {
     ...center,
-    position: { y: middleOfTotalRows, x: getGridPosition(center.data.type, traders, dexes) },
+    data: {
+      ...center.data,
+      row: middleOfTotalRows,
+      col: getGridColumn(center.data.type, traders, dexes),
+    },
   }
 
   let counterRows = { [TypeNodeOnTx.Trader]: 0, [TypeNodeOnTx.Dex]: 0 }
@@ -159,9 +176,10 @@ export function buildGridLayout(
   const _nodes = nodes.map((node) => {
     const _node = {
       ...node,
-      position: {
-        y: counterRows[node.data.type],
-        x: getGridPosition(node.data.type, traders, dexes),
+      data: {
+        ...node.data,
+        row: counterRows[node.data.type],
+        col: getGridColumn(node.data.type, traders, dexes),
       },
     }
 
@@ -175,4 +193,23 @@ export function buildGridLayout(
   })
 
   return { center: _center, nodes: _nodes }
+}
+
+/**
+ * Add css class to edges that have the same direction more than once
+ */
+function addClassWithMoreThanOneBidirectional(
+  edges: ElementDefinition[],
+  countEdgeDirection: Map<string, number>,
+): ElementDefinition[] {
+  const CLASS_NAME = 'many-bidirectional'
+
+  return edges.map((_edge) => {
+    const edgeDirectionName = `${_edge.data.source}-${_edge.data.target}`
+    const edgeDirectionCount = countEdgeDirection.get(edgeDirectionName) || 0
+    if (edgeDirectionCount > 1) {
+      _edge.classes = CLASS_NAME
+    }
+    return _edge
+  })
 }

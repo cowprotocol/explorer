@@ -172,7 +172,7 @@ export function useTxOrderExplorerLink(
             networkId: network,
             identifier: txHash,
             showLogo: true,
-            label: network === Network.xDAI ? 'Blockscout' : 'Etherscan',
+            label: network === Network.GNOSIS_CHAIN ? 'Blockscout' : 'Etherscan',
           })
         }
       })

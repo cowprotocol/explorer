@@ -14,7 +14,7 @@ const quoteTokenPriorityList: QuoteTokenPriorityList = [
     // USD coins
     priority: 1,
     addresses: {
-      [Network.Mainnet]: [
+      [Network.MAINNET]: [
         '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
         '0x6b175474e89094c44da98b954eedeac495271d0f', // DAI
@@ -31,7 +31,7 @@ const quoteTokenPriorityList: QuoteTokenPriorityList = [
         '0x9a48bd0ec040ea4f1d3147c025cd4076a2e71e3e', // USD++
       ],
       // Rinkeby
-      [Network.Rinkeby]: [
+      [Network.RINKEBY]: [
         '0xa9881E6459CA05d7D7C95374463928369cD7a90C', // USDT
         '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b', // USDC
         '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa', // DAI
@@ -41,7 +41,7 @@ const quoteTokenPriorityList: QuoteTokenPriorityList = [
         '0x784B46A4331f5c7C495F296AE700652265ab2fC6', // GUSD
       ],
       // xDAI
-      [Network.xDAI]: [
+      [Network.GNOSIS_CHAIN]: [
         '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83', // USDC
         '0x4ecaba5870353805a9f068101a40e0f32ed605c6', // USDT
         '0x44fa8e6f47987339850636f88629646662444217', // DAI
@@ -56,18 +56,18 @@ const quoteTokenPriorityList: QuoteTokenPriorityList = [
     // OWL
     priority: 2,
     addresses: {
-      [Network.Mainnet]: ['0x1a5f9352af8af974bfc03399e3767df6370d82e4'], // OWL
+      [Network.MAINNET]: ['0x1a5f9352af8af974bfc03399e3767df6370d82e4'], // OWL
       // Rinkeby
-      [Network.Rinkeby]: ['0xa7d1c04faf998f9161fc9f800a99a809b84cfc9d'], // OWL
+      [Network.RINKEBY]: ['0xa7d1c04faf998f9161fc9f800a99a809b84cfc9d'], // OWL
       // xDAI
-      [Network.xDAI]: ['0x0905ab807f8fd040255f0cf8fa14756c1d824931'], // xOWL
+      [Network.GNOSIS_CHAIN]: ['0x0905ab807f8fd040255f0cf8fa14756c1d824931'], // xOWL
     },
   },
   {
     // non-USD stablecoins
     priority: 3,
     addresses: {
-      [Network.Mainnet]: [
+      [Network.MAINNET]: [
         '0xdb25f211ab05b1c97d595516f45794528a807ad8', // EURS
         '0x2c537e5624e4af88a7ae4060c022609376c8d0eb', // TRYB
         '0xc9a2c4868f0f96faaa739b59934dc9cb304112ec', // GBP
@@ -76,9 +76,9 @@ const quoteTokenPriorityList: QuoteTokenPriorityList = [
         '0x1fc31488f28ac846588ffa201cde0669168471bd', // UAX
       ],
       // Rinkeby
-      [Network.Rinkeby]: [],
+      [Network.RINKEBY]: [],
       // xDAI
-      [Network.xDAI]: [
+      [Network.GNOSIS_CHAIN]: [
         '0x0e0293b766e89011abd9bea5612d978c3a13cbb8', // dCHF
       ],
     },
@@ -87,15 +87,15 @@ const quoteTokenPriorityList: QuoteTokenPriorityList = [
     // WETH
     priority: 4,
     addresses: {
-      [Network.Mainnet]: [
+      [Network.MAINNET]: [
         '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', // WETH
       ],
       // Rinkeby
-      [Network.Rinkeby]: [
+      [Network.RINKEBY]: [
         '0xc778417E063141139Fce010982780140Aa0cD5Ab', // WETH
       ],
       // xDAI
-      [Network.xDAI]: [
+      [Network.GNOSIS_CHAIN]: [
         '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1', // WETH
       ],
     },

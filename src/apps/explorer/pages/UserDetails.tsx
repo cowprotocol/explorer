@@ -7,8 +7,8 @@ import { useNetworkId } from 'state/network'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import RedirectToSearch from 'components/RedirectToSearch'
 import { useResolveEns } from 'hooks/useResolveEns'
-import Spinner from 'components/common/Spinner'
 import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar } from 'apps/explorer/pages/styled'
+import CowLoading from 'components/common/CowLoading'
 
 const Wrapper = styled(WrapperMod)`
   > h1 {
@@ -47,7 +47,7 @@ const UserDetails: React.FC = () => {
           <OrdersTableWidget ownerAddress={addressAccount.address} networkId={networkId} />
         </>
       ) : (
-        <Spinner size="3x" />
+        <CowLoading />
       )}
     </Wrapper>
   )
