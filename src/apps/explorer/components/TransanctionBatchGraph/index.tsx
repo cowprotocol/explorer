@@ -103,7 +103,7 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   })
 
   return builder.build(
-    buildGridLayout(builder._countTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes),
+    buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes),
   )
 }
 
