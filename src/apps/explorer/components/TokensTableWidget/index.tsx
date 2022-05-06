@@ -8,11 +8,11 @@ import { useFlexSearch } from 'hooks/useFlexSearch'
 import { Token } from 'api/operator/types'
 import { TokensTableWithData } from 'apps/explorer/components/TokensTableWidget/TokensTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
-import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
+import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
+import TablePagination from 'apps/explorer/components/common/TablePagination'
 import { StyledTabLoader } from 'apps/explorer/pages/styled'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { TabList } from 'components/common/Tabs/Tabs'
-import PaginationTokensTable from './PaginationTokensTable'
 import { useTable } from './useTable'
 import { TableSearch } from 'components/common/TableSearch/TableSearch'
 import { media } from 'theme/styles/media'
@@ -43,7 +43,7 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
 
 const ExtraComponentNode: React.ReactNode = (
   <WrapperExtraComponents>
-    <PaginationTokensTable />
+    <TablePagination context={TokensTableContext} fixedResultsPerPage />
   </WrapperExtraComponents>
 )
 
@@ -69,15 +69,17 @@ const tabItems = (isLoadingTokens: boolean, query: string, setQuery: (query: str
 
 export const TokensTableWidget: React.FC<Props> = () => {
   const networkId = useNetworkId() || undefined
+  const resultsPerPage = 5
   const [query, setQuery] = useState('')
   const {
     state: tableState,
     setPageSize,
     handleNextPage,
     handlePreviousPage,
-  } = useTable({ initialState: { pageOffset: 0, pageSize: 20 } })
-  const { tokens, isLoading: isTokensLoading, error } = useGetTokens(networkId)
+  } = useTable({ initialState: { pageOffset: 0, pageSize: resultsPerPage } })
+  const { tokens, isLoading, error } = useGetTokens(networkId)
   const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol'])
+  tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tokens.length
 
   if (!tokens?.length) {
     return <Spinner spin size="3x" />
@@ -87,9 +89,11 @@ export const TokensTableWidget: React.FC<Props> = () => {
     <TableWrapper>
       <TokensTableContext.Provider
         value={{
-          tokens: query ? (filteredTokens as Token[]) : tokens,
+          data: query
+            ? (filteredTokens as Token[])
+            : tokens.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize),
           error,
-          isTokensLoading,
+          isLoading,
           networkId,
           tableState,
           setPageSize,
@@ -98,7 +102,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
         }}
       >
         <ConnectionStatus />
-        <ExplorerCustomTab tabItems={tabItems(isTokensLoading, query, setQuery)} extra={ExtraComponentNode} />
+        <ExplorerCustomTab tabItems={tabItems(isLoading, query, setQuery)} extra={ExtraComponentNode} />
       </TokensTableContext.Provider>
     </TableWrapper>
   )

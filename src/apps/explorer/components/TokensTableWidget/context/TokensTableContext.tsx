@@ -8,9 +8,9 @@ export type BlockchainNetwork = Network | undefined
 
 type CommonState = {
   error?: UiError
-  tokens: Token[] | undefined
+  data: Token[] | undefined
   networkId: BlockchainNetwork
-  isTokensLoading: boolean
+  isLoading: boolean
   tableState: TableState
 } & TableStateSetters
 

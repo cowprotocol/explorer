@@ -8,7 +8,7 @@ import TokenTable from 'components/token/TokenTable'
 import { DEFAULT_TIMEOUT } from 'const'
 
 export const TokensTableWithData: React.FC = () => {
-  const { tokens, networkId } = useContext(TokensTableContext)
+  const { data: tokens, networkId } = useContext(TokensTableContext)
   const isFirstRender = useFirstRender()
   const [isFirstLoading, setIsFirstLoading] = useState(true)
 
