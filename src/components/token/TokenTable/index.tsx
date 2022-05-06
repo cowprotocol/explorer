@@ -19,7 +19,7 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 21rem 14rem repeat(2, minmax(10rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
+    grid-template-columns: 21rem 14rem repeat(3, minmax(10rem, 1.5fr)) repeat(2, minmax(12rem, 2fr));
   }
   tr > td {
     span.span-inside-tooltip {
@@ -283,7 +283,7 @@ const TokenTable: React.FC<Props> = (props) => {
         <tr className="row-empty">
           <td className="row-td-empty">
             <EmptyItemWrapper>
-              Can&apos;t load details <br /> Please try again
+              No results found <br /> Please try another search.
             </EmptyItemWrapper>
           </td>
         </tr>
