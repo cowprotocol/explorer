@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
-import Spinner from 'components/common/Spinner'
 import { useNetworkId } from 'state/network'
 import { useGetTokens } from 'hooks/useGetTokens'
 import { useFlexSearch } from 'hooks/useFlexSearch'
@@ -10,12 +9,13 @@ import { TokensTableWithData } from 'apps/explorer/components/TokensTableWidget/
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination from 'apps/explorer/components/common/TablePagination'
-import { StyledTabLoader } from 'apps/explorer/pages/styled'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { TabList } from 'components/common/Tabs/Tabs'
 import { useTable } from './useTable'
 import { TableSearch } from 'components/common/TableSearch/TableSearch'
 import { media } from 'theme/styles/media'
+import CowLoading from 'components/common/CowLoading'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 
 const WrapperExtraComponents = styled.div`
   align-items: center;
@@ -37,7 +37,12 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
     font-size: 1.8rem;
     ${media.mobile} {
       font-size: 1.5rem;
+      display: flex;
+      flex-direction: column;
     }
+  }
+  .tab-extra-content {
+    justify-content: center;
   }
 `
 
@@ -51,14 +56,13 @@ interface Props {
   networkId: BlockchainNetwork
 }
 
-const tabItems = (isLoadingTokens: boolean, query: string, setQuery: (query: string) => void): TabItemInterface[] => {
+const tabItems = (query: string, setQuery: (query: string) => void): TabItemInterface[] => {
   return [
     {
       id: 1,
       tab: (
         <>
-          Top Tokens
-          <StyledTabLoader>{isLoadingTokens && <Spinner spin size="1x" />}</StyledTabLoader>
+          Top tokens
           <TableSearch query={query} setQuery={setQuery} />
         </>
       ),
@@ -82,7 +86,11 @@ export const TokensTableWidget: React.FC<Props> = () => {
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tokens.length
 
   if (!tokens?.length) {
-    return <Spinner spin size="3x" />
+    return (
+      <EmptyItemWrapper>
+        <CowLoading />
+      </EmptyItemWrapper>
+    )
   }
 
   return (
@@ -102,7 +110,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
         }}
       >
         <ConnectionStatus />
-        <ExplorerCustomTab tabItems={tabItems(isLoading, query, setQuery)} extra={ExtraComponentNode} />
+        <ExplorerCustomTab extraPosition={'bottom'} tabItems={tabItems(query, setQuery)} extra={ExtraComponentNode} />
       </TokensTableContext.Provider>
     </TableWrapper>
   )

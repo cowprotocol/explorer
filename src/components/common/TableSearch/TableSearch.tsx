@@ -16,7 +16,7 @@ const SearchWrapped = styled(Wrapper)`
   margin-left: 10px;
   max-width: 400px;
   ${media.mobile} {
-    width: 250px;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
   }

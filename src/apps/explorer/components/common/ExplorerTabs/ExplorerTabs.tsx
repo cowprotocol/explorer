@@ -64,7 +64,7 @@ const tabCustomThemeConfig = getTabTheme({
   indicatorTabSize: IndicatorTabSize.big,
 })
 
-type ExplorerTabsProps = Omit<TabsProps, 'tabTheme'>
+type ExplorerTabsProps = Omit<TabsProps, 'tabTheme'> & { extraPosition?: 'top' | 'bottom' }
 
 const ExplorerTabs: React.FC<ExplorerTabsProps> = (props) => {
   return (
