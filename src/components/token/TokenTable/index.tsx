@@ -13,8 +13,9 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
+import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
@@ -200,15 +201,13 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     symbol,
     address,
     decimals,
-    priceUsd,
-    last24hours,
-    last7Days: { currentVolume, changedVolume, values },
-    sevenDays,
-    lastDayVolume,
+    priceUsd: price,
+    lastDayPricePercentageDifference: last24hours,
+    lastWeekUsdPrices: last7Days,
+    lastWeekPricePercentageDifference: sevenDays,
+    lastDayUsdVolume: lastDayVolume,
   } = token
   const erc20 = { name, address, decimals } as TokenErc20
-  const diffPercentageVolume = token && calcDiff(currentVolume, changedVolume)
-  const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const network = useNetworkId()
   const theme = useTheme()
   const chartContainerRef = useRef<HTMLDivElement>(null)
@@ -217,19 +216,19 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
   useEffect(() => {
     if (chartCreated || !chartContainerRef.current || !token) return
     const chart = _buildChart(chartContainerRef.current, 100, 45, theme)
-
+    const color = getColorBySign((last7Days[0].value - last7Days[last7Days.length - 1].value) * -1)
     const series = chart.addLineSeries({
       lineWidth: 1,
-      color: theme[captionNameColor],
+      color: theme[color],
       lastValueVisible: false,
       priceLineVisible: false,
     })
 
-    series.setData(values)
+    series.setData(last7Days)
 
     chart.timeScale().fitContent()
     setChartCreated(chart)
-  }, [token, theme, chartCreated, captionNameColor, values])
+  }, [token, theme, chartCreated, last7Days])
 
   if (!network) {
     return null
@@ -251,7 +250,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2 })}</HeaderValue>
+        <HeaderValue> ${formatPrice({ price: new BigNumber(price), decimals: 2 })}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
@@ -263,7 +262,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>24h volume</HeaderTitle>
-        <HeaderValue>{lastDayVolume}</HeaderValue>
+        <HeaderValue>${numberFormatter(lastDayVolume)}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>

@@ -88,18 +88,11 @@ export type Token = {
   id: number
   name: string
   symbol: string
-  totalVolumeUsd: string
-  firstTradeTimestamp: string
-  priceEth: string
   priceUsd: string
-  last24hours: number
-  sevenDays: number
-  last7Days: {
-    currentVolume: number
-    changedVolume: number
-    values: Array<{ time: string; value: number }>
-  }
-  lastDayVolume: string
+  lastDayPricePercentageDifference: number
+  lastWeekPricePercentageDifference: number
+  lastDayUsdVolume: number
+  lastWeekUsdPrices: Array<{ time: string; value: number }>
 } & TokenErc20
 
 export type WithNetworkId = { networkId: Network }
