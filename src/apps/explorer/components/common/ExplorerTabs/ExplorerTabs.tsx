@@ -19,6 +19,7 @@ const StyledTabs = styled.div`
     box-sizing: border-box;
     ${media.mobile} {
       flex-direction: column;
+      border-bottom: none;
     }
   }
 

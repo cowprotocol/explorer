@@ -29,14 +29,17 @@ const WrapperExtraComponents = styled.div`
 
 const TableWrapper = styled.div`
   margin-top: 5rem;
+  max-width: 100%;
 `
 
 const ExplorerCustomTab = styled(ExplorerTabs)`
   ${TabList} > button {
     border-bottom: none;
     font-size: 1.8rem;
+    margin: 0 0.5rem 0 1rem;
     ${media.mobile} {
       font-size: 1.5rem;
+      margin: 0;
       display: flex;
       flex-direction: column;
     }
