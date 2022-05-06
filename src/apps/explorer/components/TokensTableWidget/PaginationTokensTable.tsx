@@ -4,7 +4,6 @@ import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { media } from 'theme/styles/media'
 
-import { Dropdown, DropdownOption } from 'apps/explorer/components/common/Dropdown'
 import { TokensTableContext } from './context/TokensTableContext'
 
 const PaginationTextCSS = css`
@@ -13,34 +12,13 @@ const PaginationTextCSS = css`
   font-weight: normal;
   white-space: nowrap;
 `
+
 const PaginationWrapper = styled.span`
   ${PaginationTextCSS}
   align-items: center;
   display: flex;
   justify-content: center;
   padding-right: 1.5rem;
-`
-
-const DropdownPagination = styled(Dropdown)`
-  .dropdown-options {
-    min-width: 60px;
-  }
-`
-const PaginationDropdownButton = styled.button`
-  ${PaginationTextCSS}
-  background: none;
-  border: none;
-  white-space: nowrap;
-  cursor: pointer;
-  &.selected {
-    background-color: transparent;
-    cursor: not-allowed;
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  &:hover span {
-    color: ${({ theme }): string => theme.textActive1};
-  }
 `
 
 const PaginationText = styled.p`
@@ -55,14 +33,6 @@ const PaginationText = styled.p`
   }
 `
 
-const PaginationItem = styled(DropdownOption)`
-  align-items: center;
-  cursor: pointer;
-  height: 32px;
-  line-height: 1.2;
-  padding: 0 1rem;
-  white-space: nowrap;
-`
 const Icon = styled(FontAwesomeIcon)`
   width: 2rem !important;
   height: 2rem;
@@ -105,13 +75,11 @@ PaginationButton.defaultProps = { disabled: true }
 const PaginationTokensTable: React.FC = () => {
   const {
     isTokensLoading: isLoading,
-    tableState: { pageSize, pageOffset, hasNextPage },
-    setPageSize,
+    tableState: { pageOffset, hasNextPage },
     handleNextPage,
     handlePreviousPage,
     tokens: rows,
   } = useContext(TokensTableContext)
-  const quantityPerPage = [10, 20, 30, 50]
 
   const renderPageLegend = (): string => {
     if (isLoading && !rows?.length) return '.. - ..'
@@ -129,24 +97,6 @@ const PaginationTokensTable: React.FC = () => {
 
   return (
     <PaginationWrapper>
-      <PaginationText>Rows per page:</PaginationText>
-      <DropdownPagination
-        disabled={isLoading}
-        dropdownButtonContent={
-          <PaginationDropdownButton>
-            {pageSize} <span>▼</span>
-          </PaginationDropdownButton>
-        }
-        dropdownButtonContentOpened={
-          <PaginationDropdownButton className="selected">{pageSize} ▲</PaginationDropdownButton>
-        }
-        currentItem={quantityPerPage.findIndex((option) => option === pageSize)}
-        items={quantityPerPage.map((pageOption) => (
-          <PaginationItem key={pageOption} onClick={(): void => setPageSize(pageOption)}>
-            {pageOption}
-          </PaginationItem>
-        ))}
-      />
       <PaginationText className="legend">{renderPageLegend()}</PaginationText>{' '}
       <PaginationButton disabled={!hasPreviousPage} onClick={handlePreviousPage}>
         <Icon icon={faChevronLeft} className="fill" />
