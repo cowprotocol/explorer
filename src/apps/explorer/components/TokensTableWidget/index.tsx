@@ -36,6 +36,8 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
     font-size: 1.8rem;
     ${media.mobile} {
       font-size: 1.5rem;
+      display: flex;
+      flex-direction: column;
     }
   }
 `
@@ -56,7 +58,7 @@ const tabItems = (query: string, setQuery: (query: string) => void): TabItemInte
       id: 1,
       tab: (
         <>
-          Top Tokens
+          Top tokens
           <TableSearch query={query} setQuery={setQuery} />
         </>
       ),
