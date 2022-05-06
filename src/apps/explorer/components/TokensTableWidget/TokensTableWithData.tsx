@@ -2,10 +2,10 @@ import React, { useContext, useState, useEffect } from 'react'
 
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useFirstRender from 'hooks/useFirstRender'
-import Spinner from 'components/common/Spinner'
 import { TokensTableContext } from 'apps/explorer/components/TokensTableWidget/context/TokensTableContext'
 import TokenTable from 'components/token/TokenTable'
 import { DEFAULT_TIMEOUT } from 'const'
+import CowLoading from 'components/common/CowLoading'
 
 export const TokensTableWithData: React.FC = () => {
   const { tokens, networkId } = useContext(TokensTableContext)
@@ -33,7 +33,7 @@ export const TokensTableWithData: React.FC = () => {
 
   return isFirstRender || isFirstLoading ? (
     <EmptyItemWrapper>
-      <Spinner spin size="3x" />
+      <CowLoading />
     </EmptyItemWrapper>
   ) : (
     <TokenTable tokens={tokens} />
