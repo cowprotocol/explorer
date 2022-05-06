@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
-import Spinner from 'components/common/Spinner'
 import { useNetworkId } from 'state/network'
 import { useGetTokens } from 'hooks/useGetTokens'
 import { useFlexSearch } from 'hooks/useFlexSearch'
@@ -15,6 +14,8 @@ import PaginationTokensTable from './PaginationTokensTable'
 import { useTable } from './useTable'
 import { TableSearch } from 'components/common/TableSearch/TableSearch'
 import { media } from 'theme/styles/media'
+import CowLoading from 'components/common/CowLoading'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 
 const WrapperExtraComponents = styled.div`
   align-items: center;
@@ -80,7 +81,11 @@ export const TokensTableWidget: React.FC<Props> = () => {
   const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol'])
 
   if (!tokens?.length) {
-    return <Spinner spin size="3x" />
+    return (
+      <EmptyItemWrapper>
+        <CowLoading />
+      </EmptyItemWrapper>
+    )
   }
 
   return (
