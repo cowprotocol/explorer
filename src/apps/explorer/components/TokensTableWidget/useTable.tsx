@@ -5,6 +5,7 @@ export interface TableState {
   pageOffset: number
   pageIndex?: number
   hasNextPage?: boolean
+  totalResults?: number
 }
 
 export interface TableOptions {
