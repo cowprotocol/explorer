@@ -13,17 +13,20 @@ interface SearchProps {
 }
 
 const SearchWrapped = styled(Wrapper)`
-  margin-left: 10px;
   max-width: 400px;
+  margin-left: 1.6rem;
+
   ${media.mobile} {
+    margin-left: 0;
     max-width: 100%;
     display: flex;
     flex-direction: column;
   }
   ${SearchIcon} {
-    width: 20px;
+    width: 1.6rem;
     position: absolute;
-    left: 20px;
+    left: 2rem;
+    top: 1.2rem;
   }
   ${Input} {
     height: 4rem;

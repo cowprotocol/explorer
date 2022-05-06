@@ -29,7 +29,7 @@ const WrapperExtraComponents = styled.div`
 
 const TableWrapper = styled.div`
   margin-top: 5rem;
-  max-width: 100%;
+  max-width: 90vw;
 `
 
 const ExplorerCustomTab = styled(ExplorerTabs)`
