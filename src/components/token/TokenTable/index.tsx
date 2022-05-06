@@ -16,6 +16,7 @@ import { media } from 'theme/styles/media'
 import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
@@ -201,11 +202,11 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     symbol,
     address,
     decimals,
-    priceUsd: price,
-    lastDayPricePercentageDifference: last24hours,
-    lastWeekUsdPrices: last7Days,
-    lastWeekPricePercentageDifference: sevenDays,
-    lastDayUsdVolume: lastDayVolume,
+    priceUsd,
+    lastDayPricePercentageDifference,
+    lastWeekUsdPrices,
+    lastWeekPricePercentageDifference,
+    lastDayUsdVolume,
   } = token
   const erc20 = { name, address, decimals } as TokenErc20
   const network = useNetworkId()
@@ -214,9 +215,11 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
   const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
 
   useEffect(() => {
-    if (chartCreated || !chartContainerRef.current || !token) return
+    if (!lastWeekUsdPrices || chartCreated || !chartContainerRef.current || !token) return
     const chart = _buildChart(chartContainerRef.current, 100, 45, theme)
-    const color = getColorBySign((last7Days[0].value - last7Days[last7Days.length - 1].value) * -1)
+    const color = getColorBySign(
+      (lastWeekUsdPrices[0].value - lastWeekUsdPrices[lastWeekUsdPrices.length - 1].value) * -1,
+    )
     const series = chart.addLineSeries({
       lineWidth: 1,
       color: theme[color],
@@ -224,11 +227,11 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       priceLineVisible: false,
     })
 
-    series.setData(last7Days)
+    series.setData(lastWeekUsdPrices)
 
     chart.timeScale().fitContent()
     setChartCreated(chart)
-  }, [token, theme, chartCreated, last7Days])
+  }, [token, theme, chartCreated, lastWeekUsdPrices])
 
   if (!network) {
     return null
@@ -250,23 +253,35 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue> ${formatPrice({ price: new BigNumber(price), decimals: 2 })}</HeaderValue>
+        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2 })}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
-        <HeaderValue captionColor={getColorBySign(last24hours)}>{last24hours}%</HeaderValue>
+        {lastDayPricePercentageDifference ? (
+          <HeaderValue captionColor={getColorBySign(lastDayPricePercentageDifference)}>
+            {lastDayPricePercentageDifference}%
+          </HeaderValue>
+        ) : (
+          <ShimmerBar />
+        )}
       </td>
       <td>
         <HeaderTitle>7d</HeaderTitle>
-        <HeaderValue captionColor={getColorBySign(sevenDays)}>{sevenDays}%</HeaderValue>
+        {lastWeekPricePercentageDifference ? (
+          <HeaderValue captionColor={getColorBySign(lastWeekPricePercentageDifference)}>
+            {lastWeekPricePercentageDifference}%
+          </HeaderValue>
+        ) : (
+          <ShimmerBar />
+        )}
       </td>
       <td>
         <HeaderTitle>24h volume</HeaderTitle>
-        <HeaderValue>${numberFormatter(lastDayVolume)}</HeaderValue>
+        {lastDayUsdVolume ? <HeaderValue>${numberFormatter(lastDayUsdVolume)}</HeaderValue> : <ShimmerBar />}
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
-        <ChartWrapper ref={chartContainerRef} />
+        {lastWeekUsdPrices ? <ChartWrapper ref={chartContainerRef} /> : <ShimmerBar />}
       </td>
     </tr>
   )

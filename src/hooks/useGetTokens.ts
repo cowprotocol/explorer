@@ -23,20 +23,23 @@ const TOKENS = [
     id: 1,
     ...WRAPPED_ETHER,
     priceUsd: '2778.430212806305563534200019839624',
+    /*
     lastDayPricePercentageDifference: -3.32,
     lastWeekPricePercentageDifference: -3.32,
     lastDayUsdVolume: 329302355,
-    lastWeekUsdPrices: [
+     lastWeekUsdPrices: [
       { time: '2019-02-11', value: 80.01 },
       { time: '2019-07-12', value: 90.63 },
       { time: '2019-08-13', value: 76.64 },
       { time: '2019-10-14', value: 98.89 },
-    ],
+    ] 
+    */
   },
   {
     id: 2,
     ...DAI,
     priceUsd: '0.9999999999999999999999999999999999',
+    /* 
     lastDayPricePercentageDifference: 3.32,
     lastWeekPricePercentageDifference: 3.32,
     lastDayUsdVolume: 329302355,
@@ -45,7 +48,8 @@ const TOKENS = [
       { time: '2019-07-12', value: 90.63 },
       { time: '2019-08-13', value: 76.64 },
       { time: '2019-10-14', value: 85.89 },
-    ],
+    ], 
+    */
   },
 ] as Token[]
 
