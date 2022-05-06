@@ -31,7 +31,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
       }
     }
   }
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     > thead > tr {
       display: none;
     }
@@ -84,7 +84,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
 
 const HeaderTitle = styled.span`
   display: none;
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     font-weight: 600;
     align-items: center;
     display: flex;
@@ -108,14 +108,14 @@ const TokenWrapper = styled.div`
 `
 const StyledID = styled.span`
   margin-right: 10px;
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     display: none;
   }
 `
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
 
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     flex-wrap: wrap;
     text-align: end;
   }
@@ -123,7 +123,7 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
 
 const ChartWrapper = styled.div`
   position: relative;
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     table > tr > td:first-child {
       display: none;
     }
