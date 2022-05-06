@@ -9,7 +9,6 @@ import { Token } from 'api/operator/types'
 import { TokensTableWithData } from 'apps/explorer/components/TokensTableWidget/TokensTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
-import { StyledTabLoader } from 'apps/explorer/pages/styled'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { TabList } from 'components/common/Tabs/Tabs'
 import PaginationTokensTable from './PaginationTokensTable'
@@ -51,14 +50,13 @@ interface Props {
   networkId: BlockchainNetwork
 }
 
-const tabItems = (isLoadingTokens: boolean, query: string, setQuery: (query: string) => void): TabItemInterface[] => {
+const tabItems = (query: string, setQuery: (query: string) => void): TabItemInterface[] => {
   return [
     {
       id: 1,
       tab: (
         <>
           Top Tokens
-          <StyledTabLoader>{isLoadingTokens && <Spinner spin size="1x" />}</StyledTabLoader>
           <TableSearch query={query} setQuery={setQuery} />
         </>
       ),
@@ -98,7 +96,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
         }}
       >
         <ConnectionStatus />
-        <ExplorerCustomTab tabItems={tabItems(isTokensLoading, query, setQuery)} extra={ExtraComponentNode} />
+        <ExplorerCustomTab tabItems={tabItems(query, setQuery)} extra={ExtraComponentNode} />
       </TokensTableContext.Provider>
     </TableWrapper>
   )
