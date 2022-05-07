@@ -21,7 +21,7 @@ import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 21rem 14rem repeat(2, minmax(10rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
+    grid-template-columns: 21rem 14rem repeat(3, minmax(10rem, 1.5fr)) repeat(2, minmax(12rem, 2fr));
   }
   tr > td {
     span.span-inside-tooltip {
@@ -33,7 +33,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
       }
     }
   }
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     > thead > tr {
       display: none;
     }
@@ -86,7 +86,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
 
 const HeaderTitle = styled.span`
   display: none;
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     font-weight: 600;
     align-items: center;
     display: flex;
@@ -110,14 +110,14 @@ const TokenWrapper = styled.div`
 `
 const StyledID = styled.span`
   margin-right: 10px;
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     display: none;
   }
 `
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
 
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     flex-wrap: wrap;
     text-align: end;
   }
@@ -125,7 +125,7 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
 
 const ChartWrapper = styled.div`
   position: relative;
-  ${media.desktopMediumDown} {
+  ${media.mobile} {
     table > tr > td:first-child {
       display: none;
     }
@@ -297,7 +297,7 @@ const TokenTable: React.FC<Props> = (props) => {
         <tr className="row-empty">
           <td className="row-td-empty">
             <EmptyItemWrapper>
-              Can&apos;t load details <br /> Please try again
+              No results found <br /> Please try another search.
             </EmptyItemWrapper>
           </td>
         </tr>

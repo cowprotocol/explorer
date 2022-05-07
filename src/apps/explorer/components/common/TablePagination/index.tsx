@@ -1,10 +1,9 @@
-import React, { useContext } from 'react'
+import React, { Context, useContext } from 'react'
 import styled, { css } from 'styled-components'
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { media } from 'theme/styles/media'
-
-import { TokensTableContext } from './context/TokensTableContext'
+import { TokensTableContext } from '../../TokensTableWidget/context/TokensTableContext'
 
 const PaginationTextCSS = css`
   color: ${({ theme }): string => theme.textPrimary1};
@@ -72,7 +71,13 @@ const PaginationButton = styled.button`
 `
 PaginationButton.defaultProps = { disabled: true }
 
-const PaginationTokensTable: React.FC = () => {
+type PaginationProps<T> = {
+  context: Context<T>
+  fixedResultsPerPage?: boolean
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TablePagination: React.FC<PaginationProps<any>> = () => {
   const {
     isTokensLoading: isLoading,
     tableState: { pageOffset, hasNextPage },
@@ -91,6 +96,9 @@ const PaginationTokensTable: React.FC = () => {
       endPageCount = pageOffset + rows.length
     }
 
+    if (totalResults) {
+      return `Page ${pageIndex} of ${Math.ceil(totalResults / pageSize)}`
+    }
     return `${startPageCount} - ${endPageCount}`
   }
   const hasPreviousPage = !isLoading && pageOffset > 0
@@ -108,4 +116,4 @@ const PaginationTokensTable: React.FC = () => {
   )
 }
 
-export default PaginationTokensTable
+export default TablePagination
