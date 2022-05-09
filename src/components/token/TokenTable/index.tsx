@@ -19,9 +19,31 @@ import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/uti
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const Wrapper = styled(StyledUserDetailsTable)`
+  > tbody {
+    min-height: 37rem;
+    > tr {
+      min-height: 7.4rem;
+      padding: 0 0.5rem;
+      :last-child {
+        border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
+      }
+    }
+  }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 21rem 14rem repeat(3, minmax(10rem, 1.5fr)) repeat(2, minmax(12rem, 2fr));
+    grid-template-columns: 21rem 14rem repeat(4, minmax(10rem, 1.5fr)) repeat(1, minmax(14rem, 2fr));
+  }
+  > tbody > tr > td,
+  > thead > tr > th {
+    :nth-child(3n),
+    :nth-child(4n),
+    :nth-child(5n) {
+      justify-content: right;
+    }
+  }
+  > tbody > tr > td:nth-child(7n),
+  > thead > tr > th:nth-child(7n) {
+    justify-content: center;
   }
   tr > td {
     span.span-inside-tooltip {
@@ -65,6 +87,15 @@ const Wrapper = styled(StyledUserDetailsTable)`
         }
       }
     }
+    > tbody > tr > td,
+    > thead > tr > th {
+      :nth-child(3n),
+      :nth-child(4n),
+      :nth-child(5n),
+      :nth-child(7n) {
+        justify-content: space-between;
+      }
+    }
     .header-value {
       flex-wrap: wrap;
       text-align: end;
@@ -105,7 +136,7 @@ const TokenWrapper = styled.div`
   }
   img {
     width: 2.5rem;
-    height: auto;
+    height: 2.5rem;
   }
 `
 const StyledID = styled.span`
