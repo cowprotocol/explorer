@@ -24,6 +24,7 @@ const SearchWrapped = styled(Wrapper)`
   }
   ${SearchIcon} {
     width: 1.6rem;
+    height: 1.6rem;
     position: absolute;
     left: 2rem;
     top: 1.2rem;
