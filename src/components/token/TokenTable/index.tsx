@@ -33,14 +33,15 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > tbody > tr > td,
   > thead > tr > th {
-    :nth-child(3n),
-    :nth-child(4n),
-    :nth-child(5n) {
+    :nth-child(3),
+    :nth-child(4),
+    :nth-child(5),
+    :nth-child(6) {
       justify-content: right;
     }
   }
-  > tbody > tr > td:nth-child(7n),
-  > thead > tr > th:nth-child(7n) {
+  > tbody > tr > td:nth-child(7),
+  > thead > tr > th:nth-child(7) {
     justify-content: center;
   }
   tr > td {
@@ -87,10 +88,11 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
     > tbody > tr > td,
     > thead > tr > th {
-      :nth-child(3n),
-      :nth-child(4n),
-      :nth-child(5n),
-      :nth-child(7n) {
+      :nth-child(3),
+      :nth-child(4),
+      :nth-child(5),
+      :nth-child(6),
+      :nth-child(7) {
         justify-content: space-between;
       }
     }
