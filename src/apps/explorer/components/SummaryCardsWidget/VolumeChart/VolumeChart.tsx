@@ -1,7 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { DefaultTheme, useTheme } from 'styled-components'
 import { format, fromUnixTime } from 'date-fns'
-import { createChart, HistogramData, IChartApi, MouseEventParams, UTCTimestamp, BarPrice } from 'lightweight-charts'
+import {
+  createChart,
+  HistogramData,
+  IChartApi,
+  MouseEventParams,
+  UTCTimestamp,
+  BarPrice,
+  Coordinate,
+} from 'lightweight-charts'
 
 import { formatSmart } from 'utils'
 import Spinner from 'components/common/Spinner'
@@ -12,6 +20,7 @@ import {
   ContainerTitle,
   WrapperPeriodButton,
   StyledShimmerBar,
+  WrapperTooltipPrice,
 } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChart.styled'
 import { VolumePeriod } from './VolumeChartWidget'
 import { numberFormatter } from '../utils'
@@ -106,18 +115,55 @@ function _buildChart(
     },
     crosshair: {
       horzLine: {
-        visible: false,
-        labelVisible: true,
+        visible: true,
+        style: 3,
+        width: 1,
+        labelVisible: false,
+        color: theme.borderPrimary,
       },
       vertLine: {
         visible: true,
         style: 3,
         width: 1,
         color: theme.borderPrimary,
-        labelVisible: true,
+        labelVisible: false,
       },
     },
   })
+}
+
+interface CrossHairData {
+  time: UTCTimestamp
+  value: BarPrice
+  coordinate: Coordinate | null
+}
+
+const PriceTooltip = ({
+  crossHairData,
+  period,
+}: {
+  crossHairData: HistogramData | null
+  period: VolumePeriod | undefined
+}): JSX.Element | null => {
+  const formattedDate = React.useMemo(() => {
+    if (!crossHairData) return ''
+
+    let _format = 'MMM d, yyyy'
+    if (period === VolumePeriod.DAILY) {
+      _format = 'MMM d HH:mm, yyyy'
+    }
+
+    return format(fromUnixTime(crossHairData.time as UTCTimestamp), _format)
+  }, [crossHairData, period])
+
+  if (!crossHairData) return null
+
+  return (
+    <WrapperTooltipPrice>
+      <h4>${_formatAmount(crossHairData.value.toString())}</h4>
+      <p className="date">{formattedDate}</p>
+    </WrapperTooltipPrice>
+  )
 }
 
 export function VolumeChart({
@@ -133,18 +179,18 @@ export function VolumeChart({
   const theme = useTheme()
   const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
-  const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
+  const [crossHairData, setCrossHairData] = useState<CrossHairData | null>(null)
   const network = useNetworkId()
   const previousPeriod = usePreviousLastValueData(period)
   const previousNetwork = usePreviousLastValueData(network)
 
-  // reset the chart when the volume period is changed
+  // reset the chart when the volume/network period is changed
   useEffect(() => {
     if ((period !== previousPeriod || network !== previousNetwork) && chartCreated) {
       chartCreated.resize(0, 0)
       setChartCreated(null)
     }
-  }, [chartCreated, period, previousPeriod, network])
+  }, [chartCreated, period, previousPeriod, network, previousNetwork])
 
   useEffect(() => {
     if (chartCreated || !chartContainerRef.current || !items || isLoading) return
@@ -166,8 +212,9 @@ export function VolumeChart({
       }
 
       const value = param.seriesPrices.get(series) as BarPrice
-      const time = param.time
-      setCrossHairData({ time, value })
+      const time = param.time as UTCTimestamp
+      const coordinate = series.priceToCoordinate(value)
+      setCrossHairData({ time, value, coordinate })
     })
 
     chart.timeScale().fitContent()
@@ -182,16 +229,6 @@ export function VolumeChart({
     chartCreated.timeScale().scrollToPosition(0, false)
   }, [chartCreated, height, width])
 
-  const formattedDate = React.useMemo(() => {
-    if (!crossHairData) return ''
-
-    if (period === VolumePeriod.DAILY) {
-      return format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d HH:mm, yyyy')
-    }
-
-    return format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')
-  }, [crossHairData, period])
-
   if (isLoading && chartCreated === undefined)
     return (
       <ChartSkeleton>
@@ -202,16 +239,11 @@ export function VolumeChart({
   return (
     <>
       <WrapperChart ref={chartContainerRef}>
-        <ContainerTitle captionColor={captionNameColor} dateStyle={crossHairData !== null}>
+        <ContainerTitle captionColor={captionNameColor}>
           <h3>CoW Protocol volume</h3>
           <span>
             {isLoading ? (
               <StyledShimmerBar height={2} />
-            ) : crossHairData ? (
-              <>
-                <p>${_formatAmount(crossHairData.value.toString())}</p>
-                <p className="date">{formattedDate}</p>
-              </>
             ) : (
               <>
                 <p>${currentVolume && numberFormatter(currentVolume)}</p>
@@ -222,6 +254,7 @@ export function VolumeChart({
               </>
             )}
           </span>
+          <PriceTooltip crossHairData={crossHairData} period={period} />
         </ContainerTitle>
         {children && <div className="time-selector">{children}</div>}
       </WrapperChart>

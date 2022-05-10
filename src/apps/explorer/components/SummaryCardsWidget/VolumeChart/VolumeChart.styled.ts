@@ -1,4 +1,4 @@
-import styled, { keyframes, FlattenSimpleInterpolation, css } from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 import { media } from 'theme/styles/media'
 import GraphSkeleton from 'assets/img/graph-skeleton.svg'
@@ -78,11 +78,11 @@ export const WrapperChart = styled.div`
   }
 `
 
-export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; dateStyle?: boolean }>`
+export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   position: absolute;
   top: 1rem;
   left: 1rem;
-  z-index: 3;
+  z-index: 4;
   > h3 {
     color: ${({ theme }): string => theme.grey};
     font-size: small;
@@ -97,13 +97,6 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     gap: 1rem;
     align-items: center;
 
-    ${({ dateStyle }): FlattenSimpleInterpolation | undefined | false =>
-      dateStyle &&
-      css`
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0rem;
-      `}
     > p {
       color: ${({ theme }): string => theme.white};
       font-size: large;
@@ -151,4 +144,27 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
 export const StyledShimmerBar = styled(ShimmerBar)`
   margin: 1.2rem 0;
   min-width: 10rem;
+`
+
+export const WrapperTooltipPrice = styled.div`
+  color: ${({ theme }): string => theme.white};
+  background-color: ${({ theme }): string => theme.bg1};
+  border: 1px solid ${({ theme }): string => theme.bg2};
+  padding: 0.5rem 1rem;
+  border-radius: 0.4rem;
+  margin: 0 0.5rem;
+  z-index: 3;
+
+  > h4 {
+    font-size: large;
+    font-weight: ${({ theme }): string => theme.fontMedium};
+    margin: 1rem 0;
+    color: ${({ theme }): string => theme.white};
+  }
+
+  > p {
+    color: ${({ theme }): string => theme.grey};
+    font-size: 1.1rem;
+    padding: 0;
+  }
 `
