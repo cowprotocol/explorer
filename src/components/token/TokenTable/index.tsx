@@ -29,7 +29,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 21rem 14rem repeat(4, minmax(10rem, 1.5fr)) repeat(1, minmax(14rem, 2fr));
+    grid-template-columns: 21rem minmax(7rem, 11rem) repeat(4, minmax(10rem, 1.5fr)) repeat(1, minmax(14rem, 2fr));
   }
   > tbody > tr > td,
   > thead > tr > th {

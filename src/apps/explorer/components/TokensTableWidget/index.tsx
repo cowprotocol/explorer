@@ -16,6 +16,7 @@ import { TableSearch } from 'components/common/TableSearch/TableSearch'
 import { media } from 'theme/styles/media'
 import CowLoading from 'components/common/CowLoading'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
+import { ScrollBarStyle } from 'apps/explorer/styled'
 
 const WrapperExtraComponents = styled.div`
   align-items: center;
@@ -32,6 +33,9 @@ const TableWrapper = styled.div`
   max-width: 90vw;
   div.tab-content {
     padding: 0 !important;
+    table {
+      ${ScrollBarStyle}
+    }
   }
 `
 
