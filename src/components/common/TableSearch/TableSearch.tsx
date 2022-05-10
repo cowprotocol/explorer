@@ -33,6 +33,16 @@ const SearchWrapped = styled(Wrapper)`
     height: 4rem;
     font-size: 1.5rem;
   }
+  &::placeholder {
+    color: ${({ theme }): string => theme.greyShade};
+    transition: all 0.2s ease-in-out;
+    ${media.mobile} {
+      font-size: 1.3rem;
+    }
+  }
+  &:focus::placeholder {
+    color: transparent;
+  }
 `
 
 export function TableSearch({

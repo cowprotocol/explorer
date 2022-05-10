@@ -316,7 +316,7 @@ const TokenTable: React.FC<Props> = (props) => {
         <tr className="row-empty">
           <td className="row-td-empty">
             <EmptyItemWrapper>
-              No results found <br /> Please try another search.
+              No results found. <br /> Please try another search.
             </EmptyItemWrapper>
           </td>
         </tr>
