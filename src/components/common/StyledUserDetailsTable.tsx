@@ -84,6 +84,7 @@ export const EmptyItemWrapper = styled.div`
   display: flex;
   width: 100%;
   font-size: ${({ theme }): string => theme.fontSizeDefault};
+  text-align: center;
 `
 
 export default StyledUserDetailsTable

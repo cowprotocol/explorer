@@ -19,12 +19,10 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 const Wrapper = styled(StyledUserDetailsTable)`
   > tbody {
     min-height: 37rem;
+    border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
     > tr {
       min-height: 7.4rem;
       padding: 0 0.5rem;
-      :last-child {
-        border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-      }
     }
   }
   > thead > tr,
