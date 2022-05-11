@@ -31,18 +31,19 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 21rem 14rem repeat(4, minmax(10rem, 1.5fr)) repeat(1, minmax(14rem, 2fr));
+    grid-template-columns: 21rem minmax(7rem, 12rem) repeat(4, minmax(10rem, 1.5fr)) repeat(1, minmax(14rem, 2fr));
   }
   > tbody > tr > td,
   > thead > tr > th {
-    :nth-child(3n),
-    :nth-child(4n),
-    :nth-child(5n) {
+    :nth-child(3),
+    :nth-child(4),
+    :nth-child(5),
+    :nth-child(6) {
       justify-content: right;
     }
   }
-  > tbody > tr > td:nth-child(7n),
-  > thead > tr > th:nth-child(7n) {
+  > tbody > tr > td:nth-child(7),
+  > thead > tr > th:nth-child(7) {
     justify-content: center;
   }
   tr > td {
@@ -89,10 +90,11 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
     > tbody > tr > td,
     > thead > tr > th {
-      :nth-child(3n),
-      :nth-child(4n),
-      :nth-child(5n),
-      :nth-child(7n) {
+      :nth-child(3),
+      :nth-child(4),
+      :nth-child(5),
+      :nth-child(6),
+      :nth-child(7) {
         justify-content: space-between;
       }
     }
@@ -328,7 +330,7 @@ const TokenTable: React.FC<Props> = (props) => {
         <tr className="row-empty">
           <td className="row-td-empty">
             <EmptyItemWrapper>
-              No results found <br /> Please try another search.
+              No results found. <br /> Please try another search.
             </EmptyItemWrapper>
           </td>
         </tr>

@@ -51,7 +51,7 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   }
 
   tbody tr:hover {
-    backdrop-filter: contrast(0.9);
+    background-color: ${({ theme }): string => theme.bg3};
   }
 
   .span-copybtn-wrap {
