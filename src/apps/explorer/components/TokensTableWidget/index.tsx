@@ -40,6 +40,12 @@ const TableWrapper = styled.div`
 `
 
 const ExplorerCustomTab = styled(ExplorerTabs)`
+  ${TabList} {
+    ${media.mobile} {
+      flex-direction: column;
+      border-bottom: none;
+    }
+  }
   ${TabList} > button {
     border-bottom: none;
     font-size: 1.8rem;
