@@ -27,10 +27,6 @@ import { numberFormatter } from '../utils'
 import { useNetworkId } from 'state/network'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
-const COLOR_POSITIVE_DIFFERENCE = 'rgba(0, 196, 110, 0.01)'
-const COLOR_NEGATIVE_DIFFERENCE = 'rgba(255, 48, 91, 0.01)'
-const COLOR_POSITIVE_DIFFERENCE_LINE = 'rgb(0, 196, 111)'
-const COLOR_NEGATIVE_DIFFERENCE_LINE = 'rgb(255, 48, 89)'
 
 export interface VolumeDataResponse {
   data?: HistogramData[]
@@ -132,35 +128,52 @@ function _buildChart(
   })
 }
 
+interface CrossHairCoordinates {
+  top: Coordinate
+  left: number
+}
+
 interface CrossHairData {
   time: UTCTimestamp
   value: BarPrice
-  coordinate: Coordinate | null
+  coordinates: CrossHairCoordinates
 }
 
 const PriceTooltip = ({
   crossHairData,
   period,
+  containerWidth,
 }: {
-  crossHairData: HistogramData | null
+  crossHairData: CrossHairData | null
   period: VolumePeriod | undefined
+  containerWidth: number | undefined
 }): JSX.Element | null => {
+  const { time, value, coordinates } = crossHairData || {}
   const formattedDate = React.useMemo(() => {
-    if (!crossHairData) return ''
+    if (!time) return ''
 
     let _format = 'MMM d, yyyy'
     if (period === VolumePeriod.DAILY) {
       _format = 'MMM d HH:mm, yyyy'
     }
 
-    return format(fromUnixTime(crossHairData.time as UTCTimestamp), _format)
-  }, [crossHairData, period])
+    return format(fromUnixTime(time as UTCTimestamp), _format)
+  }, [period, time])
 
-  if (!crossHairData) return null
+  if (!value || !containerWidth || !coordinates) return null
+
+  const TOOLTIP_WIDTH = 140 // px
+  const TOOLTIP_HEIGHT = 64 // px
+  const TOOLTIP_MARGIN = 15 // px
+  const leftPosition = Math.max(0, Math.min(containerWidth - (TOOLTIP_WIDTH + TOOLTIP_MARGIN), coordinates.left))
+  const topPosition =
+    coordinates.top - TOOLTIP_HEIGHT - TOOLTIP_MARGIN > 0
+      ? coordinates.top - TOOLTIP_HEIGHT - TOOLTIP_MARGIN
+      : Math.max(0, Math.min(containerWidth - TOOLTIP_HEIGHT - TOOLTIP_MARGIN, coordinates.top + TOOLTIP_MARGIN))
 
   return (
-    <WrapperTooltipPrice>
-      <h4>${_formatAmount(crossHairData.value.toString())}</h4>
+    <WrapperTooltipPrice left={leftPosition} top={topPosition} width={TOOLTIP_WIDTH} height={TOOLTIP_HEIGHT}>
+      <h4>${_formatAmount(value.toString())}</h4>
       <p className="date">{formattedDate}</p>
     </WrapperTooltipPrice>
   )
@@ -198,9 +211,10 @@ export function VolumeChart({
     const chart = _buildChart(chartContainerRef.current, width, height, theme)
     const series = chart.addAreaSeries({
       lineWidth: 1,
-      lineColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE_LINE : COLOR_POSITIVE_DIFFERENCE_LINE,
-      topColor: theme[captionNameColor],
-      bottomColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE : COLOR_POSITIVE_DIFFERENCE,
+      lineColor: theme.orange,
+      topColor: theme.orange,
+      bottomColor: theme.orangeOpacity,
+      priceLineVisible: false,
     })
 
     series.setData(items)
@@ -211,10 +225,12 @@ export function VolumeChart({
         return
       }
 
+      const OFFSET_SPACE = 50
       const value = param.seriesPrices.get(series) as BarPrice
       const time = param.time as UTCTimestamp
-      const coordinate = series.priceToCoordinate(value)
-      setCrossHairData({ time, value, coordinate })
+      const coordinate = series.priceToCoordinate(value) || (0 as Coordinate)
+      const shiftedCoordinate = param.point.x - OFFSET_SPACE
+      setCrossHairData({ time, value, coordinates: { top: coordinate, left: shiftedCoordinate } })
     })
 
     chart.timeScale().fitContent()
@@ -254,8 +270,8 @@ export function VolumeChart({
               </>
             )}
           </span>
-          <PriceTooltip crossHairData={crossHairData} period={period} />
         </ContainerTitle>
+        <PriceTooltip crossHairData={crossHairData} period={period} containerWidth={width} />
         {children && <div className="time-selector">{children}</div>}
       </WrapperChart>
       {isLoading && <ChartSkeleton backgroundColor="orange" />}

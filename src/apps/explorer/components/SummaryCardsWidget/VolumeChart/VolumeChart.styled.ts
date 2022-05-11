@@ -82,7 +82,7 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
   position: absolute;
   top: 1rem;
   left: 1rem;
-  z-index: 4;
+  z-index: 3;
   > h3 {
     color: ${({ theme }): string => theme.grey};
     font-size: small;
@@ -146,14 +146,19 @@ export const StyledShimmerBar = styled(ShimmerBar)`
   min-width: 10rem;
 `
 
-export const WrapperTooltipPrice = styled.div`
+export const WrapperTooltipPrice = styled.div<{ left: number; top: number; height?: number; width?: number }>`
   color: ${({ theme }): string => theme.white};
   background-color: ${({ theme }): string => theme.bg1};
   border: 1px solid ${({ theme }): string => theme.bg2};
   padding: 0.5rem 1rem;
-  border-radius: 0.4rem;
-  margin: 0 0.5rem;
-  z-index: 3;
+  border-radius: 0.5rem;
+  margin: 0;
+  z-index: 2;
+  position: absolute;
+  left: ${({ left }): string => `${left}px`};
+  top: ${({ top }): string => `${top}px`};
+  height: ${({ height = 64 }): string => `${height}px`};
+  width: ${({ width = 140 }): string => `${width}px`};
 
   > h4 {
     font-size: large;
