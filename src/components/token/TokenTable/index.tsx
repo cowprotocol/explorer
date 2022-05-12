@@ -19,7 +19,7 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
     > tr > th:first-child {
-      padding: 0 1rem;
+      padding: 0 2rem;
     }
   }
   > tbody {
@@ -29,12 +29,12 @@ const Wrapper = styled(StyledUserDetailsTable)`
       min-height: 7.4rem;
     }
     > tr > td:first-child {
-      padding: 0 1rem;
+      padding: 0 2rem;
     }
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 3rem 21rem minmax(7rem, 12rem) repeat(4, minmax(10rem, 1.5fr)) repeat(1, minmax(14rem, 2fr));
+    grid-template-columns: 4rem 21rem minmax(7rem, 12rem) repeat(5, minmax(10rem, 1.5fr));
   }
   > tbody > tr > td,
   > thead > tr > th {
