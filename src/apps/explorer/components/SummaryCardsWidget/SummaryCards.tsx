@@ -17,22 +17,22 @@ const BatchInfoHeight = '19.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
 const MOBILE_TEXT_SIZE = 1.65 // rem
 
-const WrapperCardRow = styled(CardRow)`
-  max-width: 70%;
+/* const WrapperCardRow = styled(CardRow)`
+  width: 100%;
 
   ${media.mobile} {
     max-width: 100%;
   }
-`
+` */
 
 const DoubleContentSize = css`
   min-height: ${BatchInfoHeight};
 `
-const WrapperColumn = styled.div`
+const WrapperColumnChart = styled.div`
   /* Equivalent to use lg={8} MUI grid system */
   flex-grow: 0;
-  max-width: 66.666667%;
-  flex-basis: 66.666667%;
+  width: 40%;
+  flex-basis: 40%;
 
   > div {
     margin: 1rem;
@@ -44,8 +44,21 @@ const WrapperColumn = styled.div`
 
   ${media.mediumDownMd} {
     flex-grow: 0;
+    max-width: 50%;
+    flex-basis: 50%;
+  }
+
+  ${media.mobile} {
+    flex-grow: 0;
     max-width: 100%;
     flex-basis: 100%;
+  }
+`
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  ${media.mediumDownMd} {
+    flex-direction: row;
   }
 `
 const DoubleCardStyle = css`
@@ -57,12 +70,6 @@ const DoubleCardStyle = css`
 `
 const WrappedDoubleCard = styled(Card)`
   ${DoubleCardStyle}
-`
-
-const CardTransactions = styled(Card)`
-  ${media.mediumDownMd} {
-    ${DoubleCardStyle}
-  }
 `
 
 const WrapperDoubleContent = styled.div`
@@ -89,37 +96,37 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
   const diffFees = (dailyFees && calcDiff(dailyFees.now, dailyFees.before)) || 0
 
   return (
-    <WrapperCardRow>
-      <>
-        <WrapperColumn>{children}</WrapperColumn>
-        <WrappedDoubleCard xs={6} lg={4}>
-          <WrapperDoubleContent>
-            <CardContent
-              variant="3row"
-              label1="Last Batch"
-              value1={batchInfo && formatDistanceToNowStrict(batchInfo.lastBatchDate, { addSuffix: true })}
-              loading={isLoading}
-              valueSize={valueTextSize}
-            />
-            <CardContent
-              variant={rowsByCard}
-              label1="Batch ID"
-              value1={
-                batchInfo && (
-                  <>
-                    <LinkWithPrefixNetwork to={`/tx/${batchInfo.batchId}`}>
-                      {abbreviateString(batchInfo?.batchId, 6, 4)}
-                    </LinkWithPrefixNetwork>
-                    <CopyButton heightIcon={1.35} text={batchInfo?.batchId || ''} />
-                  </>
-                )
-              }
-              loading={isLoading}
-              valueSize={valueTextSize}
-            />
-          </WrapperDoubleContent>
-        </WrappedDoubleCard>
-        <CardTransactions xs={6} lg={4}>
+    <CardRow xs={12} lg={12}>
+      <WrapperColumnChart>{children}</WrapperColumnChart>
+      <WrappedDoubleCard xs={12} lg={3}>
+        <WrapperDoubleContent>
+          <CardContent
+            variant="3row"
+            label1="Last Batch"
+            value1={batchInfo && formatDistanceToNowStrict(batchInfo.lastBatchDate, { addSuffix: true })}
+            loading={isLoading}
+            valueSize={valueTextSize}
+          />
+          <CardContent
+            variant={rowsByCard}
+            label1="Batch ID"
+            value1={
+              batchInfo && (
+                <>
+                  <LinkWithPrefixNetwork to={`/tx/${batchInfo.batchId}`}>
+                    {abbreviateString(batchInfo?.batchId, 6, 4)}
+                  </LinkWithPrefixNetwork>
+                  <CopyButton heightIcon={1.35} text={batchInfo?.batchId || ''} />
+                </>
+              )
+            }
+            loading={isLoading}
+            valueSize={valueTextSize}
+          />
+        </WrapperDoubleContent>
+      </WrappedDoubleCard>
+      <Column>
+        <Card xs={6} lg={2}>
           <CardContent
             variant={rowsByCard}
             label1="24h Transactions"
@@ -129,8 +136,8 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             loading={isLoading}
             valueSize={valueTextSize}
           />
-        </CardTransactions>
-        <Card xs={6} lg={4}>
+        </Card>
+        <Card xs={6} lg={2}>
           <CardContent
             variant="2row"
             label1="Total Tokens"
@@ -139,7 +146,9 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             valueSize={valueTextSize}
           />
         </Card>
-        <Card xs={6} lg={4}>
+      </Column>
+      <Column>
+        <Card xs={6} lg={2}>
           <CardContent
             variant={rowsByCard}
             label1="24h Fees"
@@ -150,19 +159,18 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             valueSize={valueTextSize}
           />
         </Card>
-        {/** Surplus is not yet available */}
-        {/* <Card>
-            <CardContent
-              variant="2row"
-              label1="30d Surplus"
-              value1={monthSurplus.now}
-              caption1={monthSurplus.before}
-              captionColor="green"
-              loading={isLoading}
-              valueSize={valueTextSize}
-            />
-          </Card> */}
-      </>
-    </WrapperCardRow>
+        <Card xs={6} lg={2}>
+          <CardContent
+            variant={rowsByCard}
+            label1="Total volume"
+            value1={`$${numberFormatter(dailyFees?.now || 0)}`}
+            caption1={`${diffFees.toFixed(2)}%`}
+            captionColor={getColorBySign(diffFees)}
+            loading={isLoading}
+            valueSize={valueTextSize}
+          />
+        </Card>
+      </Column>
+    </CardRow>
   )
 }
