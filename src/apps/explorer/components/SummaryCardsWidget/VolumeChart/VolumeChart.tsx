@@ -162,10 +162,10 @@ const PriceTooltip = ({
 
   if (!value || !containerWidth || !coordinates) return null
 
-  const TOOLTIP_WIDTH = 140 // px
-  const TOOLTIP_HEIGHT = 64 // px
+  const TOOLTIP_WIDTH = 130 // px
+  const TOOLTIP_HEIGHT = 54 // px
   const H_TOOLTIP_MARGIN = 15 // px
-  const V_TOOLTIP_MARGIN = 50 // px
+  const V_TOOLTIP_MARGIN = 60 // px
   const leftPosition = Math.max(
     H_TOOLTIP_MARGIN,
     Math.min(containerWidth - (TOOLTIP_WIDTH + H_TOOLTIP_MARGIN), coordinates.left),

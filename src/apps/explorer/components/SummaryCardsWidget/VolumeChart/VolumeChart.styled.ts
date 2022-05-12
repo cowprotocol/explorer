@@ -161,7 +161,7 @@ export const WrapperTooltipPrice = styled.div<{ left: number; top: number; heigh
   width: ${({ width = 140 }): string => `${width}px`};
 
   > h4 {
-    font-size: large;
+    font-size: 1.5rem;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 1rem 0;
     color: ${({ theme }): string => theme.white};
