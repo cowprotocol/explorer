@@ -110,7 +110,7 @@ type PaginationProps<T> = {
 const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResultsPerPage }) => {
   const {
     isLoading,
-    tableState: { pageSize, pageOffset, hasNextPage, pageIndex, totalResults },
+    tableState: { pageSize, pageOffset, hasNextPage, pageIndex, totalResults = -1 },
     setPageSize,
     handleNextPage,
     handlePreviousPage,
@@ -128,8 +128,8 @@ const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResults
       endPageCount = pageOffset + rows.length
     }
 
-    if (totalResults) {
-      return `Page ${pageIndex} of ${Math.ceil(totalResults / pageSize)}`
+    if (totalResults >= 0) {
+      return `Page ${!totalResults ? 0 : pageIndex} of ${Math.ceil(totalResults / pageSize)}`
     }
     return `${startPageCount} - ${endPageCount}`
   }

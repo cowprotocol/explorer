@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
 import { useNetworkId } from 'state/network'
@@ -99,10 +99,17 @@ export const TokensTableWidget: React.FC<Props> = () => {
   } = useTable({ initialState: { pageOffset: 0, pageSize: resultsPerPage } })
   const { tokens, isLoading, error } = useGetTokens(networkId)
   const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol'])
-  const resultsLength = query ? filteredTokens.length : tokens.length
+  const resultsLength = query.length ? filteredTokens.length : tokens.length
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < resultsLength
   tableState['totalResults'] = resultsLength
+
+  useEffect(() => {
+    if (query.length) {
+      tableState['pageOffset'] = 0
+      tableState['pageIndex'] = 1
+    }
+  }, [query, tableState])
 
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
