@@ -22,8 +22,8 @@ import {
   StyledShimmerBar,
   WrapperTooltipPrice,
 } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChart.styled'
-import { VolumePeriod } from './VolumeChartWidget'
-import { numberFormatter } from '../utils'
+import { VolumePeriod } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChartWidget'
+import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { useNetworkId } from 'state/network'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
@@ -157,19 +157,23 @@ const PriceTooltip = ({
       _format = 'MMM d HH:mm, yyyy'
     }
 
-    return format(fromUnixTime(time as UTCTimestamp), _format)
+    return format(fromUnixTime(time), _format)
   }, [period, time])
 
   if (!value || !containerWidth || !coordinates) return null
 
   const TOOLTIP_WIDTH = 140 // px
   const TOOLTIP_HEIGHT = 64 // px
-  const TOOLTIP_MARGIN = 15 // px
-  const leftPosition = Math.max(0, Math.min(containerWidth - (TOOLTIP_WIDTH + TOOLTIP_MARGIN), coordinates.left))
+  const H_TOOLTIP_MARGIN = 15 // px
+  const V_TOOLTIP_MARGIN = 50 // px
+  const leftPosition = Math.max(
+    H_TOOLTIP_MARGIN,
+    Math.min(containerWidth - (TOOLTIP_WIDTH + H_TOOLTIP_MARGIN), coordinates.left),
+  )
   const topPosition =
-    coordinates.top - TOOLTIP_HEIGHT - TOOLTIP_MARGIN > 0
-      ? coordinates.top - TOOLTIP_HEIGHT - TOOLTIP_MARGIN
-      : Math.max(0, Math.min(containerWidth - TOOLTIP_HEIGHT - TOOLTIP_MARGIN, coordinates.top + TOOLTIP_MARGIN))
+    coordinates.top - TOOLTIP_HEIGHT - V_TOOLTIP_MARGIN > 0
+      ? coordinates.top - TOOLTIP_HEIGHT - H_TOOLTIP_MARGIN
+      : Math.max(0, Math.min(containerWidth - TOOLTIP_HEIGHT - H_TOOLTIP_MARGIN, coordinates.top + H_TOOLTIP_MARGIN))
 
   return (
     <WrapperTooltipPrice left={leftPosition} top={topPosition} width={TOOLTIP_WIDTH} height={TOOLTIP_HEIGHT}>
@@ -225,11 +229,10 @@ export function VolumeChart({
         return
       }
 
-      const OFFSET_SPACE = 50
       const value = param.seriesPrices.get(series) as BarPrice
       const time = param.time as UTCTimestamp
       const coordinate = series.priceToCoordinate(value) || (0 as Coordinate)
-      const shiftedCoordinate = param.point.x - OFFSET_SPACE
+      const shiftedCoordinate = param.point.x
       setCrossHairData({ time, value, coordinates: { top: coordinate, left: shiftedCoordinate } })
     })
 
