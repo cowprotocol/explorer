@@ -13,59 +13,28 @@ import { CopyButton } from 'components/common/CopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { numberFormatter } from './utils'
 
-const BatchInfoHeight = '19.6rem'
+const BatchInfoHeight = '21.6rem'
 const DESKTOP_TEXT_SIZE = 1.8 // rem
 const MOBILE_TEXT_SIZE = 1.65 // rem
-
-/* const WrapperCardRow = styled(CardRow)`
-  width: 100%;
-
-  ${media.mobile} {
-    max-width: 100%;
-  }
-` */
 
 const DoubleContentSize = css`
   min-height: ${BatchInfoHeight};
 `
-const WrapperColumnChart = styled.div`
-  /* Equivalent to use lg={8} MUI grid system */
-  flex-grow: 0;
-  width: 40%;
-  flex-basis: 40%;
-
-  > div {
-    margin: 1rem;
-    max-height: ${BatchInfoHeight};
-    outline: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+const WrapperColumnChart = styled(Card)`
+  background: transparent;
+  & > div:first-child {
+    all: unset;
+    border: 1px solid ${({ theme }): string => theme.borderPrimary};
     border-radius: 0.4rem;
     overflow: hidden;
   }
-
-  ${media.mediumDownMd} {
-    flex-grow: 0;
-    max-width: 50%;
-    flex-basis: 50%;
-  }
-
-  ${media.mobile} {
-    flex-grow: 0;
-    max-width: 100%;
-    flex-basis: 100%;
-  }
 `
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  ${media.mediumDownMd} {
-    flex-direction: row;
-  }
-`
+
 const DoubleCardStyle = css`
   ${DoubleContentSize}
 
-  ${media.mediumDownMd} {
-    min-height: 16rem;
+  ${media.xSmallDown}, ${media.tinyDown} {
+    min-height: 15rem;
   }
 `
 const WrappedDoubleCard = styled(Card)`
@@ -97,8 +66,10 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
 
   return (
     <CardRow xs={12} lg={12}>
-      <WrapperColumnChart>{children}</WrapperColumnChart>
-      <WrappedDoubleCard xs={12} lg={3}>
+      <WrapperColumnChart xs={12} sm={8} md={8} lg={5}>
+        {children}
+      </WrapperColumnChart>
+      <WrappedDoubleCard xs={12} sm={4} md={4} lg={3}>
         <WrapperDoubleContent>
           <CardContent
             variant="3row"
@@ -125,8 +96,8 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           />
         </WrapperDoubleContent>
       </WrappedDoubleCard>
-      <Column>
-        <Card xs={6} lg={2}>
+      <CardRow xs={12} sm={12} md={12} lg={4}>
+        <Card xs={6} sm={3} md={3} lg={6}>
           <CardContent
             variant={rowsByCard}
             label1="24h Transactions"
@@ -137,7 +108,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             valueSize={valueTextSize}
           />
         </Card>
-        <Card xs={6} lg={2}>
+        <Card xs={6} sm={3} md={3} lg={6}>
           <CardContent
             variant="2row"
             label1="Total Tokens"
@@ -146,9 +117,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             valueSize={valueTextSize}
           />
         </Card>
-      </Column>
-      <Column>
-        <Card xs={6} lg={2}>
+        <Card xs={6} sm={3} md={3} lg={6}>
           <CardContent
             variant={rowsByCard}
             label1="24h Fees"
@@ -159,7 +128,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             valueSize={valueTextSize}
           />
         </Card>
-        <Card xs={6} lg={2}>
+        <Card xs={6} sm={3} md={3} lg={6}>
           <CardContent
             variant={rowsByCard}
             label1="Total volume"
@@ -170,7 +139,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
             valueSize={valueTextSize}
           />
         </Card>
-      </Column>
+      </CardRow>
     </CardRow>
   )
 }

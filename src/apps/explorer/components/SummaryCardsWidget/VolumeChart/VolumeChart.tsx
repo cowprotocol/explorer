@@ -17,7 +17,7 @@ import { VolumePeriod } from './VolumeChartWidget'
 import { numberFormatter } from '../utils'
 import { useNetworkId } from 'state/network'
 
-const DEFAULT_CHART_HEIGHT = 196 // px
+const DEFAULT_CHART_HEIGHT = 214 // px
 const COLOR_POSITIVE_DIFFERENCE = 'rgba(0, 196, 110, 0.01)'
 const COLOR_NEGATIVE_DIFFERENCE = 'rgba(255, 48, 91, 0.01)'
 const COLOR_POSITIVE_DIFFERENCE_LINE = 'rgb(0, 196, 111)'
