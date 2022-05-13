@@ -206,6 +206,7 @@ export function VolumeChart({
     if ((period !== previousPeriod || network !== previousNetwork) && chartCreated) {
       chartCreated.resize(0, 0)
       setChartCreated(null)
+      setCrossHairData(null)
     }
   }, [chartCreated, period, previousPeriod, network, previousNetwork])
 
@@ -237,6 +238,7 @@ export function VolumeChart({
     })
 
     chart.timeScale().fitContent()
+    console.log(chart.timeScale().getVisibleLogicalRange())
     setChartCreated(chart)
   }, [captionNameColor, chartCreated, height, isLoading, items, theme, width])
 
