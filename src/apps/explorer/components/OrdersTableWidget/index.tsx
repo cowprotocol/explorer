@@ -2,11 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
+import TablePagination from 'apps/explorer/components/common/TablePagination'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { useTable } from './useTable'
 import { OrdersTableWithData } from './OrdersTableWithData'
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
-import PaginationOrdersTable from './PaginationOrdersTable'
 import { useGetAccountOrders } from 'hooks/useGetOrders'
 import Spinner from 'components/common/Spinner'
 import { ConnectionStatus } from 'components/ConnectionStatus'
@@ -44,7 +44,7 @@ const WrapperExtraComponents = styled.div`
 
 const ExtraComponentNode: React.ReactNode = (
   <WrapperExtraComponents>
-    <PaginationOrdersTable />
+    <TablePagination context={OrdersTableContext} />
   </WrapperExtraComponents>
 )
 interface Props {
@@ -61,7 +61,7 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
   } = useTable({ initialState: { pageOffset: 0, pageSize: 20 } })
   const {
     orders,
-    isLoading: isOrdersLoading,
+    isLoading,
     error,
     isThereNext: isThereNextOrder,
   } = useGetAccountOrders(ownerAddress, tableState.pageSize, tableState.pageOffset, tableState.pageIndex)
@@ -72,9 +72,9 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     <OrdersTableContext.Provider
       value={{
         addressAccountParams,
-        orders,
+        data: orders,
         error,
-        isOrdersLoading,
+        isLoading,
         tableState,
         setPageSize,
         handleNextPage,
@@ -83,7 +83,7 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     >
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
-      <StyledExplorerTabs tabItems={tabItems(isOrdersLoading)} extra={ExtraComponentNode} />
+      <StyledExplorerTabs tabItems={tabItems(isLoading)} extra={ExtraComponentNode} />
     </OrdersTableContext.Provider>
   )
 }

@@ -4,6 +4,8 @@ import { Wrapper as WrapperMod } from 'apps/explorer/pages/styled'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 import { StatsSummaryCardsWidget } from 'apps/explorer/components/SummaryCardsWidget'
+import { useNetworkId } from 'state/network'
+import { TokensTableWidget } from 'apps/explorer/components/TokensTableWidget'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
@@ -27,7 +29,8 @@ const Wrapper = styled(WrapperMod)`
 
 const SummaryWrapper = styled.section`
   display: flex;
-  padding-top: 10rem;
+  flex-direction: column;
+  margin: 5rem 0 0 0;
 
   ${media.mobile} {
     padding-top: 4rem;
@@ -35,12 +38,14 @@ const SummaryWrapper = styled.section`
 `
 
 export const Home: React.FC = () => {
+  const networkId = useNetworkId() || undefined
   return (
     <Wrapper>
       <h1>Search on CoW Protocol Explorer</h1>
       <Search className="home" />
       <SummaryWrapper>
         <StatsSummaryCardsWidget />
+        <TokensTableWidget networkId={networkId} />
       </SummaryWrapper>
     </Wrapper>
   )
