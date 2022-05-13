@@ -30,7 +30,7 @@ const WrapperExtraComponents = styled.div`
 
 const TableWrapper = styled.div`
   margin-top: 5rem;
-  max-width: 90vw;
+  max-width: 100vw;
   div.tab-content {
     padding: 0 !important;
     table {
