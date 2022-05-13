@@ -17,10 +17,6 @@ const StyledTabs = styled.div`
     justify-content: flex-start;
     border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
     box-sizing: border-box;
-    ${media.mobile} {
-      flex-direction: column;
-      border-bottom: none;
-    }
   }
 
   ${TabList} > button {

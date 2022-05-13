@@ -32,11 +32,26 @@ const SearchWrapped = styled(Wrapper)`
   ${Input} {
     height: 4rem;
     font-size: 1.5rem;
+    ${media.xSmallDown} {
+      padding: 0 0.5rem 0 4rem;
+    }
+    ${media.tinyDown} {
+      padding: auto 4rem auto 4rem;
+    }
     &::placeholder {
       color: ${({ theme }): string => theme.greyShade};
       transition: all 0.2s ease-in-out;
       ${media.mobile} {
         font-size: 1.3rem;
+        white-space: pre-line;
+      }
+      ${media.xSmallDown} {
+        font-size: 1.2rem;
+      }
+      ${media.tinyDown} {
+        white-space: pre-line;
+        top: 1rem;
+        position: absolute;
       }
     }
     &:focus::placeholder {

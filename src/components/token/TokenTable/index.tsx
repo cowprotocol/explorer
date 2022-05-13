@@ -19,31 +19,36 @@ import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/uti
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const Wrapper = styled(StyledUserDetailsTable)`
+  > thead {
+    > tr > th:first-child {
+      padding: 0 2rem;
+    }
+  }
   > tbody {
     min-height: 37rem;
+    border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
     > tr {
       min-height: 7.4rem;
-      padding: 0 0.5rem;
-      :last-child {
-        border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-      }
+    }
+    > tr > td:first-child {
+      padding: 0 2rem;
     }
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 21rem minmax(7rem, 12rem) repeat(4, minmax(10rem, 1.5fr)) repeat(1, minmax(14rem, 2fr));
+    grid-template-columns: 4rem 21rem minmax(7rem, 12rem) repeat(5, minmax(10rem, 1.5fr));
   }
   > tbody > tr > td,
   > thead > tr > th {
-    :nth-child(3),
     :nth-child(4),
     :nth-child(5),
-    :nth-child(6) {
+    :nth-child(6),
+    :nth-child(7) {
       justify-content: right;
     }
   }
-  > tbody > tr > td:nth-child(7),
-  > thead > tr > th:nth-child(7) {
+  > tbody > tr > td:nth-child(8),
+  > thead > tr > th:nth-child(8) {
     justify-content: center;
   }
   tr > td {
@@ -90,11 +95,11 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
     > tbody > tr > td,
     > thead > tr > th {
-      :nth-child(3),
       :nth-child(4),
       :nth-child(5),
       :nth-child(6),
-      :nth-child(7) {
+      :nth-child(7),
+      :nth-child(8) {
         justify-content: space-between;
       }
     }
@@ -141,12 +146,7 @@ const TokenWrapper = styled.div`
     height: 2.5rem;
   }
 `
-const StyledID = styled.span`
-  margin-right: 10px;
-  ${media.mobile} {
-    display: none;
-  }
-`
+
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
 
@@ -273,7 +273,10 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
   return (
     <tr key={id}>
       <td>
-        <StyledID>{id}</StyledID>
+        <HeaderTitle>#</HeaderTitle>
+        <HeaderValue>{id}</HeaderValue>
+      </td>
+      <td>
         <HeaderTitle>Name</HeaderTitle>
         <TokenWrapper>
           <TokenDisplay erc20={erc20} network={network} />
@@ -352,6 +355,7 @@ const TokenTable: React.FC<Props> = (props) => {
       showBorderTable={showBorderTable}
       header={
         <tr>
+          <th>#</th>
           <th>Name</th>
           <th>Symbol</th>
           <th>Price</th>

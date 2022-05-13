@@ -79,11 +79,11 @@ type PaginationProps<T> = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const TablePagination: React.FC<PaginationProps<any>> = () => {
   const {
-    isTokensLoading: isLoading,
-    tableState: { pageOffset, hasNextPage },
+    isLoading,
+    tableState: { pageSize, pageOffset, hasNextPage, pageIndex, totalResults = -1 },
     handleNextPage,
     handlePreviousPage,
-    tokens: rows,
+    data: rows,
   } = useContext(TokensTableContext)
 
   const renderPageLegend = (): string => {
@@ -96,8 +96,8 @@ const TablePagination: React.FC<PaginationProps<any>> = () => {
       endPageCount = pageOffset + rows.length
     }
 
-    if (totalResults) {
-      return `Page ${pageIndex} of ${Math.ceil(totalResults / pageSize)}`
+    if (totalResults >= 0) {
+      return `Page ${!totalResults ? 0 : pageIndex} of ${Math.ceil(totalResults / pageSize)}`
     }
     return `${startPageCount} - ${endPageCount}`
   }
