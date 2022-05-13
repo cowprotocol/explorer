@@ -73,8 +73,8 @@ export const WrapperChart = styled.div`
   }
 
   canvas {
-    top: 2rem !important;
-    height: calc(100% - 2rem) !important;
+    top: 5rem !important;
+    height: calc(100% - 5rem) !important;
   }
 `
 
