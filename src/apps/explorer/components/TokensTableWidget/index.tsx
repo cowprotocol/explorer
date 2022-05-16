@@ -31,6 +31,9 @@ const WrapperExtraComponents = styled.div`
 const TableWrapper = styled.div`
   margin-top: 5rem;
   max-width: 100vw;
+  ${media.mobile} {
+    max-width: 90vw;
+  }
   div.tab-content {
     padding: 0 !important;
     table {
