@@ -73,8 +73,14 @@ export const WrapperChart = styled.div`
   }
 
   canvas {
-    top: 5rem !important;
-    height: calc(100% - 5rem) !important;
+    top: 3rem !important;
+    height: calc(100% - 3rem) !important;
+  }
+  ${media.mobile} {
+    canvas {
+      top: 5rem !important;
+      height: calc(100% - 5rem) !important;
+    }
   }
 `
 
@@ -88,6 +94,13 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     font-size: small;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 0;
+    ${media.mobile} {
+      top: 0.5rem;
+      word-wrap: break-word;
+      max-width: 13rem;
+      line-height: 1.1;
+      font-size: x-small;
+    }
   }
 
   > span {
@@ -109,6 +122,9 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
         margin: -1rem 0;
         color: ${({ theme }): string => theme.grey};
         font-size: 1.1rem;
+      }
+      ${media.mobile} {
+        font-size: small;
       }
     }
   }

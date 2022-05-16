@@ -22,7 +22,10 @@ import {
   StyledShimmerBar,
   WrapperTooltipPrice,
 } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChart.styled'
-import { VolumePeriod } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChartWidget'
+import {
+  VolumePeriod,
+  volumePeriodTitle,
+} from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChartWidget'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { useNetworkId } from 'state/network'
 
@@ -173,7 +176,10 @@ const PriceTooltip = ({
   const topPosition =
     coordinates.top - TOOLTIP_HEIGHT - V_TOOLTIP_MARGIN > 0
       ? coordinates.top - TOOLTIP_HEIGHT - H_TOOLTIP_MARGIN
-      : Math.max(0, Math.min(containerWidth - TOOLTIP_HEIGHT - H_TOOLTIP_MARGIN, coordinates.top + H_TOOLTIP_MARGIN))
+      : Math.max(
+          V_TOOLTIP_MARGIN,
+          Math.min(containerWidth - TOOLTIP_HEIGHT - H_TOOLTIP_MARGIN, coordinates.top + H_TOOLTIP_MARGIN),
+        )
 
   return (
     <WrapperTooltipPrice left={leftPosition} top={topPosition} width={TOOLTIP_WIDTH} height={TOOLTIP_HEIGHT}>
@@ -200,6 +206,7 @@ export function VolumeChart({
   const network = useNetworkId()
   const previousPeriod = usePreviousLastValueData(period)
   const previousNetwork = usePreviousLastValueData(network)
+  const periodTitle = period && volumePeriodTitle.get(period)
 
   // reset the chart when the volume/network period is changed
   useEffect(() => {
@@ -238,7 +245,6 @@ export function VolumeChart({
     })
 
     chart.timeScale().fitContent()
-    console.log(chart.timeScale().getVisibleLogicalRange())
     setChartCreated(chart)
   }, [captionNameColor, chartCreated, height, isLoading, items, theme, width])
 
@@ -261,7 +267,7 @@ export function VolumeChart({
     <>
       <WrapperChart ref={chartContainerRef}>
         <ContainerTitle captionColor={captionNameColor}>
-          <h3>CoW Protocol volume</h3>
+          <h3>CoW Protocol {periodTitle} volume</h3>
           <span>
             {isLoading ? (
               <StyledShimmerBar height={2} />

@@ -14,6 +14,13 @@ export enum VolumePeriod {
   YEARLY = '1Y',
 }
 
+export const volumePeriodTitle = new Map(
+  (Object.keys(VolumePeriod) as (keyof typeof VolumePeriod)[]).map((key) => [
+    VolumePeriod[key],
+    key.toLocaleLowerCase(),
+  ]),
+)
+
 export function VolumeChartWidget(): JSX.Element {
   const [periodSelected, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
   const volumeData = useGetVolumeData(periodSelected)
