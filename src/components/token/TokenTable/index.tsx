@@ -4,7 +4,7 @@ import { createChart, IChartApi } from 'lightweight-charts'
 import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 
-import { Token } from 'api/operator'
+import { Token } from 'hooks/useGetTokens'
 import { useNetworkId } from 'state/network'
 
 import StyledUserDetailsTable, {
@@ -17,6 +17,7 @@ import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -170,9 +171,11 @@ const ChartWrapper = styled.div`
 
 export type Props = StyledUserDetailsTableProps & {
   tokens: Token[] | undefined
+  tableState: TableState
 }
 
 interface RowProps {
+  index: number
   token: Token
 }
 
@@ -228,7 +231,7 @@ function _buildChart(
   })
 }
 
-const RowToken: React.FC<RowProps> = ({ token }) => {
+const RowToken: React.FC<RowProps> = ({ token, index }) => {
   const {
     id,
     name,
@@ -274,7 +277,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     <tr key={id}>
       <td>
         <HeaderTitle>#</HeaderTitle>
-        <HeaderValue>{id}</HeaderValue>
+        <HeaderValue>{index + 1}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Name</HeaderTitle>
@@ -289,7 +292,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2 })}</HeaderValue>
+        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2, thousands: true })}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
@@ -313,7 +316,11 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>24h volume</HeaderTitle>
-        {lastDayUsdVolume ? <HeaderValue>${numberFormatter(lastDayUsdVolume)}</HeaderValue> : <ShimmerBar />}
+        {lastDayUsdVolume === undefined ? (
+          <ShimmerBar />
+        ) : (
+          <HeaderValue>${numberFormatter(lastDayUsdVolume)}</HeaderValue>
+        )}
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
@@ -324,8 +331,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
 }
 
 const TokenTable: React.FC<Props> = (props) => {
-  const { tokens, showBorderTable = false } = props
-
+  const { tokens, tableState, showBorderTable = false } = props
   const tokenItems = (items: Token[] | undefined): JSX.Element => {
     let tableContent
     if (!items || items.length === 0) {
@@ -342,7 +348,7 @@ const TokenTable: React.FC<Props> = (props) => {
       tableContent = (
         <>
           {items.map((item, i) => (
-            <RowToken key={`${item.id}-${i}`} token={item} />
+            <RowToken key={`${item.id}-${i}`} index={i + tableState.pageOffset} token={item} />
           ))}
         </>
       )

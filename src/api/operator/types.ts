@@ -84,17 +84,6 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   surplusPercentage?: BigNumber
 }
 
-export type Token = {
-  id: number
-  name: string
-  symbol: string
-  priceUsd: string
-  lastDayPricePercentageDifference?: number
-  lastWeekPricePercentageDifference?: number
-  lastDayUsdVolume?: number
-  lastWeekUsdPrices?: Array<{ time: string; value: number }>
-} & TokenErc20
-
 export type WithNetworkId = { networkId: Network }
 
 export type GetOrderParams = WithNetworkId & {
