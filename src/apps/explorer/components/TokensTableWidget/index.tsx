@@ -29,8 +29,8 @@ const WrapperExtraComponents = styled.div`
 `
 
 const TableWrapper = styled.div`
-  margin-top: 5rem;
   max-width: 100vw;
+  margin: 5rem 0.8rem 0 0.8rem;
   ${media.mobile} {
     max-width: 90vw;
   }
