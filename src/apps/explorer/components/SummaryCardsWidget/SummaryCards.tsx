@@ -57,7 +57,7 @@ interface SummaryCardsProps {
 }
 
 export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.Element {
-  const { batchInfo, dailyTransactions, totalTokens, dailyFees, isLoading } = summaryData || {}
+  const { batchInfo, dailyTransactions, totalTokens, volumeUsd, dailyFees, isLoading } = summaryData || {}
   const isDesktop = useMediaBreakpoint(['xl', 'lg'])
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
   const rowsByCard = isDesktop ? '2row' : '3row'
@@ -132,9 +132,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           <CardContent
             variant={rowsByCard}
             label1="Total Volume"
-            value1={`$${numberFormatter(dailyFees?.now || 0)}`}
-            caption1={`${diffFees.toFixed(2)}%`}
-            captionColor={getColorBySign(diffFees)}
+            value1={`$${numberFormatter(volumeUsd || 0)}`}
             loading={isLoading}
             valueSize={valueTextSize}
           />
