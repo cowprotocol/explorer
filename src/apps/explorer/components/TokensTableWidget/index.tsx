@@ -33,6 +33,7 @@ const TableWrapper = styled.div`
   margin: 5rem 0.8rem 0 0.8rem;
   ${media.mobile} {
     max-width: 90vw;
+    margin: 3rem 0 0 0;
   }
   div.tab-content {
     padding: 0 !important;
