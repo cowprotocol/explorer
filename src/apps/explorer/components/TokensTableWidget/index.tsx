@@ -17,6 +17,7 @@ import { media } from 'theme/styles/media'
 import CowLoading from 'components/common/CowLoading'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { ScrollBarStyle } from 'apps/explorer/styled'
+import { CardRow } from 'components/common/CardRow'
 
 const WrapperExtraComponents = styled.div`
   align-items: center;
@@ -28,12 +29,10 @@ const WrapperExtraComponents = styled.div`
   }
 `
 
-const TableWrapper = styled.div`
-  max-width: 100vw;
-  margin: 5rem 0.8rem 0 0.8rem;
+const TableWrapper = styled(CardRow)`
+  width: 100%;
   ${media.mobile} {
-    max-width: 90vw;
-    margin: 3rem 0 0 0;
+    width: 100%;
   }
   div.tab-content {
     padding: 0 !important;
