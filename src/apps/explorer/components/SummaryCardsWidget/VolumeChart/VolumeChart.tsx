@@ -9,6 +9,7 @@ import {
   UTCTimestamp,
   BarPrice,
   Coordinate,
+  LogicalRange,
 } from 'lightweight-charts'
 
 import { formatSmart } from 'utils'
@@ -43,6 +44,7 @@ export interface VolumeChartProps {
   height?: number
   width?: number
   period?: VolumePeriod
+  logicalTimeScaleRange?: LogicalRange | undefined
 }
 
 export function PeriodButton({
@@ -103,6 +105,7 @@ function _buildChart(
     },
     timeScale: {
       visible: false,
+      minBarSpacing: 0,
     },
     grid: {
       horzLines: {
@@ -195,6 +198,7 @@ export function VolumeChart({
   width = undefined,
   period,
   children,
+  logicalTimeScaleRange,
 }: React.PropsWithChildren<VolumeChartProps>): JSX.Element {
   const { data: items, currentVolume, changedVolume, isLoading } = volumeData || {}
   const chartContainerRef = useRef<HTMLDivElement>(null)
@@ -244,9 +248,11 @@ export function VolumeChart({
       setCrossHairData({ time, value, coordinates: { top: coordinate, left: shiftedCoordinate } })
     })
 
-    chart.timeScale().fitContent()
+    logicalTimeScaleRange
+      ? chart.timeScale().setVisibleLogicalRange(logicalTimeScaleRange)
+      : chart.timeScale().fitContent()
     setChartCreated(chart)
-  }, [captionNameColor, chartCreated, height, isLoading, items, theme, width])
+  }, [captionNameColor, chartCreated, height, isLoading, items, logicalTimeScaleRange, theme, width])
 
   // resize when window width change
   useEffect(() => {

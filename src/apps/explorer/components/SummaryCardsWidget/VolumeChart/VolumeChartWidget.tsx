@@ -21,6 +21,10 @@ export const volumePeriodTitle = new Map(
   ]),
 )
 
+const logicalTimeRange = {
+  [VolumePeriod.WEEKLY]: { from: 3.4, to: 9 }, // by the 7 points
+}
+
 export function VolumeChartWidget(): JSX.Element {
   const [periodSelected, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
   const volumeData = useGetVolumeData(periodSelected)
@@ -43,7 +47,12 @@ export function VolumeChartWidget(): JSX.Element {
 
   return (
     <WrapperVolumeChart ref={containerRef}>
-      <VolumeChart volumeData={volumeData} width={width} period={periodSelected}>
+      <VolumeChart
+        volumeData={volumeData}
+        width={width}
+        period={periodSelected}
+        logicalTimeScaleRange={logicalTimeRange[periodSelected]}
+      >
         <PeriodButton
           isLoading={volumeData?.isLoading}
           active={periodSelected === VolumePeriod.DAILY}
