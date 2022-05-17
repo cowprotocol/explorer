@@ -21,6 +21,9 @@ export const volumePeriodTitle = new Map(
   ]),
 )
 
+/* A lightweight-charts logical range is an object with: 'from' and 'to', which are numbers and represent
+ * logical indexes on the thweight-charts time scale.
+ */
 const logicalTimeRange = {
   [VolumePeriod.WEEKLY]: { from: 3.4, to: 9 }, // by the 7 points
 }
