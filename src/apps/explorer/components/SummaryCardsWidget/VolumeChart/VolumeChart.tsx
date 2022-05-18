@@ -155,6 +155,7 @@ const PriceTooltip = ({
   containerWidth: number | undefined
 }): JSX.Element | null => {
   const { time, value, coordinates } = crossHairData || {}
+  const isTopCoordinateValid = coordinates && coordinates.top > 1
   const formattedDate = React.useMemo(() => {
     if (!time) return ''
 
@@ -166,7 +167,7 @@ const PriceTooltip = ({
     return format(fromUnixTime(time), _format)
   }, [period, time])
 
-  if (!value || !containerWidth || !coordinates) return null
+  if (!value || !containerWidth || !coordinates || !isTopCoordinateValid) return null
 
   const TOOLTIP_WIDTH = 130 // px
   const TOOLTIP_HEIGHT = 54 // px
