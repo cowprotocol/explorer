@@ -18,6 +18,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
   const fetchTokens = useCallback(
     async (network: Network): Promise<void> => {
       setIsLoading(true)
+      setTokens([])
       try {
         const response = await COW_SDK[network]?.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(
           GET_TOKENS_QUERY as any,
