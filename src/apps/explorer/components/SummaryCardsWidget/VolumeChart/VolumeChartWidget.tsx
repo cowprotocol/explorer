@@ -5,7 +5,7 @@ import { useGetVolumeData } from './useGetVolumeData'
 import { PeriodButton, VolumeChart } from './VolumeChart'
 
 const WrapperVolumeChart = styled.div`
-  height: 19.6rem;
+  height: 21.4rem;
 `
 export enum VolumePeriod {
   DAILY = '1D',

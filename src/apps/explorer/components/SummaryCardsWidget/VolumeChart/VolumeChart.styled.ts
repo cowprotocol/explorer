@@ -11,7 +11,7 @@ const frameAnimation = keyframes`
 `
 export const ChartSkeleton = styled.div<{ backgroundColor?: 'grey' | 'orange' }>`
   height: 100%;
-  min-height: 19.6rem;
+  min-height: 21.6rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.4rem;
   overflow: hidden;
@@ -139,14 +139,14 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   color: ${({ theme, active }): string => (active ? theme.orange : theme.white)};
   background-color: ${({ theme, active }): string => (active ? theme.orangeOpacity : theme.bg1)};
   border: 1px solid ${({ theme, active }): string => (active ? theme.orange : theme.bg2)};
-  padding: 0.5rem 1rem;
+  padding: 0;
   border-radius: 0.6rem;
   margin: 0 0.5rem;
   height: 2.5rem;
   width: 3.8rem;
 
   ${media.mobile} {
-    padding: 0.5rem 0.8rem;
+    padding: 0;
     margin: 0 0.5rem;
     font-size: 1.2rem;
     width: 3rem;

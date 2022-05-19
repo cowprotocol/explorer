@@ -31,9 +31,16 @@ const SummaryWrapper = styled.section`
   display: flex;
   flex-direction: column;
   margin: 5rem 0 0 0;
+  gap: 5rem;
 
   ${media.mobile} {
     padding-top: 4rem;
+    max-width: 95vw;
+  }
+
+  ${media.xSmallDown} {
+    padding-top: 3rem;
+    max-width: 92vw;
   }
 `
 

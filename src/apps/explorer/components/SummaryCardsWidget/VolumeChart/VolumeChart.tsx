@@ -30,7 +30,7 @@ import {
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { useNetworkId } from 'state/network'
 
-const DEFAULT_CHART_HEIGHT = 196 // px
+const DEFAULT_CHART_HEIGHT = 214 // px
 
 export interface VolumeDataResponse {
   data?: HistogramData[]

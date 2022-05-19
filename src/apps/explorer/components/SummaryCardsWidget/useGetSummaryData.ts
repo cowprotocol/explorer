@@ -19,12 +19,13 @@ interface TotalSummary {
   dailyTransactions?: PastAndPresentValue
   totalTokens?: number
   dailyFees?: PastAndPresentValue
+  volumeUsd?: number
 }
 
 type SummaryQuery = {
   settlements: Array<{ firstTradeTimestamp: string; txHash: string }>
   hourlyTotals: Array<{ orders: string; feesUsd: string }>
-  totals: Array<{ tokens: string }>
+  totals: Array<{ tokens: string; volumeUsd: string }>
 }
 
 function buildSummary(data: SummaryQuery): TotalSummary {
@@ -47,12 +48,14 @@ function buildSummary(data: SummaryQuery): TotalSummary {
   }
 
   const totalTokens = Number(data.totals[0].tokens)
+  const volumeUsd = Number(data.totals[0].volumeUsd)
 
   return {
     batchInfo,
     dailyTransactions,
     dailyFees,
     totalTokens,
+    volumeUsd,
   }
 }
 
@@ -104,6 +107,7 @@ const summaryQuery = gql`
     }
     totals {
       tokens
+      volumeUsd
     }
   }
 `
