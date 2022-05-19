@@ -55,6 +55,7 @@ enum CardSize {
 
 export interface CardBaseProps {
   children?: React.ReactNode
+  emptyContent?: boolean
   xs?: GridSize
   sm?: GridSize
   md?: GridSize
@@ -68,6 +69,7 @@ export interface CardBaseProps {
  */
 export const Card: React.FC<CardBaseProps> = ({
   children,
+  emptyContent = false,
   xs = CardSize.xs,
   sm = CardSize.sm,
   md = CardSize.md,
@@ -76,9 +78,13 @@ export const Card: React.FC<CardBaseProps> = ({
 }): JSX.Element => {
   return (
     <Grid item xs={xs} sm={sm} md={md} lg={lg}>
-      <CardComponent {...rest}>
-        <CardContent>{children}</CardContent>
-      </CardComponent>
+      {emptyContent ? (
+        <>{children}</>
+      ) : (
+        <CardComponent {...rest}>
+          <CardContent>{children}</CardContent>
+        </CardComponent>
+      )}
     </Grid>
   )
 }

@@ -65,7 +65,7 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
   const diffFees = (dailyFees && calcDiff(dailyFees.now, dailyFees.before)) || 0
 
   return (
-    <CardRow xs={12} lg={12}>
+    <CardRow>
       <WrapperColumnChart xs={12} sm={8} md={8} lg={5}>
         {children}
       </WrapperColumnChart>
@@ -96,48 +96,50 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
           />
         </WrapperDoubleContent>
       </WrappedDoubleCard>
-      <CardRow xs={12} sm={12} md={12} lg={4}>
-        <Card xs={6} sm={3} md={3} lg={6}>
-          <CardContent
-            variant={rowsByCard}
-            label1="24h Transactions"
-            value1={dailyTransactions?.now.toLocaleString()}
-            caption1={`${diffTransactions.toFixed(2)}%`}
-            captionColor={getColorBySign(diffTransactions)}
-            loading={isLoading}
-            valueSize={valueTextSize}
-          />
-        </Card>
-        <Card xs={6} sm={3} md={3} lg={6}>
-          <CardContent
-            variant="2row"
-            label1="Total Tokens"
-            value1={totalTokens?.toLocaleString()}
-            loading={isLoading}
-            valueSize={valueTextSize}
-          />
-        </Card>
-        <Card xs={6} sm={3} md={3} lg={6}>
-          <CardContent
-            variant={rowsByCard}
-            label1="24h Fees"
-            value1={`$${numberFormatter(dailyFees?.now || 0)}`}
-            caption1={`${diffFees.toFixed(2)}%`}
-            captionColor={getColorBySign(diffFees)}
-            loading={isLoading}
-            valueSize={valueTextSize}
-          />
-        </Card>
-        <Card xs={6} sm={3} md={3} lg={6}>
-          <CardContent
-            variant={rowsByCard}
-            label1="Total Volume"
-            value1={`$${numberFormatter(volumeUsd || 0)}`}
-            loading={isLoading}
-            valueSize={valueTextSize}
-          />
-        </Card>
-      </CardRow>
+      <Card emptyContent xs={12} sm={12} md={12} lg={4}>
+        <CardRow>
+          <Card xs={6} sm={3} md={3} lg={6}>
+            <CardContent
+              variant={rowsByCard}
+              label1="24h Transactions"
+              value1={dailyTransactions?.now.toLocaleString()}
+              caption1={`${diffTransactions.toFixed(2)}%`}
+              captionColor={getColorBySign(diffTransactions)}
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          </Card>
+          <Card xs={6} sm={3} md={3} lg={6}>
+            <CardContent
+              variant="2row"
+              label1="Total Tokens"
+              value1={totalTokens?.toLocaleString()}
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          </Card>
+          <Card xs={6} sm={3} md={3} lg={6}>
+            <CardContent
+              variant={rowsByCard}
+              label1="24h Fees"
+              value1={`$${numberFormatter(dailyFees?.now || 0)}`}
+              caption1={`${diffFees.toFixed(2)}%`}
+              captionColor={getColorBySign(diffFees)}
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          </Card>
+          <Card xs={6} sm={3} md={3} lg={6}>
+            <CardContent
+              variant={rowsByCard}
+              label1="Total Volume"
+              value1={`$${numberFormatter(volumeUsd || 0)}`}
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          </Card>
+        </CardRow>
+      </Card>
     </CardRow>
   )
 }
