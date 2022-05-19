@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
-import { OrderMetaData, TradeMetaData } from '@cowprotocol/cow-sdk'
+import { OrderMetaData, TradeMetaData } from 'cow-sdk-test'
 
 import { Network } from 'types'
 

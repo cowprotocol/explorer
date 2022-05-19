@@ -1262,20 +1262,6 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
-"@cowprotocol/cow-sdk@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-0.0.9.tgz#100aced21b430b88d43d3ffb0c4018ed6efe72c0"
-  integrity sha512-4mDYIufykRBbzYr5voDNOIaCpet4FEzG8crOI+YJ105kVDV96FuIgoHr8VByFZ5VoMZUC9QLcq3lMPSFO+WsNA==
-  dependencies:
-    "@gnosis.pm/gp-v2-contracts" "^1.1.2"
-    ajv "^8.8.2"
-    cross-fetch "^3.1.5"
-    ethers "^5.5.3"
-    graphql "^16.3.0"
-    graphql-request "^4.1.0"
-    loglevel "^1.8.0"
-    multiformats "^9.6.4"
-
 "@date-io/core@^2.11.0":
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/@date-io/core/-/core-2.11.0.tgz#28580cda1c8228ab2c7ed6aee673ef0495f913e6"
@@ -7540,6 +7526,20 @@ coveralls@^3.0.9:
     log-driver "^1.2.7"
     minimist "^1.2.5"
     request "^2.88.2"
+
+cow-sdk-test@0.0.9:
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/cow-sdk-test/-/cow-sdk-test-0.0.9.tgz#4a5cb262dc7477a820c04f3358d6bff8a3fe698b"
+  integrity sha512-uGKGKC4mW6J+hPbcXplbfUYgHbS0tpYvnPQigX3petKZ9GzevL3BZDUmhNyimBHasct3GjnMbRME7NleXagrmg==
+  dependencies:
+    "@gnosis.pm/gp-v2-contracts" "^1.1.2"
+    ajv "^8.8.2"
+    cross-fetch "^3.1.5"
+    ethers "^5.5.3"
+    graphql "^16.3.0"
+    graphql-request "^4.1.0"
+    loglevel "^1.8.0"
+    multiformats "^9.6.4"
 
 cp-file@^7.0.0:
   version "7.0.0"
