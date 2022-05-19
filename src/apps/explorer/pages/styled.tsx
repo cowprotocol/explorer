@@ -9,10 +9,10 @@ export const Wrapper = styled.div`
   margin: 0 auto;
   width: 100%;
   flex-grow: 1;
-  align-items: center;
 
   ${media.mediumDown} {
     max-width: 94rem;
+    align-items: center;
   }
 
   ${media.mobile} {
