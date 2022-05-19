@@ -10,14 +10,15 @@ const { white, fadedGreyishWhite, blackLight } = COLOURS
 
 const DefaultCard = styled.div`
   height: inherit;
-  min-width: 15rem;
-  min-height: 100px;
+  min-width: 13rem;
+  min-height: 10rem;
   background-color: #f5f5f5;
   border-radius: 6px;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 7%), 0 4px 6px -2px rgb(0 0 0 / 5%);
-  margin: 1rem;
-  ${media.xSmallDown} {
+  margin: 0.8rem;
+  ${media.mobile} {
     min-width: 14rem;
+    min-height: 9.8rem;
   }
 `
 
@@ -36,8 +37,8 @@ const CardContent = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 15px;
-  padding: 16px;
+  font-size: 1.5rem;
+  padding: 1rem;
   line-height: normal;
   ${media.xSmallDown} {
     padding: 0.2rem;
@@ -54,6 +55,7 @@ enum CardSize {
 
 export interface CardBaseProps {
   children?: React.ReactNode
+  emptyContent?: boolean
   xs?: GridSize
   sm?: GridSize
   md?: GridSize
@@ -67,6 +69,7 @@ export interface CardBaseProps {
  */
 export const Card: React.FC<CardBaseProps> = ({
   children,
+  emptyContent = false,
   xs = CardSize.xs,
   sm = CardSize.sm,
   md = CardSize.md,
@@ -75,9 +78,13 @@ export const Card: React.FC<CardBaseProps> = ({
 }): JSX.Element => {
   return (
     <Grid item xs={xs} sm={sm} md={md} lg={lg}>
-      <CardComponent {...rest}>
-        <CardContent>{children}</CardContent>
-      </CardComponent>
+      {emptyContent ? (
+        <>{children}</>
+      ) : (
+        <CardComponent {...rest}>
+          <CardContent>{children}</CardContent>
+        </CardComponent>
+      )}
     </Grid>
   )
 }

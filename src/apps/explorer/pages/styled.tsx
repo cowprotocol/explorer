@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
 
   ${media.mediumDown} {
     max-width: 94rem;
+    align-items: center;
   }
 
   ${media.mobile} {
