@@ -1,7 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { DefaultTheme, useTheme } from 'styled-components'
 import { format, fromUnixTime } from 'date-fns'
-import { createChart, HistogramData, IChartApi, MouseEventParams, UTCTimestamp, BarPrice } from 'lightweight-charts'
+import {
+  createChart,
+  HistogramData,
+  IChartApi,
+  MouseEventParams,
+  UTCTimestamp,
+  BarPrice,
+  Coordinate,
+  LogicalRange,
+} from 'lightweight-charts'
 
 import { formatSmart } from 'utils'
 import Spinner from 'components/common/Spinner'
@@ -12,16 +21,16 @@ import {
   ContainerTitle,
   WrapperPeriodButton,
   StyledShimmerBar,
+  WrapperTooltipPrice,
 } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChart.styled'
-import { VolumePeriod } from './VolumeChartWidget'
-import { numberFormatter } from '../utils'
+import {
+  VolumePeriod,
+  volumePeriodTitle,
+} from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChartWidget'
+import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { useNetworkId } from 'state/network'
 
 const DEFAULT_CHART_HEIGHT = 196 // px
-const COLOR_POSITIVE_DIFFERENCE = 'rgba(0, 196, 110, 0.01)'
-const COLOR_NEGATIVE_DIFFERENCE = 'rgba(255, 48, 91, 0.01)'
-const COLOR_POSITIVE_DIFFERENCE_LINE = 'rgb(0, 196, 111)'
-const COLOR_NEGATIVE_DIFFERENCE_LINE = 'rgb(255, 48, 89)'
 
 export interface VolumeDataResponse {
   data?: HistogramData[]
@@ -35,6 +44,7 @@ export interface VolumeChartProps {
   height?: number
   width?: number
   period?: VolumePeriod
+  logicalTimeScaleRange?: LogicalRange | undefined
 }
 
 export function PeriodButton({
@@ -95,6 +105,7 @@ function _buildChart(
     },
     timeScale: {
       visible: false,
+      minBarSpacing: 0,
     },
     grid: {
       horzLines: {
@@ -106,18 +117,80 @@ function _buildChart(
     },
     crosshair: {
       horzLine: {
-        visible: false,
-        labelVisible: true,
+        visible: true,
+        style: 3,
+        width: 1,
+        labelVisible: false,
+        color: theme.borderPrimary,
       },
       vertLine: {
         visible: true,
         style: 3,
         width: 1,
         color: theme.borderPrimary,
-        labelVisible: true,
+        labelVisible: false,
       },
     },
   })
+}
+
+interface CrossHairCoordinates {
+  top: Coordinate
+  left: number
+}
+
+interface CrossHairData {
+  time: UTCTimestamp
+  value: BarPrice
+  coordinates: CrossHairCoordinates
+}
+
+const PriceTooltip = ({
+  crossHairData,
+  period,
+  containerWidth,
+}: {
+  crossHairData: CrossHairData | null
+  period: VolumePeriod | undefined
+  containerWidth: number | undefined
+}): JSX.Element | null => {
+  const { time, value, coordinates } = crossHairData || {}
+  const isTopCoordinateValid = coordinates && coordinates.top > 1
+  const formattedDate = React.useMemo(() => {
+    if (!time) return ''
+
+    let _format = 'MMM d, yyyy'
+    if (period === VolumePeriod.DAILY) {
+      _format = 'MMM d HH:mm, yyyy'
+    }
+
+    return format(fromUnixTime(time), _format)
+  }, [period, time])
+
+  if (!value || !containerWidth || !coordinates || !isTopCoordinateValid) return null
+
+  const TOOLTIP_WIDTH = 130 // px
+  const TOOLTIP_HEIGHT = 54 // px
+  const H_TOOLTIP_MARGIN = 15 // px
+  const V_TOOLTIP_MARGIN = 60 // px
+  const leftPosition = Math.max(
+    H_TOOLTIP_MARGIN,
+    Math.min(containerWidth - (TOOLTIP_WIDTH + H_TOOLTIP_MARGIN), coordinates.left),
+  )
+  const topPosition =
+    coordinates.top - TOOLTIP_HEIGHT - V_TOOLTIP_MARGIN > 0
+      ? coordinates.top - TOOLTIP_HEIGHT - H_TOOLTIP_MARGIN
+      : Math.max(
+          V_TOOLTIP_MARGIN,
+          Math.min(containerWidth - TOOLTIP_HEIGHT - H_TOOLTIP_MARGIN, coordinates.top + H_TOOLTIP_MARGIN),
+        )
+
+  return (
+    <WrapperTooltipPrice left={leftPosition} top={topPosition} width={TOOLTIP_WIDTH} height={TOOLTIP_HEIGHT}>
+      <h4>${_formatAmount(value.toString())}</h4>
+      <p className="date">{formattedDate}</p>
+    </WrapperTooltipPrice>
+  )
 }
 
 export function VolumeChart({
@@ -126,6 +199,7 @@ export function VolumeChart({
   width = undefined,
   period,
   children,
+  logicalTimeScaleRange,
 }: React.PropsWithChildren<VolumeChartProps>): JSX.Element {
   const { data: items, currentVolume, changedVolume, isLoading } = volumeData || {}
   const chartContainerRef = useRef<HTMLDivElement>(null)
@@ -133,18 +207,20 @@ export function VolumeChart({
   const theme = useTheme()
   const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
-  const [crossHairData, setCrossHairData] = useState<HistogramData | null>(null)
+  const [crossHairData, setCrossHairData] = useState<CrossHairData | null>(null)
   const network = useNetworkId()
   const previousPeriod = usePreviousLastValueData(period)
   const previousNetwork = usePreviousLastValueData(network)
+  const periodTitle = period && volumePeriodTitle.get(period)
 
-  // reset the chart when the volume period is changed
+  // reset the chart when the volume/network period is changed
   useEffect(() => {
     if ((period !== previousPeriod || network !== previousNetwork) && chartCreated) {
       chartCreated.resize(0, 0)
       setChartCreated(null)
+      setCrossHairData(null)
     }
-  }, [chartCreated, period, previousPeriod, network])
+  }, [chartCreated, period, previousPeriod, network, previousNetwork])
 
   useEffect(() => {
     if (chartCreated || !chartContainerRef.current || !items || isLoading) return
@@ -152,9 +228,10 @@ export function VolumeChart({
     const chart = _buildChart(chartContainerRef.current, width, height, theme)
     const series = chart.addAreaSeries({
       lineWidth: 1,
-      lineColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE_LINE : COLOR_POSITIVE_DIFFERENCE_LINE,
-      topColor: theme[captionNameColor],
-      bottomColor: captionNameColor === 'red1' ? COLOR_NEGATIVE_DIFFERENCE : COLOR_POSITIVE_DIFFERENCE,
+      lineColor: theme.orange,
+      topColor: theme.orange,
+      bottomColor: theme.orangeOpacity,
+      priceLineVisible: false,
     })
 
     series.setData(items)
@@ -166,13 +243,17 @@ export function VolumeChart({
       }
 
       const value = param.seriesPrices.get(series) as BarPrice
-      const time = param.time
-      setCrossHairData({ time, value })
+      const time = param.time as UTCTimestamp
+      const coordinate = series.priceToCoordinate(value) || (0 as Coordinate)
+      const shiftedCoordinate = param.point.x
+      setCrossHairData({ time, value, coordinates: { top: coordinate, left: shiftedCoordinate } })
     })
 
-    chart.timeScale().fitContent()
+    logicalTimeScaleRange
+      ? chart.timeScale().setVisibleLogicalRange(logicalTimeScaleRange)
+      : chart.timeScale().fitContent()
     setChartCreated(chart)
-  }, [captionNameColor, chartCreated, height, isLoading, items, theme, width])
+  }, [captionNameColor, chartCreated, height, isLoading, items, logicalTimeScaleRange, theme, width])
 
   // resize when window width change
   useEffect(() => {
@@ -181,16 +262,6 @@ export function VolumeChart({
     chartCreated.resize(width, height)
     chartCreated.timeScale().scrollToPosition(0, false)
   }, [chartCreated, height, width])
-
-  const formattedDate = React.useMemo(() => {
-    if (!crossHairData) return ''
-
-    if (period === VolumePeriod.DAILY) {
-      return format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d HH:mm, yyyy')
-    }
-
-    return format(fromUnixTime(crossHairData.time as UTCTimestamp), 'MMM d, yyyy')
-  }, [crossHairData, period])
 
   if (isLoading && chartCreated === undefined)
     return (
@@ -202,16 +273,11 @@ export function VolumeChart({
   return (
     <>
       <WrapperChart ref={chartContainerRef}>
-        <ContainerTitle captionColor={captionNameColor} dateStyle={crossHairData !== null}>
-          <h3>CoW Protocol volume</h3>
+        <ContainerTitle captionColor={captionNameColor}>
+          <h3>CoW Protocol {periodTitle} volume</h3>
           <span>
             {isLoading ? (
               <StyledShimmerBar height={2} />
-            ) : crossHairData ? (
-              <>
-                <p>${_formatAmount(crossHairData.value.toString())}</p>
-                <p className="date">{formattedDate}</p>
-              </>
             ) : (
               <>
                 <p>${currentVolume && numberFormatter(currentVolume)}</p>
@@ -223,6 +289,7 @@ export function VolumeChart({
             )}
           </span>
         </ContainerTitle>
+        <PriceTooltip crossHairData={crossHairData} period={period} containerWidth={width} />
         {children && <div className="time-selector">{children}</div>}
       </WrapperChart>
       {isLoading && <ChartSkeleton backgroundColor="orange" />}
