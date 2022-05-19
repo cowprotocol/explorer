@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk } from '@cowprotocol/cow-sdk'
+import { CowSdk, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
@@ -229,10 +229,10 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
 )
 
 export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
-  Record<number, CowSdk<any> | null> //These type are temporary until SupportedChainId is exported
+  Record<number, CowSdk<SupportedChainId> | null>
 >((acc, networkId) => {
   try {
-    acc[networkId] = new CowSdk(networkId as any, {
+    acc[networkId] = new CowSdk(networkId, {
       isDevEnvironment: !(isProd || isStaging),
     })
   } catch (error) {
