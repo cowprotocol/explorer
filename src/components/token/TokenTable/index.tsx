@@ -292,13 +292,13 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2, thousands: true })}</HeaderValue>
+        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true })}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
         {lastDayPricePercentageDifference ? (
           <HeaderValue captionColor={getColorBySign(lastDayPricePercentageDifference)}>
-            {lastDayPricePercentageDifference}%
+            {lastDayPricePercentageDifference.toFixed(2)}%
           </HeaderValue>
         ) : (
           <ShimmerBar />
@@ -308,7 +308,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         <HeaderTitle>7d</HeaderTitle>
         {lastWeekPricePercentageDifference ? (
           <HeaderValue captionColor={getColorBySign(lastWeekPricePercentageDifference)}>
-            {lastWeekPricePercentageDifference}%
+            {lastWeekPricePercentageDifference.toFixed(2)}%
           </HeaderValue>
         ) : (
           <ShimmerBar />
