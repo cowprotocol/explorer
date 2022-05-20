@@ -8,8 +8,11 @@ import { formatSmart, formatSmartMaxPrecision, safeTokenName } from 'utils'
 import { LOW_PRECISION_DECIMALS, PERCENTAGE_PRECISION } from 'apps/explorer/const'
 import { Tooltip } from 'components/Tooltip'
 import { usePopperOnClick } from 'hooks/usePopper'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 
 const Wrapper = styled.div`
+  display: flex;
   & > * {
     margin-right: 0.25rem;
   }
@@ -78,6 +81,16 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   )
 }
 
+const IconWrapper = styled(FontAwesomeIcon)`
+  padding: 0.6rem;
+  margin: -0.6rem 0 -0.6rem -0.6rem;
+  box-sizing: content-box;
+
+  :hover {
+    cursor: pointer;
+  }
+`
+
 export function OrderSurplusTooltipDisplay(props: Props): JSX.Element | null {
   const { amount, percentage } = useGetSurplus(props)
   const tooltipPlacement = 'top'
@@ -86,12 +99,15 @@ export function OrderSurplusTooltipDisplay(props: Props): JSX.Element | null {
   if (amount === undefined || percentage === undefined) return null
 
   return (
-    <Wrapper>
+    <span className="wrap-datedisplay">
       <Tooltip {...tooltipProps}>{amount}</Tooltip>
-      <Surplus className="span-inside-tooltip" {...targetProps}>
-        {percentage}
-      </Surplus>
-      {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
-    </Wrapper>
+      <Wrapper>
+        <span {...targetProps}>
+          <IconWrapper icon={faIcon} />
+          <Surplus>{percentage}</Surplus>
+        </span>
+        {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
+      </Wrapper>
+    </span>
   )
 }
