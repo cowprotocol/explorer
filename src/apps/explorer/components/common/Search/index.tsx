@@ -5,12 +5,12 @@ import { useSearchSubmit } from 'hooks/useSearchSubmit'
 // assets
 import searchImg from 'assets/img/search2.svg'
 
-interface SearchProps {
+interface SearchProps extends React.HTMLAttributes<HTMLFormElement> {
   searchString?: string
   submitSearchImmediatly?: boolean
 }
 
-export const Search: React.FC<React.HTMLAttributes<HTMLDivElement> & SearchProps> = (props) => {
+export const Search: React.FC<SearchProps> = (props) => {
   const { className, searchString = '', submitSearchImmediatly = false } = props
   const [query, setQuery] = useState('')
   const [showPlaceholder, setShowPlaceholder] = useState(true)
