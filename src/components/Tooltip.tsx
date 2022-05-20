@@ -247,3 +247,46 @@ export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = '
     </>
   )
 }
+
+type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+  {
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>
+  }[Keys]
+
+type BaseTooltipsProps = RequireAtLeastOne<
+  HelpTooltipProps & {
+    sourceIconSvg?: string
+    targetContent?: ReactNode
+  },
+  'sourceIconSvg' | 'targetContent'
+>
+
+export const BaseIconTooltip: React.FC<BaseTooltipsProps> = ({
+  tooltip,
+  placement = 'top',
+  offset,
+  sourceIconSvg,
+  targetContent,
+}) => {
+  const {
+    targetProps: { ref, onClick },
+    tooltipProps,
+  } = usePopperOnClick<HTMLSpanElement>(placement, offset)
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent<HTMLSpanElement>) => {
+      e.stopPropagation()
+      onClick()
+    },
+    [onClick],
+  )
+
+  return (
+    <>
+      <HelperSpan ref={ref} onClick={handleClick}>
+        {sourceIconSvg ? <QuestionIcon src={sourceIconSvg} /> : targetContent}
+      </HelperSpan>
+      <Tooltip {...tooltipProps}>{tooltip}</Tooltip>
+    </>
+  )
+}

@@ -28,7 +28,7 @@ import { OrderSurplusTooltipDisplay } from 'components/orders/OrderSurplusDispla
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 7rem minmax(18rem, 2fr) 1fr;
+    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 9rem minmax(18rem, 2fr) 1fr;
   }
   tr > td {
     span.span-inside-tooltip {
