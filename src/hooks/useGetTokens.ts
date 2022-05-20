@@ -43,7 +43,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     async (network: Network, pageIndex: number, tokenIds: string[]): Promise<void> => {
       setIsLoading(true)
       try {
-        const fromTimestamp = (subHours(new Date(), 25).getTime() / 1000).toFixed(0) // last 25 hours
+        const fromTimestamp = (subHours(new Date(), 24).getTime() / 1000).toFixed(0) // last 24 hours
         const responses = {} as { [tokenId: string]: Promise<SubgraphHistoricalDataResponse> | undefined }
         for (const tokenId of tokenIds) {
           const response = COW_SDK[network]?.cowSubgraphApi.runQuery<SubgraphHistoricalDataResponse>(
