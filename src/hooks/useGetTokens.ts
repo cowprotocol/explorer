@@ -19,6 +19,8 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     async (network: Network): Promise<void> => {
       setIsLoading(true)
       setTokens([])
+      setPricesLoaded({})
+      setVolumeLoaded({})
       try {
         const response = await COW_SDK[network]?.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(
           GET_TOKENS_QUERY as any,
