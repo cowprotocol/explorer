@@ -6,6 +6,7 @@ import { Order } from 'api/operator'
 import { formatSmart, formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { LOW_PRECISION_DECIMALS, PERCENTAGE_PRECISION } from 'apps/explorer/const'
+import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled.div`
   & > * {
@@ -26,11 +27,12 @@ const Surplus = styled.span`
 //   opacity: 0.5;
 // `
 
-export type Props = { order: Order }
+export type Props = { order: Order; amountLikeTooltip?: boolean }
 
 export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   const {
     order: { kind, buyToken, sellToken, surplusAmount, surplusPercentage },
+    amountLikeTooltip,
   } = props
 
   const surplusToken = kind === 'buy' ? sellToken : buyToken
@@ -49,6 +51,8 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   })
   const formattedSurplusAmount = formatSmartMaxPrecision(surplusAmount, surplusToken)
   const tokenSymbol = safeTokenName(surplusToken)
+  const amountText = `${formattedSurplusAmount} ${tokenSymbol}`
+  const percentageText = `+${formattedSurplusPercentage}%`
   // const formattedUsdAmount = formatSmart({
   //   amount: usdAmount,
   //   precision: NO_ADJUSTMENT_NEEDED_PRECISION,
@@ -57,10 +61,16 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
 
   return (
     <Wrapper>
-      <Surplus>+{formattedSurplusPercentage}%</Surplus>
-      <span>
-        {formattedSurplusAmount} {tokenSymbol}
-      </span>
+      {amountLikeTooltip ? (
+        <TextWithTooltip textInTooltip={amountText}>
+          <Surplus>{percentageText}</Surplus>
+        </TextWithTooltip>
+      ) : (
+        <>
+          <Surplus>{percentageText}</Surplus>
+          <span>{amountText}</span>
+        </>
+      )}
       {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
     </Wrapper>
   )

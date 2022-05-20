@@ -23,11 +23,12 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 import { useNetworkId } from 'state/network'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
+    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) 12rem repeat(2, minmax(18rem, 2fr)) 1fr;
   }
   tr > td {
     span.span-inside-tooltip {
@@ -149,6 +150,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
     txHash,
     shortId,
     uid,
+    surplusAmount,
   } = order
   const network = useNetworkId()
   const buyTokenSymbol = buyToken ? safeTokenName(buyToken) : ''
@@ -212,6 +214,12 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
           <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
         </HeaderTitle>
         <HeaderValue>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Surplus</HeaderTitle>
+        <HeaderValue>
+          {!surplusAmount.isZero() ? <OrderSurplusDisplay amountLikeTooltip order={order} /> : '-'}
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Created</HeaderTitle>
@@ -282,6 +290,7 @@ const TransactionTable: React.FC<Props> = (props) => {
           <th>
             Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
           </th>
+          <th>Surplus</th>
           <th>Created</th>
           <th>Status</th>
         </tr>
