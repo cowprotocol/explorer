@@ -1,9 +1,22 @@
 import { Stylesheet } from 'cytoscape'
-import { DefaultTheme } from 'styled-components'
+import styled, { DefaultTheme } from 'styled-components'
 
 import TraderOtherIcon from 'assets/img/TraderOther.svg'
 import CowProtocolIcon from 'assets/img/CoW.svg'
 import DexIcon from 'assets/img/Dex.svg'
+
+export const ResetButton = styled.button`
+  cursor: pointer;
+  background: transparent;
+  color: white;
+  height: 3rem;
+  border: 1px solid white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  position: absolute;
+  right: 0;
+  margin: 4rem;
+`
 
 export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
   return [

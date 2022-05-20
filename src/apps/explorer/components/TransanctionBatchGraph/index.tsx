@@ -19,7 +19,7 @@ import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/Trans
 import { TypeNodeOnTx } from './types'
 import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
-import { STYLESHEET } from './styled'
+import { STYLESHEET, ResetButton } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 
 import CowLoading from 'components/common/CowLoading'
@@ -208,6 +208,7 @@ function TransanctionBatchGraph({
   const [elements, setElements] = useState<ElementDefinition[]>([])
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
+  const [resetZoom, setResetZoom] = useState(null)
   const theme = useTheme()
   const heightSize = window.innerHeight - HEIGHT_HEADER_FOOTER
   const setCytoscape = useCallback(
@@ -225,6 +226,12 @@ function TransanctionBatchGraph({
 
     setElements(getNodes(txSettlement, networkId, heightSize))
   }, [heightSize, error, isLoading, networkId, txSettlement])
+
+  useEffect(() => {
+    if (!resetZoom || !networkId) return
+    setElements(getNodes(txSettlement, networkId, heightSize))
+    setResetZoom(null)
+  }, [heightSize, networkId, resetZoom, txSettlement])
 
   useEffect(() => {
     const cy = cytoscapeRef.current
@@ -252,18 +259,23 @@ function TransanctionBatchGraph({
     )
 
   return (
-    <WrapperCytoscape
-      elements={elements}
-      layout={getLayout()}
-      style={{ width: '100%', height: heightSize }}
-      stylesheet={STYLESHEET(theme)}
-      cy={setCytoscape}
-      wheelSensitivity={0.2}
-      className="tx-graph"
-      maxZoom={3}
-      minZoom={0.1}
-      zoom={1}
-    />
+    <>
+      <WrapperCytoscape
+        elements={elements}
+        layout={getLayout()}
+        style={{ width: '100%', height: heightSize }}
+        stylesheet={STYLESHEET(theme)}
+        cy={setCytoscape}
+        wheelSensitivity={0.2}
+        className="tx-graph"
+        maxZoom={3}
+        minZoom={0.1}
+        zoom={1}
+      />
+      <ResetButton type="button" onClick={setResetZoom}>
+        Reset
+      </ResetButton>
+    </>
   )
 }
 
