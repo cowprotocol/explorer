@@ -6,7 +6,8 @@ import { Order } from 'api/operator'
 import { formatSmart, formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { LOW_PRECISION_DECIMALS, PERCENTAGE_PRECISION } from 'apps/explorer/const'
-import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
+import { Tooltip } from 'components/Tooltip'
+import { usePopperOnClick } from 'hooks/usePopper'
 
 const Wrapper = styled.div`
   & > * {
@@ -28,11 +29,11 @@ const Surplus = styled.span`
 // `
 
 export type Props = { order: Order; amountLikeTooltip?: boolean }
+type SurplusText = { amount: string; percentage: string }
 
-export function OrderSurplusDisplay(props: Props): JSX.Element | null {
+function useGetSurplus(props: Props): SurplusText {
   const {
     order: { kind, buyToken, sellToken, surplusAmount, surplusPercentage },
-    amountLikeTooltip,
   } = props
 
   const surplusToken = kind === 'buy' ? sellToken : buyToken
@@ -41,7 +42,7 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   // const usdAmount = '55.555'
 
   if (!surplusToken || surplusAmount.isZero()) {
-    return null
+    return {} as SurplusText
   }
 
   const formattedSurplusPercentage = formatSmart({
@@ -51,26 +52,45 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   })
   const formattedSurplusAmount = formatSmartMaxPrecision(surplusAmount, surplusToken)
   const tokenSymbol = safeTokenName(surplusToken)
-  const amountText = `${formattedSurplusAmount} ${tokenSymbol}`
-  const percentageText = `+${formattedSurplusPercentage}%`
   // const formattedUsdAmount = formatSmart({
   //   amount: usdAmount,
   //   precision: NO_ADJUSTMENT_NEEDED_PRECISION,
   //   decimals: LOW_PRECISION_DECIMALS,
   // })
 
+  return {
+    amount: `${formattedSurplusAmount} ${tokenSymbol}`,
+    percentage: `+${formattedSurplusPercentage}%`,
+  }
+}
+
+export function OrderSurplusDisplay(props: Props): JSX.Element | null {
+  const { amount, percentage } = useGetSurplus(props)
+
+  if (amount === undefined || percentage === undefined) return null
+
   return (
     <Wrapper>
-      {amountLikeTooltip ? (
-        <TextWithTooltip textInTooltip={amountText}>
-          <Surplus>{percentageText}</Surplus>
-        </TextWithTooltip>
-      ) : (
-        <>
-          <Surplus>{percentageText}</Surplus>
-          <span>{amountText}</span>
-        </>
-      )}
+      <Surplus>{percentage}</Surplus>
+      <span>{amount}</span>
+      {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
+    </Wrapper>
+  )
+}
+
+export function OrderSurplusTooltipDisplay(props: Props): JSX.Element | null {
+  const { amount, percentage } = useGetSurplus(props)
+  const tooltipPlacement = 'top'
+  const { tooltipProps, targetProps } = usePopperOnClick<HTMLInputElement>(tooltipPlacement)
+
+  if (amount === undefined || percentage === undefined) return null
+
+  return (
+    <Wrapper>
+      <Tooltip {...tooltipProps}>{amount}</Tooltip>
+      <Surplus className="span-inside-tooltip" {...targetProps}>
+        {percentage}
+      </Surplus>
       {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
     </Wrapper>
   )

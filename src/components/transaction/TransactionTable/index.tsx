@@ -23,12 +23,12 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 import { useNetworkId } from 'state/network'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
+import { OrderSurplusTooltipDisplay } from 'components/orders/OrderSurplusDisplay'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) 12rem repeat(2, minmax(18rem, 2fr)) 1fr;
+    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 7rem minmax(18rem, 2fr) 1fr;
   }
   tr > td {
     span.span-inside-tooltip {
@@ -218,7 +218,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
       <td>
         <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
-          {!surplusAmount.isZero() ? <OrderSurplusDisplay amountLikeTooltip order={order} /> : '-'}
+          {!surplusAmount.isZero() ? <OrderSurplusTooltipDisplay amountLikeTooltip order={order} /> : '-'}
         </HeaderValue>
       </td>
       <td>
