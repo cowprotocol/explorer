@@ -5,13 +5,11 @@ import { Network, UiError } from 'types'
 import { COW_SDK } from 'const'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-import { getHistoricalData, HistoricalDataResponse } from 'api/coingecko'
 import { UTCTimestamp } from 'lightweight-charts'
 
 export function useGetTokens(networkId: Network | undefined, tableState: TableState): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)
-  const [volumeLoaded, setVolumeLoaded] = useState<{ [pageIndex: string]: boolean }>({})
-  const [pricesLoaded, setPricesLoaded] = useState<{ [pageIndex: string]: boolean }>({})
+  const [historicalDataLoaded, setHistoricalDataLoaded] = useState<{ [pageIndex: string]: boolean }>({})
   const [error, setError] = useState<UiError>()
   const [tokens, setTokens] = useState<Token[]>([])
 
@@ -19,6 +17,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     async (network: Network): Promise<void> => {
       setIsLoading(true)
       setTokens([])
+      setHistoricalDataLoaded({})
       try {
         const response = await COW_SDK[network]?.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(
           GET_TOKENS_QUERY as any,
@@ -37,34 +36,66 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     [setTokens],
   )
 
-  const setTokensVolume = useCallback(
+  const setTokensHistoricalData = useCallback(
     async (network: Network, pageIndex: number, tokenIds: string[]): Promise<void> => {
       setIsLoading(true)
       try {
-        const fromTimestamp = (subHours(new Date(), 25).getTime() / 1000).toFixed(0) // last 25 hours
+        const lastDayTimestamp = lastHoursTimestamp(24) // last 24 hours
+        const lastWeekTimestamp = lastDaysTimestamp(7) // last 7 days
         const responses = {} as { [tokenId: string]: Promise<SubgraphHistoricalDataResponse> | undefined }
         for (const tokenId of tokenIds) {
           const response = COW_SDK[network]?.cowSubgraphApi.runQuery<SubgraphHistoricalDataResponse>(
-            GET_TOKEN_LAST_DAY_VOLUME_QUERY as any,
-            { address: tokenId, fromTimestamp },
+            GET_HISTORICAL_DATA_QUERY as any,
+            { address: tokenId, lastDayTimestamp, lastWeekTimestamp },
           )
           responses[tokenId] = response
         }
 
-        const tokenVolume = {} as { [tokenId: string]: number }
+        const tokenData = {} as { [tokenId: string]: TokenData }
 
         for (const address of Object.keys(responses)) {
           const response = await responses[address]
           if (!response) {
             continue
           }
-          const volume = response.tokenHourlyTotals.reduce((acc, curr) => acc + Number(curr.totalVolumeUsd), 0)
+          const lastDayUsdVolume = response.tokenHourlyTotals.reduce(
+            (acc, curr) => acc + Number(curr.totalVolumeUsd),
+            0,
+          )
+          const priceUsd = response.tokenHourlyTotals[0]?.averagePrice
 
-          tokenVolume[address] = volume
+          const lastDayTimestampFrom = Number(lastHoursTimestamp(25))
+          const lastDayTimestampTo = Number(lastHoursTimestamp(23))
+          const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
+          const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
+          const lastDayPrice = response.tokenHourlyTotals.find(
+            (x) => Number(x.timestamp) >= lastDayTimestampFrom && Number(x.timestamp) <= lastDayTimestampTo,
+          )?.averagePrice
+          const lastWeekPrice = response.tokenDailyTotals.find(
+            (x) => Number(x.timestamp) >= lastWeekTimestampFrom && Number(x.timestamp) <= lastWeekTimestampTo,
+          )?.averagePrice
+
+          const prices = {
+            priceUsd,
+            lastDayPricePercentageDifference: lastDayPrice
+              ? getPercentageDifference(Number(priceUsd), Number(lastDayPrice))
+              : undefined,
+            lastWeekPricePercentageDifference: lastWeekPrice
+              ? getPercentageDifference(Number(priceUsd), Number(lastWeekPrice))
+              : undefined,
+            lastWeekUsdPrices: response.tokenDailyTotals
+              .map((x) => ({
+                time: Number(x.timestamp) as UTCTimestamp,
+                value: Number(x.averagePrice),
+              }))
+              .sort((a, b) => a.time - b.time),
+          }
+
+          tokenData[address] = { lastDayUsdVolume, ...prices }
         }
 
-        setTokens((tokens) => [...addHistoricalData(tokens, tokenVolume)])
-        setVolumeLoaded((volumeLoaded) => ({ ...volumeLoaded, [pageIndex]: true }))
+        setTokens((tokens) => [...addHistoricalData(tokens, tokenData)])
+        setHistoricalDataLoaded((loaded) => ({ ...loaded, [pageIndex]: true }))
       } catch (e) {
         const msg = `Failed to fetch tokens' data`
         console.error(msg, e)
@@ -73,63 +104,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
         setIsLoading(false)
       }
     },
-    [setTokens, setVolumeLoaded],
-  )
-
-  const setTokensPrices = useCallback(
-    async (network: Network, pageIndex: number, tokenIds: string[]): Promise<void> => {
-      setIsLoading(true)
-      try {
-        const requests: Array<[string, Promise<HistoricalDataResponse | null>]> = tokenIds.map((tokenId) => [
-          tokenId,
-          getHistoricalData({ chainId: network, tokenAddress: tokenId, days: 7 }),
-        ])
-
-        const pastDayTimestamp = subHours(new Date(), 24).getTime()
-        const pastWeekTimestamp = subDays(new Date(), 7).getTime()
-
-        const tokenPrices = {} as { [tokenId: string]: TokenPrice }
-
-        for (const request of requests) {
-          try {
-            const data = await request[1]
-
-            const lastDayPrice = data?.prices.find((x) => x[0] > pastDayTimestamp)
-            const lastWeekPrice = data?.prices.find((x) => x[0] > pastWeekTimestamp)
-
-            const pricesRaw = {
-              current: data?.prices[data.prices.length - 1][1] || 0,
-              lastDayPrice: lastDayPrice?.[1] || 0,
-              lastWeekPrice: lastWeekPrice?.[1] || 0,
-            }
-
-            const prices = {
-              priceUsd: String(pricesRaw.current),
-              lastDayPricePercentageDifference: getPercentageDifference(pricesRaw.current, pricesRaw.lastDayPrice),
-              lastWeekPricePercentageDifference: getPercentageDifference(pricesRaw.current, pricesRaw.lastWeekPrice),
-              lastWeekUsdPrices: data?.prices.map((x) => ({
-                time: (x[0] / 1000) as UTCTimestamp,
-                value: x[1],
-              })),
-            }
-
-            tokenPrices[request[0]] = prices
-          } catch (error) {
-            console.info(`Failed to fetch Coingecko token prices for ${request[0]}`)
-          }
-        }
-
-        setTokens((tokens) => [...addPricesHistoricalData(tokens, tokenPrices)])
-        setPricesLoaded((pricesLoaded) => ({ ...pricesLoaded, [pageIndex]: true }))
-      } catch (e) {
-        const msg = `Failed to fetch tokens' prices`
-        console.error(msg, e)
-        setError({ message: msg, type: 'error' })
-      } finally {
-        setIsLoading(false)
-      }
-    },
-    [setTokens, setPricesLoaded],
+    [setTokens, setHistoricalDataLoaded],
   )
 
   useEffect(() => {
@@ -141,7 +116,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
   }, [fetchTokens, networkId])
 
   useEffect(() => {
-    if (tokens.length === 0 || !networkId || !tableState.pageIndex || volumeLoaded[tableState.pageIndex]) {
+    if (tokens.length === 0 || !networkId || !tableState.pageIndex || historicalDataLoaded[tableState.pageIndex]) {
       return
     }
 
@@ -151,22 +126,8 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     )
     const tokenIds = pageTokens.map((token) => token.id)
 
-    setTokensVolume(networkId, tableState.pageIndex || 0, tokenIds)
-  }, [tableState.pageIndex, tableState.pageSize, tokens, networkId, setTokensVolume, setTokensPrices, volumeLoaded])
-
-  useEffect(() => {
-    if (tokens.length === 0 || !networkId || !tableState.pageIndex || pricesLoaded[tableState.pageIndex]) {
-      return
-    }
-
-    const pageTokens = tokens.slice(
-      (tableState.pageIndex - 1) * tableState.pageSize,
-      tableState.pageIndex * tableState.pageSize,
-    )
-    const tokenIds = pageTokens.map((token) => token.id)
-
-    setTokensPrices(networkId, tableState.pageIndex || 0, tokenIds)
-  }, [tableState.pageIndex, tableState.pageSize, tokens, networkId, setTokensVolume, setTokensPrices, pricesLoaded])
+    setTokensHistoricalData(networkId, tableState.pageIndex || 0, tokenIds)
+  }, [tableState.pageIndex, tableState.pageSize, tokens, networkId, setTokensHistoricalData, historicalDataLoaded])
 
   return { tokens, error, isLoading }
 }
@@ -186,23 +147,37 @@ export const GET_TOKENS_QUERY = gql`
       symbol
       decimals
       totalVolumeUsd
-      priceUsd
     }
   }
 `
 
-export const GET_TOKEN_LAST_DAY_VOLUME_QUERY = gql`
-  query GetTokenLastDayVolume($address: ID!, $fromTimestamp: String!) {
+export const GET_HISTORICAL_DATA_QUERY = gql`
+  query GetHistoricalData($address: ID!, $lastDayTimestamp: String!, $lastWeekTimestamp: String!) {
     tokenHourlyTotals(
       first: 24
       orderBy: timestamp
       orderDirection: desc
-      where: { token: $address, timestamp_gt: $fromTimestamp }
+      where: { token: $address, timestamp_gt: $lastDayTimestamp }
     ) {
       token {
         address
       }
+      timestamp
       totalVolumeUsd
+      averagePrice
+    }
+
+    tokenDailyTotals(
+      first: 7
+      orderBy: timestamp
+      orderDirection: desc
+      where: { token: $address, timestamp_gt: $lastWeekTimestamp }
+    ) {
+      token {
+        address
+      }
+      timestamp
+      averagePrice
     }
   }
 `
@@ -217,14 +192,22 @@ export type TokenResponse = {
   totalVolumeUsd: string
 }
 
-export type TokenTotals = {
+export type TokenDailyTotals = {
   token: { address: string }
   timestamp: string
   totalVolumeUsd: string
+  averagePrice: string
+}
+
+export type TokenWeeklyTotals = {
+  token: { address: string }
+  timestamp: string
+  averagePrice: string
 }
 
 export type SubgraphHistoricalDataResponse = {
-  tokenHourlyTotals: Array<TokenTotals>
+  tokenHourlyTotals: Array<TokenDailyTotals>
+  tokenDailyTotals: Array<TokenWeeklyTotals>
 }
 
 export type Token = {
@@ -235,41 +218,39 @@ export type Token = {
 } & TokenResponse &
   TokenErc20
 
-function addHistoricalData(tokens: Token[], tokenVolume: { [tokenId: string]: number }): Token[] {
-  for (const address of Object.keys(tokenVolume)) {
+function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenData }): Token[] {
+  for (const address of Object.keys(prices)) {
     const token = tokens.find((token) => token.address === address)
+    const values = prices[address]
 
     if (token) {
-      token.lastDayUsdVolume = tokenVolume[address]
+      token.lastDayUsdVolume = values.lastDayUsdVolume
+      token.priceUsd = values.priceUsd
+      token.lastDayPricePercentageDifference = values.lastDayPricePercentageDifference
+      token.lastWeekPricePercentageDifference = values.lastWeekPricePercentageDifference
+      token.priceUsd = values.priceUsd
+      token.lastWeekUsdPrices = values.lastWeekUsdPrices
     }
   }
   return tokens
 }
 
-export type TokenPrice = {
+export type TokenData = {
+  lastDayUsdVolume?: number
   lastDayPricePercentageDifference?: number
   lastWeekPricePercentageDifference?: number
   priceUsd: string
   lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
 }
 
-function addPricesHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenPrice }): Token[] {
-  for (const address of Object.keys(prices)) {
-    const token = tokens.find((token) => token.address === address)
-    const price = prices[address]
-
-    if (token) {
-      token.priceUsd = price.priceUsd
-      token.lastDayPricePercentageDifference = price.lastDayPricePercentageDifference
-      token.lastWeekPricePercentageDifference = price.lastWeekPricePercentageDifference
-      token.priceUsd = price.priceUsd
-      token.lastWeekUsdPrices = price.lastWeekUsdPrices
-    }
-  }
-
-  return tokens
-}
-
 function getPercentageDifference(a: number, b: number): number {
   return b ? ((a - b) / a) * 100 : 0
+}
+
+function lastHoursTimestamp(n: number): string {
+  return (subHours(new Date(), n).getTime() / 1000).toFixed(0)
+}
+
+function lastDaysTimestamp(n: number): string {
+  return (subDays(new Date(), n).getTime() / 1000).toFixed(0)
 }

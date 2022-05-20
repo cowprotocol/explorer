@@ -253,9 +253,11 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
   useEffect(() => {
     if (!lastWeekUsdPrices || chartCreated || !chartContainerRef.current || !token) return
     const chart = _buildChart(chartContainerRef.current, 100, 45, theme)
-    const color = getColorBySign(
-      (lastWeekUsdPrices[0].value - lastWeekUsdPrices[lastWeekUsdPrices.length - 1].value) * -1,
-    )
+
+    const color =
+      lastWeekUsdPrices.length > 2
+        ? getColorBySign((lastWeekUsdPrices[0].value - lastWeekUsdPrices[lastWeekUsdPrices.length - 1].value) * -1)
+        : 'grey'
     const series = chart.addLineSeries({
       lineWidth: 1,
       color: theme[color],
@@ -292,7 +294,10 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true })}</HeaderValue>
+        <HeaderValue>
+          {' '}
+          ${priceUsd ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
