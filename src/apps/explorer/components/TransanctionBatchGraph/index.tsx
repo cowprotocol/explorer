@@ -103,7 +103,7 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
       { type: source?.data.type, id: transfer.from },
       { type: target?.data.type, id: transfer.to },
       `${tokenSymbol}`,
-      { from: transfer.from, to: transfer.to, amount: `${tokenAmount} ${tokenSymbol}` },
+      { from: transfer.from, to: transfer.to, amount: `${tokenAmount} ${tokenSymbol}`, token },
     )
   })
 

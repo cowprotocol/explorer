@@ -1,4 +1,5 @@
 import { Account } from 'api/tenderly'
+import { SingleErc20State } from 'state/erc20'
 
 export enum TypeNodeOnTx {
   NetworkNode = 'networkNode',
@@ -7,7 +8,7 @@ export enum TypeNodeOnTx {
   Dex = 'dex',
 }
 
-export type InfoTooltip = Record<string, string>
+export type InfoTooltip = Record<string, string | SingleErc20State>
 
 export type NodeType<T extends string, E> = { type: T; entity: E; id: string }
 export type Node =
