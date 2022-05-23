@@ -4,18 +4,31 @@ import styled, { DefaultTheme } from 'styled-components'
 import TraderOtherIcon from 'assets/img/TraderOther.svg'
 import CowProtocolIcon from 'assets/img/CoW.svg'
 import DexIcon from 'assets/img/Dex.svg'
+import { MEDIA } from 'const'
 
 export const ResetButton = styled.button`
   cursor: pointer;
-  background: transparent;
-  color: white;
+  background: ${({ theme }): string => theme.bg2};
+  color: ${({ theme }): string => theme.white};
   height: 3rem;
-  border: 1px solid white;
+  border: 1px solid ${({ theme }): string => theme.borderPrimary};
   padding: 0.5rem;
   border-radius: 0.5rem;
   position: absolute;
   right: 0;
-  margin: 0 2rem 0 0;
+  margin: 0 1.6rem 0 0;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    color: ${({ theme }): string => theme.textActive1};
+  }
+  @media ${MEDIA.mediumDown} {
+    margin: 2.4rem 0.8rem 0 0;
+    min-width: 3rem;
+    span {
+      display: none;
+    }
+  }
 `
 
 export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {

@@ -25,6 +25,8 @@ import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } fr
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
+import { faRedo } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 Cytoscape.use(popper)
 const PROTOCOL_NAME = APP_NAME
@@ -273,7 +275,7 @@ function TransanctionBatchGraph({
         zoom={1}
       />
       <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
-        Reset
+        <FontAwesomeIcon icon={faRedo} /> <span>Reset</span>
       </ResetButton>
     </>
   )
