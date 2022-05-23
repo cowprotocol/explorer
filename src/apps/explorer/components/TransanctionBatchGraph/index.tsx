@@ -208,7 +208,7 @@ function TransanctionBatchGraph({
   const [elements, setElements] = useState<ElementDefinition[]>([])
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
-  const [resetZoom, setResetZoom] = useState(null)
+  const [resetZoom, setResetZoom] = useState<boolean | null>(null)
   const theme = useTheme()
   const heightSize = window.innerHeight - HEIGHT_HEADER_FOOTER
   const setCytoscape = useCallback(
@@ -272,7 +272,7 @@ function TransanctionBatchGraph({
         minZoom={0.1}
         zoom={1}
       />
-      <ResetButton type="button" onClick={setResetZoom}>
+      <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
         Reset
       </ResetButton>
     </>

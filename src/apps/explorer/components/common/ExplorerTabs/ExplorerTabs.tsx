@@ -30,6 +30,7 @@ const StyledTabs = styled.div`
 
   > div > div:last-of-type {
     height: 100%;
+    position: relative;
   }
 
   .tab-content {

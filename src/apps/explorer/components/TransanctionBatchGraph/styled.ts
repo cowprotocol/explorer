@@ -15,7 +15,7 @@ export const ResetButton = styled.button`
   border-radius: 0.5rem;
   position: absolute;
   right: 0;
-  margin: 4rem;
+  margin: 0 2rem 0 0;
 `
 
 export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
