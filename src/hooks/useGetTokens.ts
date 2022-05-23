@@ -40,8 +40,8 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     async (network: Network, pageIndex: number, tokenIds: string[]): Promise<void> => {
       setIsLoading(true)
       try {
-        const lastDayTimestamp = lastHoursTimestamp(24) // last 24 hours
-        const lastWeekTimestamp = lastDaysTimestamp(7) // last 7 days
+        const lastDayTimestamp = Number(lastHoursTimestamp(24)) // last 24 hours
+        const lastWeekTimestamp = Number(lastDaysTimestamp(7)) // last 7 days
         const responses = {} as { [tokenId: string]: Promise<SubgraphHistoricalDataResponse> | undefined }
         for (const tokenId of tokenIds) {
           const response = COW_SDK[network]?.cowSubgraphApi.runQuery<SubgraphHistoricalDataResponse>(
@@ -152,7 +152,7 @@ export const GET_TOKENS_QUERY = gql`
 `
 
 export const GET_HISTORICAL_DATA_QUERY = gql`
-  query GetHistoricalData($address: ID!, $lastDayTimestamp: String!, $lastWeekTimestamp: String!) {
+  query GetHistoricalData($address: ID!, $lastDayTimestamp: Int!, $lastWeekTimestamp: Int!) {
     tokenHourlyTotals(
       first: 24
       orderBy: timestamp
@@ -194,14 +194,14 @@ export type TokenResponse = {
 
 export type TokenDailyTotals = {
   token: { address: string }
-  timestamp: string
+  timestamp: number
   totalVolumeUsd: string
   averagePrice: string
 }
 
 export type TokenWeeklyTotals = {
   token: { address: string }
-  timestamp: string
+  timestamp: number
   averagePrice: string
 }
 
