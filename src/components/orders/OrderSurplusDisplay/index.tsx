@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 
 import { Order } from 'api/operator'
 
@@ -8,7 +8,7 @@ import { formatSmart, formatSmartMaxPrecision, safeTokenName } from 'utils'
 import { LOW_PRECISION_DECIMALS, PERCENTAGE_PRECISION } from 'apps/explorer/const'
 import { BaseIconTooltip } from 'components/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThumbsUp as faIcon } from '@fortawesome/free-regular-svg-icons'
+import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 
 const Wrapper = styled.div`
   display: flex;
@@ -92,6 +92,7 @@ const IconWrapper = styled(FontAwesomeIcon)`
 
 export function OrderSurplusTooltipDisplay(props: Props): JSX.Element | null {
   const { amount, percentage } = useGetSurplus(props)
+  const theme = useTheme()
 
   if (amount === undefined || percentage === undefined) return null
 
@@ -100,7 +101,7 @@ export function OrderSurplusTooltipDisplay(props: Props): JSX.Element | null {
       tooltip={amount}
       targetContent={
         <span>
-          <IconWrapper icon={faIcon} />
+          <IconWrapper icon={faIcon} color={theme.green} />
           <Surplus>{percentage}</Surplus>
         </span>
       }
