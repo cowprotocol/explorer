@@ -101,7 +101,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
   const { tokens, isLoading, error } = useGetTokens(networkId, tableState)
-  const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol'])
+  const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol', 'address'])
   const resultsLength = query.length ? filteredTokens.length : tokens.length
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < resultsLength
