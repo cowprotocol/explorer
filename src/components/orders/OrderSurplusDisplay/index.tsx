@@ -30,7 +30,7 @@ const Surplus = styled.span`
 //   opacity: 0.5;
 // `
 
-export type Props = { order: Order; amountLikeTooltip?: boolean }
+export type Props = { order: Order }
 type SurplusText = { amount: string; percentage: string }
 
 function useGetSurplus(props: Props): SurplusText {
