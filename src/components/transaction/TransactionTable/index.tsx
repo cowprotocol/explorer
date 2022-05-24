@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
 import { faExchangeAlt, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 import { Order } from 'api/operator'
@@ -9,107 +8,19 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { getOrderLimitPrice, formatCalculatedPriceToDisplay, formattedAmount, FormatAmountPrecision } from 'utils'
 import { getShortOrderId } from 'utils/operator'
 import { HelpTooltip } from 'components/Tooltip'
-import StyledUserDetailsTable, {
-  StyledUserDetailsTableProps,
-  EmptyItemWrapper,
-} from '../../common/StyledUserDetailsTable'
+import { StyledUserDetailsTableProps, EmptyItemWrapper } from '../../common/StyledUserDetailsTable'
 import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { StatusLabel } from 'components/orders/StatusLabel'
-import { media } from 'theme/styles/media'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { useNetworkId } from 'state/network'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { OrderSurplusTooltipDisplay, OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
+import { OrderSurplusTooltipDisplay } from 'components/orders/OrderSurplusDisplay'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
-
-const Wrapper = styled(StyledUserDetailsTable)`
-  > thead > tr,
-  > tbody > tr {
-    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 9rem minmax(18rem, 2fr) 1fr;
-  }
-  tr > td {
-    span.span-inside-tooltip {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      img {
-        padding: 0;
-      }
-    }
-  }
-  ${media.desktopMediumDown} {
-    > thead > tr {
-      display: none;
-    }
-    > tbody > tr {
-      grid-template-columns: none;
-      border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-      box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
-      border-radius: 6px;
-      margin-top: 16px;
-      padding: 12px;
-      &:hover {
-        background: none;
-        backdrop-filter: none;
-      }
-    }
-    tr > td {
-      display: flex;
-      flex: 1;
-      width: 100%;
-      justify-content: space-between;
-      margin: 0;
-      margin-bottom: 18px;
-      min-height: 32px;
-      span.span-inside-tooltip {
-        align-items: flex-end;
-        flex-direction: column;
-        img {
-          margin-left: 0;
-        }
-      }
-    }
-    .header-value {
-      flex-wrap: wrap;
-      text-align: end;
-    }
-    .span-copybtn-wrap {
-      display: flex;
-      flex-wrap: nowrap;
-      span {
-        display: flex;
-        align-items: center;
-      }
-      .copy-text {
-        margin-left: 5px;
-      }
-    }
-  }
-  overflow: auto;
-`
-
-const HeaderTitle = styled.span`
-  display: none;
-  ${media.desktopMediumDown} {
-    font-weight: 600;
-    align-items: center;
-    display: flex;
-    margin-right: 3rem;
-    svg {
-      margin-left: 5px;
-    }
-  }
-`
-const HeaderValue = styled.span`
-  ${media.desktopMediumDown} {
-    flex-wrap: wrap;
-    text-align: end;
-  }
-`
+import { HeaderTitle, HeaderValue, WrapperUserDetailsTable, OrderSurplusDisplayStyled } from './styled'
 
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'
@@ -219,7 +130,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
       <td>
         <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
-          {isDesktop ? <OrderSurplusTooltipDisplay order={order} /> : <OrderSurplusDisplay order={order} />}
+          {isDesktop ? <OrderSurplusTooltipDisplay order={order} /> : <OrderSurplusDisplayStyled order={order} />}
         </HeaderValue>
       </td>
       <td>
@@ -278,7 +189,7 @@ const TransactionTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <Wrapper
+    <WrapperUserDetailsTable
       showBorderTable={showBorderTable}
       header={
         <tr>

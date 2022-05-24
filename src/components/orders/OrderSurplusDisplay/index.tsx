@@ -30,7 +30,7 @@ const Surplus = styled.span`
 //   opacity: 0.5;
 // `
 
-export type Props = { order: Order }
+export type Props = { order: Order } & React.HTMLAttributes<HTMLDivElement>
 type SurplusText = { amount: string; percentage: string }
 
 function useGetSurplus(props: Props): SurplusText {
@@ -72,7 +72,7 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   if (amount === undefined || percentage === undefined) return null
 
   return (
-    <Wrapper>
+    <Wrapper className={props.className}>
       <Surplus>{percentage}</Surplus>
       <span>{amount}</span>
       {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
