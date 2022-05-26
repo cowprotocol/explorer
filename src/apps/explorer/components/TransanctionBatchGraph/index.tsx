@@ -21,12 +21,12 @@ import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import { STYLESHEET, ResetButton } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
-
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { faRedo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import useWindowSizes from 'hooks/useWindowSizes'
 
 Cytoscape.use(popper)
 const PROTOCOL_NAME = APP_NAME
@@ -212,28 +212,30 @@ function TransanctionBatchGraph({
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
   const theme = useTheme()
-  const heightSize = window.innerHeight - HEIGHT_HEADER_FOOTER
+  const { innerHeight } = useWindowSizes()
+  const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
       cytoscapeRef.current = ref
-      cytoscapeRef.current.layout(getLayout()).run()
-      cytoscapeRef.current.fit()
+      const updateLayout = (): void => {
+        ref.layout(getLayout()).run()
+        ref.fit()
+      }
+      ref.on('resize', () => {
+        updateLayout()
+      })
+      updateLayout()
     },
     [cytoscapeRef],
   )
 
   useEffect(() => {
     setElements([])
-    if (error || isLoading || !networkId) return
+    if (error || isLoading || !networkId || !heightSize) return
 
-    setElements(getNodes(txSettlement, networkId, heightSize))
-  }, [heightSize, error, isLoading, networkId, txSettlement])
-
-  useEffect(() => {
-    if (!resetZoom || !networkId) return
     setElements(getNodes(txSettlement, networkId, heightSize))
     setResetZoom(null)
-  }, [heightSize, networkId, resetZoom, txSettlement])
+  }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom])
 
   useEffect(() => {
     const cy = cytoscapeRef.current
