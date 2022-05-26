@@ -139,10 +139,10 @@ const HeaderTitle = styled.span`
 const TokenWrapper = styled.div`
   display: flex;
   a {
-    width: 100px;
+    width: 10rem;
   }
   img {
-    margin-right: 10px;
+    margin-right: 1rem;
     width: 2.5rem;
     height: 2.5rem;
   }
