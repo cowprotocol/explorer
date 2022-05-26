@@ -5,13 +5,27 @@ import { useGetVolumeData } from './useGetVolumeData'
 import { PeriodButton, VolumeChart } from './VolumeChart'
 
 const WrapperVolumeChart = styled.div`
-  height: 19.6rem;
+  height: 21.4rem;
 `
 export enum VolumePeriod {
   DAILY = '1D',
   WEEKLY = '1W',
   MONTHLY = '1M',
   YEARLY = '1Y',
+}
+
+export const volumePeriodTitle = new Map(
+  (Object.keys(VolumePeriod) as (keyof typeof VolumePeriod)[]).map((key) => [
+    VolumePeriod[key],
+    key.toLocaleLowerCase(),
+  ]),
+)
+
+/* A lightweight-charts logical range is an object with: 'from' and 'to', which are numbers and represent
+ * logical indexes on the thweight-charts time scale.
+ */
+const logicalTimeRange = {
+  [VolumePeriod.WEEKLY]: { from: 3.4, to: 9 }, // by the 7 points
 }
 
 export function VolumeChartWidget(): JSX.Element {
@@ -36,7 +50,12 @@ export function VolumeChartWidget(): JSX.Element {
 
   return (
     <WrapperVolumeChart ref={containerRef}>
-      <VolumeChart volumeData={volumeData} width={width} period={periodSelected}>
+      <VolumeChart
+        volumeData={volumeData}
+        width={width}
+        period={periodSelected}
+        logicalTimeScaleRange={logicalTimeRange[periodSelected]}
+      >
         <PeriodButton
           isLoading={volumeData?.isLoading}
           active={periodSelected === VolumePeriod.DAILY}

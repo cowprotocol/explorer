@@ -4,7 +4,7 @@ import { createChart, IChartApi } from 'lightweight-charts'
 import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 
-import { Token } from 'api/operator'
+import { Token } from 'hooks/useGetTokens'
 import { useNetworkId } from 'state/network'
 
 import StyledUserDetailsTable, {
@@ -13,8 +13,11 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
+import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -168,9 +171,11 @@ const ChartWrapper = styled.div`
 
 export type Props = StyledUserDetailsTableProps & {
   tokens: Token[] | undefined
+  tableState: TableState
 }
 
 interface RowProps {
+  index: number
   token: Token
 }
 
@@ -226,7 +231,7 @@ function _buildChart(
   })
 }
 
-const RowToken: React.FC<RowProps> = ({ token }) => {
+const RowToken: React.FC<RowProps> = ({ token, index }) => {
   const {
     id,
     name,
@@ -234,35 +239,35 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     address,
     decimals,
     priceUsd,
-    last24hours,
-    last7Days: { currentVolume, changedVolume, values },
-    sevenDays,
-    lastDayVolume,
+    lastDayPricePercentageDifference,
+    lastWeekUsdPrices,
+    lastWeekPricePercentageDifference,
+    lastDayUsdVolume,
   } = token
   const erc20 = { name, address, decimals } as TokenErc20
-  const diffPercentageVolume = token && calcDiff(currentVolume, changedVolume)
-  const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const network = useNetworkId()
   const theme = useTheme()
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
 
   useEffect(() => {
-    if (chartCreated || !chartContainerRef.current || !token) return
+    if (!lastWeekUsdPrices || chartCreated || !chartContainerRef.current || !token) return
     const chart = _buildChart(chartContainerRef.current, 100, 45, theme)
-
+    const color = getColorBySign(
+      (lastWeekUsdPrices[0].value - lastWeekUsdPrices[lastWeekUsdPrices.length - 1].value) * -1,
+    )
     const series = chart.addLineSeries({
       lineWidth: 1,
-      color: theme[captionNameColor],
+      color: theme[color],
       lastValueVisible: false,
       priceLineVisible: false,
     })
 
-    series.setData(values)
+    series.setData(lastWeekUsdPrices)
 
     chart.timeScale().fitContent()
     setChartCreated(chart)
-  }, [token, theme, chartCreated, captionNameColor, values])
+  }, [token, theme, chartCreated, lastWeekUsdPrices])
 
   if (!network) {
     return null
@@ -272,7 +277,7 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     <tr key={id}>
       <td>
         <HeaderTitle>#</HeaderTitle>
-        <HeaderValue>{id}</HeaderValue>
+        <HeaderValue>{index + 1}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Name</HeaderTitle>
@@ -286,31 +291,46 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2 })}</HeaderValue>
+        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true })}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
-        <HeaderValue captionColor={getColorBySign(last24hours)}>{last24hours}%</HeaderValue>
+        {lastDayPricePercentageDifference ? (
+          <HeaderValue captionColor={getColorBySign(lastDayPricePercentageDifference)}>
+            {lastDayPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>
+        ) : (
+          <ShimmerBar />
+        )}
       </td>
       <td>
         <HeaderTitle>7d</HeaderTitle>
-        <HeaderValue captionColor={getColorBySign(sevenDays)}>{sevenDays}%</HeaderValue>
+        {lastWeekPricePercentageDifference ? (
+          <HeaderValue captionColor={getColorBySign(lastWeekPricePercentageDifference)}>
+            {lastWeekPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>
+        ) : (
+          <ShimmerBar />
+        )}
       </td>
       <td>
         <HeaderTitle>24h volume</HeaderTitle>
-        <HeaderValue>{lastDayVolume}</HeaderValue>
+        {lastDayUsdVolume === undefined ? (
+          <ShimmerBar />
+        ) : (
+          <HeaderValue>${numberFormatter(lastDayUsdVolume)}</HeaderValue>
+        )}
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
-        <ChartWrapper ref={chartContainerRef} />
+        {lastWeekUsdPrices ? <ChartWrapper ref={chartContainerRef} /> : <ShimmerBar />}
       </td>
     </tr>
   )
 }
 
 const TokenTable: React.FC<Props> = (props) => {
-  const { tokens, showBorderTable = false } = props
-
+  const { tokens, tableState, showBorderTable = false } = props
   const tokenItems = (items: Token[] | undefined): JSX.Element => {
     let tableContent
     if (!items || items.length === 0) {
@@ -327,7 +347,7 @@ const TokenTable: React.FC<Props> = (props) => {
       tableContent = (
         <>
           {items.map((item, i) => (
-            <RowToken key={`${item.id}-${i}`} token={item} />
+            <RowToken key={`${item.id}-${i}`} index={i + tableState.pageOffset} token={item} />
           ))}
         </>
       )

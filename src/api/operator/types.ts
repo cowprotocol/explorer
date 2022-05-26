@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
-import { OrderMetaData, TradeMetaData } from '@cowprotocol/cow-sdk'
+import { OrderMetaData, TradeMetaData } from 'cow-sdk-test'
 
 import { Network } from 'types'
 
@@ -83,24 +83,6 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   surplusAmount?: BigNumber
   surplusPercentage?: BigNumber
 }
-
-export type Token = {
-  id: number
-  name: string
-  symbol: string
-  totalVolumeUsd: string
-  firstTradeTimestamp: string
-  priceEth: string
-  priceUsd: string
-  last24hours: number
-  sevenDays: number
-  last7Days: {
-    currentVolume: number
-    changedVolume: number
-    values: Array<{ time: string; value: number }>
-  }
-  lastDayVolume: string
-} & TokenErc20
 
 export type WithNetworkId = { networkId: Network }
 

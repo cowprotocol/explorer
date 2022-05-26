@@ -1,4 +1,4 @@
-import styled, { keyframes, FlattenSimpleInterpolation, css } from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 
 import { media } from 'theme/styles/media'
 import GraphSkeleton from 'assets/img/graph-skeleton.svg'
@@ -11,7 +11,7 @@ const frameAnimation = keyframes`
 `
 export const ChartSkeleton = styled.div<{ backgroundColor?: 'grey' | 'orange' }>`
   height: 100%;
-  min-height: 19.6rem;
+  min-height: 21.6rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.4rem;
   overflow: hidden;
@@ -73,12 +73,18 @@ export const WrapperChart = styled.div`
   }
 
   canvas {
-    top: 2rem !important;
-    height: calc(100% - 2rem) !important;
+    top: 3rem !important;
+    height: calc(100% - 3rem) !important;
+  }
+  ${media.mobile} {
+    canvas {
+      top: 5rem !important;
+      height: calc(100% - 5rem) !important;
+    }
   }
 `
 
-export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey'; dateStyle?: boolean }>`
+export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   position: absolute;
   top: 1rem;
   left: 1rem;
@@ -88,6 +94,13 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     font-size: small;
     font-weight: ${({ theme }): string => theme.fontMedium};
     margin: 0;
+    ${media.mobile} {
+      top: 0.5rem;
+      word-wrap: break-word;
+      max-width: 13rem;
+      line-height: 1.1;
+      font-size: x-small;
+    }
   }
 
   > span {
@@ -97,13 +110,6 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
     gap: 1rem;
     align-items: center;
 
-    ${({ dateStyle }): FlattenSimpleInterpolation | undefined | false =>
-      dateStyle &&
-      css`
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0rem;
-      `}
     > p {
       color: ${({ theme }): string => theme.white};
       font-size: large;
@@ -116,6 +122,9 @@ export const ContainerTitle = styled.span<{ captionColor?: 'green' | 'red1' | 'g
         margin: -1rem 0;
         color: ${({ theme }): string => theme.grey};
         font-size: 1.1rem;
+      }
+      ${media.mobile} {
+        font-size: small;
       }
     }
   }
@@ -130,14 +139,14 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
   color: ${({ theme, active }): string => (active ? theme.orange : theme.white)};
   background-color: ${({ theme, active }): string => (active ? theme.orangeOpacity : theme.bg1)};
   border: 1px solid ${({ theme, active }): string => (active ? theme.orange : theme.bg2)};
-  padding: 0.5rem 1rem;
+  padding: 0;
   border-radius: 0.6rem;
   margin: 0 0.5rem;
   height: 2.5rem;
   width: 3.8rem;
 
   ${media.mobile} {
-    padding: 0.5rem 0.8rem;
+    padding: 0;
     margin: 0 0.5rem;
     font-size: 1.2rem;
     width: 3rem;
@@ -151,4 +160,32 @@ export const WrapperPeriodButton = styled.button<{ active: boolean }>`
 export const StyledShimmerBar = styled(ShimmerBar)`
   margin: 1.2rem 0;
   min-width: 10rem;
+`
+
+export const WrapperTooltipPrice = styled.div<{ left: number; top: number; height?: number; width?: number }>`
+  color: ${({ theme }): string => theme.white};
+  background-color: ${({ theme }): string => theme.bg1};
+  border: 1px solid ${({ theme }): string => theme.bg2};
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  margin: 0;
+  z-index: 2;
+  position: absolute;
+  left: ${({ left }): string => `${left}px`};
+  top: ${({ top }): string => `${top}px`};
+  height: ${({ height = 64 }): string => `${height}px`};
+  width: ${({ width = 140 }): string => `${width}px`};
+
+  > h4 {
+    font-size: 1.5rem;
+    font-weight: ${({ theme }): string => theme.fontMedium};
+    margin: 1rem 0;
+    color: ${({ theme }): string => theme.white};
+  }
+
+  > p {
+    color: ${({ theme }): string => theme.grey};
+    font-size: 1.1rem;
+    padding: 0;
+  }
 `
