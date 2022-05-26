@@ -135,11 +135,11 @@ const HeaderTitle = styled.span`
 
 const TokenWrapper = styled.div`
   display: flex;
-  align-items: center;
   a {
-    display: none;
+    width: 10rem;
   }
   img {
+    margin-right: 1rem;
     width: 2.5rem;
     height: 2.5rem;
   }
@@ -278,7 +278,6 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
         <HeaderTitle>Name</HeaderTitle>
         <TokenWrapper>
           <TokenDisplay erc20={erc20} network={network} />
-          <HeaderValue>{name}</HeaderValue>
         </TokenWrapper>
       </td>
       <td>
