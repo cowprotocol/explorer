@@ -18,9 +18,8 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 import { useNetworkId } from 'state/network'
 import { safeTokenName } from '@gnosis.pm/dex-js'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { OrderSurplusTooltipDisplay } from 'components/orders/OrderSurplusDisplay'
-import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
-import { HeaderTitle, HeaderValue, WrapperUserDetailsTable, OrderSurplusDisplayStyled } from './styled'
+import { HeaderTitle, HeaderValue, WrapperUserDetailsTable } from './styled'
+import { OrderSurplusDisplayStyledByRow } from 'components/orders/OrdersUserDetailsTable/OrderSurplusTooltipStyledByRow'
 
 function getLimitPrice(order: Order, isPriceInverted: boolean): string {
   if (!order.buyToken || !order.sellToken) return '-'
@@ -68,7 +67,6 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
   const sellTokenSymbol = sellToken ? safeTokenName(sellToken) : ''
   const sellFormattedAmount = formattedAmount(sellToken, sellAmount)
   const buyFormattedAmount = formattedAmount(buyToken, buyAmount)
-  const isDesktop = useMediaBreakpoint(['xl', 'lg'])
   const renderSpinnerWhenNoValue = (textValue: string): JSX.Element | void => {
     if (textValue === '-') return <FontAwesomeIcon icon={faSpinner} spin size="1x" />
   }
@@ -130,7 +128,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
       <td>
         <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
-          {isDesktop ? <OrderSurplusTooltipDisplay order={order} /> : <OrderSurplusDisplayStyled order={order} />}
+          <OrderSurplusDisplayStyledByRow order={order} />
         </HeaderValue>
       </td>
       <td>

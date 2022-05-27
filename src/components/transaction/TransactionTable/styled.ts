@@ -1,4 +1,3 @@
-import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import styled from 'styled-components'
 
 import { media } from 'theme/styles/media'
@@ -86,11 +85,5 @@ export const HeaderValue = styled.span`
   ${media.desktopMediumDown} {
     flex-wrap: wrap;
     text-align: end;
-  }
-`
-
-export const OrderSurplusDisplayStyled = styled(OrderSurplusDisplay)`
-  ${media.xSmallDown} {
-    flex-direction: column;
   }
 `
