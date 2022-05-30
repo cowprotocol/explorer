@@ -6,6 +6,7 @@ import Cytoscape, {
   EventObject,
 } from 'cytoscape'
 import popper from 'cytoscape-popper'
+import noOverlap from 'cytoscape-no-overlap'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
@@ -27,6 +28,8 @@ import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 
 Cytoscape.use(popper)
+Cytoscape.use(noOverlap)
+
 const PROTOCOL_NAME = APP_NAME
 const WrapperCytoscape = styled(CytoscapeComponent)`
   background-color: ${({ theme }): string => theme.bg1};
@@ -242,6 +245,7 @@ function TransanctionBatchGraph({
     cy.on('mouseout', 'edge', (event): void => {
       event.target.removeClass('hover')
     })
+    cy.nodes().noOverlap({ padding: 5 })
   }, [cytoscapeRef, elements.length])
 
   if (isLoading)
