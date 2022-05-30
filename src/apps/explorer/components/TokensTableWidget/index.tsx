@@ -116,7 +116,16 @@ export const TokensTableWidget: React.FC<Props> = () => {
 
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
-    return data.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
+    return data
+      .map((token) => ({
+        ...token,
+        lastDayPricePercentageDifference: token.lastDayPricePercentageDifference || null,
+        lastWeekPricePercentageDifference: token.lastWeekPricePercentageDifference || null,
+        lastDayUsdVolume: token.lastDayPricePercentageDifference || null,
+        lastWeekUsdPrices:
+          token.lastWeekUsdPrices && token.lastWeekUsdPrices.length > 0 ? token.lastWeekUsdPrices : null,
+      }))
+      .slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
   }
 
   if (!tokens?.length) {

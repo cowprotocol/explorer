@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Token } from 'hooks/useGetTokens'
+import { usePopperDefault } from 'hooks/usePopper'
 import { useNetworkId } from 'state/network'
 
 import StyledUserDetailsTable, {
@@ -13,6 +14,7 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
+import { Tooltip } from 'components/Tooltip'
 import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
@@ -249,6 +251,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
   const theme = useTheme()
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
+  const { tooltipProps, targetProps } = usePopperDefault<HTMLInputElement>()
 
   useEffect(() => {
     if (!lastWeekUsdPrices || chartCreated || !chartContainerRef.current || !token) return
@@ -270,6 +273,16 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
     chart.timeScale().fitContent()
     setChartCreated(chart)
   }, [token, theme, chartCreated, lastWeekUsdPrices])
+
+  const handleLoadingState = (key: unknown | null | undefined, node: JSX.Element): JSX.Element => {
+    if (key === null) {
+      return <span>-</span>
+    }
+    if (key === undefined) {
+      return <ShimmerBar />
+    }
+    return node
+  }
 
   if (!network) {
     return null
@@ -293,42 +306,46 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue>
+        <HeaderValue {...targetProps}>
           {' '}
           ${priceUsd ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
+          {priceUsd && <Tooltip {...tooltipProps}>${formatPrice({ price: new BigNumber(priceUsd) })}</Tooltip>}
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
-        {lastDayPricePercentageDifference ? (
-          <HeaderValue captionColor={getColorBySign(lastDayPricePercentageDifference)}>
-            {lastDayPricePercentageDifference.toFixed(2)}%
-          </HeaderValue>
-        ) : (
-          <ShimmerBar />
+        {handleLoadingState(
+          lastDayPricePercentageDifference,
+          <HeaderValue
+            captionColor={lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'}
+          >
+            {lastDayPricePercentageDifference && lastDayPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>,
         )}
       </td>
       <td>
         <HeaderTitle>7d</HeaderTitle>
-        {lastWeekPricePercentageDifference ? (
-          <HeaderValue captionColor={getColorBySign(lastWeekPricePercentageDifference)}>
-            {lastWeekPricePercentageDifference.toFixed(2)}%
-          </HeaderValue>
-        ) : (
-          <ShimmerBar />
+        {handleLoadingState(
+          lastWeekPricePercentageDifference,
+          <HeaderValue
+            captionColor={
+              lastWeekPricePercentageDifference ? getColorBySign(lastWeekPricePercentageDifference) : 'grey'
+            }
+          >
+            {lastWeekPricePercentageDifference && lastWeekPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>,
         )}
       </td>
       <td>
         <HeaderTitle>24h volume</HeaderTitle>
-        {lastDayUsdVolume === undefined ? (
-          <ShimmerBar />
-        ) : (
-          <HeaderValue>${numberFormatter(lastDayUsdVolume)}</HeaderValue>
+        {handleLoadingState(
+          lastDayUsdVolume,
+          <HeaderValue>${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}</HeaderValue>,
         )}
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
-        {lastWeekUsdPrices ? <ChartWrapper ref={chartContainerRef} /> : <ShimmerBar />}
+        {handleLoadingState(lastWeekUsdPrices, <ChartWrapper ref={chartContainerRef} />)}
       </td>
     </tr>
   )
