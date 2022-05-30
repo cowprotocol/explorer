@@ -17,6 +17,7 @@ export const ResetButton = styled.button`
   position: absolute;
   right: 0;
   margin: 0 1.6rem 0 0;
+  z-index: 1;
 
   &:hover {
     transition: all 0.2s ease-in-out;
