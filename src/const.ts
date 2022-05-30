@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk } from 'cow-sdk-test'
+import { CowSdk } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
