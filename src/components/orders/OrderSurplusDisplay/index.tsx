@@ -3,10 +3,16 @@ import styled, { useTheme } from 'styled-components'
 
 import { Order } from 'api/operator'
 
-import { formatSmart, formatSmartMaxPrecision, safeTokenName } from 'utils'
+import {
+  formatSmart,
+  formatSmartMaxPrecision,
+  safeTokenName,
+  formattingAmountPrecision,
+  FormatAmountPrecision,
+} from 'utils'
 
 import { LOW_PRECISION_DECIMALS, PERCENTAGE_PRECISION } from 'apps/explorer/const'
-import { BaseIconTooltip } from 'components/Tooltip'
+import { BaseIconTooltipOnHover } from 'components/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 
@@ -30,13 +36,11 @@ const Surplus = styled.span`
 //   opacity: 0.5;
 // `
 
-export type Props = { order: Order } & React.HTMLAttributes<HTMLDivElement>
-type SurplusText = { amount: string; percentage: string }
+export type Props = { order: Order; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
+type SurplusText = { amount: string; percentage: string; amountSmartFormatting: string }
 
-function useGetSurplus(props: Props): SurplusText {
-  const {
-    order: { kind, buyToken, sellToken, surplusAmount, surplusPercentage },
-  } = props
+function useGetSurplus(order: Order): SurplusText | null {
+  const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
 
   const surplusToken = kind === 'buy' ? sellToken : buyToken
 
@@ -44,7 +48,7 @@ function useGetSurplus(props: Props): SurplusText {
   // const usdAmount = '55.555'
 
   if (!surplusToken || surplusAmount.isZero()) {
-    return {} as SurplusText
+    return null
   }
 
   const formattedSurplusPercentage = formatSmart({
@@ -52,7 +56,13 @@ function useGetSurplus(props: Props): SurplusText {
     precision: PERCENTAGE_PRECISION,
     decimals: LOW_PRECISION_DECIMALS,
   })
-  const formattedSurplusAmount = formatSmartMaxPrecision(surplusAmount, surplusToken)
+  const formattedSurplusAmountMaxPrecision = formatSmartMaxPrecision(surplusAmount, surplusToken)
+  const formattedSurplusAmount = formattingAmountPrecision(
+    surplusAmount,
+    surplusToken,
+    FormatAmountPrecision.highPrecision,
+  )
+
   const tokenSymbol = safeTokenName(surplusToken)
   // const formattedUsdAmount = formatSmart({
   //   amount: usdAmount,
@@ -61,20 +71,21 @@ function useGetSurplus(props: Props): SurplusText {
   // })
 
   return {
-    amount: `${formattedSurplusAmount} ${tokenSymbol}`,
+    amount: `${formattedSurplusAmountMaxPrecision} ${tokenSymbol}`,
+    amountSmartFormatting: `${formattedSurplusAmount} ${tokenSymbol}`,
     percentage: `+${formattedSurplusPercentage}%`,
   }
 }
 
 export function OrderSurplusDisplay(props: Props): JSX.Element | null {
-  const { amount, percentage } = useGetSurplus(props)
+  const surplus = useGetSurplus(props.order)
 
-  if (amount === undefined || percentage === undefined) return null
+  if (!surplus) return null
 
   return (
     <Wrapper className={props.className}>
-      <Surplus>{percentage}</Surplus>
-      <span>{amount}</span>
+      <Surplus>{surplus.percentage}</Surplus>
+      <span>{props.amountSmartFormatting ? surplus.amountSmartFormatting : surplus.amount}</span>
       {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
     </Wrapper>
   )
@@ -90,19 +101,19 @@ const IconWrapper = styled(FontAwesomeIcon)`
   }
 `
 
-export function OrderSurplusTooltipDisplay(props: Props): JSX.Element | null {
-  const { amount, percentage } = useGetSurplus(props)
+export function OrderSurplusTooltipDisplay({ order }: Props): JSX.Element | null {
+  const surplus = useGetSurplus(order)
   const theme = useTheme()
 
-  if (amount === undefined || percentage === undefined) return null
+  if (!surplus) return null
 
   return (
-    <BaseIconTooltip
-      tooltip={amount}
+    <BaseIconTooltipOnHover
+      tooltip={surplus.amount}
       targetContent={
         <span>
           <IconWrapper icon={faIcon} color={theme.green} />
-          <Surplus>{percentage}</Surplus>
+          <Surplus>{surplus.percentage}</Surplus>
         </span>
       }
     />

@@ -7,7 +7,7 @@ import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { OrderSurplusTooltipDisplay, OrderSurplusDisplay } from '../OrderSurplusDisplay'
 
 export const OrderSurplusDisplayStyled = styled(OrderSurplusDisplay)`
-  ${media.xSmallDown} {
+  ${media.mobile} {
     flex-direction: column;
   }
 `
@@ -21,5 +21,5 @@ export function OrderSurplusDisplayStyledByRow({ order }: { order: Order }): JSX
     return <OrderSurplusTooltipDisplay order={order} />
   }
 
-  return <OrderSurplusDisplayStyled order={order} />
+  return <OrderSurplusDisplayStyled order={order} amountSmartFormatting />
 }
