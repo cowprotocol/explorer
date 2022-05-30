@@ -37,7 +37,7 @@ const Surplus = styled.span`
 // `
 
 export type Props = { order: Order; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
-type SurplusText = { amount: string; percentage: string; amountSmartFormatting: string }
+type SurplusText = { amount: string; percentage: string; formattedSmartAmount: string }
 
 function useGetSurplus(order: Order): SurplusText | null {
   const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
@@ -72,7 +72,7 @@ function useGetSurplus(order: Order): SurplusText | null {
 
   return {
     amount: `${formattedSurplusAmountMaxPrecision} ${tokenSymbol}`,
-    amountSmartFormatting: `${formattedSurplusAmount} ${tokenSymbol}`,
+    formattedSmartAmount: `${formattedSurplusAmount} ${tokenSymbol}`,
     percentage: `+${formattedSurplusPercentage}%`,
   }
 }
@@ -85,7 +85,7 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   return (
     <Wrapper className={props.className}>
       <Surplus>{surplus.percentage}</Surplus>
-      <span>{props.amountSmartFormatting ? surplus.amountSmartFormatting : surplus.amount}</span>
+      <span>{props.amountSmartFormatting ? surplus.formattedSmartAmount : surplus.amount}</span>
       {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
     </Wrapper>
   )
