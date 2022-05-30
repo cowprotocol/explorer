@@ -1,7 +1,7 @@
 import { GetOrderParams, GetTxOrdersParams, RawOrder } from 'api/operator'
 import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
 import { Network } from 'types'
-import { OrderMetaData } from 'cow-sdk-test'
+import { OrderMetaData } from '@cowprotocol/cow-sdk'
 
 export type SingleOrder = RawOrder | OrderMetaData | null
 export type MultipleOrders = RawOrder[] | OrderMetaData[] | null

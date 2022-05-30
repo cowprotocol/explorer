@@ -3,7 +3,7 @@ import { TransactionReceipt } from 'web3-core'
 import { PendingFlux } from 'api/deposit/DepositApi'
 import { TokenOverride } from './config'
 import { TokenDex } from '@gnosis.pm/dex-js'
-import { SupportedChainId } from 'cow-sdk-test'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type Command = () => void
 export type AnyFunction = (...args: unknown[]) => unknown
