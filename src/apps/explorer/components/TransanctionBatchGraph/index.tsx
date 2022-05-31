@@ -4,6 +4,7 @@ import Cytoscape, {
   NodeDataDefinition,
   EdgeDataDefinition,
   EventObject,
+  NodeCollection,
 } from 'cytoscape'
 import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
@@ -190,6 +191,10 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
+type NodeCollectionTyped = NodeCollection & {
+  noOverlap: ({ padding }: { padding: number }) => void
+}
+
 function getLayout(): Cytoscape.LayoutOptions {
   return {
     name: 'grid',
@@ -245,7 +250,8 @@ function TransanctionBatchGraph({
     cy.on('mouseout', 'edge', (event): void => {
       event.target.removeClass('hover')
     })
-    cy.nodes().noOverlap({ padding: 5 })
+    const nodes = cy.nodes() as NodeCollectionTyped
+    nodes.noOverlap({ padding: 5 })
   }, [cytoscapeRef, elements.length])
 
   if (isLoading)
