@@ -14,7 +14,7 @@ import {
   GetOrderResult,
   MultipleOrders,
   GetOrderApi,
-  tryGetOrderOnAllNetworks,
+  tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 
 function isObjectEmpty(object: Record<string, unknown>): boolean {
@@ -62,14 +62,17 @@ interface UseOrdersWithTokenInfo {
   setErc20Addresses: (value: string[]) => void
 }
 
-export function getTxOrderOnEveryNetwork(networkId: Network, txHash: string): Promise<GetOrderResult<MultipleOrders>> {
+export function getTxOrderOnEveryNetworkAndEnvironment(
+  networkId: Network,
+  txHash: string,
+): Promise<GetOrderResult<MultipleOrders>> {
   const defaultParams: GetTxOrdersParams = { networkId, txHash }
   const getOrderApi: GetOrderApi<GetTxOrdersParams, MultipleOrders> = {
     api: (_defaultParams) => getTxOrders(_defaultParams).then((orders) => (orders.length ? orders : null)),
     defaultParams,
   }
 
-  return tryGetOrderOnAllNetworks(networkId, getOrderApi)
+  return tryGetOrderOnAllNetworksAndEnvironments(networkId, getOrderApi)
 }
 
 function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTokenInfo {
@@ -116,7 +119,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
 
       try {
         const { order: _orders, errorOrderPresentInNetworkId: errorTxPresentInNetworkIdRaw } =
-          await getTxOrderOnEveryNetwork(network, _txHash)
+          await getTxOrderOnEveryNetworkAndEnvironment(network, _txHash)
         const ordersFetched = _orders || []
         const newErc20Addresses = filterDuplicateErc20Addresses(ordersFetched)
 

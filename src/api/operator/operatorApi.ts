@@ -1,5 +1,5 @@
 import { Network } from 'types'
-import { COW_SDK } from 'const'
+import { COW_SDK, COW_SDK_DEV } from 'const'
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
@@ -65,10 +65,16 @@ function _get(networkId: Network, url: string): Promise<Response> {
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
   const cowInstance = COW_SDK[networkId]
+  const cowInstanceDev = COW_SDK_DEV[networkId]
 
-  if (!cowInstance) return null
+  if (!cowInstance || !cowInstanceDev) return null
 
-  return cowInstance.cowApi.getOrder(orderId)
+  try {
+    const order = await cowInstance.cowApi.getOrder(orderId)
+    return order
+  } catch (error) {
+    return cowInstanceDev.cowApi.getOrder(orderId)
+  }
 }
 
 /**
@@ -128,10 +134,13 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
   const cowInstance = COW_SDK[networkId]
+  const cowInstanceDev = COW_SDK_DEV[networkId]
 
-  if (!cowInstance) return []
+  if (!cowInstance || !cowInstanceDev) return []
 
-  return cowInstance.cowApi.getTxOrders(txHash)
+  const orders = await Promise.all([cowInstance.cowApi.getTxOrders(txHash), cowInstanceDev.cowApi.getTxOrders(txHash)])
+
+  return [...orders[0], ...orders[1]]
 }
 
 /**
