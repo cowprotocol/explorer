@@ -1,5 +1,5 @@
 import { Network } from 'types'
-import { COW_SDK } from 'const'
+import { COW_SDK, COW_SDK_DEV } from 'const'
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
@@ -29,6 +29,8 @@ function getOperatorUrl(): Partial<Record<Network, string>> {
     }
   }
 }
+
+const COW_SDK_ENV = isProd || isStaging ? COW_SDK : COW_SDK_DEV
 
 const API_BASE_URL = getOperatorUrl()
 
@@ -65,10 +67,16 @@ function _get(networkId: Network, url: string): Promise<Response> {
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
   const cowInstance = COW_SDK[networkId]
+  const cowInstanceDev = COW_SDK_DEV[networkId]
 
-  if (!cowInstance) return null
+  if (!cowInstance || !cowInstanceDev) return null
 
-  return cowInstance.cowApi.getOrder(orderId)
+  try {
+    const order = await cowInstance.cowApi.getOrder(orderId)
+    return order
+  } catch (error) {
+    return cowInstanceDev.cowApi.getOrder(orderId)
+  }
 }
 
 /**
@@ -112,7 +120,7 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  */
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
-  const cowInstance = COW_SDK[networkId]
+  const cowInstance = COW_SDK_ENV[networkId]
 
   if (!cowInstance) return []
 
@@ -128,10 +136,13 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
   const cowInstance = COW_SDK[networkId]
+  const cowInstanceDev = COW_SDK_DEV[networkId]
 
-  if (!cowInstance) return []
+  if (!cowInstance || !cowInstanceDev) return []
 
-  return cowInstance.cowApi.getTxOrders(txHash)
+  const orders = await Promise.all([cowInstance.cowApi.getTxOrders(txHash), cowInstanceDev.cowApi.getTxOrders(txHash)])
+
+  return [...orders[0], ...orders[1]]
 }
 
 /**
@@ -145,7 +156,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  */
 export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner = '', orderId = '' } = params
-  const cowInstance = COW_SDK[networkId]
+  const cowInstance = COW_SDK_ENV[networkId]
 
   if (orderId) return getOrderTrades(params)
 
