@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk } from '@cowprotocol/cow-sdk'
+import { CowSdk, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
@@ -19,7 +19,6 @@ export {
 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 import { DisabledTokensMaps, TokenOverride, AddressToOverrideMap } from 'types/config'
-import { isProd, isStaging } from 'utils/env'
 
 export const BATCH_TIME_IN_MS = BATCH_TIME * 1000
 export const DEFAULT_TIMEOUT = 5000
@@ -229,17 +228,31 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
 )
 
 export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
-  Record<number, CowSdk<any> | null> //These type are temporary until SupportedChainId is exported
+  Record<number, CowSdk<SupportedChainId> | null>
 >((acc, networkId) => {
   try {
-    acc[networkId] = new CowSdk(networkId as any, {
-      isDevEnvironment: !(isProd || isStaging),
-    })
+    acc[networkId] = new CowSdk(networkId)
   } catch (error) {
     console.error('Instantiating CowSdk failed', error)
   }
 
   console.info(`CowSdk initialized on chain ${networkId}`)
+
+  return acc
+}, {})
+
+export const COW_SDK_DEV = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
+  Record<number, CowSdk<SupportedChainId> | null>
+>((acc, networkId) => {
+  try {
+    acc[networkId] = new CowSdk(networkId, {
+      isDevEnvironment: true,
+    })
+  } catch (error) {
+    console.error('Instantiating CowSdk in development mode failed', error)
+  }
+
+  console.info(`CowSdk in development mode initialized on chain ${networkId}`)
 
   return acc
 }, {})
