@@ -1,4 +1,4 @@
-import { SupportedChainId as ChainId } from 'cow-sdk-test'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
 function getApiUrl(): string {
   return 'https://api.coingecko.com/api'
