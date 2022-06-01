@@ -101,7 +101,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
   const { tokens, isLoading, error } = useGetTokens(networkId, tableState)
-  const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol'])
+  const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol', 'address'])
   const resultsLength = query.length ? filteredTokens.length : tokens.length
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < resultsLength
@@ -116,7 +116,16 @@ export const TokensTableWidget: React.FC<Props> = () => {
 
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
-    return data.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
+    return data
+      .map((token) => ({
+        ...token,
+        lastDayPricePercentageDifference: token.lastDayPricePercentageDifference || null,
+        lastWeekPricePercentageDifference: token.lastWeekPricePercentageDifference || null,
+        lastDayUsdVolume: token.lastDayPricePercentageDifference || null,
+        lastWeekUsdPrices:
+          token.lastWeekUsdPrices && token.lastWeekUsdPrices.length > 0 ? token.lastWeekUsdPrices : null,
+      }))
+      .slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
   }
 
   if (!tokens?.length) {

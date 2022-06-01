@@ -230,10 +230,10 @@ export type SubgraphHistoricalDataResponse = {
 }
 
 export type Token = {
-  lastDayPricePercentageDifference?: number
-  lastWeekPricePercentageDifference?: number
-  lastDayUsdVolume?: number
-  lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
+  lastDayPricePercentageDifference?: number | null
+  lastWeekPricePercentageDifference?: number | null
+  lastDayUsdVolume?: number | null
+  lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }> | null
 } & TokenResponse &
   TokenErc20
 
