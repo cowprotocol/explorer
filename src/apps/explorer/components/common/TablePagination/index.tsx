@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components'
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { media } from 'theme/styles/media'
-import { TokensTableContext } from '../../TokensTableWidget/context/TokensTableContext'
 
 const PaginationTextCSS = css`
   color: ${({ theme }): string => theme.textPrimary1};
@@ -77,14 +76,14 @@ type PaginationProps<T> = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TablePagination: React.FC<PaginationProps<any>> = () => {
+const TablePagination: React.FC<PaginationProps<any>> = ({ context }) => {
   const {
     isLoading,
     tableState: { pageSize, pageOffset, hasNextPage, pageIndex, totalResults = -1 },
     handleNextPage,
     handlePreviousPage,
     data: rows,
-  } = useContext(TokensTableContext)
+  } = useContext(context)
 
   const renderPageLegend = (): string => {
     if (isLoading && !rows?.length) return '.. - ..'
