@@ -168,6 +168,7 @@ function bindPopper(
   const popperUpdate = (): void => popperRef.current?.scheduleUpdate()
 
   target.on('position', () => popperUpdate)
+  target.cy().removeListener('pan zoom')
   target.cy().on('pan zoom resize', () => popperUpdate)
   const newTarget = document.getElementById(tooltipId)
   target
@@ -221,6 +222,7 @@ function TransanctionBatchGraph({
         ref.layout(getLayout()).run()
         ref.fit()
       }
+      ref.removeListener('resize')
       ref.on('resize', () => {
         updateLayout()
       })
@@ -262,6 +264,7 @@ function TransanctionBatchGraph({
       </EmptyItemWrapper>
     )
 
+  console.log(cytoscapeRef.current)
   return (
     <>
       <WrapperCytoscape
