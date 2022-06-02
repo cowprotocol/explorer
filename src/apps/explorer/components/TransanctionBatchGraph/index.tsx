@@ -255,6 +255,8 @@ function TransanctionBatchGraph({
     cy.on('mouseout', 'edge', (event): void => {
       event.target.removeClass('hover')
     })
+
+    return (): void => cy.removeAllListeners()
   }, [cytoscapeRef, elements.length])
 
   if (isLoading)
@@ -264,7 +266,6 @@ function TransanctionBatchGraph({
       </EmptyItemWrapper>
     )
 
-  console.log(cytoscapeRef.current)
   return (
     <>
       <WrapperCytoscape
