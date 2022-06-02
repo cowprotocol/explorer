@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 
 import { Token } from 'hooks/useGetTokens'
-import { usePopperDefault } from 'hooks/usePopper'
 
 import { useNetworkId } from 'state/network'
 
@@ -15,12 +14,12 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-import { Tooltip } from 'components/Tooltip'
 import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
+import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -40,7 +39,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4rem 21rem minmax(7rem, 12rem) repeat(5, minmax(10rem, 1.5fr));
+    grid-template-columns: 4rem 21rem minmax(7rem, 12rem) repeat(6, minmax(10rem, 1.5fr));
   }
   > tbody > tr > td,
   > thead > tr > th {
@@ -246,13 +245,13 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
     lastWeekUsdPrices,
     lastWeekPricePercentageDifference,
     lastDayUsdVolume,
+    totalVolumeUsd,
   } = token
   const erc20 = { name, address, decimals } as TokenErc20
   const network = useNetworkId()
   const theme = useTheme()
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
-  const { tooltipProps, targetProps } = usePopperDefault<HTMLInputElement>()
 
   useEffect(() => {
     if (!lastWeekUsdPrices || chartCreated || !chartContainerRef.current || !token) return
@@ -305,9 +304,10 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue {...targetProps}>
-          ${priceUsd ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
-          {priceUsd && <Tooltip {...tooltipProps}>${formatPrice({ price: new BigNumber(priceUsd) })}</Tooltip>}
+        <HeaderValue>
+          <TextWithTooltip textInTooltip={`$${formatPrice({ price: new BigNumber(priceUsd) })}`}>
+            ${priceUsd ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
+          </TextWithTooltip>
         </HeaderValue>
       </td>
       <td>
@@ -340,6 +340,12 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
           lastDayUsdVolume,
           <HeaderValue>${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}</HeaderValue>,
         )}
+      </td>
+      <td>
+        <HeaderTitle>Total Volume</HeaderTitle>
+        <HeaderValue>
+          ${totalVolumeUsd ? formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 0, thousands: true }) : 0}
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
@@ -387,6 +393,7 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>24h</th>
           <th>7d</th>
           <th>24h volume</th>
+          <th>Total Volume</th>
           <th>Last 7 days</th>
         </tr>
       }
