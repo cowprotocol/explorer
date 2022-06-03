@@ -1,8 +1,9 @@
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-import { Core } from 'cytoscape'
+import { Core } from 'types/cytoscape'
 
+// Type declaration to module augmentation
 declare module 'cytoscape' {
-  export interface Core {
+  interface Core {
     removeAllListeners: () => void
   }
 }
