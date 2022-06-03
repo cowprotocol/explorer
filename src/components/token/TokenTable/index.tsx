@@ -343,9 +343,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
       </td>
       <td>
         <HeaderTitle>Total Volume</HeaderTitle>
-        <HeaderValue>
-          ${totalVolumeUsd ? formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 0, thousands: true }) : 0}
-        </HeaderValue>
+        <HeaderValue>${numberFormatter(Number(totalVolumeUsd))}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
