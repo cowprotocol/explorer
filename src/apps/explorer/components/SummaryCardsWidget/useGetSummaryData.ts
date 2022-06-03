@@ -79,6 +79,8 @@ export type TotalSummaryResponse = TotalSummary & {
   isLoading: boolean
 }
 
+const FETCH_INTERVAL = 1000 * 30 // 30 seconds
+
 export function useGetSummaryData(): TotalSummaryResponse | undefined {
   const [summary, setSummary] = useState<TotalSummaryResponse | undefined>()
   const network = useNetworkId() ?? Network.MAINNET
@@ -96,7 +98,7 @@ export function useGetSummaryData(): TotalSummaryResponse | undefined {
 
     const id = setInterval(() => {
       fetchAndBuildSummary()
-    }, 1000 * 30) // 30 seconds
+    }, FETCH_INTERVAL)
 
     return (): void => clearInterval(id)
   }, [fetchAndBuildSummary])
