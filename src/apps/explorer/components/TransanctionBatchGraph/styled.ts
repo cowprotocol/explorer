@@ -114,6 +114,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       style: {
         'border-style': 'dashed',
         'border-opacity': 0.8,
+        opacity: 0.8,
       },
     },
   ]
