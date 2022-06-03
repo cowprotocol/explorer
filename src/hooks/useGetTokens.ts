@@ -19,9 +19,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
       setTokens([])
       setHistoricalDataLoaded({})
       try {
-        const response = await COW_SDK[network]?.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(
-          GET_TOKENS_QUERY as any,
-        )
+        const response = await COW_SDK[network]?.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(GET_TOKENS_QUERY)
         if (response) {
           setTokens(response.tokens)
         }
@@ -45,7 +43,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
         const responses = {} as { [tokenId: string]: Promise<SubgraphHistoricalDataResponse> | undefined }
         for (const tokenId of tokenIds) {
           const response = COW_SDK[network]?.cowSubgraphApi.runQuery<SubgraphHistoricalDataResponse>(
-            GET_HISTORICAL_DATA_QUERY as any,
+            GET_HISTORICAL_DATA_QUERY,
             { address: tokenId, lastDayTimestamp, lastWeekTimestamp },
           )
           responses[tokenId] = response
