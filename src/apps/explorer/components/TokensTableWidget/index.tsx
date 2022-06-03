@@ -121,7 +121,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
         ...token,
         lastDayPricePercentageDifference: token.lastDayPricePercentageDifference || null,
         lastWeekPricePercentageDifference: token.lastWeekPricePercentageDifference || null,
-        lastDayUsdVolume: token.lastDayUsdVolume || null,
+        lastDayUsdVolume: token.lastDayUsdVolume == undefined ? null : token.lastDayUsdVolume,
         lastWeekUsdPrices:
           token.lastWeekUsdPrices && token.lastWeekUsdPrices.length > 0 ? token.lastWeekUsdPrices : null,
       }))

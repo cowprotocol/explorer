@@ -273,5 +273,5 @@ function addPricesHistoricalData(tokens: Token[], prices: { [tokenId: string]: T
 }
 
 function getPercentageDifference(a: number, b: number): number {
-  return b ? ((a - b) / a) * 100 : 0
+  return a && b ? ((a - b) / a) * 100 : 0
 }
