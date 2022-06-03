@@ -119,9 +119,9 @@ export const TokensTableWidget: React.FC<Props> = () => {
     return data
       .map((token) => ({
         ...token,
-        lastDayPricePercentageDifference: token.lastDayPricePercentageDifference || null,
-        lastWeekPricePercentageDifference: token.lastWeekPricePercentageDifference || null,
-        lastDayUsdVolume: token.lastDayUsdVolume || null,
+        lastDayPricePercentageDifference: undefinedToNull(token.lastDayPricePercentageDifference),
+        lastWeekPricePercentageDifference: undefinedToNull(token.lastWeekPricePercentageDifference),
+        lastDayUsdVolume: undefinedToNull(token.lastDayUsdVolume),
         lastWeekUsdPrices:
           token.lastWeekUsdPrices && token.lastWeekUsdPrices.length > 0 ? token.lastWeekUsdPrices : null,
       }))
@@ -155,4 +155,12 @@ export const TokensTableWidget: React.FC<Props> = () => {
       </TokensTableContext.Provider>
     </TableWrapper>
   )
+}
+
+function undefinedToNull(n: number | undefined | null): number | null {
+  if (n === undefined) {
+    return null
+  }
+
+  return n
 }

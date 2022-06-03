@@ -38,8 +38,8 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     async (network: Network, pageIndex: number, tokenIds: string[]): Promise<void> => {
       setIsLoading(true)
       try {
-        const lastDayTimestamp = Number(lastHoursTimestamp(24)) // last 24 hours
-        const lastWeekTimestamp = Number(lastDaysTimestamp(7)) // last 7 days
+        const lastDayTimestamp = Number(lastHoursTimestamp(25)) // last 25 hours
+        const lastWeekTimestamp = Number(lastDaysTimestamp(8)) // last 8 days
         const responses = {} as { [tokenId: string]: Promise<SubgraphHistoricalDataResponse> | undefined }
         for (const tokenId of tokenIds) {
           const response = COW_SDK[network]?.cowSubgraphApi.runQuery<SubgraphHistoricalDataResponse>(
@@ -56,6 +56,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
           if (!response) {
             continue
           }
+
           const lastDayUsdVolume = response.tokenHourlyTotals.reduce(
             (acc, curr) => acc + Number(curr.totalVolumeUsd),
             0,
@@ -67,10 +68,10 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
           const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
           const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
           const lastDayPrice = response.tokenHourlyTotals.find(
-            (x) => Number(x.timestamp) >= lastDayTimestampFrom && Number(x.timestamp) <= lastDayTimestampTo,
+            (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
           )?.averagePrice
           const lastWeekPrice = response.tokenDailyTotals.find(
-            (x) => Number(x.timestamp) >= lastWeekTimestampFrom && Number(x.timestamp) <= lastWeekTimestampTo,
+            (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo,
           )?.averagePrice
 
           const prices = {
@@ -152,7 +153,7 @@ export const GET_TOKENS_QUERY = gql`
 export const GET_HISTORICAL_DATA_QUERY = gql`
   query GetHistoricalData($address: ID!, $lastDayTimestamp: Int!, $lastWeekTimestamp: Int!) {
     tokenHourlyTotals(
-      first: 24
+      first: 25
       orderBy: timestamp
       orderDirection: desc
       where: { token: $address, timestamp_gt: $lastDayTimestamp }
@@ -166,7 +167,7 @@ export const GET_HISTORICAL_DATA_QUERY = gql`
     }
 
     tokenDailyTotals(
-      first: 7
+      first: 8
       orderBy: timestamp
       orderDirection: desc
       where: { token: $address, timestamp_gt: $lastWeekTimestamp }
@@ -242,7 +243,7 @@ export type TokenData = {
 }
 
 function getPercentageDifference(a: number, b: number): number {
-  return b ? ((a - b) / a) * 100 : 0
+  return a && b ? ((a - b) / a) * 100 : 0
 }
 
 function lastHoursTimestamp(n: number): string {
