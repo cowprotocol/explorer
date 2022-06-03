@@ -160,3 +160,5 @@ declare module '*.md' {
 }
 
 declare module 'eth-json-rpc-middleware/*'
+
+declare module 'cytoscape-no-overlap'

@@ -6,4 +6,8 @@ declare module 'cytoscape' {
   interface Core {
     removeAllListeners: () => void
   }
+
+  interface NodeCollection {
+    noOverlap: ({ padding }: { padding: number }) => void
+  }
 }
