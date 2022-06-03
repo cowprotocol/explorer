@@ -6,7 +6,7 @@ const SEARCH_INDEX = new Index({
 })
 
 interface Item {
-  id: number
+  id: string
 }
 
 export const useFlexSearch = (
