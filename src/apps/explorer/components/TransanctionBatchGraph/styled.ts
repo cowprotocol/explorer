@@ -46,6 +46,20 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'edge[label].sell',
+      style: {
+        'line-color': theme.red1,
+        'target-arrow-color': theme.red1,
+      },
+    },
+    {
+      selector: 'edge[label].buy',
+      style: {
+        'line-color': theme.green1,
+        'target-arrow-color': theme.green1,
+      },
+    },
+    {
       selector: 'edge[label].hover',
       style: {
         width: 3,

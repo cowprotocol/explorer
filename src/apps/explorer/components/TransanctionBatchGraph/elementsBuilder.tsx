@@ -1,5 +1,5 @@
 import { ElementDefinition } from 'cytoscape'
-import { InfoTooltip, Node, TypeNodeOnTx } from './types'
+import { InfoTooltip, Node, TypeEdgeOnTx, TypeNodeOnTx } from './types'
 
 export default class ElementsBuilder {
   _center: ElementDefinition | null = null
@@ -53,6 +53,7 @@ export default class ElementsBuilder {
     source: Pick<Node, 'type' | 'id'>,
     target: Pick<Node, 'type' | 'id'>,
     label: string,
+    kind: TypeEdgeOnTx,
     tooltip?: InfoTooltip,
   ): this {
     const sourceName = `${source.type}:${source.id}`
@@ -67,6 +68,7 @@ export default class ElementsBuilder {
         target: targetName,
         label,
         tooltip,
+        kind,
       },
     })
     return this
@@ -78,7 +80,7 @@ export default class ElementsBuilder {
     } else {
       const edges = addClassWithMoreThanOneBidirectional(this._edges, this._countEdgeDirection)
       const { center, nodes } = customLayoutNodes
-      return [center, ...nodes, ...edges]
+      return [center, ...nodes, ...addClassWithKind(edges)]
     }
   }
 
@@ -210,6 +212,17 @@ function addClassWithMoreThanOneBidirectional(
     if (edgeDirectionCount > 1) {
       _edge.classes = CLASS_NAME
     }
+    return _edge
+  })
+}
+
+/**
+ * Add css class to edges according to the kind
+ */
+function addClassWithKind(edges: ElementDefinition[]): ElementDefinition[] {
+  return edges.map((_edge) => {
+    const CLASS_NAME = _edge.data.kind
+    _edge.classes = _edge.classes ? `${_edge.classes},${CLASS_NAME}` : CLASS_NAME
     return _edge
   })
 }
