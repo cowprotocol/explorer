@@ -7,7 +7,7 @@ export enum TypeNodeOnTx {
   Dex = 'dex',
 }
 
-export type InfoTooltip = Record<string, string>
+export type InfoTooltip = Record<string, unknown>
 
 export type NodeType<T extends string, E> = { type: T; entity: E; id: string }
 export type Node =
