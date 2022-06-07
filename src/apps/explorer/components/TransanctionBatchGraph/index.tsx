@@ -6,10 +6,14 @@ import Cytoscape, {
   EventObject,
 } from 'cytoscape'
 import popper from 'cytoscape-popper'
+import noOverlap from 'cytoscape-no-overlap'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { faRedo } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { GetTxBatchTradesResult as TxBatchData, Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
 import { networkOptions } from 'components/NetworkSelector'
@@ -19,15 +23,16 @@ import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/Trans
 import { TypeEdgeOnTx, TypeNodeOnTx } from './types'
 import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
-import { STYLESHEET } from './styled'
+import { STYLESHEET, ResetButton } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
-
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import useWindowSizes from 'hooks/useWindowSizes'
 
 Cytoscape.use(popper)
+Cytoscape.use(noOverlap)
+
 const PROTOCOL_NAME = APP_NAME
 const WrapperCytoscape = styled(CytoscapeComponent)`
   background-color: ${({ theme }): string => theme.bg1};
@@ -180,6 +185,7 @@ function bindPopper(
   const popperUpdate = (): void => popperRef.current?.scheduleUpdate()
 
   target.on('position', () => popperUpdate)
+  target.cy().removeListener('pan zoom')
   target.cy().on('pan zoom resize', () => popperUpdate)
   const newTarget = document.getElementById(tooltipId)
   target
@@ -222,23 +228,33 @@ function TransanctionBatchGraph({
   const [elements, setElements] = useState<ElementDefinition[]>([])
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
+  const [resetZoom, setResetZoom] = useState<boolean | null>(null)
   const theme = useTheme()
-  const heightSize = window.innerHeight - HEIGHT_HEADER_FOOTER
+  const { innerHeight } = useWindowSizes()
+  const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
       cytoscapeRef.current = ref
-      cytoscapeRef.current.layout(getLayout()).run()
-      cytoscapeRef.current.fit()
+      const updateLayout = (): void => {
+        ref.layout(getLayout()).run()
+        ref.fit()
+      }
+      ref.removeListener('resize')
+      ref.on('resize', () => {
+        updateLayout()
+      })
+      updateLayout()
     },
     [cytoscapeRef],
   )
 
   useEffect(() => {
     setElements([])
-    if (error || isLoading || !networkId) return
+    if (error || isLoading || !networkId || !heightSize) return
 
     setElements(getNodes(txSettlement, networkId, heightSize))
-  }, [heightSize, error, isLoading, networkId, txSettlement])
+    setResetZoom(null)
+  }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom])
 
   useEffect(() => {
     const cy = cytoscapeRef.current
@@ -256,6 +272,9 @@ function TransanctionBatchGraph({
     cy.on('mouseout', 'edge', (event): void => {
       event.target.removeClass('hover')
     })
+    cy.nodes().noOverlap({ padding: 5 })
+
+    return (): void => cy.removeAllListeners()
   }, [cytoscapeRef, elements.length])
 
   if (isLoading)
@@ -266,18 +285,23 @@ function TransanctionBatchGraph({
     )
 
   return (
-    <WrapperCytoscape
-      elements={elements}
-      layout={getLayout()}
-      style={{ width: '100%', height: heightSize }}
-      stylesheet={STYLESHEET(theme)}
-      cy={setCytoscape}
-      wheelSensitivity={0.2}
-      className="tx-graph"
-      maxZoom={3}
-      minZoom={0.1}
-      zoom={1}
-    />
+    <>
+      <WrapperCytoscape
+        elements={elements}
+        layout={getLayout()}
+        style={{ width: '100%', height: heightSize }}
+        stylesheet={STYLESHEET(theme)}
+        cy={setCytoscape}
+        wheelSensitivity={0.2}
+        className="tx-graph"
+        maxZoom={3}
+        minZoom={0.1}
+        zoom={1}
+      />
+      <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
+        <FontAwesomeIcon icon={faRedo} /> <span>Reset</span>
+      </ResetButton>
+    </>
   )
 }
 
