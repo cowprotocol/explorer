@@ -243,7 +243,7 @@ export type TokenData = {
 }
 
 function getPercentageDifference(a: number, b: number): number {
-  if (b === 0) {
+  if (a !== 0 && b === 0) {
     return 100
   }
 
