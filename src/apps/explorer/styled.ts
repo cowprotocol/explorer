@@ -26,11 +26,6 @@ export const GlobalStyle = createGlobalStyle`
     line-height: 1.4rem;
     word-break: break-all;
   }
-  .target-popper tr > td:first-child {
-    font-weight: bold;
-    text-transform: uppercase;
-    width: 6rem;
-}
 `
 
 export const MainWrapper = styled.div`

@@ -1,10 +1,4 @@
-import Cytoscape, {
-  ElementDefinition,
-  NodeSingular,
-  NodeDataDefinition,
-  EdgeDataDefinition,
-  EventObject,
-} from 'cytoscape'
+import Cytoscape, { ElementDefinition, NodeSingular, NodeDataDefinition, EdgeDataDefinition } from 'cytoscape'
 import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
@@ -17,10 +11,8 @@ import { networkOptions } from 'components/NetworkSelector'
 import { Network } from 'types'
 import { Account, ALIAS_TRADER_NAME } from 'api/tenderly'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
-import { TypeNodeOnTx } from './types'
 import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
-import { STYLESHEET, ResetButton } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
@@ -28,6 +20,9 @@ import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { faRedo } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import useWindowSizes from 'hooks/useWindowSizes'
+import { TypeNodeOnTx } from './types'
+import { bindPopper, PopperInstance } from './TooltipPopper'
+import { STYLESHEET, ResetButton } from './styled'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -103,89 +98,13 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
       { type: source?.data.type, id: transfer.from },
       { type: target?.data.type, id: transfer.to },
       `${tokenSymbol}`,
-      { from: transfer.from, to: transfer.to, amount: `${tokenAmount} ${tokenSymbol}`, token },
+      { from: transfer.from, to: transfer.to, amount: `${tokenAmount} ${tokenSymbol}`, token, networkId },
     )
   })
 
   return builder.build(
     buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes),
   )
-}
-
-interface PopperInstance {
-  scheduleUpdate: () => void
-  destroy: () => void
-}
-
-/**
- * This allow bind a tooltip (popper.js) around to a cytoscape elements (node, edge)
- */
-function bindPopper(
-  event: EventObject,
-  targetData: Cytoscape.NodeDataDefinition | Cytoscape.EdgeDataDefinition,
-  popperRef: React.MutableRefObject<PopperInstance | null>,
-): void {
-  const tooltipId = `popper-target-${targetData.id}`
-  const popperClassTarget = 'target-popper'
-
-  // Remove if already existing
-  const existingTooltips: HTMLCollectionOf<Element> = document.getElementsByClassName(popperClassTarget)
-  Array.from(existingTooltips).forEach((ele: { remove: () => void }): void => ele && ele.remove())
-
-  const target = event.target
-  popperRef.current = target.popper({
-    content: () => {
-      const tooltip = document.createElement('span')
-      tooltip.id = tooltipId
-      tooltip.classList.add(popperClassTarget)
-
-      const table = document.createElement('table')
-      tooltip.append(table)
-
-      // loop through target data [tooltip]
-      for (const prop in targetData.tooltip) {
-        const targetValue = targetData.tooltip[prop]
-
-        // no recursive or reduce support
-        if (typeof targetValue === 'object') continue
-
-        const tr = table.insertRow()
-
-        const tdTitle = tr.insertCell()
-        const tdValue = tr.insertCell()
-
-        tdTitle.innerText = prop
-        tdValue.innerText = targetValue
-      }
-
-      document.body.appendChild(tooltip)
-
-      return tooltip
-    },
-    popper: {
-      placement: 'top-start',
-      removeOnDestroy: true,
-    },
-  }) as PopperInstance
-
-  const popperUpdate = (): void => popperRef.current?.scheduleUpdate()
-
-  target.on('position', () => popperUpdate)
-  target.cy().removeListener('pan zoom')
-  target.cy().on('pan zoom resize', () => popperUpdate)
-  const newTarget = document.getElementById(tooltipId)
-  target
-    .on('click tapstart', () => {
-      if (newTarget) {
-        newTarget.classList.add('active')
-      }
-    })
-    .on('mouseout tapend', () => {
-      if (newTarget) {
-        newTarget.remove()
-      }
-      popperRef.current?.destroy()
-    })
 }
 
 interface GraphBatchTxParams {
