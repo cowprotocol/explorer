@@ -243,11 +243,7 @@ export type TokenData = {
 }
 
 function getPercentageDifference(a: number, b: number): number {
-  if (a !== 0 && b === 0) {
-    return 100
-  }
-
-  return a && b ? ((a - b) / a) * 100 : 0
+  return a ? ((a - b) / a) * 100 : 0
 }
 
 function lastHoursTimestamp(n: number): string {
