@@ -101,11 +101,20 @@ const IconWrapper = styled(FontAwesomeIcon)`
   }
 `
 
-export function OrderSurplusTooltipDisplay({ order }: Props): JSX.Element | null {
+const HiddenSection = styled.span<{ showHiddenSection: boolean }>`
+  display: ${({ showHiddenSection }): string => (showHiddenSection ? 'block' : 'none')};
+`
+
+export function OrderSurplusTooltipDisplay({
+  order,
+  amountSmartFormatting,
+  showHiddenSection = false,
+  defaultWhenNoSurplus,
+}: Props & { showHiddenSection?: boolean; defaultWhenNoSurplus?: string }): JSX.Element {
   const surplus = useGetSurplus(order)
   const theme = useTheme()
 
-  if (!surplus) return null
+  if (!surplus) return <HiddenSection showHiddenSection={showHiddenSection}>{defaultWhenNoSurplus}</HiddenSection>
 
   return (
     <BaseIconTooltipOnHover
@@ -114,6 +123,9 @@ export function OrderSurplusTooltipDisplay({ order }: Props): JSX.Element | null
         <span>
           <IconWrapper icon={faIcon} color={theme.green} />
           <Surplus>{surplus.percentage}</Surplus>
+          <HiddenSection showHiddenSection={showHiddenSection}>
+            {amountSmartFormatting ? surplus.formattedSmartAmount : surplus.amount}
+          </HiddenSection>
         </span>
       }
     />
