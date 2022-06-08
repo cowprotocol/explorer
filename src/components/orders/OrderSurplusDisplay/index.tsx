@@ -102,7 +102,7 @@ const IconWrapper = styled(FontAwesomeIcon)`
 `
 
 const HiddenSection = styled.span<{ showHiddenSection: boolean }>`
-  display: ${({ showHiddenSection }): string => (showHiddenSection ? 'block' : 'none')};
+  display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
 `
 
 export function OrderSurplusTooltipDisplay({
@@ -114,7 +114,7 @@ export function OrderSurplusTooltipDisplay({
   const surplus = useGetSurplus(order)
   const theme = useTheme()
 
-  if (!surplus) return <HiddenSection showHiddenSection={showHiddenSection}>{defaultWhenNoSurplus}</HiddenSection>
+  if (!surplus) return <HiddenSection showHiddenSection>{defaultWhenNoSurplus}</HiddenSection>
 
   return (
     <BaseIconTooltipOnHover
