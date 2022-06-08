@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 import { COW_SDK } from 'const'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useNetworkId } from 'state/network'
 import { Network } from 'types'
 
@@ -79,18 +79,29 @@ export type TotalSummaryResponse = TotalSummary & {
   isLoading: boolean
 }
 
+const FETCH_INTERVAL = 1000 * 10 // 10 seconds
+
 export function useGetSummaryData(): TotalSummaryResponse | undefined {
   const [summary, setSummary] = useState<TotalSummaryResponse | undefined>()
   const network = useNetworkId() ?? Network.MAINNET
 
-  useEffect(() => {
+  const fetchAndBuildSummary = useCallback(async () => {
     setSummary((summary) => ({ ...summary, isLoading: true }))
     // TODO: Once the sdk's runQuery method accepts DocumentNode update this
-    COW_SDK[network]?.cowSubgraphApi.runQuery(summaryQuery as any).then((data: SummaryQuery) => {
-      const summary = buildSummary(data)
-      setSummary({ ...summary, isLoading: false })
-    })
+    const data = (await COW_SDK[network]?.cowSubgraphApi.runQuery(summaryQuery as any)) as SummaryQuery
+    const summary = buildSummary(data)
+    setSummary({ ...summary, isLoading: false })
   }, [network])
+
+  useEffect(() => {
+    fetchAndBuildSummary()
+
+    const id = setInterval(() => {
+      fetchAndBuildSummary()
+    }, FETCH_INTERVAL)
+
+    return (): void => clearInterval(id)
+  }, [fetchAndBuildSummary])
 
   return summary
 }
