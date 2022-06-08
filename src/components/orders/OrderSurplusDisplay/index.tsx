@@ -106,7 +106,7 @@ const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSect
   ${({ strechHiddenSection }): FlattenSimpleInterpolation | false =>
     strechHiddenSection &&
     css`
-      width: 4rem;
+      width: 3.4rem;
       display: 'inline-block';
       justify-content: end;
     `}
