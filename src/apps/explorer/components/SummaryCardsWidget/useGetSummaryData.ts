@@ -79,7 +79,7 @@ export type TotalSummaryResponse = TotalSummary & {
   isLoading: boolean
 }
 
-const FETCH_INTERVAL = 1000 * 30 // 30 seconds
+const FETCH_INTERVAL = 1000 * 10 // 10 seconds
 
 export function useGetSummaryData(): TotalSummaryResponse | undefined {
   const [summary, setSummary] = useState<TotalSummaryResponse | undefined>()
