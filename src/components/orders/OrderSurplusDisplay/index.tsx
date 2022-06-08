@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { useTheme } from 'styled-components'
+import styled, { css, useTheme, FlattenSimpleInterpolation } from 'styled-components'
 
 import { Order } from 'api/operator'
 
@@ -101,8 +101,15 @@ const IconWrapper = styled(FontAwesomeIcon)`
   }
 `
 
-const HiddenSection = styled.span<{ showHiddenSection: boolean }>`
+const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSection: boolean }>`
   display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
+  ${({ strechHiddenSection }): FlattenSimpleInterpolation | false =>
+    strechHiddenSection &&
+    css`
+      width: 4rem;
+      display: 'inline-block';
+      justify-content: end;
+    `}
 `
 
 export function OrderSurplusTooltipDisplay({
@@ -110,11 +117,21 @@ export function OrderSurplusTooltipDisplay({
   amountSmartFormatting,
   showHiddenSection = false,
   defaultWhenNoSurplus,
-}: Props & { showHiddenSection?: boolean; defaultWhenNoSurplus?: string }): JSX.Element {
+  strechHiddenSection = false,
+}: Props & {
+  showHiddenSection?: boolean
+  defaultWhenNoSurplus?: string
+  strechHiddenSection?: boolean
+}): JSX.Element {
   const surplus = useGetSurplus(order)
   const theme = useTheme()
 
-  if (!surplus) return <HiddenSection showHiddenSection>{defaultWhenNoSurplus}</HiddenSection>
+  if (!surplus)
+    return (
+      <HiddenSection showHiddenSection strechHiddenSection={strechHiddenSection}>
+        {defaultWhenNoSurplus}
+      </HiddenSection>
+    )
 
   return (
     <BaseIconTooltipOnHover
@@ -123,7 +140,7 @@ export function OrderSurplusTooltipDisplay({
         <span>
           <IconWrapper icon={faIcon} color={theme.green} />
           <Surplus>{surplus.percentage}</Surplus>
-          <HiddenSection showHiddenSection={showHiddenSection}>
+          <HiddenSection showHiddenSection={showHiddenSection} strechHiddenSection>
             {amountSmartFormatting ? surplus.formattedSmartAmount : surplus.amount}
           </HiddenSection>
         </span>
