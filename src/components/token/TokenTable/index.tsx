@@ -306,8 +306,8 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
       <td>
         <HeaderTitle>Price</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip textInTooltip={`$${formatPrice({ price: new BigNumber(priceUsd) })}`}>
-            ${priceUsd ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
+          <TextWithTooltip textInTooltip={`$${Number(priceUsd) || 0}`}>
+            ${Number(priceUsd) ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
           </TextWithTooltip>
         </HeaderValue>
       </td>
@@ -339,12 +339,32 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         <HeaderTitle>24h volume</HeaderTitle>
         {handleLoadingState(
           lastDayUsdVolume,
-          <HeaderValue>${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}</HeaderValue>,
+          <HeaderValue>
+            <TextWithTooltip
+              textInTooltip={
+                lastDayUsdVolume
+                  ? `$${formatPrice({
+                      price: new BigNumber(lastDayUsdVolume),
+                      decimals: 2,
+                      thousands: true,
+                    })}`
+                  : '$0'
+              }
+            >
+              ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
+            </TextWithTooltip>
+          </HeaderValue>,
         )}
       </td>
       <td>
         <HeaderTitle>Total Volume</HeaderTitle>
-        <HeaderValue>${numberFormatter(Number(totalVolumeUsd))}</HeaderValue>
+        <HeaderValue>
+          <TextWithTooltip
+            textInTooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}`}
+          >
+            ${numberFormatter(Number(totalVolumeUsd))}
+          </TextWithTooltip>
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
