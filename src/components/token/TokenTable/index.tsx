@@ -235,11 +235,7 @@ function _buildChart(
         labelVisible: false,
       },
       vertLine: {
-        visible: true,
-        style: 3,
-        width: 1,
-        color: theme.borderPrimary,
-        labelVisible: true,
+        visible: false,
       },
     },
   })
