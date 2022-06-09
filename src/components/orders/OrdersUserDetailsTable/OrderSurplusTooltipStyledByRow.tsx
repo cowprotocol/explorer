@@ -16,7 +16,6 @@ export function OrderSurplusDisplayStyledByRow({ order }: Props): JSX.Element {
   const showAmountBesideSurplus = !isDesktop
   const defaultWhenNoSurplus = '-'
 
-  // console.log('ccass', className)
   return (
     <OrderSurplusTooltipDisplay
       order={order}
