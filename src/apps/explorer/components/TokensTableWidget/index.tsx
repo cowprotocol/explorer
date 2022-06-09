@@ -115,6 +115,11 @@ export const TokensTableWidget: React.FC<Props> = () => {
     }
   }, [query, setPageOffset])
 
+  useEffect(() => {
+    setQuery('')
+    setPageOffset(0)
+  }, [networkId, setPageOffset])
+
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
     return data
