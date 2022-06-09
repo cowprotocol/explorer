@@ -97,6 +97,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
   const {
     state: tableState,
     setPageSize,
+    setPageOffset,
     handleNextPage,
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
@@ -106,13 +107,13 @@ export const TokensTableWidget: React.FC<Props> = () => {
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < resultsLength
   tableState['totalResults'] = resultsLength
+  console.log({ resultsLength, query, filteredTokens, tableState })
 
   useEffect(() => {
     if (query.length) {
-      tableState['pageOffset'] = 0
-      tableState['pageIndex'] = 1
+      setPageOffset(0)
     }
-  }, [query, tableState])
+  }, [query, setPageOffset])
 
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
@@ -146,6 +147,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
           networkId,
           tableState,
           setPageSize,
+          setPageOffset,
           handleNextPage,
           handlePreviousPage,
         }}
