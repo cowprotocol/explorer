@@ -107,7 +107,6 @@ export const TokensTableWidget: React.FC<Props> = () => {
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < resultsLength
   tableState['totalResults'] = resultsLength
-  console.log({ resultsLength, query, filteredTokens, tableState })
 
   useEffect(() => {
     if (query.length) {
