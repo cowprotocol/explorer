@@ -11,13 +11,16 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
+import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { faRedo } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { GetTxBatchTradesResult as TxBatchData, Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
 import { networkOptions } from 'components/NetworkSelector'
 import { Network } from 'types'
-import { Account, ALIAS_TRADER_NAME } from 'api/tenderly'
+import { Account, ALIAS_TRADER_NAME, Transfer } from 'api/tenderly'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
-import { TypeNodeOnTx } from './types'
+import { TypeEdgeOnTx, TypeNodeOnTx } from './types'
 import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import { STYLESHEET, ResetButton } from './styled'
@@ -25,8 +28,6 @@ import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } fr
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import { faRedo } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import useWindowSizes from 'hooks/useWindowSizes'
 
 Cytoscape.use(popper)
@@ -52,6 +53,17 @@ function getTypeNode(account: Account): TypeNodeOnTx {
   }
 
   return type
+}
+
+function getKindEdge(transfer: Transfer & { kind?: OrderKind }): TypeEdgeOnTx {
+  let kind = TypeEdgeOnTx.noKind
+  if (transfer.kind === OrderKind.SELL) {
+    kind = TypeEdgeOnTx.sellEdge
+  } else if (transfer.kind === OrderKind.BUY) {
+    kind = TypeEdgeOnTx.buyEdge
+  }
+
+  return kind
 }
 
 function showTraderAddress(account: Account, address: string): Account {
@@ -91,6 +103,7 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   }
 
   txSettlement.transfers.forEach((transfer) => {
+    const kind = getKindEdge(transfer)
     const token = txSettlement.tokens[transfer.token]
     const tokenSymbol = token?.symbol || TOKEN_SYMBOL_UNKNOWN
     const tokenAmount = token?.decimals
@@ -103,6 +116,7 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
       { type: source?.data.type, id: transfer.from },
       { type: target?.data.type, id: transfer.to },
       `${tokenSymbol}`,
+      kind,
       { from: transfer.from, to: transfer.to, amount: `${tokenAmount} ${tokenSymbol}` },
     )
   })

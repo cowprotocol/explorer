@@ -19,7 +19,6 @@ export {
 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 import { DisabledTokensMaps, TokenOverride, AddressToOverrideMap } from 'types/config'
-import { isProd, isStaging } from 'utils/env'
 
 export const BATCH_TIME_IN_MS = BATCH_TIME * 1000
 export const DEFAULT_TIMEOUT = 5000
@@ -232,14 +231,28 @@ export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].
   Record<number, CowSdk<SupportedChainId> | null>
 >((acc, networkId) => {
   try {
-    acc[networkId] = new CowSdk(networkId, {
-      isDevEnvironment: !(isProd || isStaging),
-    })
+    acc[networkId] = new CowSdk(networkId)
   } catch (error) {
     console.error('Instantiating CowSdk failed', error)
   }
 
   console.info(`CowSdk initialized on chain ${networkId}`)
+
+  return acc
+}, {})
+
+export const COW_SDK_DEV = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
+  Record<number, CowSdk<SupportedChainId> | null>
+>((acc, networkId) => {
+  try {
+    acc[networkId] = new CowSdk(networkId, {
+      isDevEnvironment: true,
+    })
+  } catch (error) {
+    console.error('Instantiating CowSdk in development mode failed', error)
+  }
+
+  console.info(`CowSdk in development mode initialized on chain ${networkId}`)
 
   return acc
 }, {})

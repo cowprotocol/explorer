@@ -25,7 +25,7 @@ export type GetOrderApi<T, R> = {
 
 type TypeOrderApiParams = GetOrderParams | GetTxOrdersParams
 
-export async function tryGetOrderOnAllNetworks<TypeOrderResult>(
+export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   networkId: Network,
   getOrderApi: GetOrderApi<TypeOrderApiParams, TypeOrderResult>,
   networkIdSearchListRemaining: Network[] = NETWORK_ID_SEARCH_LIST,
@@ -56,6 +56,6 @@ export async function tryGetOrderOnAllNetworks<TypeOrderResult>(
     }
   } else {
     // Keep looking in other networks
-    return tryGetOrderOnAllNetworks(nextNetworkId, getOrderApi, remainingNetworkIds)
+    return tryGetOrderOnAllNetworksAndEnvironments(nextNetworkId, getOrderApi, remainingNetworkIds)
   }
 }

@@ -61,7 +61,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
   const notGpv2ExplorerData = useTxOrderExplorerLink(txHash, isZeroOrders)
-  const txBatchTrades = useTxBatchTrades(networkId, txHash, orders && orders.length)
+  const txBatchTrades = useTxBatchTrades(networkId, txHash, orders)
   const history = useHistory()
 
   // Avoid redirecting until another network is searched again

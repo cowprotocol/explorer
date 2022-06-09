@@ -12,7 +12,7 @@ import {
   GetOrderApi,
   GetOrderResult,
   SingleOrder,
-  tryGetOrderOnAllNetworks,
+  tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 
 type UseOrderResult = {
@@ -30,7 +30,7 @@ function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<
     defaultParams,
   }
 
-  return tryGetOrderOnAllNetworks<SingleOrder>(networkId, getOrderApi)
+  return tryGetOrderOnAllNetworksAndEnvironments<SingleOrder>(networkId, getOrderApi)
 }
 
 export function useOrderByNetwork(orderId: string, networkId: Network | null, updateInterval = 0): UseOrderResult {
