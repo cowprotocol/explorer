@@ -66,6 +66,10 @@ const Wrapper = styled(StyledUserDetailsTable)`
   ${media.mobile} {
     > thead > tr {
       display: none;
+
+      > th:first-child {
+        padding: 0 1rem;
+      }
     }
     > tbody > tr {
       grid-template-columns: none;
@@ -77,6 +81,10 @@ const Wrapper = styled(StyledUserDetailsTable)`
       &:hover {
         background: none;
         backdrop-filter: none;
+      }
+
+      td:first-child {
+        padding: 0 1rem;
       }
     }
     tr > td {
