@@ -23,7 +23,7 @@ export function OrderSurplusDisplayStyledByRow({ order }: Props): JSX.Element {
       amountSmartFormatting
       showHiddenSection={showAmountBesideSurplus}
       defaultWhenNoSurplus={defaultWhenNoSurplus}
-      strechHiddenSection
+      strechWhenNoSurplus
     />
   )
 }

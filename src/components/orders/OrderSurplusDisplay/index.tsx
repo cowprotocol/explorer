@@ -101,9 +101,9 @@ const IconWrapper = styled(FontAwesomeIcon)`
   }
 `
 
-const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSection: boolean }>`
+const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
   display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
-  ${({ strechHiddenSection }): FlattenSimpleInterpolation | false =>
+  ${({ strechHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
     strechHiddenSection &&
     css`
       width: 3.4rem;
@@ -117,18 +117,18 @@ export function OrderSurplusTooltipDisplay({
   amountSmartFormatting,
   showHiddenSection = false,
   defaultWhenNoSurplus,
-  strechHiddenSection = false,
+  strechWhenNoSurplus = false,
 }: Props & {
   showHiddenSection?: boolean
   defaultWhenNoSurplus?: string
-  strechHiddenSection?: boolean
+  strechWhenNoSurplus?: boolean
 }): JSX.Element {
   const surplus = useGetSurplus(order)
   const theme = useTheme()
 
   if (!surplus)
     return (
-      <HiddenSection showHiddenSection strechHiddenSection={strechHiddenSection}>
+      <HiddenSection showHiddenSection strechHiddenSection={strechWhenNoSurplus}>
         {defaultWhenNoSurplus}
       </HiddenSection>
     )
@@ -140,7 +140,7 @@ export function OrderSurplusTooltipDisplay({
         <span>
           <IconWrapper icon={faIcon} color={theme.green} />
           <Surplus>{surplus.percentage}</Surplus>
-          <HiddenSection showHiddenSection={showHiddenSection} strechHiddenSection>
+          <HiddenSection showHiddenSection={showHiddenSection}>
             {amountSmartFormatting ? surplus.formattedSmartAmount : surplus.amount}
           </HiddenSection>
         </span>
