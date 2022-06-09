@@ -129,7 +129,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
         lastWeekPricePercentageDifference: token.lastWeekPricePercentageDifference ?? null,
         lastDayUsdVolume: token.lastDayUsdVolume ?? null,
         lastWeekUsdPrices:
-          token.lastWeekUsdPrices && token.lastWeekUsdPrices.length > 0 ? token.lastWeekUsdPrices : null,
+          token.lastWeekUsdPrices && token.lastWeekUsdPrices.length > 6 ? token.lastWeekUsdPrices : null,
       }))
       .slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
   }
