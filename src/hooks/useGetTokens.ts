@@ -75,7 +75,6 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
           )?.averagePrice
 
           const prices = {
-            priceUsd,
             lastDayPricePercentageDifference: lastDayPrice
               ? getPercentageDifference(Number(priceUsd), Number(lastDayPrice))
               : undefined,
@@ -146,6 +145,7 @@ export const GET_TOKENS_QUERY = gql`
       symbol
       decimals
       totalVolumeUsd
+      priceUsd
     }
   }
 `
@@ -224,10 +224,8 @@ function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenDa
 
     if (token) {
       token.lastDayUsdVolume = values.lastDayUsdVolume
-      token.priceUsd = values.priceUsd
       token.lastDayPricePercentageDifference = values.lastDayPricePercentageDifference
       token.lastWeekPricePercentageDifference = values.lastWeekPricePercentageDifference
-      token.priceUsd = values.priceUsd
       token.lastWeekUsdPrices = values.lastWeekUsdPrices
     }
   }
@@ -238,7 +236,6 @@ export type TokenData = {
   lastDayUsdVolume?: number
   lastDayPricePercentageDifference?: number
   lastWeekPricePercentageDifference?: number
-  priceUsd: string
   lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
 }
 
