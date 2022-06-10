@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { media } from 'theme/styles/media'
+import { Dropdown, DropdownOption } from 'apps/explorer/components/common/Dropdown'
 
 const PaginationTextCSS = css`
   color: ${({ theme }): string => theme.textPrimary1};
@@ -29,6 +30,15 @@ const PaginationText = styled.p`
       display: none;
     }
   }
+`
+
+const PaginationItem = styled(DropdownOption)`
+  align-items: center;
+  cursor: pointer;
+  height: 32px;
+  line-height: 1.2;
+  padding: 0 1rem;
+  white-space: nowrap;
 `
 
 const Icon = styled(FontAwesomeIcon)`
@@ -70,16 +80,41 @@ const PaginationButton = styled.button`
 `
 PaginationButton.defaultProps = { disabled: true }
 
+const DropdownPagination = styled(Dropdown)`
+  .dropdown-options {
+    min-width: 60px;
+  }
+`
+const PaginationDropdownButton = styled.button`
+  ${PaginationTextCSS}
+  background: none;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+  &.selected {
+    background-color: transparent;
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  &:hover span {
+    color: ${({ theme }): string => theme.textActive1};
+  }
+`
+
+const quantityPerPage = [10, 20, 30, 50]
+
 type PaginationProps<T> = {
   context: Context<T>
   fixedResultsPerPage?: boolean
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TablePagination: React.FC<PaginationProps<any>> = ({ context }) => {
+const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResultsPerPage }) => {
   const {
     isLoading,
     tableState: { pageSize, pageOffset, hasNextPage, pageIndex, totalResults = -1 },
+    setPageSize,
     handleNextPage,
     handlePreviousPage,
     data: rows,
@@ -104,6 +139,28 @@ const TablePagination: React.FC<PaginationProps<any>> = ({ context }) => {
 
   return (
     <PaginationWrapper>
+      {!fixedResultsPerPage && (
+        <>
+          <PaginationText>Rows per page:</PaginationText>
+          <DropdownPagination
+            disabled={isLoading}
+            dropdownButtonContent={
+              <PaginationDropdownButton>
+                {pageSize} <span>▼</span>
+              </PaginationDropdownButton>
+            }
+            dropdownButtonContentOpened={
+              <PaginationDropdownButton className="selected">{pageSize} ▲</PaginationDropdownButton>
+            }
+            currentItem={quantityPerPage.findIndex((option) => option === pageSize)}
+            items={quantityPerPage.map((pageOption) => (
+              <PaginationItem key={pageOption} onClick={(): void => setPageSize(pageOption)}>
+                {pageOption}
+              </PaginationItem>
+            ))}
+          />
+        </>
+      )}
       <PaginationText className="legend">{renderPageLegend()}</PaginationText>{' '}
       <PaginationButton disabled={!hasPreviousPage} onClick={handlePreviousPage}>
         <Icon icon={faChevronLeft} className="fill" />
