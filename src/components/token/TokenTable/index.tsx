@@ -421,7 +421,7 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>24h</th>
           <th>7d</th>
           <th>24h volume</th>
-          <th>Total Volume</th>
+          <th>Total volume</th>
           <th>Last 7 days</th>
         </tr>
       }
