@@ -87,10 +87,10 @@ export function useGetSummaryData(): TotalSummaryResponse | undefined {
 
   const fetchAndBuildSummary = useCallback(async () => {
     setSummary((summary) => ({ ...summary, isLoading: true }))
-    // TODO: Once the sdk's runQuery method accepts DocumentNode update this
-    const data = (await COW_SDK[network]?.cowSubgraphApi.runQuery(summaryQuery as any)) as SummaryQuery
-    const summary = buildSummary(data)
-    setSummary({ ...summary, isLoading: false })
+    COW_SDK[network]?.cowSubgraphApi.runQuery(summaryQuery).then((data: SummaryQuery) => {
+      const summary = buildSummary(data)
+      setSummary({ ...summary, isLoading: false })
+    })
   }, [network])
 
   useEffect(() => {

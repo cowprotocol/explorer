@@ -4,7 +4,7 @@ import { createChart, IChartApi } from 'lightweight-charts'
 import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 
-import { Token } from 'api/operator'
+import { Token } from 'hooks/useGetTokens'
 import { useNetworkId } from 'state/network'
 
 import StyledUserDetailsTable, {
@@ -13,8 +13,12 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
+import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
+import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -34,7 +38,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4rem 21rem minmax(7rem, 12rem) repeat(5, minmax(10rem, 1.5fr));
+    grid-template-columns: 4rem 21rem minmax(7rem, 12rem) repeat(6, minmax(10rem, 1.5fr));
   }
   > tbody > tr > td,
   > thead > tr > th {
@@ -62,6 +66,10 @@ const Wrapper = styled(StyledUserDetailsTable)`
   ${media.mobile} {
     > thead > tr {
       display: none;
+
+      > th:first-child {
+        padding: 0 1rem;
+      }
     }
     > tbody > tr {
       grid-template-columns: none;
@@ -73,6 +81,10 @@ const Wrapper = styled(StyledUserDetailsTable)`
       &:hover {
         background: none;
         backdrop-filter: none;
+      }
+
+      td:first-child {
+        padding: 0 1rem;
       }
     }
     tr > td {
@@ -135,13 +147,18 @@ const HeaderTitle = styled.span`
 
 const TokenWrapper = styled.div`
   display: flex;
-  align-items: center;
   a {
-    display: none;
+    max-width: 10rem;
   }
   img {
+    margin-right: 1rem;
     width: 2.5rem;
     height: 2.5rem;
+  }
+  ${media.mobile} {
+    a {
+      max-width: none;
+    }
   }
 `
 
@@ -168,9 +185,11 @@ const ChartWrapper = styled.div`
 
 export type Props = StyledUserDetailsTableProps & {
   tokens: Token[] | undefined
+  tableState: TableState
 }
 
 interface RowProps {
+  index: number
   token: Token
 }
 
@@ -216,17 +235,13 @@ function _buildChart(
         labelVisible: false,
       },
       vertLine: {
-        visible: true,
-        style: 3,
-        width: 1,
-        color: theme.borderPrimary,
-        labelVisible: true,
+        visible: false,
       },
     },
   })
 }
 
-const RowToken: React.FC<RowProps> = ({ token }) => {
+const RowToken: React.FC<RowProps> = ({ token, index }) => {
   const {
     id,
     name,
@@ -234,35 +249,48 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     address,
     decimals,
     priceUsd,
-    last24hours,
-    last7Days: { currentVolume, changedVolume, values },
-    sevenDays,
-    lastDayVolume,
+    lastDayPricePercentageDifference,
+    lastWeekUsdPrices,
+    lastWeekPricePercentageDifference,
+    lastDayUsdVolume,
+    totalVolumeUsd,
   } = token
-  const erc20 = { name, address, decimals } as TokenErc20
-  const diffPercentageVolume = token && calcDiff(currentVolume, changedVolume)
-  const captionNameColor = getColorBySign(diffPercentageVolume || 0)
+  const erc20 = { name, address, symbol, decimals } as TokenErc20
   const network = useNetworkId()
   const theme = useTheme()
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
 
   useEffect(() => {
-    if (chartCreated || !chartContainerRef.current || !token) return
+    if (!lastWeekUsdPrices || chartCreated || !chartContainerRef.current || !token) return
     const chart = _buildChart(chartContainerRef.current, 100, 45, theme)
 
+    const color =
+      lastWeekUsdPrices.length > 2
+        ? getColorBySign((lastWeekUsdPrices[0].value - lastWeekUsdPrices[lastWeekUsdPrices.length - 1].value) * -1)
+        : 'grey'
     const series = chart.addLineSeries({
       lineWidth: 1,
-      color: theme[captionNameColor],
+      color: theme[color],
       lastValueVisible: false,
       priceLineVisible: false,
     })
 
-    series.setData(values)
+    series.setData(lastWeekUsdPrices)
 
     chart.timeScale().fitContent()
     setChartCreated(chart)
-  }, [token, theme, chartCreated, captionNameColor, values])
+  }, [token, theme, chartCreated, lastWeekUsdPrices])
+
+  const handleLoadingState = (key: unknown | null | undefined, node: JSX.Element): JSX.Element => {
+    if (key === null) {
+      return <span>-</span>
+    }
+    if (key === undefined) {
+      return <ShimmerBar />
+    }
+    return node
+  }
 
   if (!network) {
     return null
@@ -272,13 +300,12 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
     <tr key={id}>
       <td>
         <HeaderTitle>#</HeaderTitle>
-        <HeaderValue>{id}</HeaderValue>
+        <HeaderValue>{index + 1}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Name</HeaderTitle>
         <TokenWrapper>
           <TokenDisplay erc20={erc20} network={network} />
-          <HeaderValue>{name}</HeaderValue>
         </TokenWrapper>
       </td>
       <td>
@@ -287,31 +314,77 @@ const RowToken: React.FC<RowProps> = ({ token }) => {
       </td>
       <td>
         <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue> ${formatPrice({ price: new BigNumber(priceUsd), decimals: 2 })}</HeaderValue>
+        <HeaderValue>
+          <TextWithTooltip textInTooltip={`$${Number(priceUsd) || 0}`}>
+            ${Number(priceUsd) ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
+          </TextWithTooltip>
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>24h</HeaderTitle>
-        <HeaderValue captionColor={getColorBySign(last24hours)}>{last24hours}%</HeaderValue>
+        {handleLoadingState(
+          lastDayPricePercentageDifference,
+          <HeaderValue
+            captionColor={lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'}
+          >
+            {lastDayPricePercentageDifference && lastDayPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>,
+        )}
       </td>
       <td>
         <HeaderTitle>7d</HeaderTitle>
-        <HeaderValue captionColor={getColorBySign(sevenDays)}>{sevenDays}%</HeaderValue>
+        {handleLoadingState(
+          lastWeekPricePercentageDifference,
+          <HeaderValue
+            captionColor={
+              lastWeekPricePercentageDifference ? getColorBySign(lastWeekPricePercentageDifference) : 'grey'
+            }
+          >
+            {lastWeekPricePercentageDifference && lastWeekPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>,
+        )}
       </td>
       <td>
         <HeaderTitle>24h volume</HeaderTitle>
-        <HeaderValue>{lastDayVolume}</HeaderValue>
+        {handleLoadingState(
+          lastDayUsdVolume,
+          <HeaderValue>
+            <TextWithTooltip
+              textInTooltip={
+                lastDayUsdVolume
+                  ? `$${formatPrice({
+                      price: new BigNumber(lastDayUsdVolume),
+                      decimals: 2,
+                      thousands: true,
+                    })}`
+                  : '$0'
+              }
+            >
+              ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
+            </TextWithTooltip>
+          </HeaderValue>,
+        )}
+      </td>
+      <td>
+        <HeaderTitle>Total volume</HeaderTitle>
+        <HeaderValue>
+          <TextWithTooltip
+            textInTooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}`}
+          >
+            ${numberFormatter(Number(totalVolumeUsd))}
+          </TextWithTooltip>
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Last 7 days</HeaderTitle>
-        <ChartWrapper ref={chartContainerRef} />
+        {handleLoadingState(lastWeekUsdPrices, <ChartWrapper ref={chartContainerRef} />)}
       </td>
     </tr>
   )
 }
 
 const TokenTable: React.FC<Props> = (props) => {
-  const { tokens, showBorderTable = false } = props
-
+  const { tokens, tableState, showBorderTable = false } = props
   const tokenItems = (items: Token[] | undefined): JSX.Element => {
     let tableContent
     if (!items || items.length === 0) {
@@ -328,7 +401,7 @@ const TokenTable: React.FC<Props> = (props) => {
       tableContent = (
         <>
           {items.map((item, i) => (
-            <RowToken key={`${item.id}-${i}`} token={item} />
+            <RowToken key={`${item.id}-${i}`} index={i + tableState.pageOffset} token={item} />
           ))}
         </>
       )
@@ -348,6 +421,7 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>24h</th>
           <th>7d</th>
           <th>24h volume</th>
+          <th>Total volume</th>
           <th>Last 7 days</th>
         </tr>
       }

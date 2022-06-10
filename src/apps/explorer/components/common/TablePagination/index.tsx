@@ -3,7 +3,6 @@ import styled, { css } from 'styled-components'
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { media } from 'theme/styles/media'
-
 import { Dropdown, DropdownOption } from 'apps/explorer/components/common/Dropdown'
 
 const PaginationTextCSS = css`
@@ -12,34 +11,13 @@ const PaginationTextCSS = css`
   font-weight: normal;
   white-space: nowrap;
 `
+
 const PaginationWrapper = styled.span`
   ${PaginationTextCSS}
   align-items: center;
   display: flex;
   justify-content: center;
   padding-right: 1.5rem;
-`
-
-const DropdownPagination = styled(Dropdown)`
-  .dropdown-options {
-    min-width: 60px;
-  }
-`
-const PaginationDropdownButton = styled.button`
-  ${PaginationTextCSS}
-  background: none;
-  border: none;
-  white-space: nowrap;
-  cursor: pointer;
-  &.selected {
-    background-color: transparent;
-    cursor: not-allowed;
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  &:hover span {
-    color: ${({ theme }): string => theme.textActive1};
-  }
 `
 
 const PaginationText = styled.p`
@@ -62,6 +40,7 @@ const PaginationItem = styled(DropdownOption)`
   padding: 0 1rem;
   white-space: nowrap;
 `
+
 const Icon = styled(FontAwesomeIcon)`
   width: 2rem !important;
   height: 2rem;
@@ -101,6 +80,30 @@ const PaginationButton = styled.button`
 `
 PaginationButton.defaultProps = { disabled: true }
 
+const DropdownPagination = styled(Dropdown)`
+  .dropdown-options {
+    min-width: 60px;
+  }
+`
+const PaginationDropdownButton = styled.button`
+  ${PaginationTextCSS}
+  background: none;
+  border: none;
+  white-space: nowrap;
+  cursor: pointer;
+  &.selected {
+    background-color: transparent;
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  &:hover span {
+    color: ${({ theme }): string => theme.textActive1};
+  }
+`
+
+const quantityPerPage = [10, 20, 30, 50]
+
 type PaginationProps<T> = {
   context: Context<T>
   fixedResultsPerPage?: boolean
@@ -116,7 +119,6 @@ const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResults
     handlePreviousPage,
     data: rows,
   } = useContext(context)
-  const quantityPerPage = [10, 20, 30, 50]
 
   const renderPageLegend = (): string => {
     if (isLoading && !rows?.length) return '.. - ..'

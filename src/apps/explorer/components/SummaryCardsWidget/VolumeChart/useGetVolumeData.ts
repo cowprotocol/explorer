@@ -7,7 +7,7 @@ import { VolumePeriod } from './VolumeChartWidget'
 import { VolumeDataResponse } from './VolumeChart'
 
 type RawVolumeItem = {
-  timestamp: string
+  timestamp: number
   volumeUsd: string
 }
 

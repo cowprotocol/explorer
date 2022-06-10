@@ -8,7 +8,7 @@ import { DEFAULT_TIMEOUT } from 'const'
 import CowLoading from 'components/common/CowLoading'
 
 export const TokensTableWithData: React.FC = () => {
-  const { data: tokens, networkId } = useContext(TokensTableContext)
+  const { data: tokens, networkId, tableState } = useContext(TokensTableContext)
   const isFirstRender = useFirstRender()
   const [isFirstLoading, setIsFirstLoading] = useState(true)
 
@@ -36,6 +36,6 @@ export const TokensTableWithData: React.FC = () => {
       <CowLoading />
     </EmptyItemWrapper>
   ) : (
-    <TokenTable tokens={tokens} />
+    <TokenTable tokens={tokens} tableState={tableState} />
   )
 }

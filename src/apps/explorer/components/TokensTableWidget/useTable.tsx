@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 export interface TableState {
   pageSize: number
@@ -13,6 +13,7 @@ export interface TableOptions {
 }
 
 export interface TableStateSetters {
+  setPageOffset: (pageOffset: number) => void
   setPageSize: (pageSize: number) => void
   handleNextPage: () => void
   handlePreviousPage: () => void
@@ -35,34 +36,34 @@ export function useTable(options: TableOptions): TableStateAndSetters {
     ...initialState,
   })
 
-  const setPageSize = (newValue: number): void => {
+  const setPageSize = useCallback((newValue: number): void => {
     const offsetRestarted = 0
-    setState({
+    setState((state) => ({
       ...state,
       pageSize: newValue,
       pageOffset: offsetRestarted,
       pageIndex: getPageIndex(offsetRestarted, newValue),
-    })
-  }
+    }))
+  }, [])
 
-  const setPageOffset = (newOffset: number): void => {
-    setState({
+  const setPageOffset = useCallback((newOffset: number): void => {
+    setState((state) => ({
       ...state,
       pageOffset: newOffset,
       pageIndex: getPageIndex(newOffset, state.pageSize),
-    })
-  }
+    }))
+  }, [])
 
-  const handleNextPage = (): void => {
+  const handleNextPage = useCallback((): void => {
     const newOffset = state.pageOffset + state.pageSize
     setPageOffset(newOffset)
-  }
+  }, [state, setPageOffset])
 
-  const handlePreviousPage = (): void => {
+  const handlePreviousPage = useCallback((): void => {
     let newOffset = state.pageOffset - state.pageSize
     newOffset = newOffset < 0 ? 0 : newOffset
     setPageOffset(newOffset)
-  }
+  }, [state, setPageOffset])
 
-  return { state, setPageSize, handleNextPage, handlePreviousPage }
+  return { state, setPageSize, setPageOffset, handleNextPage, handlePreviousPage }
 }

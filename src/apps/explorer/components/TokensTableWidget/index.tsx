@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
 import { useNetworkId } from 'state/network'
-import { useGetTokens } from 'hooks/useGetTokens'
+import { Token, useGetTokens } from 'hooks/useGetTokens'
 import { useFlexSearch } from 'hooks/useFlexSearch'
-import { Token } from 'api/operator/types'
 import { TokensTableWithData } from 'apps/explorer/components/TokensTableWidget/TokensTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
@@ -90,18 +89,20 @@ const tabItems = (query: string, setQuery: (query: string) => void): TabItemInte
   ]
 }
 
+const RESULTS_PER_PAGE = 10
+
 export const TokensTableWidget: React.FC<Props> = () => {
   const networkId = useNetworkId() || undefined
-  const resultsPerPage = 5
   const [query, setQuery] = useState('')
   const {
     state: tableState,
     setPageSize,
+    setPageOffset,
     handleNextPage,
     handlePreviousPage,
-  } = useTable({ initialState: { pageOffset: 0, pageSize: resultsPerPage } })
-  const { tokens, isLoading, error } = useGetTokens(networkId)
-  const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol'])
+  } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
+  const { tokens, isLoading, error } = useGetTokens(networkId, tableState)
+  const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol', 'address'])
   const resultsLength = query.length ? filteredTokens.length : tokens.length
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < resultsLength
@@ -109,14 +110,27 @@ export const TokensTableWidget: React.FC<Props> = () => {
 
   useEffect(() => {
     if (query.length) {
-      tableState['pageOffset'] = 0
-      tableState['pageIndex'] = 1
+      setPageOffset(0)
     }
-  }, [query, tableState])
+  }, [query, setPageOffset])
+
+  useEffect(() => {
+    setQuery('')
+    setPageOffset(0)
+  }, [networkId, setPageOffset])
 
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
-    return data.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
+    return data
+      .map((token) => ({
+        ...token,
+        lastDayPricePercentageDifference: token.lastDayPricePercentageDifference ?? null,
+        lastWeekPricePercentageDifference: token.lastWeekPricePercentageDifference ?? null,
+        lastDayUsdVolume: token.lastDayUsdVolume ?? null,
+        lastWeekUsdPrices:
+          token.lastWeekUsdPrices && token.lastWeekUsdPrices.length > 6 ? token.lastWeekUsdPrices : null,
+      }))
+      .slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
   }
 
   if (!tokens?.length) {
@@ -137,6 +151,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
           networkId,
           tableState,
           setPageSize,
+          setPageOffset,
           handleNextPage,
           handlePreviousPage,
         }}
