@@ -255,7 +255,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
     lastDayUsdVolume,
     totalVolumeUsd,
   } = token
-  const erc20 = { name, address, decimals } as TokenErc20
+  const erc20 = { name, address, symbol, decimals } as TokenErc20
   const network = useNetworkId()
   const theme = useTheme()
   const chartContainerRef = useRef<HTMLDivElement>(null)

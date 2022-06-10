@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { gql } from '@apollo/client'
 import { subDays, subHours } from 'date-fns'
 import { Network, UiError } from 'types'
-import { COW_SDK } from 'const'
+import { COW_SDK, NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { UTCTimestamp } from 'lightweight-charts'
+import { isNativeToken } from 'utils'
 
 export function useGetTokens(networkId: Network | undefined, tableState: TableState): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)
@@ -21,7 +22,8 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
       try {
         const response = await COW_SDK[network]?.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(GET_TOKENS_QUERY)
         if (response) {
-          setTokens(response.tokens)
+          const tokens = enhanceNativeToken(response.tokens, network)
+          setTokens(tokens)
         }
       } catch (e) {
         const msg = `Failed to fetch tokens`
@@ -269,4 +271,17 @@ function lastHoursTimestamp(n: number): string {
 
 function lastDaysTimestamp(n: number): string {
   return (subDays(new Date(), n).getTime() / 1000).toFixed(0)
+}
+
+function enhanceNativeToken(tokens: TokenResponse[], network: Network): TokenResponse[] {
+  return tokens.map((token) => {
+    if (!isNativeToken(token.address)) {
+      return token
+    }
+    console.log(NATIVE_TOKEN_PER_NETWORK[network], token)
+    return {
+      ...token,
+      ...NATIVE_TOKEN_PER_NETWORK[network],
+    }
+  })
 }
