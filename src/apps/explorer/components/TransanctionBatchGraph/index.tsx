@@ -1,18 +1,15 @@
-import Cytoscape, {
-  ElementDefinition,
-  NodeSingular,
-  NodeDataDefinition,
-  EdgeDataDefinition,
-  EventObject,
-} from 'cytoscape'
+import Cytoscape, { ElementDefinition, NodeDataDefinition, EdgeDataDefinition, EventObject } from 'cytoscape'
 import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
+import fcose from 'cytoscape-fcose'
+import cola from 'cytoscape-cola'
+import dagre from 'cytoscape-dagre'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
-import { faRedo } from '@fortawesome/free-solid-svg-icons'
+import { faRedo, faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { GetTxBatchTradesResult as TxBatchData, Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
@@ -23,15 +20,20 @@ import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/Trans
 import { TypeEdgeOnTx, TypeNodeOnTx } from './types'
 import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
-import { STYLESHEET, ResetButton } from './styled'
+import { STYLESHEET, ResetButton, LayoutButton } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useWindowSizes from 'hooks/useWindowSizes'
+import { layouts, layoutsNames } from './layouts'
+import { Dropdown, DropdownOption } from 'apps/explorer/components/common/Dropdown'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
+Cytoscape.use(fcose)
+Cytoscape.use(cola)
+Cytoscape.use(dagre)
 
 const PROTOCOL_NAME = APP_NAME
 const WrapperCytoscape = styled(CytoscapeComponent)`
@@ -207,19 +209,7 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
-function getLayout(): Cytoscape.LayoutOptions {
-  return {
-    name: 'grid',
-    position: function (node: NodeSingular): { row: number; col: number } {
-      return { row: node.data('row'), col: node.data('col') }
-    },
-    fit: true, // whether to fit the viewport to the graph
-    padding: 10, // padding used on fit
-    avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
-    avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
-    nodeDimensionsIncludeLabels: false,
-  }
-}
+const iconDice = [faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive]
 
 function TransanctionBatchGraph({
   txBatchData: { error, isLoading, txSettlement },
@@ -229,14 +219,16 @@ function TransanctionBatchGraph({
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
+  const [layout, setLayout] = useState(layouts.fcose)
   const theme = useTheme()
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
+  const currenLayoutIndex = layoutsNames.findIndex((nameLayout) => nameLayout === layout.name)
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
       cytoscapeRef.current = ref
       const updateLayout = (): void => {
-        ref.layout(getLayout()).run()
+        ref.layout(layout).run()
         ref.fit()
       }
       ref.removeListener('resize')
@@ -245,7 +237,7 @@ function TransanctionBatchGraph({
       })
       updateLayout()
     },
-    [cytoscapeRef],
+    [layout],
   )
 
   useEffect(() => {
@@ -288,7 +280,7 @@ function TransanctionBatchGraph({
     <>
       <WrapperCytoscape
         elements={elements}
-        layout={getLayout()}
+        layout={layout}
         style={{ width: '100%', height: heightSize }}
         stylesheet={STYLESHEET(theme)}
         cy={setCytoscape}
@@ -301,6 +293,19 @@ function TransanctionBatchGraph({
       <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
         <FontAwesomeIcon icon={faRedo} /> <span>Reset</span>
       </ResetButton>
+      <LayoutButton>
+        <FontAwesomeIcon icon={iconDice[currenLayoutIndex]} />
+        <Dropdown
+          currentItem={currenLayoutIndex}
+          dropdownButtonContent={<span>Layout: {layout.name} ▼</span>}
+          dropdownButtonContentOpened={<span>Layout: {layout.name} ▲</span>}
+          items={layoutsNames.map((layoutName) => (
+            <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName])}>
+              {layoutName}
+            </DropdownOption>
+          ))}
+        />
+      </LayoutButton>
     </>
   )
 }
