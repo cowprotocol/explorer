@@ -366,7 +366,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         )}
       </td>
       <td>
-        <HeaderTitle>Total Volume</HeaderTitle>
+        <HeaderTitle>Total volume</HeaderTitle>
         <HeaderValue>
           <TextWithTooltip
             textInTooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}`}
