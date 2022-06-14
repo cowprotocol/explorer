@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { Network } from 'types'
-import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account } from 'api/tenderly'
+import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account, ALIAS_TRADER_NAME } from 'api/tenderly'
 import { useMultipleErc20 } from './useErc20'
 import { SingleErc20State } from 'state/erc20'
 import { Order } from 'api/operator'
@@ -13,7 +13,8 @@ interface TxBatchTrades {
 
 type Dict<T> = Record<string, T>
 
-type Accounts = Dict<Account> | undefined
+type AccountWithReceiver = Account & { owner?: string; uids?: string[] }
+type Accounts = Dict<AccountWithReceiver> | undefined
 
 export interface Settlement {
   tokens: Dict<SingleErc20State>
@@ -48,7 +49,7 @@ export function useTxBatchTrades(
 
       try {
         const { transfers, trades } = await getTradesAndTransfers(network, _txHash)
-        const _accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
+        const _accounts: Accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
         const orderIds = orders?.map((order) => order.owner) || []
         const transfersWithKind: Transfer[] = transfers.reduce(
           (acc, transfer) =>
@@ -63,9 +64,22 @@ export function useTxBatchTrades(
           )
         })
 
+        const accountsWithReceiver = _accounts
+        orders?.forEach((order) => {
+          if (!(order.receiver in _accounts)) {
+            accountsWithReceiver[order.receiver] = {
+              alias: ALIAS_TRADER_NAME,
+            }
+          }
+          accountsWithReceiver[order.receiver] = {
+            ...accountsWithReceiver[order.receiver],
+            owner: order.owner,
+          }
+        })
+
         setErc20Addresses(transfers.map((transfer: Transfer): string => transfer.token))
         setTxBatchTrades({ trades, transfers: transfersWithKind })
-        setAccounts(_accounts)
+        setAccounts(accountsWithReceiver)
       } catch (e) {
         const msg = `Failed to fetch tx batch trades`
         console.error(msg, e)
