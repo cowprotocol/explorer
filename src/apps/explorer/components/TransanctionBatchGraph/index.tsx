@@ -185,21 +185,25 @@ function bindPopper(
   const popperUpdate = (): void => popperRef.current?.scheduleUpdate()
 
   target.on('position', () => popperUpdate)
-  target.cy().removeListener('pan zoom')
+  target.cy().removeListener('pan zoom tapstart')
   target.cy().on('pan zoom resize', () => popperUpdate)
+  target.removeListener('click tapstart mouseout')
   const newTarget = document.getElementById(tooltipId)
+  const removePopper = (): void => {
+    if (newTarget) {
+      newTarget.remove()
+    }
+    popperRef.current?.destroy()
+  }
   target
-    .on('click tapstart', () => {
+    .on('click tapstart', (evt: Event) => {
+      evt.stopPropagation()
       if (newTarget) {
         newTarget.classList.add('active')
       }
     })
-    .on('mouseout tapend', () => {
-      if (newTarget) {
-        newTarget.remove()
-      }
-      popperRef.current?.destroy()
-    })
+    .on('mouseout', removePopper)
+  target.cy().on('tapstart', removePopper)
 }
 
 interface GraphBatchTxParams {
