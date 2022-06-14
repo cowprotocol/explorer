@@ -218,6 +218,11 @@ interface GraphBatchTxParams {
 
 const iconDice = [faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive]
 
+const updateLayout = (cy: Cytoscape.Core, layoutName: string): void => {
+  cy.layout(layouts[layoutName]).run()
+  cy.fit()
+}
+
 function TransanctionBatchGraph({
   txBatchData: { error, isLoading, txSettlement },
   networkId,
@@ -231,26 +236,26 @@ function TransanctionBatchGraph({
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const currenLayoutIndex = layoutsNames.findIndex((nameLayout) => nameLayout === layout.name)
+
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
       cytoscapeRef.current = ref
-      const updateLayout = (): void => {
-        ref.layout(layout).run()
-        ref.fit()
-      }
       ref.removeListener('resize')
       ref.on('resize', () => {
-        updateLayout()
+        updateLayout(ref, layout.name)
       })
-      updateLayout()
     },
     [layout],
   )
 
   useEffect(() => {
+    const cy = cytoscapeRef.current
     setElements([])
-    if (error || isLoading || !networkId || !heightSize) return
+    if (error || isLoading || !networkId || !heightSize || !cy) return
 
+    if (resetZoom) {
+      updateLayout(cy, layout.name)
+    }
     setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
     setResetZoom(null)
   }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom, layout.name])
