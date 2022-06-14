@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { useTheme } from 'styled-components'
+import styled, { css, useTheme, FlattenSimpleInterpolation } from 'styled-components'
 
 import { Order } from 'api/operator'
 
@@ -101,11 +101,37 @@ const IconWrapper = styled(FontAwesomeIcon)`
   }
 `
 
-export function OrderSurplusTooltipDisplay({ order }: Props): JSX.Element | null {
+const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
+  display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
+  ${({ strechHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
+    strechHiddenSection &&
+    css`
+      width: 3.4rem;
+      display: 'inline-block';
+      justify-content: end;
+    `}
+`
+
+export function OrderSurplusTooltipDisplay({
+  order,
+  amountSmartFormatting,
+  showHiddenSection = false,
+  defaultWhenNoSurplus,
+  strechWhenNoSurplus = false,
+}: Props & {
+  showHiddenSection?: boolean
+  defaultWhenNoSurplus?: string
+  strechWhenNoSurplus?: boolean
+}): JSX.Element {
   const surplus = useGetSurplus(order)
   const theme = useTheme()
 
-  if (!surplus) return null
+  if (!surplus)
+    return (
+      <HiddenSection showHiddenSection strechHiddenSection={strechWhenNoSurplus}>
+        {defaultWhenNoSurplus}
+      </HiddenSection>
+    )
 
   return (
     <BaseIconTooltipOnHover
@@ -114,6 +140,9 @@ export function OrderSurplusTooltipDisplay({ order }: Props): JSX.Element | null
         <span>
           <IconWrapper icon={faIcon} color={theme.green} />
           <Surplus>{surplus.percentage}</Surplus>
+          <HiddenSection showHiddenSection={showHiddenSection}>
+            {amountSmartFormatting ? surplus.formattedSmartAmount : surplus.amount}
+          </HiddenSection>
         </span>
       }
     />
