@@ -185,9 +185,8 @@ function bindPopper(
   const popperUpdate = (): void => popperRef.current?.scheduleUpdate()
 
   target.on('position', () => popperUpdate)
-  target.cy().removeListener('pan zoom')
+  target.cy().removeListener('pan zoom tapstart')
   target.cy().on('pan zoom resize', () => popperUpdate)
-  target.cy().removeListener('tapstart')
   target.removeListener('click tapstart mouseout')
   const newTarget = document.getElementById(tooltipId)
   const removePopper = (): void => {
