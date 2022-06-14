@@ -78,7 +78,12 @@ function getNetworkParentNode(account: Account, networkName: string): string | u
   return account.alias !== ALIAS_TRADER_NAME ? networkName : undefined
 }
 
-function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: number): ElementDefinition[] {
+function getNodes(
+  txSettlement: TxSettlement,
+  networkId: Network,
+  heightSize: number,
+  layout: string,
+): ElementDefinition[] {
   if (!txSettlement.accounts) return []
 
   const networkName = networkOptions.find((network) => network.id === networkId)?.name
@@ -124,7 +129,9 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   })
 
   return builder.build(
-    buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes),
+    layout === 'grid'
+      ? buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes)
+      : undefined,
   )
 }
 
@@ -244,9 +251,9 @@ function TransanctionBatchGraph({
     setElements([])
     if (error || isLoading || !networkId || !heightSize) return
 
-    setElements(getNodes(txSettlement, networkId, heightSize))
+    setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
     setResetZoom(null)
-  }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom])
+  }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom, layout.name])
 
   useEffect(() => {
     const cy = cytoscapeRef.current
@@ -297,8 +304,18 @@ function TransanctionBatchGraph({
         <FontAwesomeIcon icon={iconDice[currenLayoutIndex]} />
         <Dropdown
           currentItem={currenLayoutIndex}
-          dropdownButtonContent={<span>Layout: {layout.name} ▼</span>}
-          dropdownButtonContentOpened={<span>Layout: {layout.name} ▲</span>}
+          dropdownButtonContent={
+            <>
+              <span>Layout: {layout.name}</span>
+              <span>▼</span>
+            </>
+          }
+          dropdownButtonContentOpened={
+            <>
+              <span>Layout: {layout.name}</span>
+              <span>▲</span>
+            </>
+          }
           items={layoutsNames.map((layoutName) => (
             <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName])}>
               {layoutName}

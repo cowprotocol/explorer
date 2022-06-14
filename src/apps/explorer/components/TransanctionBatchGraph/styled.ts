@@ -51,8 +51,13 @@ export const LayoutButton = styled.span`
   align-items: center;
   padding: 0 0.6rem 0 0.6rem;
 
-  > span {
-    padding-right: 0.5rem;
+  > .dropdown-container {
+    padding-left: 0.6rem;
+    & span:last-child {
+      font-size: smaller;
+      font-weight: lighter;
+      padding-left: 0.6rem;
+    }
   }
 
   @media ${MEDIA.mediumDown} {
