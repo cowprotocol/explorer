@@ -2,8 +2,6 @@ import Cytoscape, { ElementDefinition, NodeDataDefinition, EdgeDataDefinition, E
 import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
 import fcose from 'cytoscape-fcose'
-import cola from 'cytoscape-cola'
-import dagre from 'cytoscape-dagre'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
@@ -32,8 +30,6 @@ import { Dropdown, DropdownOption } from 'apps/explorer/components/common/Dropdo
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
 Cytoscape.use(fcose)
-Cytoscape.use(cola)
-Cytoscape.use(dagre)
 
 const PROTOCOL_NAME = APP_NAME
 const WrapperCytoscape = styled(CytoscapeComponent)`

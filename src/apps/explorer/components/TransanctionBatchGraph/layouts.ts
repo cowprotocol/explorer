@@ -31,7 +31,6 @@ export const layouts = {
     packComponents: true,
     step: 'all',
     /* spectral layout options */
-
     // False for random, true for greedy sampling
     samplingType: true,
     // Sample size to construct distance matrix
@@ -42,7 +41,6 @@ export const layouts = {
     piTol: 0.0000001,
 
     /* incremental layout options */
-
     // Node repulsion (non overlapping) multiplier
     nodeRepulsion: (): number => 44500,
     // Ideal edge (non nested) length
@@ -71,7 +69,6 @@ export const layouts = {
     initialEnergyOnIncremental: 0.3,
 
     /* constraint options */
-
     // Fix desired nodes to predefined positions
     // [{nodeId: 'n1', position: {x: 100, y: 200}}, {...}]
     fixedNodeConstraint: undefined,
@@ -81,23 +78,6 @@ export const layouts = {
     // Place two nodes relatively in vertical/horizontal direction
     // [{top: 'n1', bottom: 'n2', gap: 100}, {left: 'n3', right: 'n4', gap: 75}, {...}]
     relativePlacementConstraint: undefined,
-  },
-  breadthfirst: {
-    ...defaultValues,
-    name: 'breadthfirst',
-  },
-  cola: {
-    ...defaultValues,
-    name: 'cola',
-    maxSimulationTime: 40000,
-    handleDisconnected: true,
-    avoidOverlap: true,
-    idealEdgeLength: 500,
-    centerGraph: false,
-  },
-  dagre: {
-    ...defaultValues,
-    name: 'dagre',
   },
 }
 

@@ -163,5 +163,3 @@ declare module 'eth-json-rpc-middleware/*'
 
 declare module 'cytoscape-no-overlap'
 declare module 'cytoscape-fcose'
-declare module 'cytoscape-cola'
-declare module 'cytoscape-dagre'
