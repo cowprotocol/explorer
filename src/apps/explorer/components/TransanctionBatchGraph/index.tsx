@@ -231,7 +231,7 @@ function TransanctionBatchGraph({
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
-  const [layout, setLayout] = useState(layouts.fcose)
+  const [layout, setLayout] = useState(layouts.grid)
   const theme = useTheme()
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
@@ -253,10 +253,10 @@ function TransanctionBatchGraph({
     setElements([])
     if (error || isLoading || !networkId || !heightSize || !cy) return
 
+    setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
     if (resetZoom) {
       updateLayout(cy, layout.name)
     }
-    setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
     setResetZoom(null)
   }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom, layout.name])
 
