@@ -13,7 +13,7 @@ export interface WCOptions {
 }
 
 const defaultRPC = {
-  [Network.GNOSIS_CHAIN]: 'https://rpc.xdaichain.com/',
+  [Network.GNOSIS_CHAIN]: 'https://rpc.gnosischain.com/',
 }
 
 export const setCustomWCOptions = (options: WCOptions): boolean => {
