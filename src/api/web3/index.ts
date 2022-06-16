@@ -90,7 +90,7 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
     case Network.RINKEBY:
       return infuraProvider(networkId)
     case Network.GNOSIS_CHAIN:
-      return 'https://dai.poa.network'
+      return 'https://rpc.gnosischain.com/'
     default:
       return undefined
   }
