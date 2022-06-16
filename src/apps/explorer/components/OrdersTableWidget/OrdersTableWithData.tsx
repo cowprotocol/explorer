@@ -10,7 +10,7 @@ import CowLoading from 'components/common/CowLoading'
 
 export const OrdersTableWithData: React.FC = () => {
   const {
-    orders,
+    data: orders,
     addressAccountParams: { ownerAddress, networkId },
   } = useContext(OrdersTableContext)
   const isFirstRender = useFirstRender()

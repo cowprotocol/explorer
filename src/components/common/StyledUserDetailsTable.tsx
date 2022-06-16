@@ -51,7 +51,7 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   }
 
   tbody tr:hover {
-    backdrop-filter: contrast(0.9);
+    background-color: ${({ theme }): string => theme.bg3};
   }
 
   .span-copybtn-wrap {
@@ -84,6 +84,7 @@ export const EmptyItemWrapper = styled.div`
   display: flex;
   width: 100%;
   font-size: ${({ theme }): string => theme.fontSizeDefault};
+  text-align: center;
 `
 
 export default StyledUserDetailsTable
