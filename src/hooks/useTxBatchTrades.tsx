@@ -31,7 +31,7 @@ export type GetTxBatchTradesResult = {
 export function useTxBatchTrades(
   networkId: Network | undefined,
   txHash: string,
-  orders: Order[],
+  orders: Order[] | undefined,
 ): GetTxBatchTradesResult {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
