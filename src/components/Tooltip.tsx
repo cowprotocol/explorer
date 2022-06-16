@@ -13,7 +13,7 @@ import Portal from 'components/Portal'
 // hooks
 import { usePopperOnClick, usePopperDefault, TOOLTIP_OFFSET } from 'hooks/usePopper'
 
-const QuestionIcon = styled(SVG)`
+const CustomSvgIcon = styled(SVG)`
   width: 1.4rem;
   height: 1.4rem;
   fill: ${({ theme }): string => theme.grey};
@@ -200,31 +200,29 @@ export const LongTooltipContainer = styled.div`
   line-height: 1.4;
 `
 
-interface HelpTooltipProps {
-  tooltip: ReactNode
-  placement?: Placement
-  offset?: number
-}
+type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclude<keyof T, Keys>> &
+  {
+    [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>
+  }[Keys]
 
-const HelperSpan = styled.span`
-  cursor: pointer;
-  transition: color 0.1s;
-  display: flex;
-  padding: 0 0.6rem 0 0;
+type BaseTooltipsProps = RequireAtLeastOne<
+  {
+    tooltip: ReactNode
+    placement?: Placement
+    offset?: number
+    sourceIconSvg?: string
+    targetContent?: ReactNode
+  },
+  'sourceIconSvg' | 'targetContent'
+>
 
-  :hover {
-    color: #748a47;
-  }
-`
-
-export const HelpTooltipContainer = styled(LongTooltipContainer)`
-  font-size: 1.6rem;
-  font-family: monospace;
-  padding: 1em;
-  color: black;
-`
-
-export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = 'top', offset }) => {
+export const BaseIconTooltipOnClick: React.FC<BaseTooltipsProps> = ({
+  tooltip,
+  placement = 'top',
+  offset,
+  sourceIconSvg,
+  targetContent,
+}) => {
   const {
     targetProps: { ref, onClick },
     tooltipProps,
@@ -241,9 +239,53 @@ export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = '
   return (
     <>
       <HelperSpan ref={ref} onClick={handleClick}>
-        <QuestionIcon src={questionImg} />
+        {sourceIconSvg ? <CustomSvgIcon src={sourceIconSvg} /> : targetContent}
       </HelperSpan>
       <Tooltip {...tooltipProps}>{tooltip}</Tooltip>
     </>
   )
+}
+
+export const BaseIconTooltipOnHover: React.FC<BaseTooltipsProps> = ({
+  tooltip,
+  placement = 'top',
+  offset,
+  sourceIconSvg,
+  targetContent,
+}) => {
+  const { tooltipProps, targetProps } = usePopperDefault<HTMLSpanElement>(placement, offset)
+
+  return (
+    <>
+      <HelperSpan {...targetProps}>{sourceIconSvg ? <CustomSvgIcon src={sourceIconSvg} /> : targetContent}</HelperSpan>
+      <Tooltip {...tooltipProps}>{tooltip}</Tooltip>
+    </>
+  )
+}
+
+type HelpTooltipProps = Omit<BaseTooltipsProps, 'sourceIconSvg' | 'targetContent'>
+
+const HelperSpan = styled.span`
+  cursor: pointer;
+  transition: color 0.1s;
+  display: flex;
+  padding: 0 0.6rem 0 0;
+
+  .default-icon-tooltip {
+    color: ${({ theme }): string => theme.grey};
+    :hover {
+      color: ${({ theme }): string => theme.white};
+    }
+  }
+`
+
+export const HelpTooltipContainer = styled(LongTooltipContainer)`
+  font-size: 1.6rem;
+  font-family: monospace;
+  padding: 1em;
+  color: black;
+`
+
+export const HelpTooltip: React.FC<HelpTooltipProps> = ({ tooltip, placement = 'top', offset }) => {
+  return <BaseIconTooltipOnClick sourceIconSvg={questionImg} tooltip={tooltip} placement={placement} offset={offset} />
 }

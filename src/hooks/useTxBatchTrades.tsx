@@ -4,6 +4,7 @@ import { Network } from 'types'
 import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account } from 'api/tenderly'
 import { useMultipleErc20 } from './useErc20'
 import { SingleErc20State } from 'state/erc20'
+import { Order } from 'api/operator'
 
 interface TxBatchTrades {
   trades: Trade[]
@@ -30,7 +31,7 @@ export type GetTxBatchTradesResult = {
 export function useTxBatchTrades(
   networkId: Network | undefined,
   txHash: string,
-  ordersFoundInTx: number | undefined,
+  orders: Order[] | undefined,
 ): GetTxBatchTradesResult {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -38,26 +39,43 @@ export function useTxBatchTrades(
   const [accounts, setAccounts] = useState<Accounts>()
   const [erc20Addresses, setErc20Addresses] = useState<string[]>([])
   const { value: valueErc20s, isLoading: areErc20Loading } = useMultipleErc20({ networkId, addresses: erc20Addresses })
+  const ordersFoundInTx = orders?.length
 
-  const _fetchTxTrades = useCallback(async (network: Network, _txHash: string): Promise<void> => {
-    setIsLoading(true)
-    setError('')
+  const _fetchTxTrades = useCallback(
+    async (network: Network, _txHash: string): Promise<void> => {
+      setIsLoading(true)
+      setError('')
 
-    try {
-      const { transfers, trades } = await getTradesAndTransfers(network, _txHash)
-      const _accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
+      try {
+        const { transfers, trades } = await getTradesAndTransfers(network, _txHash)
+        const _accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
+        const orderIds = orders?.map((order) => order.owner) || []
+        const transfersWithKind: Transfer[] = transfers.reduce(
+          (acc, transfer) =>
+            !orderIds.includes(transfer.from) && !orderIds.includes(transfer.to) ? [...acc, transfer] : acc,
+          [],
+        )
 
-      setErc20Addresses(transfers.map((transfer: Transfer): string => transfer.token))
-      setTxBatchTrades({ trades, transfers })
-      setAccounts(_accounts)
-    } catch (e) {
-      const msg = `Failed to fetch tx batch trades`
-      console.error(msg, e)
-      setError(msg)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+        orders?.forEach((order) => {
+          const { owner, kind } = order
+          transfersWithKind.push(
+            ...transfers.filter((t) => [t.from, t.to].includes(owner)).map((transfer) => ({ ...transfer, kind })),
+          )
+        })
+
+        setErc20Addresses(transfers.map((transfer: Transfer): string => transfer.token))
+        setTxBatchTrades({ trades, transfers: transfersWithKind })
+        setAccounts(_accounts)
+      } catch (e) {
+        const msg = `Failed to fetch tx batch trades`
+        console.error(msg, e)
+        setError(msg)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [orders],
+  )
 
   useEffect(() => {
     if (!networkId || !ordersFoundInTx) {

@@ -22,11 +22,12 @@ import TradeOrderType from 'components/common/TradeOrderType'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 import Spinner from 'components/common/Spinner'
+import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 7rem repeat(2, minmax(16rem, 1.5fr)) repeat(2, minmax(18rem, 2fr)) 1fr;
+    grid-template-columns: 11rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 10rem minmax(21.6rem, 2fr) 1.18fr;
   }
   tr > td {
     span.span-inside-tooltip {
@@ -211,6 +212,12 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
         <HeaderValue>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</HeaderValue>
       </td>
       <td>
+        <HeaderTitle>Surplus</HeaderTitle>
+        <HeaderValue>
+          <OrderSurplusDisplayStyledByRow order={order} />
+        </HeaderValue>
+      </td>
+      <td>
         <HeaderTitle>Created</HeaderTitle>
         <HeaderValue>
           <DateDisplay date={creationDate} showIcon={true} />
@@ -267,6 +274,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
           <th>
             Limit price <Icon icon={faExchangeAlt} onClick={invertLimitPrice} />
           </th>
+          <th>Surplus</th>
           <th>Created</th>
           <th>Status</th>
         </tr>
