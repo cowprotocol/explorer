@@ -5,6 +5,8 @@ import TraderOtherIcon from 'assets/img/TraderOther.svg'
 import CowProtocolIcon from 'assets/img/CoW.svg'
 import DexIcon from 'assets/img/Dex.svg'
 import { MEDIA } from 'const'
+import { Dropdown } from 'apps/explorer/components/common/Dropdown'
+import { ArrowIconCSS } from 'components/icons/cssIcons'
 
 const FloatingButton = css`
   cursor: pointer;
@@ -51,18 +53,32 @@ export const LayoutButton = styled.span`
   align-items: center;
   padding: 0 0.6rem 0 0.6rem;
 
-  > .dropdown-container {
-    padding-left: 0.6rem;
-    & span:last-child {
-      font-size: smaller;
-      font-weight: lighter;
-      padding-left: 0.6rem;
-    }
-  }
-
   @media ${MEDIA.mediumDown} {
     top: 6rem;
     right: 0.8rem;
+  }
+`
+
+export const DropdownWrapper = styled(Dropdown)`
+  &.dropdown-container {
+    ${ArrowIconCSS}
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    & div:first-child {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      @media ${MEDIA.mediumDown} {
+        justify-content: center;
+      }
+    }
+    > .dropdown-options {
+      min-width: 7rem;
+    }
   }
 `
 

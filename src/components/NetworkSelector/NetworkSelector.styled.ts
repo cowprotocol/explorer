@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { COLOURS } from 'styles'
 import { media } from 'theme/styles/media'
+import { ArrowIconCSS } from 'components/icons/cssIcons'
 
 const { fadedGreyishWhiteOpacity, white, gnosisChainColor } = COLOURS
 
@@ -9,22 +10,11 @@ export const SelectorContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
-  .arrow {
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: ${({ theme }): string => `5px solid ${theme.grey}`};
-    transform: rotate(180deg);
-    transition: transform 0.1s linear;
-    &.open {
-      transform: rotate(0deg);
-      transition: transform 0.1s linear;
-    }
-  }
   ${media.xSmallDown} {
     padding-right: 2rem;
   }
+
+  ${ArrowIconCSS}
 `
 
 export const OptionsContainer = styled.div<{ width: number }>`

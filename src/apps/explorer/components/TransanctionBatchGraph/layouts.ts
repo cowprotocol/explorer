@@ -1,10 +1,11 @@
 import { NodeSingular } from 'cytoscape'
 
-export type CytoscapeLayouts = 'grid' | 'fcose' | 'breadthfirst' | 'cola' | 'dagre'
+export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose'
 
 const defaultValues = {
   padding: 10, // padding used on fit
   animate: true,
+  fit: true, // whether to fit the viewport to the graph
 }
 export const layouts = {
   grid: {
@@ -12,11 +13,23 @@ export const layouts = {
     position: function (node: NodeSingular): { row: number; col: number } {
       return { row: node.data('row'), col: node.data('col') }
     },
-    fit: true, // whether to fit the viewport to the graph
     avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
     avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
     nodeDimensionsIncludeLabels: false,
+    condense: false,
     ...defaultValues,
+  },
+  klay: {
+    ...defaultValues,
+    name: 'klay',
+    klay: {
+      addUnnecessaryBendpoints: true, // Adds bend points even if an edge does not change direction.
+      aspectRatio: 1.6, // The aimed aspect ratio of the drawing, that is the quotient of width by height
+      borderSpacing: 20, // Minimal amount of space to be left to the border
+      compactComponents: false, // Tries to further compact components (disconnected sub-graphs).
+      edgeRouting: 'SPLINES',
+      edgeSpacingFactor: 2,
+    },
   },
   fcose: {
     ...defaultValues,
@@ -25,7 +38,6 @@ export const layouts = {
     randomize: true,
     animationDuration: 1000,
     animationEasing: undefined,
-    fit: true,
     nodeDimensionsIncludeLabels: false,
     uniformNodeDimensions: false,
     packComponents: true,
@@ -42,13 +54,13 @@ export const layouts = {
 
     /* incremental layout options */
     // Node repulsion (non overlapping) multiplier
-    nodeRepulsion: (): number => 44500,
+    nodeRepulsion: (): number => 4500,
     // Ideal edge (non nested) length
     idealEdgeLength: (): number => 300,
     // Divisor to compute edge forces
-    edgeElasticity: (): number => 0.9,
+    edgeElasticity: (): number => 0.01,
     // Nesting factor (multiplier) to compute ideal edge length for nested edges
-    nestingFactor: 0.1,
+    nestingFactor: 0.9,
     // Maximum number of iterations to perform - this is a suggested value and might be adjusted by the algorithm as required
     numIter: 2500,
     // For enabling tiling
@@ -58,13 +70,13 @@ export const layouts = {
     // Represents the amount of the horizontal space to put between the zero degree members during the tiling operation(can also be a function)
     tilingPaddingHorizontal: 10,
     // Gravity force (constant)
-    gravity: 0.25,
+    gravity: 0.8,
     // Gravity range (constant) for compounds
     gravityRangeCompound: 1.5,
     // Gravity force (constant) for compounds
     gravityCompound: 1.0,
     // Gravity range (constant)
-    gravityRange: 3.8,
+    gravityRange: 0.5,
     // Initial cooling factor for incremental layout
     initialEnergyOnIncremental: 0.3,
 

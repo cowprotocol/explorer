@@ -7867,6 +7867,13 @@ cytoscape-fcose@^2.1.0:
   dependencies:
     cose-base "^2.0.0"
 
+cytoscape-klay@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/cytoscape-klay/-/cytoscape-klay-3.1.4.tgz#0e5bbb5c482b384b2ff2485150173aaecebc324b"
+  integrity sha512-VwPj0VR25GPfy6qXVQRi/MYlZM/zkdvRhHlgqbM//lSvstgM6fhp3ik/uM8Wr8nlhskfqz/M1fIDmR6UckbS2A==
+  dependencies:
+    klayjs "^0.4.1"
+
 cytoscape-no-overlap@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cytoscape-no-overlap/-/cytoscape-no-overlap-1.0.1.tgz#e677147b357f4ec2aac9c05e04e7c6b9e0ff822b"
@@ -13641,6 +13648,11 @@ klaw@^1.0.0:
   integrity sha1-QIhDO0azsbolnXh4XY6W9zugJDk=
   optionalDependencies:
     graceful-fs "^4.1.9"
+
+klayjs@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/klayjs/-/klayjs-0.4.1.tgz#5bf9fadc7a3e44b94082bba501e7d803076dcfc2"
+  integrity sha512-WUNxuO7O79TEkxCj6OIaK5TJBkaWaR/IKNTakgV9PwDn+mrr63MLHed34AcE2yTaDntgO6l0zGFIzhcoTeroTA==
 
 kleur@^3.0.3:
   version "3.0.3"
