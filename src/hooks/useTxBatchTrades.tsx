@@ -5,6 +5,7 @@ import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account, ALIA
 import { useMultipleErc20 } from './useErc20'
 import { SingleErc20State } from 'state/erc20'
 import { Order } from 'api/operator'
+import BigNumber from 'bignumber.js'
 
 interface TxBatchTrades {
   trades: Trade[]
@@ -29,6 +30,26 @@ export type GetTxBatchTradesResult = {
   isLoading: boolean
 }
 
+const getGroupedByTransfers = (arr: Transfer[]): Transfer[] => {
+  return [
+    ...arr
+      .reduce((r, t) => {
+        const key = `${t.token}-${t.from}-${t.to}`
+
+        const item =
+          r.get(key) ||
+          Object.assign({}, t, {
+            value: new BigNumber(0),
+          })
+
+        item.value = BigNumber.sum(item.value, new BigNumber(t.value))
+
+        return r.set(key, item)
+      }, new Map())
+      .values(),
+  ]
+}
+
 export function useTxBatchTrades(
   networkId: Network | undefined,
   txHash: string,
@@ -50,18 +71,30 @@ export function useTxBatchTrades(
       try {
         const { transfers, trades } = await getTradesAndTransfers(network, _txHash)
         const _accounts: Accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
-        const orderIds = orders?.map((order) => order.owner) || []
-        const transfersWithKind: Transfer[] = transfers.reduce(
-          (acc, transfer) =>
-            !orderIds.includes(transfer.from) && !orderIds.includes(transfer.to) ? [...acc, transfer] : acc,
-          [],
+        const orderOwnersReceivers = [
+          ...(orders?.map((order) => order.owner) || []),
+          ...(orders?.map((order) => order.receiver) || []),
+        ]
+        const groupedByTransfers = getGroupedByTransfers(transfers)
+        const transfersWithKind: Transfer[] = groupedByTransfers.filter(
+          (transfer) => !orderOwnersReceivers.includes(transfer.from) && !orderOwnersReceivers.includes(transfer.to),
         )
-
         orders?.forEach((order) => {
-          const { owner, kind } = order
+          const { owner, kind, receiver } = order
+          if (!orderOwnersReceivers.includes(owner)) return
           transfersWithKind.push(
-            ...transfers.filter((t) => [t.from, t.to].includes(owner)).map((transfer) => ({ ...transfer, kind })),
+            ...groupedByTransfers
+              .filter((t) => [t.from, t.to].includes(owner))
+              .map((transfer) => ({ ...transfer, kind })),
           )
+
+          transfersWithKind.push(
+            ...groupedByTransfers
+              .filter((t) => [t.from, t.to].includes(receiver))
+              .map((transfer) => ({ ...transfer, kind })),
+          )
+          orderOwnersReceivers.splice(orderOwnersReceivers.indexOf(owner), 1)
+          orderOwnersReceivers.splice(orderOwnersReceivers.indexOf(receiver), 1)
         })
 
         const accountsWithReceiver = _accounts
@@ -77,7 +110,7 @@ export function useTxBatchTrades(
           }
         })
 
-        setErc20Addresses(transfers.map((transfer: Transfer): string => transfer.token))
+        setErc20Addresses(transfersWithKind.map((transfer: Transfer): string => transfer.token))
         setTxBatchTrades({ trades, transfers: transfersWithKind })
         setAccounts(accountsWithReceiver)
       } catch (e) {

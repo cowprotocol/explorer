@@ -44,9 +44,9 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
   }
 `
 
-function getTypeNode(account: Account): TypeNodeOnTx {
+function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
   let type = TypeNodeOnTx.Dex
-  if (account.alias === ALIAS_TRADER_NAME) {
+  if (account.alias === ALIAS_TRADER_NAME || account.owner) {
     type = TypeNodeOnTx.Trader
   } else if (account.alias === PROTOCOL_NAME) {
     type = TypeNodeOnTx.CowProtocol
@@ -90,19 +90,13 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
     let parentNodeName = getNetworkParentNode(account, networkNode.alias)
 
     const receiverNode = { alias: `${abbreviateString(account.owner || key, 4, 4)}-group` }
-    if (account.owner) {
+
+    if (account.owner && account.owner !== key) {
       if (!groupNodes.includes(receiverNode.alias)) {
         builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
         groupNodes.push(receiverNode.alias)
       }
-      builder.node(
-        {
-          id: `${key}-receiver`,
-          type: TypeNodeOnTx.Trader,
-          entity: { ...account, alias: abbreviateString(key, 4, 4) },
-        },
-        receiverNode.alias,
-      )
+      parentNodeName = receiverNode.alias
     }
 
     if (getTypeNode(account) === TypeNodeOnTx.CowProtocol) {
@@ -113,7 +107,7 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
         [],
       )
 
-      if (receivers.includes(key)) {
+      if (receivers.includes(key) && account.owner !== key) {
         if (!groupNodes.includes(receiverNode.alias)) {
           builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
           groupNodes.push(receiverNode.alias)
