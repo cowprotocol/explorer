@@ -33,7 +33,7 @@ import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useWindowSizes from 'hooks/useWindowSizes'
-import { layouts, layoutsNames } from './layouts'
+import { layouts, LayoutNames } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
 
 Cytoscape.use(popper)
@@ -258,7 +258,7 @@ function TransanctionBatchGraph({
   const theme = useTheme()
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
-  const currenLayoutIndex = layoutsNames.findIndex((nameLayout) => nameLayout === layout.name)
+  const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
 
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
@@ -268,7 +268,7 @@ function TransanctionBatchGraph({
         updateLayout(ref, layout.name)
       })
     },
-    [layout],
+    [layout.name],
   )
 
   useEffect(() => {
@@ -326,17 +326,19 @@ function TransanctionBatchGraph({
         zoom={1}
       />
       <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
-        <FontAwesomeIcon icon={faRedo} /> <span>Reset</span>
+        <FontAwesomeIcon icon={faRedo} /> <span>{layout.name === 'fcose' ? 'Play' : 'Reset'}</span>
       </ResetButton>
       <LayoutButton>
         <DropdownWrapper
-          currentItem={currenLayoutIndex}
-          dropdownButtonContent={<DropdownButtonContent icon={iconDice[currenLayoutIndex]} layout={layout.name} />}
-          dropdownButtonContentOpened={
-            <DropdownButtonContent icon={iconDice[currenLayoutIndex]} layout={layout.name} open />
+          currentItem={currentLayoutIndex}
+          dropdownButtonContent={
+            <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} />
           }
-          items={layoutsNames.map((layoutName) => (
-            <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName])}>
+          dropdownButtonContentOpened={
+            <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} open />
+          }
+          items={Object.values(LayoutNames).map((layoutName) => (
+            <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
               {layoutName}
             </DropdownOption>
           ))}

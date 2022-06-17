@@ -35,6 +35,7 @@ export const ResetButton = styled.button`
   ${FloatingButton}
   top: 1rem;
   right: 1.6rem;
+  min-width: 6.586rem;
 
   @media ${MEDIA.mediumDown} {
     top: 2.4rem;

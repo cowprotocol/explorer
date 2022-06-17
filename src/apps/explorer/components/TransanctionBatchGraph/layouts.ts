@@ -1,13 +1,17 @@
-import { NodeSingular } from 'cytoscape'
+import { LayoutOptions, NodeSingular } from 'cytoscape'
 
 export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose'
+
+type CustomLayoutOptions = LayoutOptions & {
+  [key: string]: unknown
+}
 
 const defaultValues = {
   padding: 10, // padding used on fit
   animate: true,
   fit: true, // whether to fit the viewport to the graph
 }
-export const layouts = {
+export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
   grid: {
     name: 'grid',
     position: function (node: NodeSingular): { row: number; col: number } {
@@ -93,4 +97,8 @@ export const layouts = {
   },
 }
 
-export const layoutsNames = Object.keys(layouts)
+export enum LayoutNames {
+  grid = 'Grid',
+  klay = 'KLay',
+  fcose = 'FCoSE',
+}
