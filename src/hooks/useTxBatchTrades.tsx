@@ -5,6 +5,7 @@ import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account } fro
 import { useMultipleErc20 } from './useErc20'
 import { SingleErc20State } from 'state/erc20'
 import { Order } from 'api/operator'
+import { usePrevious } from './usePrevious'
 
 interface TxBatchTrades {
   trades: Trade[]
@@ -37,6 +38,7 @@ export function useTxBatchTrades(
   const [error, setError] = useState('')
   const [txBatchTrades, setTxBatchTrades] = useState<TxBatchTrades>({ trades: [], transfers: [] })
   const [accounts, setAccounts] = useState<Accounts>()
+  const txOrders = usePrevious(JSON.stringify(orders?.map((o) => ({ owner: o.owner, kind: o.kind }))))
   const [erc20Addresses, setErc20Addresses] = useState<string[]>([])
   const { value: valueErc20s, isLoading: areErc20Loading } = useMultipleErc20({ networkId, addresses: erc20Addresses })
 
@@ -60,9 +62,8 @@ export function useTxBatchTrades(
           ...transfers.filter((t) => [t.from, t.to].includes(owner)).map((transfer) => ({ ...transfer, kind })),
         )
       })
-
       setErc20Addresses(transfers.map((transfer: Transfer): string => transfer.token))
-      setTxBatchTrades({ trades, transfers: transfersWithKind })
+      setTxBatchTrades({ trades, transfers })
       setAccounts(_accounts)
     } catch (e) {
       const msg = `Failed to fetch tx batch trades`
@@ -74,13 +75,12 @@ export function useTxBatchTrades(
   }, [])
 
   useEffect(() => {
-    if (!networkId || !orders?.length) {
+    if (!networkId || !txOrders) {
       return
     }
 
-    _fetchTxTrades(networkId, txHash, orders)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_fetchTxTrades, networkId, txHash, orders?.length])
+    _fetchTxTrades(networkId, txHash, JSON.parse(txOrders))
+  }, [_fetchTxTrades, networkId, txHash, txOrders])
 
   return {
     txSettlement: { ...txBatchTrades, tokens: valueErc20s, accounts },

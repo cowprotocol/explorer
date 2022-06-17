@@ -29,6 +29,7 @@ import {
 } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChartWidget'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { useNetworkId } from 'state/network'
+import { usePrevious } from 'hooks/usePrevious'
 
 const DEFAULT_CHART_HEIGHT = 214 // px
 
@@ -69,13 +70,8 @@ function _formatAmount(amount: string): string {
  *  example: <lastRecordId>-<volumePeriodSelected>
  * */
 function usePreviousLastValueData<T>(value: T): T | undefined {
-  const ref = useRef<T>()
-
-  useEffect(() => {
-    ref.current = value
-  }, [value])
-
-  return ref.current
+  const previousValue = usePrevious(value)
+  return previousValue
 }
 
 function _buildChart(
