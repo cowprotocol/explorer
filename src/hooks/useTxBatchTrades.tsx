@@ -71,15 +71,16 @@ export function useTxBatchTrades(
       try {
         const { transfers, trades } = await getTradesAndTransfers(network, _txHash)
         const _accounts: Accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
+        const filteredOrders = orders?.filter((order) => _accounts[order.owner])
         const orderOwnersReceivers = [
-          ...(orders?.map((order) => order.owner) || []),
-          ...(orders?.map((order) => order.receiver) || []),
+          ...(filteredOrders?.map((order) => order.owner) || []),
+          ...(filteredOrders?.map((order) => order.receiver) || []),
         ]
         const groupedByTransfers = getGroupedByTransfers(transfers)
         const transfersWithKind: Transfer[] = groupedByTransfers.filter(
           (transfer) => !orderOwnersReceivers.includes(transfer.from) && !orderOwnersReceivers.includes(transfer.to),
         )
-        orders?.forEach((order) => {
+        filteredOrders?.forEach((order) => {
           const { owner, kind, receiver } = order
           if (!orderOwnersReceivers.includes(owner)) return
           transfersWithKind.push(
@@ -98,7 +99,7 @@ export function useTxBatchTrades(
         })
 
         const accountsWithReceiver = _accounts
-        orders?.forEach((order) => {
+        filteredOrders?.forEach((order) => {
           if (!(order.receiver in _accounts)) {
             accountsWithReceiver[order.receiver] = {
               alias: ALIAS_TRADER_NAME,
