@@ -65,15 +65,6 @@ function _formatAmount(amount: string): string {
   return formatSmart({ amount, precision: 0, decimals: 0 })
 }
 
-/* Store an ID to check if there is new data that
- * requires the graph to be rendered.
- *  example: <lastRecordId>-<volumePeriodSelected>
- * */
-function usePreviousLastValueData<T>(value: T): T | undefined {
-  const previousValue = usePrevious(value)
-  return previousValue
-}
-
 function _buildChart(
   chartContainer: HTMLDivElement,
   width: number | undefined,
@@ -205,8 +196,8 @@ export function VolumeChart({
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const [crossHairData, setCrossHairData] = useState<CrossHairData | null>(null)
   const network = useNetworkId()
-  const previousPeriod = usePreviousLastValueData(period)
-  const previousNetwork = usePreviousLastValueData(network)
+  const previousPeriod = usePrevious(period)
+  const previousNetwork = usePrevious(network)
   const periodTitle = period && volumePeriodTitle.get(period)
 
   // reset the chart when the volume/network period is changed
