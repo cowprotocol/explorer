@@ -31,7 +31,12 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   networkIdSearchListRemaining: Network[] = NETWORK_ID_SEARCH_LIST,
 ): Promise<GetOrderResult<TypeOrderResult>> {
   // Get order
-  const order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId })
+  let order = null
+  try {
+    order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId })
+  } catch (error) {
+    console.log('Order not found', { ...getOrderApi.defaultParams, networkId })
+  }
 
   if (order || networkIdSearchListRemaining.length === 0) {
     // We found the order in the right network
@@ -41,21 +46,27 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   }
 
   // If we didn't find the order in the current network, we look in different networks
-  const [nextNetworkId, ...remainingNetworkIds] = networkIdSearchListRemaining.filter((network) => network != networkId)
+  const remainingNetworkIds = networkIdSearchListRemaining.filter((network) => network != networkId)
 
-  // Try to get the oder in another network (to see if the ID is OK, but the network not)
-  const isOrderInDifferentNetwork = await getOrderApi
-    .api({ ...getOrderApi.defaultParams, networkId: nextNetworkId })
-    .then((_order) => _order !== null)
-
-  if (isOrderInDifferentNetwork) {
-    // If the order exist in the other network
-    return {
-      order: null,
-      errorOrderPresentInNetworkId: nextNetworkId,
+  // Try to get the order in another network (to see if the ID is OK, but the network not)
+  for (const currentNetworkId of remainingNetworkIds) {
+    let order = null
+    try {
+      order = await getOrderApi.api({ ...getOrderApi.defaultParams, networkId: currentNetworkId })
+    } catch (error) {
+      console.log('Order not found', { ...getOrderApi.defaultParams, networkId: currentNetworkId })
     }
-  } else {
-    // Keep looking in other networks
-    return tryGetOrderOnAllNetworksAndEnvironments(nextNetworkId, getOrderApi, remainingNetworkIds)
+
+    if (order) {
+      // If the order exist in the other network
+      return {
+        order: order,
+        errorOrderPresentInNetworkId: currentNetworkId,
+      }
+    }
+  }
+
+  return {
+    order,
   }
 }

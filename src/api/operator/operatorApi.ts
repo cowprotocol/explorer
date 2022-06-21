@@ -71,12 +71,14 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
 
   if (!cowInstance || !cowInstanceDev) return null
 
+  let order = null
   try {
-    const order = await cowInstance.cowApi.getOrder(orderId)
-    return order
+    order = await cowInstance.cowApi.getOrder(orderId)
   } catch (error) {
-    return cowInstanceDev.cowApi.getOrder(orderId)
+    order = await cowInstanceDev.cowApi.getOrder(orderId)
   }
+
+  return order
 }
 
 /**
