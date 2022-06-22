@@ -29,6 +29,7 @@ import {
 } from 'apps/explorer/components/SummaryCardsWidget/VolumeChart/VolumeChartWidget'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { useNetworkId } from 'state/network'
+import { usePrevious } from 'hooks/usePrevious'
 
 const DEFAULT_CHART_HEIGHT = 214 // px
 
@@ -62,20 +63,6 @@ export function PeriodButton({
 
 function _formatAmount(amount: string): string {
   return formatSmart({ amount, precision: 0, decimals: 0 })
-}
-
-/* Store an ID to check if there is new data that
- * requires the graph to be rendered.
- *  example: <lastRecordId>-<volumePeriodSelected>
- * */
-function usePreviousLastValueData<T>(value: T): T | undefined {
-  const ref = useRef<T>()
-
-  useEffect(() => {
-    ref.current = value
-  }, [value])
-
-  return ref.current
 }
 
 function _buildChart(
@@ -209,8 +196,8 @@ export function VolumeChart({
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const [crossHairData, setCrossHairData] = useState<CrossHairData | null>(null)
   const network = useNetworkId()
-  const previousPeriod = usePreviousLastValueData(period)
-  const previousNetwork = usePreviousLastValueData(network)
+  const previousPeriod = usePrevious(period)
+  const previousNetwork = usePrevious(network)
   const periodTitle = period && volumePeriodTitle.get(period)
 
   // reset the chart when the volume/network period is changed
