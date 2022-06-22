@@ -75,38 +75,22 @@ export default class ElementsBuilder {
   }
 
   build(customLayoutNodes?: CustomLayoutNodes): ElementDefinition[] {
+    let edges = addClassWithMoreThanOneBidirectional(this._edges, this._countEdgeDirection)
+    edges = addClassWithKind(edges)
     if (!customLayoutNodes) {
-      return this._buildCoseLayout()
-    } else {
-      const edges = addClassWithMoreThanOneBidirectional(this._edges, this._countEdgeDirection)
-      const { center, nodes } = customLayoutNodes
-      return [center, ...nodes, ...addClassWithKind(edges)]
+      return this._buildLayout(edges)
     }
+
+    const { center, nodes } = customLayoutNodes
+    return [center, ...nodes, ...edges]
   }
 
-  _buildCoseLayout(): ElementDefinition[] {
+  _buildLayout(edges: ElementDefinition[]): ElementDefinition[] {
     if (!this._center) {
       throw new Error('Center node is required')
     }
-    const center = {
-      ...this._center,
-      position: { x: 0, y: 0 },
-    }
-    const nTypes = this._countNodeTypes.size
 
-    const r = this._SIZE / nTypes - 100 // get radio
-
-    const nodes = this._nodes.map((node: ElementDefinition, index: number) => {
-      return {
-        ...node,
-        position: {
-          x: r * Math.cos((nTypes * Math.PI * index) / this._nodes.length),
-          y: r * Math.sin((nTypes * Math.PI * index) / this._nodes.length),
-        },
-      }
-    })
-
-    return [center, ...nodes, ...this._edges]
+    return [this._center, ...this._nodes, ...edges]
   }
 
   getById(id: string): ElementDefinition | undefined {
@@ -222,7 +206,7 @@ function addClassWithMoreThanOneBidirectional(
 function addClassWithKind(edges: ElementDefinition[]): ElementDefinition[] {
   return edges.map((_edge) => {
     const CLASS_NAME = _edge.data.kind
-    _edge.classes = _edge.classes ? `${_edge.classes},${CLASS_NAME}` : CLASS_NAME
+    _edge.classes = _edge.classes ? `${_edge.classes} ${CLASS_NAME}` : CLASS_NAME
     return _edge
   })
 }

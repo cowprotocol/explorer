@@ -1,18 +1,22 @@
-import Cytoscape, {
-  ElementDefinition,
-  NodeSingular,
-  NodeDataDefinition,
-  EdgeDataDefinition,
-  EventObject,
-} from 'cytoscape'
+import Cytoscape, { ElementDefinition, NodeDataDefinition, EdgeDataDefinition, EventObject } from 'cytoscape'
 import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
+import fcose from 'cytoscape-fcose'
+import klay from 'cytoscape-klay'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
-import { faRedo } from '@fortawesome/free-solid-svg-icons'
+import {
+  faRedo,
+  faDiceOne,
+  faDiceTwo,
+  faDiceThree,
+  faDiceFour,
+  faDiceFive,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import { GetTxBatchTradesResult as TxBatchData, Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
@@ -23,15 +27,19 @@ import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/Trans
 import { TypeEdgeOnTx, TypeNodeOnTx } from './types'
 import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
-import { STYLESHEET, ResetButton } from './styled'
+import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper, FloatingWrapper } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useWindowSizes from 'hooks/useWindowSizes'
+import { layouts, LayoutNames } from './layouts'
+import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
+Cytoscape.use(fcose)
+Cytoscape.use(klay)
 
 const PROTOCOL_NAME = APP_NAME
 const WrapperCytoscape = styled(CytoscapeComponent)`
@@ -43,6 +51,7 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
     margin: 1.6rem 0;
   }
 `
+const iconDice = [faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive]
 
 function getTypeNode(account: Account): TypeNodeOnTx {
   let type = TypeNodeOnTx.Dex
@@ -76,7 +85,12 @@ function getNetworkParentNode(account: Account, networkName: string): string | u
   return account.alias !== ALIAS_TRADER_NAME ? networkName : undefined
 }
 
-function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: number): ElementDefinition[] {
+function getNodes(
+  txSettlement: TxSettlement,
+  networkId: Network,
+  heightSize: number,
+  layout: string,
+): ElementDefinition[] {
   if (!txSettlement.accounts) return []
 
   const networkName = networkOptions.find((network) => network.id === networkId)?.name
@@ -122,7 +136,9 @@ function getNodes(txSettlement: TxSettlement, networkId: Network, heightSize: nu
   })
 
   return builder.build(
-    buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes),
+    layout === 'grid'
+      ? buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes)
+      : undefined,
   )
 }
 
@@ -211,18 +227,27 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
-function getLayout(): Cytoscape.LayoutOptions {
-  return {
-    name: 'grid',
-    position: function (node: NodeSingular): { row: number; col: number } {
-      return { row: node.data('row'), col: node.data('col') }
-    },
-    fit: true, // whether to fit the viewport to the graph
-    padding: 10, // padding used on fit
-    avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
-    avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
-    nodeDimensionsIncludeLabels: false,
-  }
+function DropdownButtonContent({
+  layout,
+  icon,
+  open,
+}: {
+  layout: string
+  icon: IconDefinition
+  open?: boolean
+}): JSX.Element {
+  return (
+    <>
+      <FontAwesomeIcon icon={icon} />
+      <span>Layout: {layout}</span>
+      <span className={`arrow ${open && 'open'}`} />
+    </>
+  )
+}
+
+const updateLayout = (cy: Cytoscape.Core, layoutName: string, noAnimation = false): void => {
+  cy.layout(noAnimation ? { ...layouts[layoutName], animate: false } : layouts[layoutName]).run()
+  cy.fit()
 }
 
 function TransanctionBatchGraph({
@@ -233,32 +258,34 @@ function TransanctionBatchGraph({
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
+  const [layout, setLayout] = useState(layouts.grid)
   const theme = useTheme()
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
+  const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
+
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
       cytoscapeRef.current = ref
-      const updateLayout = (): void => {
-        ref.layout(getLayout()).run()
-        ref.fit()
-      }
       ref.removeListener('resize')
       ref.on('resize', () => {
-        updateLayout()
+        updateLayout(ref, layout.name, true)
       })
-      updateLayout()
     },
-    [cytoscapeRef],
+    [layout.name],
   )
 
   useEffect(() => {
+    const cy = cytoscapeRef.current
     setElements([])
-    if (error || isLoading || !networkId || !heightSize) return
+    if (error || isLoading || !networkId || !heightSize || !cy) return
 
-    setElements(getNodes(txSettlement, networkId, heightSize))
+    setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
+    if (resetZoom) {
+      updateLayout(cy, layout.name)
+    }
     setResetZoom(null)
-  }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom])
+  }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom, layout.name])
 
   useEffect(() => {
     const cy = cytoscapeRef.current
@@ -292,7 +319,7 @@ function TransanctionBatchGraph({
     <>
       <WrapperCytoscape
         elements={elements}
-        layout={getLayout()}
+        layout={layout}
         style={{ width: '100%', height: heightSize }}
         stylesheet={STYLESHEET(theme)}
         cy={setCytoscape}
@@ -302,9 +329,28 @@ function TransanctionBatchGraph({
         minZoom={0.1}
         zoom={1}
       />
-      <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
-        <FontAwesomeIcon icon={faRedo} /> <span>Reset</span>
-      </ResetButton>
+      <FloatingWrapper>
+        <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
+          <FontAwesomeIcon icon={faRedo} /> <span>{layout.name === 'fcose' ? 'Re-arrange' : 'Reset'}</span>
+        </ResetButton>
+        <LayoutButton>
+          <DropdownWrapper
+            currentItem={currentLayoutIndex}
+            dropdownButtonContent={
+              <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} />
+            }
+            dropdownButtonContentOpened={
+              <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} open />
+            }
+            items={Object.values(LayoutNames).map((layoutName) => (
+              <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
+                {layoutName}
+              </DropdownOption>
+            ))}
+            dropdownPosition={DropdownPosition.center}
+          />
+        </LayoutButton>
+      </FloatingWrapper>
     </>
   )
 }
