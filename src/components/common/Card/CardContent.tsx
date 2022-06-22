@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { media } from 'theme/styles/media'
+
 export type statusType = 'success' | 'danger'
 
 export interface CardContentProps {
@@ -8,10 +11,10 @@ export interface CardContentProps {
   direction?: string
   icon1?: React.ReactElement
   label1: string
-  value1: string
+  value1: string | number | undefined | React.ReactElement
   valueSize?: number
   labelWidth?: number
-  caption1?: string
+  caption1?: string | number
   captionColor?: string
   hint1?: string
   hintColor?: string
@@ -20,6 +23,7 @@ export interface CardContentProps {
   value2?: string
   caption2?: string
   hint2?: string
+  loading?: boolean
 }
 
 const CardBody = styled.div<{
@@ -40,15 +44,19 @@ const CardBody = styled.div<{
     flex-direction: ${({ direction }): string => direction || 'column'};
     > p {
       font-size: 14px;
-      margin: 0px;
+      margin: 0;
       margin-right: ${({ variant, direction }): string =>
-        variant === 'double' && direction === 'row' ? '0.5rem' : '0px'};
+        variant === 'double' && direction === 'row' ? '0.5rem' : '0'};
       color: ${({ theme }): string => theme.grey};
       display: flex;
       align-items: center;
       justify-content: ${({ variant, direction }): string =>
         variant === 'double' && direction === 'row' ? 'flex-end' : 'center'};
       width: ${({ labelWidth }): string => (labelWidth ? `${labelWidth}px` : 'initial')};
+      flex-direction: row-reverse;
+      span {
+        padding-left: 0.5rem;
+      }
     }
     > div {
       display: flex;
@@ -58,8 +66,11 @@ const CardBody = styled.div<{
       margin-top: ${({ direction }): string => (direction === 'row' ? '0' : '8px')};
 
       > h3 {
-        font-size: ${({ valueSize }): number => valueSize || 18}px;
-        margin: 0px;
+        font-size: ${({ valueSize }): number => valueSize || 1.8}rem;
+        margin: 0;
+        ${media.mobile} {
+          font-size: 1.45rem;
+        }
       }
       > span {
         font-weight: bold;
@@ -98,6 +109,7 @@ export const CardContent: React.FC<CardContentProps> = ({
   value2,
   caption2,
   hint2,
+  loading,
 }): JSX.Element => {
   return (
     <CardBody
@@ -114,8 +126,8 @@ export const CardContent: React.FC<CardContentProps> = ({
           {label1}
         </p>
         <div>
-          <h3>{value1}</h3>
-          {caption1 && (
+          {loading ? <ShimmerBar /> : <h3>{value1}</h3>}
+          {!loading && caption1 && (
             <span>
               {caption1}
               <span>{hint1}</span>
@@ -123,11 +135,11 @@ export const CardContent: React.FC<CardContentProps> = ({
           )}
         </div>
       </div>
-      {label2 && (
+      {!loading && label2 && (
         <div>
           <p>
-            {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}
             {label2}
+            {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}
           </p>
           <div>
             <h3>{value2}</h3>

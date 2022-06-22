@@ -1,33 +1,84 @@
 import { Stylesheet } from 'cytoscape'
-import styled, { DefaultTheme } from 'styled-components'
+import styled, { DefaultTheme, css } from 'styled-components'
 
 import TraderOtherIcon from 'assets/img/TraderOther.svg'
 import CowProtocolIcon from 'assets/img/CoW.svg'
 import DexIcon from 'assets/img/Dex.svg'
 import { MEDIA } from 'const'
+import { Dropdown } from 'apps/explorer/components/common/Dropdown'
+import { ArrowIconCSS } from 'components/icons/cssIcons'
 
-export const ResetButton = styled.button`
+export const FloatingWrapper = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1.6rem;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: row-reverse;
+  gap: 0.6rem;
+
+  @media ${MEDIA.mediumDown} {
+    flex-direction: column;
+    top: 2.4rem;
+    right: 0.8rem;
+    gap: 0.6rem;
+  }
+`
+
+const FloatingButton = css`
   cursor: pointer;
-  background: ${({ theme }): string => theme.bg2};
   color: ${({ theme }): string => theme.white};
   height: 3rem;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
-  padding: 0.5rem;
   border-radius: 0.5rem;
-  position: absolute;
-  right: 0;
-  margin: 0 1.6rem 0 0;
-  z-index: 1;
+  background: ${({ theme }): string => theme.bg2};
 
   &:hover {
     transition: all 0.2s ease-in-out;
     color: ${({ theme }): string => theme.textActive1};
   }
   @media ${MEDIA.mediumDown} {
-    margin: 2.4rem 0.8rem 0 0;
     min-width: 3rem;
     span {
       display: none;
+    }
+  }
+`
+export const ResetButton = styled.button`
+  ${FloatingButton}
+  min-width: 6.586rem;
+  transition: all 0.2s ease-in-out;
+`
+export const LayoutButton = styled.span`
+  ${FloatingButton}
+  display: flex;
+  color: ${({ theme }): string => theme.textPrimary1};
+  font-size: ${({ theme }): string => theme.fontSizeDefault};
+  font-weight: normal;
+  white-space: nowrap;
+  align-items: center;
+  padding: 0 0.6rem 0 0.6rem;
+`
+
+export const DropdownWrapper = styled(Dropdown)`
+  &.dropdown-container {
+    ${ArrowIconCSS}
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    & div:first-child {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      @media ${MEDIA.mediumDown} {
+        justify-content: center;
+      }
+    }
+    > .dropdown-options {
+      min-width: 7rem;
     }
   }
 `

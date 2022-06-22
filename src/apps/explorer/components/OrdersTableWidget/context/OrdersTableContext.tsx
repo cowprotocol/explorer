@@ -8,9 +8,9 @@ export type BlockchainNetwork = Network | undefined
 
 type CommonState = {
   addressAccountParams: { networkId: BlockchainNetwork; ownerAddress: string }
-  orders: Order[] | undefined
+  data: Order[] | undefined
   error?: UiError
-  isOrdersLoading: boolean
+  isLoading: boolean
   tableState: TableState
 } & TableStateSetters
 

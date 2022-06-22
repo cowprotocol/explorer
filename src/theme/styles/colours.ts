@@ -13,6 +13,7 @@ export interface Colors {
   // backgrounds / greys
   bg1: Color
   bg2: Color
+  bg3: Color
   shade: Color
   boxShadow: Color
 
@@ -96,6 +97,7 @@ export const LIGHT_COLOURS = {
   // backgrounds / greys
   bg1: '#F7F8FA',
   bg2: '#F7F8FA',
+  bg3: '#232432',
   shade: '#2E2F3B',
   boxShadow: 'rgba(0, 0, 0, 0.16)',
 
@@ -132,6 +134,7 @@ export const DARK_COLOURS = {
   // backgrounds / greys
   bg1: '#16171F',
   bg2: '#2C2D3F',
+  bg3: '#232432',
   bgDisabled: '#ffffff80',
   shade: '#2E2F3B',
   boxShadow: 'rgba(0, 0, 0, 0.16)',
