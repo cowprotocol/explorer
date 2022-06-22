@@ -26,13 +26,13 @@ export default class ElementsBuilder {
     this._countEdgeDirection.set(idDirection, count + 1)
   }
 
-  _createNodeElement = (node: Node, parent?: string): ElementDefinition => {
+  _createNodeElement = (node: Node, parent?: string, hideLabel?: boolean): ElementDefinition => {
     this._increaseCountNodeType(node.type)
     return {
       group: 'nodes',
       data: {
         id: `${node.type}:${node.id}`,
-        label: node.entity.alias,
+        label: !hideLabel ? node.entity.alias : '',
         type: node.type,
         parent: parent ? `${TypeNodeOnTx.NetworkNode}:${parent}` : undefined,
       },
@@ -45,7 +45,8 @@ export default class ElementsBuilder {
   }
 
   node(node: Node, parent?: string): this {
-    this._nodes.push(this._createNodeElement(node, parent))
+    const GROUP_NODE_NAME = 'group'
+    this._nodes.push(this._createNodeElement(node, parent, node.id.includes(GROUP_NODE_NAME)))
     return this
   }
 

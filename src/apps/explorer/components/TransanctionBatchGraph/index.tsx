@@ -53,9 +53,9 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
 `
 const iconDice = [faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive]
 
-function getTypeNode(account: Account): TypeNodeOnTx {
+function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
   let type = TypeNodeOnTx.Dex
-  if (account.alias === ALIAS_TRADER_NAME) {
+  if (account.alias === ALIAS_TRADER_NAME || account.owner) {
     type = TypeNodeOnTx.Trader
   } else if (account.alias === PROTOCOL_NAME) {
     type = TypeNodeOnTx.CowProtocol
@@ -98,13 +98,37 @@ function getNodes(
   const builder = new ElementsBuilder(heightSize)
   builder.node({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
 
+  const groupNodes: string[] = []
   for (const key in txSettlement.accounts) {
     const account = txSettlement.accounts[key]
-    const parentNodeName = getNetworkParentNode(account, networkNode.alias)
+    let parentNodeName = getNetworkParentNode(account, networkNode.alias)
+
+    const receiverNode = { alias: `${abbreviateString(account.owner || key, 4, 4)}-group` }
+
+    if (account.owner && account.owner !== key) {
+      if (!groupNodes.includes(receiverNode.alias)) {
+        builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
+        groupNodes.push(receiverNode.alias)
+      }
+      parentNodeName = receiverNode.alias
+    }
 
     if (getTypeNode(account) === TypeNodeOnTx.CowProtocol) {
       builder.center({ type: TypeNodeOnTx.CowProtocol, entity: account, id: key }, parentNodeName)
     } else {
+      const receivers = Object.keys(txSettlement.accounts).reduce(
+        (acc, key) => (txSettlement.accounts?.[key].owner ? [...acc, txSettlement.accounts?.[key].owner] : acc),
+        [],
+      )
+
+      if (receivers.includes(key) && account.owner !== key) {
+        if (!groupNodes.includes(receiverNode.alias)) {
+          builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
+          groupNodes.push(receiverNode.alias)
+        }
+        parentNodeName = receiverNode.alias
+      }
+
       builder.node(
         {
           id: key,
