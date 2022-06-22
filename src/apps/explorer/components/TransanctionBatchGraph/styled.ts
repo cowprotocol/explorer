@@ -8,17 +8,30 @@ import { MEDIA } from 'const'
 import { Dropdown } from 'apps/explorer/components/common/Dropdown'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 
+export const FloatingWrapper = styled.div`
+  position: absolute;
+  top: 1rem;
+  right: 1.6rem;
+  z-index: 1;
+  display: inline-flex;
+  flex-direction: row-reverse;
+  gap: 0.6rem;
+
+  @media ${MEDIA.mediumDown} {
+    flex-direction: column;
+    top: 2.4rem;
+    right: 0.8rem;
+    gap: 0.6rem;
+  }
+`
+
 const FloatingButton = css`
   cursor: pointer;
   color: ${({ theme }): string => theme.white};
   height: 3rem;
-  position: absolute;
   border: 1px solid ${({ theme }): string => theme.borderPrimary};
   border-radius: 0.5rem;
   background: ${({ theme }): string => theme.bg2};
-  top: 1rem;
-  right: 1.6rem;
-  z-index: 1;
 
   &:hover {
     transition: all 0.2s ease-in-out;
@@ -33,19 +46,11 @@ const FloatingButton = css`
 `
 export const ResetButton = styled.button`
   ${FloatingButton}
-  top: 1rem;
-  right: 1.6rem;
   min-width: 6.586rem;
-
-  @media ${MEDIA.mediumDown} {
-    top: 2.4rem;
-    right: 0.8rem;
-  }
+  transition: all 0.2s ease-in-out;
 `
 export const LayoutButton = styled.span`
   ${FloatingButton}
-  top: 1rem;
-  right: 9rem;
   display: flex;
   color: ${({ theme }): string => theme.textPrimary1};
   font-size: ${({ theme }): string => theme.fontSizeDefault};
@@ -53,11 +58,6 @@ export const LayoutButton = styled.span`
   white-space: nowrap;
   align-items: center;
   padding: 0 0.6rem 0 0.6rem;
-
-  @media ${MEDIA.mediumDown} {
-    top: 6rem;
-    right: 0.8rem;
-  }
 `
 
 export const DropdownWrapper = styled(Dropdown)`

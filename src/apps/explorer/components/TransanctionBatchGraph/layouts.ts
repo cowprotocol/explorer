@@ -13,15 +13,13 @@ const defaultValues = {
 }
 export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
   grid: {
+    ...defaultValues,
     name: 'grid',
-    position: function (node: NodeSingular): { row: number; col: number } {
-      return { row: node.data('row'), col: node.data('col') }
-    },
+    position: (node: NodeSingular): { row: number; col: number } => ({ row: node.data('row'), col: node.data('col') }),
     avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
     avoidOverlapPadding: 10, // extra spacing around nodes when avoidOverlap: true
     nodeDimensionsIncludeLabels: false,
     condense: false,
-    ...defaultValues,
   },
   klay: {
     ...defaultValues,
@@ -33,6 +31,7 @@ export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
       compactComponents: false, // Tries to further compact components (disconnected sub-graphs).
       edgeRouting: 'SPLINES',
       edgeSpacingFactor: 2,
+      spacing: 20,
     },
   },
   fcose: {

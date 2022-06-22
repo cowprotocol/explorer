@@ -27,7 +27,7 @@ import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/Trans
 import { TypeEdgeOnTx, TypeNodeOnTx } from './types'
 import { APP_NAME } from 'const'
 import { HEIGHT_HEADER_FOOTER, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
-import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper } from './styled'
+import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper, FloatingWrapper } from './styled'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
@@ -241,8 +241,8 @@ function DropdownButtonContent({
   )
 }
 
-const updateLayout = (cy: Cytoscape.Core, layoutName: string): void => {
-  cy.layout(layouts[layoutName]).run()
+const updateLayout = (cy: Cytoscape.Core, layoutName: string, noAnimation = false): void => {
+  cy.layout(noAnimation ? { ...layouts[layoutName], animate: false } : layouts[layoutName]).run()
   cy.fit()
 }
 
@@ -265,7 +265,7 @@ function TransanctionBatchGraph({
       cytoscapeRef.current = ref
       ref.removeListener('resize')
       ref.on('resize', () => {
-        updateLayout(ref, layout.name)
+        updateLayout(ref, layout.name, true)
       })
     },
     [layout.name],
@@ -325,26 +325,28 @@ function TransanctionBatchGraph({
         minZoom={0.1}
         zoom={1}
       />
-      <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
-        <FontAwesomeIcon icon={faRedo} /> <span>{layout.name === 'fcose' ? 'Play' : 'Reset'}</span>
-      </ResetButton>
-      <LayoutButton>
-        <DropdownWrapper
-          currentItem={currentLayoutIndex}
-          dropdownButtonContent={
-            <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} />
-          }
-          dropdownButtonContentOpened={
-            <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} open />
-          }
-          items={Object.values(LayoutNames).map((layoutName) => (
-            <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
-              {layoutName}
-            </DropdownOption>
-          ))}
-          dropdownPosition={DropdownPosition.center}
-        />
-      </LayoutButton>
+      <FloatingWrapper>
+        <ResetButton type="button" onClick={(): void => setResetZoom(!resetZoom)}>
+          <FontAwesomeIcon icon={faRedo} /> <span>{layout.name === 'fcose' ? 'Re-arrange' : 'Reset'}</span>
+        </ResetButton>
+        <LayoutButton>
+          <DropdownWrapper
+            currentItem={currentLayoutIndex}
+            dropdownButtonContent={
+              <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} />
+            }
+            dropdownButtonContentOpened={
+              <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} open />
+            }
+            items={Object.values(LayoutNames).map((layoutName) => (
+              <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
+                {layoutName}
+              </DropdownOption>
+            ))}
+            dropdownPosition={DropdownPosition.center}
+          />
+        </LayoutButton>
+      </FloatingWrapper>
     </>
   )
 }
