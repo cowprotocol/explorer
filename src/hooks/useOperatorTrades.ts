@@ -71,24 +71,29 @@ export function useOrderTrades(order: Order | null): Result {
   // contrary to useOrder hook, where it searches all networks for a given orderId
   const networkId = useNetworkId()
 
-  const fetchTrades = useCallback(async (networkId: Network, order: Order): Promise<void> => {
-    setIsLoading(true)
+  const fetchTrades = useCallback(
+    async (controller: AbortController, _networkId: Network, _order: Order): Promise<void> => {
+      setIsLoading(true)
 
-    const { uid: orderId, buyToken, sellToken } = order
+      const { uid: orderId, buyToken, sellToken } = _order
 
-    try {
-      const trades = await getTrades({ networkId, orderId })
+      try {
+        const _trades = await getTrades({ networkId: _networkId, orderId })
 
-      setTrades(trades.map((trade) => ({ ...transformTrade(trade), buyToken, sellToken })))
-      setError(undefined)
-    } catch (e) {
-      const msg = `Failed to fetch trades`
-      console.error(msg, e)
-      setError({ message: msg, type: 'error' })
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+        if (controller.signal.aborted) return
+
+        setTrades(_trades.map((trade) => ({ ...transformTrade(trade), buyToken, sellToken })))
+        setError(undefined)
+      } catch (e) {
+        const msg = `Failed to fetch trades`
+        console.error(msg, e)
+        setError({ message: msg, type: 'error' })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [],
+  )
 
   const executedSellAmount = order?.executedSellAmount.toString()
   const executedBuyAmount = order?.executedBuyAmount.toString()
@@ -96,8 +101,10 @@ export function useOrderTrades(order: Order | null): Result {
     if (!networkId || !order?.uid) {
       return
     }
+    const controller = new AbortController()
 
-    fetchTrades(networkId, order)
+    fetchTrades(controller, networkId, order)
+    return (): void => controller.abort()
     // Depending on order UID to avoid re-fetching when obj changes but ID remains the same
     // Depending on `executedBuy/SellAmount`s string to force a refetch when there are new trades
     // using the string version because hooks are bad at detecting Object changes
