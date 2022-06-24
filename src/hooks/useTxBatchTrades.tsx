@@ -60,7 +60,9 @@ export function useTxBatchTrades(
   const [error, setError] = useState('')
   const [txBatchTrades, setTxBatchTrades] = useState<TxBatchTrades>({ trades: [], transfers: [] })
   const [accounts, setAccounts] = useState<Accounts>()
-  const txOrders = usePrevious(JSON.stringify(orders?.map((o) => ({ owner: o.owner, kind: o.kind, receiver: o.receiver })))) // We need to do a deep comparison here to avoid useEffect to be called twice (Orders array is populated partially from different places)
+  const txOrders = usePrevious(
+    JSON.stringify(orders?.map((o) => ({ owner: o.owner, kind: o.kind, receiver: o.receiver }))),
+  ) // We need to do a deep comparison here to avoid useEffect to be called twice (Orders array is populated partially from different places)
   const [erc20Addresses, setErc20Addresses] = useState<string[]>([])
   const { value: valueErc20s, isLoading: areErc20Loading } = useMultipleErc20({ networkId, addresses: erc20Addresses })
 
@@ -120,9 +122,7 @@ export function useTxBatchTrades(
     } finally {
       setIsLoading(false)
     }
-  },
-    [orders],
-  )
+  }, [])
 
   useEffect(() => {
     if (!networkId || !txOrders) {
