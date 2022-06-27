@@ -120,14 +120,14 @@ export function useMultipleErc20(
   // check what on globalState has not been fetched yet
   const toFetch = useMemo(() => addresses.filter((address) => !erc20s[address]), [addresses, erc20s])
   // flow control
-  const running = useRef(false)
+  const running = useRef({ networkId, isRunning: false })
 
   const updateErc20s = useCallback(async (): Promise<void> => {
     if (!networkId || toFetch.length === 0) {
       return
     }
 
-    running.current = true
+    running.current = { networkId, isRunning: true }
 
     setIsLoading(true)
     setErrors({})
@@ -146,15 +146,15 @@ export function useMultipleErc20(
     saveErc20s(fetched.filter(Boolean) as TokenErc20[])
 
     setIsLoading(false)
-    running.current = false
+    running.current = { networkId, isRunning: false }
   }, [networkId, saveErc20s, toFetch])
 
   useEffect(() => {
-    // only trigger network query if not yet running
-    if (!running.current) {
+    // only trigger network query if not yet running or the network has changed
+    if (!running.current.isRunning || running.current.networkId !== networkId) {
       updateErc20s()
     }
-  }, [updateErc20s, saveErc20s])
+  }, [updateErc20s, saveErc20s, networkId])
 
   return { isLoading, error: errors, value: erc20s }
 }
