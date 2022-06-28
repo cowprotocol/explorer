@@ -30,6 +30,8 @@ function getOperatorUrl(): Partial<Record<Network, string>> {
   }
 }
 
+const COW_SDK_ENV = isProd || isStaging ? COW_SDK : COW_SDK_DEV
+
 const API_BASE_URL = getOperatorUrl()
 
 const DEFAULT_HEADERS: Headers = new Headers({
@@ -121,17 +123,11 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  */
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
-  const cowInstance = COW_SDK[networkId]
-  const cowInstanceDev = COW_SDK_DEV[networkId]
+  const cowInstance = COW_SDK_ENV[networkId]
 
-  if (!cowInstance || !cowInstanceDev) return []
+  if (!cowInstance) return []
 
-  const orders = await Promise.all([
-    cowInstance.cowApi.getOrders({ owner, offset, limit }),
-    cowInstanceDev.cowApi.getOrders({ owner, offset, limit }),
-  ])
-
-  return [...orders[0], ...orders[1]]
+  return cowInstance.cowApi.getOrders({ owner, offset, limit })
 }
 
 /**
