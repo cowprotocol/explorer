@@ -373,6 +373,7 @@ function TransanctionBatchGraph({
             dropdownButtonContentOpened={
               <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} open />
             }
+            callback={(): void => removePopper(cyPopperRef)}
             items={Object.values(LayoutNames).map((layoutName) => (
               <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
                 {layoutName}
