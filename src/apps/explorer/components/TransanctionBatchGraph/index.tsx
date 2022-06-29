@@ -274,6 +274,9 @@ const updateLayout = (cy: Cytoscape.Core, layoutName: string, noAnimation = fals
   cy.fit()
 }
 
+const removePopper = (popperInstance: React.MutableRefObject<PopperInstance | null>): void =>
+  popperInstance.current?.destroy()
+
 function TransanctionBatchGraph({
   txBatchData: { error, isLoading, txSettlement },
   networkId,
@@ -308,6 +311,7 @@ function TransanctionBatchGraph({
     if (resetZoom) {
       updateLayout(cy, layout.name)
     }
+    removePopper(cyPopperRef)
     setResetZoom(null)
   }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom, layout.name])
 
@@ -329,7 +333,10 @@ function TransanctionBatchGraph({
     })
     cy.nodes().noOverlap({ padding: 5 })
 
-    return (): void => cy.removeAllListeners()
+    return (): void => {
+      cy.removeAllListeners()
+      removePopper(cyPopperRef)
+    }
   }, [cytoscapeRef, elements.length])
 
   if (isLoading)
@@ -366,6 +373,7 @@ function TransanctionBatchGraph({
             dropdownButtonContentOpened={
               <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} open />
             }
+            callback={(): void => removePopper(cyPopperRef)}
             items={Object.values(LayoutNames).map((layoutName) => (
               <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
                 {layoutName}
