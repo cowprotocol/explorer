@@ -71,12 +71,15 @@ export async function getOrder(params: GetOrderParams): Promise<RawOrder | null>
 
   if (!cowInstance || !cowInstanceDev) return null
 
+  let order = null
+
   try {
-    const order = await cowInstance.cowApi.getOrder(orderId)
-    return order
+    order = await cowInstance.cowApi.getOrder(orderId)
   } catch (error) {
-    return cowInstanceDev.cowApi.getOrder(orderId)
+    order = await cowInstanceDev.cowApi.getOrder(orderId)
   }
+
+  return order
 }
 
 /**
@@ -156,23 +159,19 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  */
 export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner = '', orderId = '' } = params
-  const cowInstance = COW_SDK_ENV[networkId]
+  const cowInstance = COW_SDK[networkId]
+  const cowInstanceDev = COW_SDK_DEV[networkId]
 
-  if (orderId) return getOrderTrades(params)
+  if (!cowInstance || !cowInstanceDev) return []
 
-  if (!cowInstance) return []
+  console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderId })
 
-  return cowInstance.cowApi.getTrades({ owner })
-}
+  const trades = await Promise.all([
+    cowInstance.cowApi.getTrades({ owner, orderId }),
+    cowInstanceDev.cowApi.getTrades({ owner, orderId }),
+  ])
 
-async function getOrderTrades(params: GetTradesParams): Promise<RawTrade[]> {
-  const { networkId, orderId = '' } = params
-
-  console.log(`[getTrades] Fetching trades on network ${networkId} with filter: orderId=${orderId}`)
-
-  const queryString = `/trades/` + buildSearchString({ orderUid: orderId })
-
-  return _fetchQuery(networkId, queryString)
+  return [...trades[0], ...trades[1]]
 }
 
 function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>
