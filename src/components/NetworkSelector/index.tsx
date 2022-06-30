@@ -71,6 +71,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
   }
   return (
     <SelectorContainer ref={selectContainer} onClick={(): void => setOpen(!open)}>
+      {' '}
       <NetworkLabel className={cleanNetworkName(name)}>{name}</NetworkLabel>
       <span className={`arrow ${open && 'open'}`} />
       {open && (

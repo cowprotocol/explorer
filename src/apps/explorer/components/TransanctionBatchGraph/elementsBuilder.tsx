@@ -1,5 +1,5 @@
 import { ElementDefinition } from 'cytoscape'
-import { InfoTooltip, Node, TypeNodeOnTx } from './types'
+import { InfoTooltip, Node, TypeEdgeOnTx, TypeNodeOnTx } from './types'
 
 export default class ElementsBuilder {
   _center: ElementDefinition | null = null
@@ -26,13 +26,13 @@ export default class ElementsBuilder {
     this._countEdgeDirection.set(idDirection, count + 1)
   }
 
-  _createNodeElement = (node: Node, parent?: string): ElementDefinition => {
+  _createNodeElement = (node: Node, parent?: string, hideLabel?: boolean): ElementDefinition => {
     this._increaseCountNodeType(node.type)
     return {
       group: 'nodes',
       data: {
         id: `${node.type}:${node.id}`,
-        label: node.entity.alias,
+        label: !hideLabel ? node.entity.alias : '',
         type: node.type,
         parent: parent ? `${TypeNodeOnTx.NetworkNode}:${parent}` : undefined,
       },
@@ -45,7 +45,8 @@ export default class ElementsBuilder {
   }
 
   node(node: Node, parent?: string): this {
-    this._nodes.push(this._createNodeElement(node, parent))
+    const GROUP_NODE_NAME = 'group'
+    this._nodes.push(this._createNodeElement(node, parent, node.id.includes(GROUP_NODE_NAME)))
     return this
   }
 
@@ -53,6 +54,7 @@ export default class ElementsBuilder {
     source: Pick<Node, 'type' | 'id'>,
     target: Pick<Node, 'type' | 'id'>,
     label: string,
+    kind: TypeEdgeOnTx,
     tooltip?: InfoTooltip,
   ): this {
     const sourceName = `${source.type}:${source.id}`
@@ -67,44 +69,29 @@ export default class ElementsBuilder {
         target: targetName,
         label,
         tooltip,
+        kind,
       },
     })
     return this
   }
 
   build(customLayoutNodes?: CustomLayoutNodes): ElementDefinition[] {
+    let edges = addClassWithMoreThanOneBidirectional(this._edges, this._countEdgeDirection)
+    edges = addClassWithKind(edges)
     if (!customLayoutNodes) {
-      return this._buildCoseLayout()
-    } else {
-      const edges = addClassWithMoreThanOneBidirectional(this._edges, this._countEdgeDirection)
-      const { center, nodes } = customLayoutNodes
-      return [center, ...nodes, ...edges]
+      return this._buildLayout(edges)
     }
+
+    const { center, nodes } = customLayoutNodes
+    return [center, ...nodes, ...edges]
   }
 
-  _buildCoseLayout(): ElementDefinition[] {
+  _buildLayout(edges: ElementDefinition[]): ElementDefinition[] {
     if (!this._center) {
       throw new Error('Center node is required')
     }
-    const center = {
-      ...this._center,
-      position: { x: 0, y: 0 },
-    }
-    const nTypes = this._countNodeTypes.size
 
-    const r = this._SIZE / nTypes - 100 // get radio
-
-    const nodes = this._nodes.map((node: ElementDefinition, index: number) => {
-      return {
-        ...node,
-        position: {
-          x: r * Math.cos((nTypes * Math.PI * index) / this._nodes.length),
-          y: r * Math.sin((nTypes * Math.PI * index) / this._nodes.length),
-        },
-      }
-    })
-
-    return [center, ...nodes, ...this._edges]
+    return [this._center, ...this._nodes, ...edges]
   }
 
   getById(id: string): ElementDefinition | undefined {
@@ -210,6 +197,17 @@ function addClassWithMoreThanOneBidirectional(
     if (edgeDirectionCount > 1) {
       _edge.classes = CLASS_NAME
     }
+    return _edge
+  })
+}
+
+/**
+ * Add css class to edges according to the kind
+ */
+function addClassWithKind(edges: ElementDefinition[]): ElementDefinition[] {
+  return edges.map((_edge) => {
+    const CLASS_NAME = _edge.data.kind
+    _edge.classes = _edge.classes ? `${_edge.classes} ${CLASS_NAME}` : CLASS_NAME
     return _edge
   })
 }

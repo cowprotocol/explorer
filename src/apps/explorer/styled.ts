@@ -1,5 +1,20 @@
-import styled, { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle, css } from 'styled-components'
 import { media } from 'theme/styles/media'
+
+export const ScrollBarStyle = css`
+  scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: hsla(0, 0%, 100%, 0.1);
+    border-radius: 20px;
+  }
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+`
 
 export const GlobalStyle = createGlobalStyle`
   html {
@@ -11,6 +26,7 @@ export const GlobalStyle = createGlobalStyle`
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    ${ScrollBarStyle}
   }
 
   /* Cystoscape - BatchViewer styles */
@@ -30,7 +46,7 @@ export const GlobalStyle = createGlobalStyle`
     font-weight: bold;
     text-transform: uppercase;
     width: 6rem;
-}
+  }
 `
 
 export const MainWrapper = styled.div`

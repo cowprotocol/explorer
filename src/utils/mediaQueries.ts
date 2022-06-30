@@ -1,6 +1,8 @@
 import { Command } from 'types'
 
-export const MEDIA_QUERY_MATCHES = [
+export type Breakpoints = 'xl' | 'lg' | 'md' | 'sm' | 'xs'
+
+export const MEDIA_QUERY_MATCHES: Array<{ name: Breakpoints; query: string }> = [
   // must be in descending order for .find to match from largest to smallest
   // as sm will also match for xl and lg, for example
   {
@@ -22,9 +24,9 @@ export const MEDIA_QUERY_MATCHES = [
   // anything smaller -- xs
 ]
 
-const DEFAULT_QUERY_NAME = 'xs'
+const DEFAULT_QUERY_NAME: Breakpoints = 'xs'
 
-export const getMatchingScreenSize = (): string =>
+export const getMatchingScreenSize = (): Breakpoints =>
   MEDIA_QUERY_MATCHES.find(({ query }) => window.matchMedia(query).matches)?.name || DEFAULT_QUERY_NAME
 
 export const MEDIA_QUERIES = MEDIA_QUERY_MATCHES.map(({ query }) => query)
@@ -33,7 +35,7 @@ export const MEDIA_QUERY_NAMES = MEDIA_QUERY_MATCHES.map(({ name }) => name).con
 export const subscribeToScreenSizeChange = (callback: (event: MediaQueryListEvent) => void): Command => {
   const mediaQueryLists = MEDIA_QUERIES.map((query) => window.matchMedia(query))
 
-  mediaQueryLists.forEach((mql) => mql.addListener(callback))
+  mediaQueryLists.forEach((mql) => mql.addEventListener('change', callback))
 
-  return (): void => mediaQueryLists.forEach((mql) => mql.removeListener(callback))
+  return (): void => mediaQueryLists.forEach((mql) => mql.removeEventListener('change', callback))
 }

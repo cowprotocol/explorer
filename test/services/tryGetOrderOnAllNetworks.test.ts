@@ -1,5 +1,5 @@
 import { GetTxOrdersParams } from 'api/operator/types'
-import { GetOrderApi, MultipleOrders, tryGetOrderOnAllNetworks } from 'services/helpers/tryGetOrderOnAllNetworks'
+import { GetOrderApi, MultipleOrders, tryGetOrderOnAllNetworksAndEnvironments } from 'services/helpers/tryGetOrderOnAllNetworks'
 import { RAW_ORDER } from '../data'
 import { Network } from 'types'
 
@@ -16,7 +16,7 @@ describe('tryGetOrderOnAllNetworks', () => {
       api: mockedApi,
       defaultParams,
     }
-    const result = await tryGetOrderOnAllNetworks(network, getOrderApi, networkIdSearchListRemaining)
+    const result = await tryGetOrderOnAllNetworksAndEnvironments(network, getOrderApi, networkIdSearchListRemaining)
 
     expect(mockedApi).toHaveBeenLastCalledWith({ networkId: Network.MAINNET, txHash })
     expect(result).toEqual({ order: null })
@@ -32,7 +32,7 @@ describe('tryGetOrderOnAllNetworks', () => {
       api: mockedApi,
       defaultParams,
     }
-    const result = await tryGetOrderOnAllNetworks(network, getOrderApi, networkIdSearchListRemaining)
+    const result = await tryGetOrderOnAllNetworksAndEnvironments(network, getOrderApi, networkIdSearchListRemaining)
 
     expect(mockedApi).not.toHaveBeenCalledWith({ networkId: Network.MAINNET, txHash })
     expect(result).toEqual({ order: ordersResult })
