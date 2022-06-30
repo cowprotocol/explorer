@@ -60,17 +60,19 @@ export function useTxBatchTrades(
   const [error, setError] = useState('')
   const [txBatchTrades, setTxBatchTrades] = useState<TxBatchTrades>({ trades: [], transfers: [] })
   const [accounts, setAccounts] = useState<Accounts>()
-  const txOrders = usePrevious(JSON.stringify(orders?.map((o) => ({ owner: o.owner, kind: o.kind, receiver: o.receiver })))) // We need to do a deep comparison here to avoid useEffect to be called twice (Orders array is populated partially from different places)
+  const txOrders = usePrevious(
+    JSON.stringify(orders?.map((o) => ({ owner: o.owner, kind: o.kind, receiver: o.receiver }))),
+  ) // We need to do a deep comparison here to avoid useEffect to be called twice (Orders array is populated partially from different places)
   const [erc20Addresses, setErc20Addresses] = useState<string[]>([])
   const { value: valueErc20s, isLoading: areErc20Loading } = useMultipleErc20({ networkId, addresses: erc20Addresses })
 
-  const _fetchTxTrades = useCallback(async (network: Network, _txHash: string, orders: Order[]): Promise<void> => {
+  const _fetchTxTrades = useCallback(async (network: Network, _txHash: string, _orders: Order[]): Promise<void> => {
     setIsLoading(true)
     setError('')
     try {
       const { transfers, trades } = await getTradesAndTransfers(network, _txHash)
       const _accounts: Accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
-      const filteredOrders = orders?.filter((order) => _accounts[order.owner])
+      const filteredOrders = _orders?.filter((order) => _accounts[order.owner])
       const orderOwnersReceivers = [
         ...(filteredOrders?.map((order) => order.owner) || []),
         ...(filteredOrders?.map((order) => order.receiver) || []),
@@ -120,9 +122,7 @@ export function useTxBatchTrades(
     } finally {
       setIsLoading(false)
     }
-  },
-    [orders],
-  )
+  }, [])
 
   useEffect(() => {
     if (!networkId || !txOrders) {

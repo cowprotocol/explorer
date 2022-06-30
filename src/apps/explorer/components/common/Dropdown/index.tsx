@@ -56,6 +56,7 @@ export interface DropdownProps extends DOMAttributes<HTMLDivElement> {
   dropdownButtonContentOpened?: React.ReactNode | string
   dropdownDirection?: DropdownDirection | undefined
   dropdownPosition?: DropdownPosition | undefined
+  callback?: () => void
 }
 
 type CssString = FlattenSimpleInterpolation | string
@@ -107,18 +108,20 @@ export const Dropdown: React.FC<DropdownProps> = (props) => {
     dropdownDirection,
     dropdownPosition,
     items,
+    callback,
   } = props
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const dropdownContainerRef = createRef<HTMLDivElement>()
   useOnClickOutside(dropdownContainerRef, () => setIsOpen(false))
 
   const onButtonClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
       if (disabled) return
       setIsOpen(!isOpen)
+      callback && callback()
     },
-    [disabled, isOpen],
+    [callback, disabled, isOpen],
   )
 
   return (
