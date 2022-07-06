@@ -23,6 +23,7 @@ import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { useAppData } from 'hooks/useAppData'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -69,6 +70,7 @@ const tooltip = {
   from: 'The account address which signed the order.',
   to: 'The account address which will/did receive the bought amount.',
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
+  appData: 'The app data document for this order',
   status: 'The order status is either Open, Filled, Expired or Canceled.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
@@ -155,7 +157,9 @@ export function DetailsTable(props: Props): JSX.Element | null {
     surplusAmount,
     buyToken,
     sellToken,
+    appData,
   } = order
+  const { appDataDoc, isLoading: appDataLoading } = useAppData(appData.toString())
 
   if (!buyToken || !sellToken) {
     return null
@@ -232,6 +236,20 @@ export function DetailsTable(props: Props): JSX.Element | null {
               </td>
             </tr>
           )}
+          <tr>
+            <td>
+              <HelpTooltip tooltip={tooltip.appData} /> AppData
+            </td>
+            <td>
+              {appDataLoading ? (
+                <Spinner />
+              ) : (
+                <div>
+                  <pre>{appDataDoc ? JSON.stringify(appDataDoc, null, 2) : '-'}</pre>
+                </div>
+              )}
+            </td>
+          </tr>
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.status} /> Status
