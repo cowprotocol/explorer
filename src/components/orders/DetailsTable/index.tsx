@@ -23,7 +23,10 @@ import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { useAppData } from 'hooks/useAppData'
+import { getDecodedAppData } from 'hooks/useAppData'
+import useSafeState from 'hooks/useSafeState'
+import { useNetworkId } from 'state/network'
+import { AppDataDoc } from '@cowprotocol/cow-sdk'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -61,6 +64,12 @@ const Table = styled(SimpleTable)`
       &:last-of-type {
         color: ${({ theme }): string => theme.textPrimary1};
       }
+
+      a.showMoreAnchor {
+        color: ${({ theme }): string => theme.orange1};
+        font-size: 1.2rem;
+        margin-left: 0.5rem;
+      }
     }
   }
 `
@@ -93,6 +102,11 @@ const Wrapper = styled.div`
   ${media.mobile} {
     flex-direction: column;
   }
+`
+
+const AppDataWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
 `
 
 const LinkButton = styled(LinkWithPrefixNetwork)`
@@ -159,9 +173,43 @@ export function DetailsTable(props: Props): JSX.Element | null {
     sellToken,
     appData,
   } = order
-  const { appDataDoc, isLoading: appDataLoading } = useAppData(appData.toString())
+  const [appDataLoading, setAppDataLoading] = useSafeState(false)
+  const [decodedAppData, setDecodedAppData] = useSafeState<AppDataDoc | void | undefined>(undefined)
+  const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
+  const network = useNetworkId()
 
   if (!buyToken || !sellToken) {
+    return null
+  }
+
+  const handleDecodedAppData = async (): Promise<void> => {
+    setShowDecodedAppData(!showDecodedAppData)
+    if (decodedAppData) return
+    setAppDataLoading(true)
+    try {
+      const decodedAppData = await getDecodedAppData(
+        '0x5ddb2c8207c10b96fac92cb934ef9ba004bc007a073c9e5b13edc422f209ed80',
+        network || undefined,
+      )
+      setDecodedAppData(decodedAppData)
+    } catch {
+      setDecodedAppData(undefined)
+    } finally {
+      setAppDataLoading(false)
+    }
+  }
+
+  const renderAppData = (): JSX.Element | null => {
+    if (appDataLoading) return <Spinner />
+    if (showDecodedAppData) {
+      return (
+        <RowWithCopyButton
+          textToCopy={JSON.stringify(decodedAppData, null, 2)}
+          onCopy={(): void => onCopy('appDataDecoded')}
+          contentsToDisplay={<pre>{JSON.stringify(decodedAppData, null, 2)}</pre>}
+        />
+      )
+    }
     return null
   }
 
@@ -236,20 +284,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
               </td>
             </tr>
           )}
-          <tr>
-            <td>
-              <HelpTooltip tooltip={tooltip.appData} /> AppData
-            </td>
-            <td>
-              {appDataLoading ? (
-                <Spinner />
-              ) : (
-                <div>
-                  <pre>{appDataDoc ? JSON.stringify(appDataDoc, null, 2) : '-'}</pre>
-                </div>
-              )}
-            </td>
-          </tr>
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.status} /> Status
@@ -349,6 +383,22 @@ export function DetailsTable(props: Props): JSX.Element | null {
             </td>
             <td>
               <GasFeeDisplay order={order} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <HelpTooltip tooltip={tooltip.appData} /> AppData
+            </td>
+            <td>
+              <AppDataWrapper>
+                <div>
+                  <span> {appData}</span>
+                  <a className="showMoreAnchor" onClick={handleDecodedAppData}>
+                    {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
+                  </a>
+                </div>
+                <div>{renderAppData()}</div>
+              </AppDataWrapper>
             </td>
           </tr>
         </>
