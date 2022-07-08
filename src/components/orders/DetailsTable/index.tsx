@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
@@ -7,6 +7,7 @@ import { Order } from 'api/operator'
 import { capitalize } from 'utils'
 
 import { HelpTooltip } from 'components/Tooltip'
+import ErrorMsg from 'components/ErrorMsg'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
@@ -23,10 +24,11 @@ import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { getDecodedAppData } from 'hooks/useAppData'
+import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
 import { useNetworkId } from 'state/network'
 import { AppDataDoc } from '@cowprotocol/cow-sdk'
+import { DEFAULT_IPFS_READ_URI } from 'const'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -66,9 +68,8 @@ const Table = styled(SimpleTable)`
       }
 
       a.showMoreAnchor {
-        color: ${({ theme }): string => theme.orange1};
         font-size: 1.2rem;
-        margin-left: 0.5rem;
+        margin-top: 0.5rem;
       }
     }
   }
@@ -96,7 +97,7 @@ const tooltip = {
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
 }
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
   ${media.mobile} {
@@ -107,6 +108,35 @@ const Wrapper = styled.div`
 const AppDataWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  .json-formatter {
+    word-break: break-all;
+    overflow: scroll;
+    border: 1px solid ${({ theme }): string => theme.tableRowBorder};
+    padding: 0.75rem;
+    background: ${({ theme }): string => theme.tableRowBorder};
+    border-radius: 0.5rem;
+    ${media.mediumUp} {
+      max-width: 500px;
+    }
+    ${media.mobile} {
+      max-width: 400px;
+    }
+    ${media.xSmallDown} {
+      max-width: 300px;
+    }
+    ${media.tinyDown} {
+      max-width: 220px;
+    }
+  }
+  .data-container {
+    margin-right: 0.75rem;
+    word-break: break-all;
+    display: flex;
+    flex-direction: column;
+    .app-data {
+      color: ${({ theme }): string => theme.orange1};
+    }
+  }
 `
 
 const LinkButton = styled(LinkWithPrefixNetwork)`
@@ -174,9 +204,25 @@ export function DetailsTable(props: Props): JSX.Element | null {
     appData,
   } = order
   const [appDataLoading, setAppDataLoading] = useSafeState(false)
+  const [appDataError, setAppDataError] = useSafeState(false)
   const [decodedAppData, setDecodedAppData] = useSafeState<AppDataDoc | void | undefined>(undefined)
+  const [ipfsUri, setIpfsUri] = useSafeState<string>('')
+
   const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
   const network = useNetworkId()
+
+  useEffect(() => {
+    const fetchIPFS = async (): Promise<void> => {
+      try {
+        const decodedAppDataHex = await getCidHashFromAppData(appData.toString(), network || undefined)
+        setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${decodedAppDataHex}`)
+      } catch {
+        setAppDataError(true)
+      }
+    }
+
+    fetchIPFS()
+  }, [appData, network, setAppDataError, setIpfsUri])
 
   if (!buyToken || !sellToken) {
     return null
@@ -187,13 +233,11 @@ export function DetailsTable(props: Props): JSX.Element | null {
     if (decodedAppData) return
     setAppDataLoading(true)
     try {
-      const decodedAppData = await getDecodedAppData(
-        '0x5ddb2c8207c10b96fac92cb934ef9ba004bc007a073c9e5b13edc422f209ed80',
-        network || undefined,
-      )
+      const decodedAppData = await getDecodedAppData(appData.toString(), network || undefined)
       setDecodedAppData(decodedAppData)
     } catch {
       setDecodedAppData(undefined)
+      setAppDataError(true)
     } finally {
       setAppDataLoading(false)
     }
@@ -202,11 +246,12 @@ export function DetailsTable(props: Props): JSX.Element | null {
   const renderAppData = (): JSX.Element | null => {
     if (appDataLoading) return <Spinner />
     if (showDecodedAppData) {
+      if (appDataError) return <ErrorMsg size="4x" message="Error when getting Metadata info" />
       return (
         <RowWithCopyButton
           textToCopy={JSON.stringify(decodedAppData, null, 2)}
           onCopy={(): void => onCopy('appDataDecoded')}
-          contentsToDisplay={<pre>{JSON.stringify(decodedAppData, null, 2)}</pre>}
+          contentsToDisplay={<pre className="json-formatter">{JSON.stringify(decodedAppData, null, 2)}</pre>}
         />
       )
     }
@@ -391,8 +436,20 @@ export function DetailsTable(props: Props): JSX.Element | null {
             </td>
             <td>
               <AppDataWrapper>
-                <div>
-                  <span> {appData}</span>
+                <div className="data-container">
+                  {appDataError ? (
+                    <span className="app-data">{appData}</span>
+                  ) : (
+                    <RowWithCopyButton
+                      textToCopy={ipfsUri}
+                      onCopy={(): void => onCopy('IpfsAppDataUri')}
+                      contentsToDisplay={
+                        <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
+                          {appData}
+                        </a>
+                      }
+                    />
+                  )}
                   <a className="showMoreAnchor" onClick={handleDecodedAppData}>
                     {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
                   </a>

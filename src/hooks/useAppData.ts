@@ -34,3 +34,10 @@ export const getDecodedAppData = (
 ): Promise<void | AppDataDoc> | undefined => {
   return COW_SDK[networkId]?.metadataApi.decodeAppData(appDataHash)
 }
+
+export const getCidHashFromAppData = (
+  appDataHash: string,
+  networkId = Network.MAINNET,
+): Promise<string | void> | undefined => {
+  return COW_SDK[networkId]?.metadataApi.appDataHexToCid(appDataHash)
+}
