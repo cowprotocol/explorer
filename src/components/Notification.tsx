@@ -9,6 +9,7 @@ export interface NotificationProps {
   type: 'warn' | 'error'
   message: string
   appendMessage?: boolean
+  closable?: boolean
 }
 
 export const NotificationWrap = styled.p<{ isActive?: boolean; type: string }>`
@@ -77,6 +78,7 @@ export const Notification: React.FC<NotificationProps> = ({
   type,
   message,
   appendMessage = true,
+  closable = true,
 }: NotificationProps) => {
   const [isNoteActive, setIsNoteActive] = useState(true)
   const isError = type === 'error'
@@ -94,7 +96,7 @@ export const Notification: React.FC<NotificationProps> = ({
           </>
         )}
       </span>
-      <CloseButton onClick={(): void => setIsNoteActive(false)} />
+      {closable && <CloseButton onClick={(): void => setIsNoteActive(false)} />}
     </NotificationWrap>
   )
 }

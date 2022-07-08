@@ -7,7 +7,7 @@ import { Order } from 'api/operator'
 import { capitalize } from 'utils'
 
 import { HelpTooltip } from 'components/Tooltip'
-import ErrorMsg from 'components/ErrorMsg'
+import { Notification } from 'components/Notification'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
@@ -110,11 +110,21 @@ const AppDataWrapper = styled.div`
   flex-direction: column;
   .json-formatter {
     word-break: break-all;
-    overflow: scroll;
+    overflow: auto;
     border: 1px solid ${({ theme }): string => theme.tableRowBorder};
     padding: 0.75rem;
     background: ${({ theme }): string => theme.tableRowBorder};
     border-radius: 0.5rem;
+    ::-webkit-scrollbar {
+      width: 6px !important;
+      height: 6px !important;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+    ::-webkit-scrollbar-track {
+      background: hsla(0, 0%, 100%, 0.1);
+    }
     ${media.mediumUp} {
       max-width: 500px;
     }
@@ -136,6 +146,9 @@ const AppDataWrapper = styled.div`
     .app-data {
       color: ${({ theme }): string => theme.orange1};
     }
+  }
+  .hidden-content {
+    margin-top: 10px;
   }
 `
 
@@ -230,7 +243,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
 
   const handleDecodedAppData = async (): Promise<void> => {
     setShowDecodedAppData(!showDecodedAppData)
-    if (decodedAppData) return
+    if (decodedAppData || appDataError) return
     setAppDataLoading(true)
     try {
       const decodedAppData = await getDecodedAppData(appData.toString(), network || undefined)
@@ -246,7 +259,15 @@ export function DetailsTable(props: Props): JSX.Element | null {
   const renderAppData = (): JSX.Element | null => {
     if (appDataLoading) return <Spinner />
     if (showDecodedAppData) {
-      if (appDataError) return <ErrorMsg size="4x" message="Error when getting Metadata info" />
+      if (appDataError)
+        return (
+          <Notification
+            type="error"
+            message="Error when getting metadata info."
+            closable={false}
+            appendMessage={false}
+          />
+        )
       return (
         <RowWithCopyButton
           textToCopy={JSON.stringify(decodedAppData, null, 2)}
@@ -454,7 +475,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
                     {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
                   </a>
                 </div>
-                <div>{renderAppData()}</div>
+                <div className="hidden-content">{renderAppData()}</div>
               </AppDataWrapper>
             </td>
           </tr>
