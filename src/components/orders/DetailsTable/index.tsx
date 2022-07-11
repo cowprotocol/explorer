@@ -80,7 +80,8 @@ const tooltip = {
   from: 'The account address which signed the order.',
   to: 'The account address which will/did receive the bought amount.',
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
-  appData: 'The app data document for this order',
+  appData:
+    'The app data hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
   status: 'The order status is either Open, Filled, Expired or Canceled.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
