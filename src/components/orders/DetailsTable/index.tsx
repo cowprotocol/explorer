@@ -116,6 +116,8 @@ const AppDataWrapper = styled.div`
     padding: 0.75rem;
     background: ${({ theme }): string => theme.tableRowBorder};
     border-radius: 0.5rem;
+    display: flex;
+
     ::-webkit-scrollbar {
       width: 6px !important;
       height: 6px !important;
@@ -125,18 +127,6 @@ const AppDataWrapper = styled.div`
     }
     ::-webkit-scrollbar-track {
       background: hsla(0, 0%, 100%, 0.1);
-    }
-    ${media.mediumUp} {
-      max-width: 500px;
-    }
-    ${media.mobile} {
-      max-width: 350px;
-    }
-    ${media.xSmallDown} {
-      max-width: 250px;
-    }
-    ${media.tinyDown} {
-      max-width: 220px;
     }
   }
   .data-container {
@@ -150,6 +140,18 @@ const AppDataWrapper = styled.div`
   }
   .hidden-content {
     margin-top: 10px;
+
+    span div {
+      ${media.mediumUp} {
+        width: 94%;
+      }
+      ${media.mobile} {
+        width: 92%;
+      }
+      ${media.tinyDown} {
+        width: 88%;
+      }
+    }
   }
 `
 
