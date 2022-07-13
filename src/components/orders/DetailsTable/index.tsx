@@ -28,7 +28,7 @@ import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
 import { useNetworkId } from 'state/network'
 import { AppDataDoc } from '@cowprotocol/cow-sdk'
-import { DEFAULT_IPFS_READ_URI } from 'const'
+import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -130,10 +130,10 @@ const AppDataWrapper = styled.div`
       max-width: 500px;
     }
     ${media.mobile} {
-      max-width: 400px;
+      max-width: 350px;
     }
     ${media.xSmallDown} {
-      max-width: 300px;
+      max-width: 250px;
     }
     ${media.tinyDown} {
       max-width: 220px;
@@ -244,12 +244,16 @@ export function DetailsTable(props: Props): JSX.Element | null {
 
   const handleDecodedAppData = async (): Promise<void> => {
     setShowDecodedAppData(!showDecodedAppData)
-    if (decodedAppData || appDataError) return
+    if (decodedAppData) return
+    if (IPFS_INVALID_APP_IDS.includes(appData.toString())) {
+      setAppDataError(true)
+      return
+    }
     setAppDataLoading(true)
     try {
       const decodedAppData = await getDecodedAppData(appData.toString(), network || undefined)
       setDecodedAppData(decodedAppData)
-    } catch {
+    } catch (e) {
       setDecodedAppData(undefined)
       setAppDataError(true)
     } finally {
