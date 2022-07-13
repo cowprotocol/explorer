@@ -116,17 +116,17 @@ const AppDataWrapper = styled.div`
     padding: 0.75rem;
     background: ${({ theme }): string => theme.tableRowBorder};
     border-radius: 0.5rem;
-    display: flex;
 
     ::-webkit-scrollbar {
-      width: 6px !important;
-      height: 6px !important;
+      width: 8px !important;
+      height: 8px !important;
     }
     ::-webkit-scrollbar-thumb {
-      background-color: rgba(0, 0, 0, 0.2);
+      background: hsla(0, 0%, 100%, 0.1);
+      border-radius: 4px;
     }
     ::-webkit-scrollbar-track {
-      background: hsla(0, 0%, 100%, 0.1);
+      background-color: rgba(0, 0, 0, 0.2);
     }
   }
   .data-container {
@@ -143,13 +143,13 @@ const AppDataWrapper = styled.div`
 
     span div {
       ${media.mediumUp} {
-        width: 94%;
+        width: 95%;
       }
       ${media.mobile} {
-        width: 92%;
+        width: 75vw;
       }
       ${media.tinyDown} {
-        width: 88%;
+        width: 70vw;
       }
     }
   }
