@@ -75,7 +75,7 @@ const MetadataPage: React.FC = () => {
           </button>
           {appDataDoc && (
             <button className="btn btn-info" onClick={onUploadToIPFS}>
-              UPLODAD APP DATA TO IPFS
+              UPLOAD APP DATA TO IPFS
             </button>
           )}
           {isDocUploaded && (
