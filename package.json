@@ -62,7 +62,7 @@
     "@gnosis.pm/safe-apps-react-sdk": "^2.1.0",
     "@hookform/error-message": "^0.0.3",
     "@hot-loader/react-dom": "^16.11.0",
-    "@rjsf/core": "4.2.2",
+    "@rjsf/core": "^4.2.2",
     "@material-ui/core": "^4.11.0",
     "@material-ui/pickers": "4.0.0-alpha.9",
     "@popperjs/core": "^2.0.6",
