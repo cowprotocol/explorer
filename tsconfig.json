@@ -12,13 +12,7 @@
     "resolveJsonModule": true,
     "allowJs": false,
     "checkJs": false,
-    "lib": [
-      "dom",
-      "es2015",
-      "es2016",
-      "es2017",
-      "esnext"
-    ],
+    "lib": ["dom", "es2015", "es2016", "es2017", "esnext"],
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
     "noImplicitAny": true,
@@ -29,12 +23,7 @@
     "skipLibCheck": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "types": [
-      "jest",
-      "node",
-      "webpack-env",
-      "resize-observer-browser"
-    ],
+    "types": ["jest", "node", "webpack-env", "resize-observer-browser"],
     "baseUrl": ".",
     "paths": {
       "*": ["custom/*", "src/*"]

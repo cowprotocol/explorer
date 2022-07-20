@@ -106,7 +106,7 @@ export const Wrapper = styled.div`
   }
 `
 
-const AppDataWrapper = styled.div`
+export const AppDataWrapper = styled.div`
   display: flex;
   flex-direction: column;
   .json-formatter {

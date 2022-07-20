@@ -227,11 +227,16 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
   },
 )
 
+const PINATA_API_KEY = process.env.REACT_APP_PINATA_API_KEY
+const PINATA_API_SECRET = process.env.REACT_APP_PINATA_API_SECRET
+
 export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
   Record<number, CowSdk<SupportedChainId> | null>
 >((acc, networkId) => {
   try {
-    acc[networkId] = new CowSdk(networkId)
+    acc[networkId] = new CowSdk(networkId, {
+      ipfs: { pinataApiKey: PINATA_API_KEY, pinataApiSecret: PINATA_API_SECRET },
+    })
   } catch (error) {
     console.error('Instantiating CowSdk failed', error)
   }
@@ -247,6 +252,7 @@ export const COW_SDK_DEV = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHA
   try {
     acc[networkId] = new CowSdk(networkId, {
       isDevEnvironment: true,
+      ipfs: { pinataApiKey: PINATA_API_KEY, pinataApiSecret: PINATA_API_SECRET },
     })
   } catch (error) {
     console.error('Instantiating CowSdk in development mode failed', error)
