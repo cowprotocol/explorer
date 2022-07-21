@@ -51,6 +51,14 @@ export const Wrapper = styled(WrapperTemplate)`
     .form-group {
       margin-bottom: 2rem;
     }
+    .error-detail {
+      padding: 0;
+      li {
+        list-style: none;
+        color: ${({ theme }): string => theme.red1};
+        font-size: 1.3rem;
+      }
+    }
     .btn.btn-info {
       display: flex;
       align-items: center;

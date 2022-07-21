@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Form from '@rjsf/core'
+import { JSONSchema7 } from 'json-schema'
 import { AppDataDoc, IpfsHashInfo } from '@cowprotocol/cow-sdk'
 import { COW_SDK, DEFAULT_IPFS_READ_URI } from 'const'
 import { useNetworkId } from 'state/network'
@@ -7,10 +8,11 @@ import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import { AppDataWrapper } from 'components/orders/DetailsTable'
-import { schema, uiSchema, validate, transformErrors } from './config'
+import { getSchema, uiSchema, validate, transformErrors, deletePropertyPath } from './config'
 import { Wrapper } from './styled'
 
 const MetadataPage: React.FC = () => {
+  const [schema, setSchema] = useState<JSONSchema7>({})
   const [formData, setFormData] = useState({})
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [appDataDoc, setAppDataDoc] = useState<AppDataDoc>()
@@ -19,6 +21,24 @@ const MetadataPage: React.FC = () => {
 
   const network = useNetworkId()
   const formRef = React.useRef<Form<any>>(null)
+
+  useEffect(() => {
+    const fetchSchema = async (): Promise<void> => {
+      const latestSchema = await getSchema()
+      setSchema(latestSchema)
+    }
+
+    fetchSchema()
+  }, [])
+
+  const handleFormatData = (formData: any): any => {
+    const formattedData = structuredClone(formData)
+
+    deletePropertyPath(formattedData, 'metadata.referrer.enableReferrer')
+    deletePropertyPath(formattedData, 'metadata.quote.enableQuote')
+
+    return formattedData
+  }
 
   const onSubmit = async ({ formData }: { formData: any }): Promise<void> => {
     if (!network) return
@@ -94,8 +114,10 @@ const MetadataPage: React.FC = () => {
         <AppDataWrapper>
           <div className="hidden-content">
             <RowWithCopyButton
-              textToCopy={JSON.stringify(formData, null, 2)}
-              contentsToDisplay={<pre className="json-formatter">{JSON.stringify(formData, null, 2)}</pre>}
+              textToCopy={JSON.stringify(handleFormatData(formData), null, 2)}
+              contentsToDisplay={
+                <pre className="json-formatter">{JSON.stringify(handleFormatData(formData), null, 2)}</pre>
+              }
             />
           </div>
         </AppDataWrapper>
