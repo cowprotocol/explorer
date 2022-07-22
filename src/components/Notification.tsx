@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExclamationEllipsis, faExclamationTriangle } from './icons'
+import { faExclamationEllipsis, faExclamationTriangle, faCircleCheck } from './icons'
 import { BASE_COLOURS } from 'theme'
 
 export interface NotificationProps {
-  type: 'warn' | 'error'
+  type: 'warn' | 'error' | 'success'
   message: string
   appendMessage?: boolean
   closable?: boolean
@@ -16,7 +16,11 @@ export const NotificationWrap = styled.p<{ isActive?: boolean; type: string }>`
   border-radius: 6px;
   padding: 10px 16px;
   background-color: ${({ theme, type }): string =>
-    type === 'error' ? transparentize(0.8, theme.red4) : transparentize(0.8, theme.orange)};
+    type === 'error'
+      ? transparentize(0.8, theme.red4)
+      : type === 'warn'
+      ? transparentize(0.8, theme.orange)
+      : transparentize(0.8, theme.green1)};
   font-size: 12px;
   display: ${({ isActive }): string => (isActive ? 'flex' : 'none')};
   align-items: center;
@@ -33,7 +37,8 @@ export const NotificationWrap = styled.p<{ isActive?: boolean; type: string }>`
   }
 
   .svg-inline--fa {
-    color: ${({ theme, type }): string => (type === 'error' ? theme.red4 : theme.orange)};
+    color: ${({ theme, type }): string =>
+      type === 'error' ? theme.red4 : type === 'warn' ? theme.orange : theme.green1};
     width: 16px;
     height: 16px;
   }
@@ -73,7 +78,11 @@ const CloseButton = styled.button`
     transform: rotate(45deg);
   }
 `
-
+const icon = {
+  success: faCircleCheck,
+  error: faExclamationEllipsis,
+  warn: faExclamationTriangle,
+}
 export const Notification: React.FC<NotificationProps> = ({
   type,
   message,
@@ -82,10 +91,9 @@ export const Notification: React.FC<NotificationProps> = ({
 }: NotificationProps) => {
   const [isNoteActive, setIsNoteActive] = useState(true)
   const isError = type === 'error'
-  const icon = isError ? faExclamationEllipsis : faExclamationTriangle
   return (
     <NotificationWrap type={type} isActive={isNoteActive}>
-      <FontAwesomeIcon icon={icon} />
+      <FontAwesomeIcon icon={icon[type]} />
       <span>
         {message}
         {appendMessage && (
