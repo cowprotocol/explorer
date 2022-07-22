@@ -26,7 +26,7 @@ export const faExclamationEllipsis: IconDefinition = {
 
 export const faCircleCheck: IconDefinition = {
   prefix: 'fas',
-  iconName: 'circle-check',
+  iconName: 'check-circle',
   icon: [
     512,
     512,
