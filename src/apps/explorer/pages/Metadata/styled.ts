@@ -41,6 +41,11 @@ export const Wrapper = styled(WrapperTemplate)`
   .metadata-form {
     fieldset {
       padding: 3rem;
+      border-radius: 0.6rem;
+      border: 1px solid ${({ theme }): string => theme.borderPrimary};
+      legend {
+        padding: 0.5rem;
+      }
     }
     .form-group {
       margin-bottom: 2rem;
@@ -90,6 +95,9 @@ export const Wrapper = styled(WrapperTemplate)`
       height: 5rem;
       flex: 1 1 auto;
       background: ${({ theme }): string => theme.greyOpacity};
+      &:read-only {
+        cursor: not-allowed;
+      }
       font-weight: ${({ theme }): string => theme.fontMedium};
       font-size: 1.6rem;
       border-radius: 0.6rem;
