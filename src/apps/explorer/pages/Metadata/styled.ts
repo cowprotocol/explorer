@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { ContentCard as Content, Wrapper as WrapperTemplate } from 'apps/explorer/pages/styled'
 import { media } from 'theme/styles/media'
-import { AppDataWrapper } from 'components/orders/DetailsTable'
+import AppDataWrapper from 'components/common/AppDataWrapper'
 
 export const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
@@ -9,31 +9,25 @@ export const Wrapper = styled(WrapperTemplate)`
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    .json-formatter {
-      line-height: 1.25;
-      word-break: break-all;
-      overflow: auto;
-      border: 1px solid ${({ theme }): string => theme.tableRowBorder};
-      padding: 0.75rem;
-      background: ${({ theme }): string => theme.tableRowBorder};
-      border-radius: 0.5rem;
-
-      ::-webkit-scrollbar {
-        width: 8px !important;
-        height: 8px !important;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: hsla(0, 0%, 100%, 0.1);
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-track {
-        background-color: rgba(0, 0, 0, 0.2);
-      }
+    ${media.mobile} {
+      flex-direction: column;
     }
     ${AppDataWrapper} {
       flex: 1;
       align-items: center;
       padding-left: 2rem;
+    }
+    .json-formatter {
+      line-height: 1.25;
+      ${media.desktopMediumDown} {
+        max-width: 37vw;
+      }
+      ${media.mediumDownMd} {
+        max-width: 33vw;
+      }
+      ${media.mobile} {
+        max-width: none;
+      }
     }
     .appData-hash {
       margin-bottom: 1.5rem;
@@ -50,6 +44,9 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     .form-group {
       margin-bottom: 2rem;
+    }
+    .field-description {
+      font-size: 1.3rem;
     }
     .error-detail {
       padding: 0;
@@ -102,7 +99,7 @@ export const Wrapper = styled(WrapperTemplate)`
       appearance: none;
       align-items: center;
       color: ${({ theme }): string => theme.greyShade};
-      padding: 1.6rem 1.6rem 1.6rem 5rem;
+      padding: 1.6rem;
       box-sizing: border-box;
       border: 0.1rem solid transparent;
       transition: border 0.2s ease-in-out;

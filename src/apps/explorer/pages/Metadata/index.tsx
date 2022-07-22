@@ -7,8 +7,9 @@ import { useNetworkId } from 'state/network'
 import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
-import { AppDataWrapper } from 'components/orders/DetailsTable'
-import { getSchema, uiSchema, validate, transformErrors, deletePropertyPath } from './config'
+import AppDataWrapper from 'components/common/AppDataWrapper'
+import { Notification } from 'components/Notification'
+import { getSchema, transformErrors, deletePropertyPath } from './config'
 import { Wrapper } from './styled'
 
 const MetadataPage: React.FC = () => {
@@ -18,6 +19,7 @@ const MetadataPage: React.FC = () => {
   const [appDataDoc, setAppDataDoc] = useState<AppDataDoc>()
   const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>()
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(false)
+  const [error, setError] = useState<string>()
 
   const network = useNetworkId()
   const formRef = React.useRef<Form<any>>(null)
@@ -49,7 +51,7 @@ const MetadataPage: React.FC = () => {
       const hashInfo = await COW_SDK[network]?.metadataApi.calculateAppDataHash(res)
       setIpfsHashInfo(hashInfo)
     } catch (e) {
-      console.error(e)
+      setError(e.message)
     } finally {
       setAppDataDoc(res)
       setIsLoading(false)
@@ -62,7 +64,7 @@ const MetadataPage: React.FC = () => {
       await COW_SDK[network]?.metadataApi.uploadMetadataDocToIpfs(appDataDoc)
       setIsDocUploaded(true)
     } catch (e) {
-      console.log(e)
+      setError(e.message)
       setIsDocUploaded(false)
     }
   }
@@ -76,12 +78,10 @@ const MetadataPage: React.FC = () => {
           ref={formRef}
           showErrorList={false}
           formData={formData}
-          validate={validate}
           transformErrors={transformErrors}
           onChange={({ formData }): void => setFormData(formData)}
           onSubmit={onSubmit}
           schema={schema}
-          uiSchema={uiSchema}
         >
           {ipfsHashInfo && (
             <RowWithCopyButton
@@ -99,17 +99,28 @@ const MetadataPage: React.FC = () => {
             </button>
           )}
           {isDocUploaded && (
-            <RowWithCopyButton
-              className="appData-hash"
-              textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
-              contentsToDisplay={
-                <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`} target="_blank" rel="noopener noreferrer">
-                  {ipfsHashInfo?.cidV0}
-                </a>
-              }
-            />
+            <>
+              <RowWithCopyButton
+                className="appData-hash"
+                textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
+                contentsToDisplay={
+                  <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`} target="_blank" rel="noopener noreferrer">
+                    {ipfsHashInfo?.cidV0}
+                  </a>
+                }
+              />
+              <Notification
+                type="success"
+                message="Document uploaded successfully!"
+                closable={false}
+                appendMessage={false}
+              />
+            </>
           )}
           {isLoading && <Spinner />}
+          {error && !isDocUploaded && (
+            <Notification type="error" message={error} closable={false} appendMessage={false} />
+          )}
         </Form>
         <AppDataWrapper>
           <div className="hidden-content">

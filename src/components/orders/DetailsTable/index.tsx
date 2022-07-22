@@ -22,6 +22,7 @@ import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import AppDataWrapper from 'components/common/AppDataWrapper'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
@@ -103,55 +104,6 @@ export const Wrapper = styled.div`
   flex-direction: row;
   ${media.mobile} {
     flex-direction: column;
-  }
-`
-
-export const AppDataWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  .json-formatter {
-    word-break: break-all;
-    overflow: auto;
-    border: 1px solid ${({ theme }): string => theme.tableRowBorder};
-    padding: 0.75rem;
-    background: ${({ theme }): string => theme.tableRowBorder};
-    border-radius: 0.5rem;
-
-    ::-webkit-scrollbar {
-      width: 8px !important;
-      height: 8px !important;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: hsla(0, 0%, 100%, 0.1);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
-  .data-container {
-    margin-right: 0.75rem;
-    word-break: break-all;
-    display: flex;
-    flex-direction: column;
-    .app-data {
-      color: ${({ theme }): string => theme.orange1};
-    }
-  }
-  .hidden-content {
-    margin-top: 10px;
-
-    span div {
-      ${media.mediumUp} {
-        width: 95%;
-      }
-      ${media.mobile} {
-        width: 75vw;
-      }
-      ${media.tinyDown} {
-        width: 70vw;
-      }
-    }
   }
 `
 
