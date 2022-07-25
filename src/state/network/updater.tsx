@@ -14,6 +14,7 @@ const NETWORK_PREFIXES_RAW: [Network, string][] = [
   [Network.MAINNET, ''],
   [Network.GNOSIS_CHAIN, 'gc'],
   [Network.RINKEBY, 'rinkeby'],
+  [Network.RINKEBY, 'goerli'],
 ]
 export const PREFIX_BY_NETWORK_ID: Map<Network, string> = new Map(NETWORK_PREFIXES_RAW)
 const NETWORK_ID_BY_PREFIX: Map<string, Network> = new Map(NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]))
@@ -35,7 +36,7 @@ function getNetworkPrefix(network: Network): string {
  */
 export const useDecomposedPath = (): [string, string] | [] => {
   const { pathname } = useLocation()
-  const pathMatchArray = pathname.match('/(rinkeby|xdai|mainnet|gc)?/?(.*)')
+  const pathMatchArray = pathname.match('/(rinkeby|xdai|mainnet|gc|goerli)?/?(.*)')
 
   return pathMatchArray == null ? [] : [pathMatchArray[1], pathMatchArray[2]]
 }
@@ -89,7 +90,7 @@ export const NetworkUpdater: React.FC = () => {
   const location = useLocation()
 
   useEffect(() => {
-    const networkMatchArray = location.pathname.match('^/(rinkeby|gc)')
+    const networkMatchArray = location.pathname.match('^/(rinkeby|gc|goerli)')
     const network = networkMatchArray && networkMatchArray.length > 0 ? networkMatchArray[1] : undefined
     const networkId = getNetworkId(network)
 
