@@ -224,10 +224,11 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
     [Network.MAINNET]: {},
     [Network.RINKEBY]: {},
     [Network.GNOSIS_CHAIN]: {},
+    [Network.GOERLI]: {},
   },
 )
 
-export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
+export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN, Network.GOERLI].reduce<
   Record<number, CowSdk<SupportedChainId> | null>
 >((acc, networkId) => {
   try {
@@ -241,7 +242,7 @@ export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].
   return acc
 }, {})
 
-export const COW_SDK_DEV = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
+export const COW_SDK_DEV = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN, Network.GOERLI].reduce<
   Record<number, CowSdk<SupportedChainId> | null>
 >((acc, networkId) => {
   try {
@@ -274,6 +275,7 @@ export const XDAI: TokenErc20 = {
 export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
   '1': ETH,
   '4': ETH,
+  '5': ETH,
   '100': XDAI,
 }
 
