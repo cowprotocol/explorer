@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Form from '@rjsf/core'
+import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
 import { AppDataDoc, IpfsHashInfo } from '@cowprotocol/cow-sdk'
 import { COW_SDK, DEFAULT_IPFS_READ_URI } from 'const'
@@ -9,12 +9,13 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
 import { Notification } from 'components/Notification'
-import { getSchema, transformErrors, deletePropertyPath } from './config'
+import { INITIAL_FORM_VALUES, getSchema, validate, deletePropertyPath } from './config'
 import { Wrapper } from './styled'
 
 const MetadataPage: React.FC = () => {
   const [schema, setSchema] = useState<JSONSchema7>({})
-  const [formData, setFormData] = useState({})
+  const [formData, setFormData] = useState(INITIAL_FORM_VALUES)
+  const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [appDataDoc, setAppDataDoc] = useState<AppDataDoc>()
   const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>()
@@ -42,8 +43,9 @@ const MetadataPage: React.FC = () => {
     return formattedData
   }
 
-  const onSubmit = async ({ formData }: { formData: any }): Promise<void> => {
-    if (!network) return
+  const onSubmit = async (data: any): Promise<void> => {
+    const { formData, errors } = data
+    if (!network || errors.length > 0) return
     setIsLoading(true)
     const res = COW_SDK[network]?.metadataApi.generateAppDataDoc(formData)
     try {
@@ -55,6 +57,7 @@ const MetadataPage: React.FC = () => {
     } finally {
       setAppDataDoc(res)
       setIsLoading(false)
+      setInvalidFormDataAttempted(false)
     }
   }
 
@@ -75,12 +78,16 @@ const MetadataPage: React.FC = () => {
       <Content>
         <Form
           className="metadata-form"
-          ref={formRef}
+          liveOmit
+          liveValidate={invalidFormDataAttempted}
+          validate={(formData, errors): FormValidation => validate(formData, errors, schema)}
+          omitExtraData
           showErrorList={false}
+          ref={formRef}
           formData={formData}
-          transformErrors={transformErrors}
-          onChange={({ formData }): void => setFormData(formData)}
+          onChange={({ formData }: any): void => setFormData(formData)}
           onSubmit={onSubmit}
+          onError={(): void => setInvalidFormDataAttempted(true)}
           schema={schema}
         >
           {ipfsHashInfo && (

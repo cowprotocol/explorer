@@ -1,11 +1,18 @@
-import { UiSchema } from '@rjsf/core'
+import { FormValidation, UiSchema } from '@rjsf/core'
 import {
   LATEST_APP_DATA_VERSION,
   LATEST_QUOTE_METADATA_VERSION,
   LATEST_REFERRER_METADATA_VERSION,
 } from '@cowprotocol/app-data'
 import { JSONSchema7 } from 'json-schema'
-import { AjvError } from '@rjsf/core'
+
+export const INITIAL_FORM_VALUES = {
+  version: LATEST_APP_DATA_VERSION,
+  metadata: {
+    referrer: {},
+    quote: {},
+  },
+}
 
 export const getSchema = async (): Promise<JSONSchema7> => {
   const { default: latestSchema } = await import(`@cowprotocol/app-data/schemas/v${LATEST_APP_DATA_VERSION}.json`)
@@ -79,17 +86,32 @@ export const uiSchema: UiSchema = {
   },
 }
 
-export const transformErrors = (errors: AjvError[]): AjvError[] => {
-  return errors.map((error: AjvError) => {
-    if (error.property === '.metadata.referrer.address') {
-      error.message = 'This is not an address.'
+export const validate = (formData: any, errors: FormValidation, schema: JSONSchema7): FormValidation => {
+  const { quote, referrer } = formData.metadata
+  if (schema.properties) {
+    let metadata
+    if (quote?.enableQuote) {
+      metadata = schema.properties['metadata']['properties']['quote']['dependencies']
+      if (
+        quote.slippageBips &&
+        !quote.slippageBips.match(metadata.enableQuote.oneOf[1].properties.slippageBips.pattern)
+      ) {
+        if (!errors.metadata['quote'].slippageBips.__errors.length) {
+          errors.metadata['quote'].slippageBips.addError('Only digits are allowed.')
+        }
+      }
     }
-    if (error.name === '.metadata.referrer.slippageBips') {
-      error.message = 'Only digits are allowed'
+    if (referrer?.enableReferrer) {
+      metadata = schema.properties['metadata']['properties']['referrer']['dependencies']
+      if (referrer.address && !referrer.address.match(metadata.enableReferrer.oneOf[1].properties.address.pattern)) {
+        if (!errors.metadata['referrer'].address.__errors.length) {
+          errors.metadata['referrer'].address.addError('This is not an address.')
+        }
+      }
     }
+  }
 
-    return error
-  })
+  return errors
 }
 
 export const deletePropertyPath = (obj: any, path: any): void => {
