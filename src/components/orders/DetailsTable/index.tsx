@@ -27,7 +27,7 @@ import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
 import { useNetworkId } from 'state/network'
-import { AppDataDoc } from '@cowprotocol/cow-sdk'
+import { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 
 const Table = styled(SimpleTable)`
@@ -221,7 +221,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
   } = order
   const [appDataLoading, setAppDataLoading] = useSafeState(false)
   const [appDataError, setAppDataError] = useSafeState(false)
-  const [decodedAppData, setDecodedAppData] = useSafeState<AppDataDoc | void | undefined>(undefined)
+  const [decodedAppData, setDecodedAppData] = useSafeState<LatestAppDataDocVersion | void | undefined>(undefined)
   const [ipfsUri, setIpfsUri] = useSafeState<string>('')
 
   const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
