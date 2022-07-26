@@ -14,7 +14,7 @@ const NETWORK_PREFIXES_RAW: [Network, string][] = [
   [Network.MAINNET, ''],
   [Network.GNOSIS_CHAIN, 'gc'],
   [Network.RINKEBY, 'rinkeby'],
-  [Network.RINKEBY, 'goerli'],
+  [Network.GOERLI, 'goerli'],
 ]
 export const PREFIX_BY_NETWORK_ID: Map<Network, string> = new Map(NETWORK_PREFIXES_RAW)
 const NETWORK_ID_BY_PREFIX: Map<string, Network> = new Map(NETWORK_PREFIXES_RAW.map(([key, value]) => [value, key]))
