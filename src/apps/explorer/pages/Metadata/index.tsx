@@ -9,7 +9,7 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
 import { Notification } from 'components/Notification'
-import { INITIAL_FORM_VALUES, getSchema, validate, deletePropertyPath } from './config'
+import { INITIAL_FORM_VALUES, getSchema, validate, transformErrors, deletePropertyPath } from './config'
 import { Wrapper } from './styled'
 
 const MetadataPage: React.FC = () => {
@@ -83,6 +83,8 @@ const MetadataPage: React.FC = () => {
           validate={(formData, errors): FormValidation => validate(formData, errors, schema)}
           omitExtraData
           showErrorList={false}
+          noHtml5Validate
+          transformErrors={transformErrors}
           ref={formRef}
           formData={formData}
           onChange={({ formData }: any): void => setFormData(formData)}

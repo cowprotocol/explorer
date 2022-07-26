@@ -1,10 +1,16 @@
-import { FormValidation, UiSchema } from '@rjsf/core'
+import { AjvError, FormValidation, UiSchema } from '@rjsf/core'
 import {
   LATEST_APP_DATA_VERSION,
   LATEST_QUOTE_METADATA_VERSION,
   LATEST_REFERRER_METADATA_VERSION,
 } from '@cowprotocol/app-data'
 import { JSONSchema7 } from 'json-schema'
+
+const ERROR_MESSAGES = {
+  REQUIRED: 'Required field.',
+  INVALID_ADDRESS: 'This is not an address.',
+  ONLY_DIGITS: 'Only digits are allowed.',
+}
 
 export const INITIAL_FORM_VALUES = {
   version: LATEST_APP_DATA_VERSION,
@@ -86,26 +92,55 @@ export const uiSchema: UiSchema = {
   },
 }
 
+export const transformErrors = (errors: AjvError[]): AjvError[] => {
+  return errors.map((error: AjvError) => {
+    if (error.property === '.metadata.referrer.address') {
+      error.message = ''
+    }
+    if (error.name === 'required') {
+      error.message = ''
+    }
+    return error
+  })
+}
+
 export const validate = (formData: any, errors: FormValidation, schema: JSONSchema7): FormValidation => {
   const { quote, referrer } = formData.metadata
   if (schema.properties) {
     let metadata
+    let required
     if (quote?.enableQuote) {
       metadata = schema.properties['metadata']['properties']['quote']['dependencies']
+      required = metadata.enableQuote.oneOf[1].required
+
+      required.forEach((requiredField: string) => {
+        if (!quote[requiredField]) {
+          errors.metadata['quote'][`${requiredField}`].addError(ERROR_MESSAGES.REQUIRED)
+        }
+      })
+
       if (
         quote.slippageBips &&
         !quote.slippageBips.match(metadata.enableQuote.oneOf[1].properties.slippageBips.pattern)
       ) {
         if (!errors.metadata['quote'].slippageBips.__errors.length) {
-          errors.metadata['quote'].slippageBips.addError('Only digits are allowed.')
+          errors.metadata['quote'].slippageBips.addError(ERROR_MESSAGES.ONLY_DIGITS)
         }
       }
     }
     if (referrer?.enableReferrer) {
       metadata = schema.properties['metadata']['properties']['referrer']['dependencies']
+      required = metadata.enableReferrer.oneOf[1].required
+
+      required.forEach((requiredField: string) => {
+        if (!referrer[requiredField]) {
+          errors.metadata['referrer'][`${requiredField}`].addError(ERROR_MESSAGES.REQUIRED)
+        }
+      })
+
       if (referrer.address && !referrer.address.match(metadata.enableReferrer.oneOf[1].properties.address.pattern)) {
         if (!errors.metadata['referrer'].address.__errors.length) {
-          errors.metadata['referrer'].address.addError('This is not an address.')
+          errors.metadata['referrer'].address.addError(ERROR_MESSAGES.INVALID_ADDRESS)
         }
       }
     }
