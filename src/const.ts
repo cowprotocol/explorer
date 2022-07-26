@@ -228,35 +228,19 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
   },
 )
 
-export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN, Network.GOERLI].reduce<
-  Record<number, CowSdk<SupportedChainId> | null>
->((acc, networkId) => {
-  try {
-    acc[networkId] = new CowSdk(networkId)
-  } catch (error) {
-    console.error('Instantiating CowSdk failed', error)
-  }
+export const COW_SDK: Record<SupportedChainId, CowSdk<SupportedChainId>> = {
+  [Network.MAINNET]: new CowSdk(Network.MAINNET),
+  [Network.RINKEBY]: new CowSdk(Network.RINKEBY),
+  [Network.GOERLI]: new CowSdk(Network.GOERLI),
+  [Network.GNOSIS_CHAIN]: new CowSdk(Network.GNOSIS_CHAIN),
+}
 
-  console.info(`CowSdk initialized on chain ${networkId}`)
-
-  return acc
-}, {})
-
-export const COW_SDK_DEV = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN, Network.GOERLI].reduce<
-  Record<number, CowSdk<SupportedChainId> | null>
->((acc, networkId) => {
-  try {
-    acc[networkId] = new CowSdk(networkId, {
-      isDevEnvironment: true,
-    })
-  } catch (error) {
-    console.error('Instantiating CowSdk in development mode failed', error)
-  }
-
-  console.info(`CowSdk in development mode initialized on chain ${networkId}`)
-
-  return acc
-}, {})
+export const COW_SDK_DEV: Record<SupportedChainId, CowSdk<SupportedChainId>> = {
+  [Network.MAINNET]: new CowSdk(Network.MAINNET, { env: 'staging' }),
+  [Network.RINKEBY]: new CowSdk(Network.RINKEBY, { env: 'staging' }),
+  [Network.GOERLI]: new CowSdk(Network.GOERLI, { env: 'staging' }),
+  [Network.GNOSIS_CHAIN]: new CowSdk(Network.GNOSIS_CHAIN, { env: 'staging' }),
+}
 
 export const ETH: TokenErc20 = {
   name: 'ETH',
