@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
-import { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { useNetworkId } from 'state/network'
 import { COW_SDK } from 'const'
 import { Network } from 'types'
 
 export const useAppData = (
   appDataHash: string,
-): { isLoading: boolean; appDataDoc: LatestAppDataDocVersion | void | undefined } => {
+): { isLoading: boolean; appDataDoc: AnyAppDataDocVersion | void | undefined } => {
   const network = useNetworkId() || undefined
   const [isLoading, setLoading] = useState<boolean>(false)
-  const [appDataDoc, setAppDataDoc] = useState<LatestAppDataDocVersion | void>()
+  const [appDataDoc, setAppDataDoc] = useState<AnyAppDataDocVersion | void>()
   useEffect(() => {
     async function getAppDataDoc(): Promise<void> {
       setLoading(true)
@@ -33,7 +33,7 @@ export const useAppData = (
 export const getDecodedAppData = (
   appDataHash: string,
   networkId = Network.MAINNET,
-): Promise<void | AppDataDoc> | undefined => {
+): Promise<void | AnyAppDataDocVersion> | undefined => {
   return COW_SDK[networkId]?.metadataApi.decodeAppData(appDataHash)
 }
 
