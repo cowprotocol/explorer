@@ -1,8 +1,9 @@
-import { AjvError, FormValidation, UiSchema } from '@rjsf/core'
+import { AjvError } from '@rjsf/core'
 import {
   LATEST_APP_DATA_VERSION,
   LATEST_QUOTE_METADATA_VERSION,
   LATEST_REFERRER_METADATA_VERSION,
+  getAppDataSchema,
 } from '@cowprotocol/app-data'
 import { JSONSchema7 } from 'json-schema'
 
@@ -14,25 +15,18 @@ const ERROR_MESSAGES = {
 
 export const INITIAL_FORM_VALUES = {
   version: LATEST_APP_DATA_VERSION,
-  metadata: {
-    referrer: {},
-    quote: {},
-  },
+  metadata: {},
 }
 
 export const getSchema = async (): Promise<JSONSchema7> => {
-  const { default: latestSchema } = await import(`@cowprotocol/app-data/schemas/v${LATEST_APP_DATA_VERSION}.json`)
+  const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)).default as JSONSchema7
+  deleteAllPropertiesByName(latestSchema, 'examples')
+  deleteAllPropertiesByName(latestSchema, '$id')
   return formatSchema(latestSchema)
 }
 
 const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
   const formattedSchema = structuredClone(schema)
-
-  deletePropertyPath(formattedSchema, 'properties.appCode.examples')
-  deletePropertyPath(formattedSchema, 'properties.version.examples')
-  deletePropertyPath(formattedSchema, 'properties.environment.examples')
-  deletePropertyPath(formattedSchema, 'properties.metadata.properties.referrer.properties.address.examples')
-  deletePropertyPath(formattedSchema, 'properties.metadata.properties.quote.properties.slippageBips.examples')
 
   if (formattedSchema?.properties?.version) {
     formattedSchema.properties.version['readOnly'] = true
@@ -52,9 +46,9 @@ const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
     formattedSchema.properties.metadata['properties'].quote.properties = {
       enableQuote: { type: 'boolean', title: 'Enable/Disable' },
     }
-    quoteDependencies.enableQuote.oneOf[1] = {
+    quoteDependencies.enableQuote.oneOf[0] = {
       properties: {
-        ...quoteDependencies.enableQuote.oneOf[1].properties,
+        ...quoteDependencies.enableQuote.oneOf[0].properties,
         ...quoteProperties,
       },
       required: requiredFields,
@@ -73,9 +67,9 @@ const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
     formattedSchema.properties.metadata['properties'].referrer.properties = {
       enableReferrer: { type: 'boolean', title: 'Enable/Disable' },
     }
-    referrerDependencies.enableReferrer.oneOf[1] = {
+    referrerDependencies.enableReferrer.oneOf[0] = {
       properties: {
-        ...referrerDependencies.enableReferrer.oneOf[1].properties,
+        ...referrerDependencies.enableReferrer.oneOf[0].properties,
         ...referrerProperties,
       },
       required: requiredFields,
@@ -86,67 +80,32 @@ const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
   return formattedSchema
 }
 
-export const uiSchema: UiSchema = {
-  environment: {
-    'ui:help': 'Hint: Development, Production, Staging.',
-  },
-}
-
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
-  return errors.map((error: AjvError) => {
-    if (error.property === '.metadata.referrer.address') {
-      error.message = ''
-    }
+  return errors.reduce((errorsList, error) => {
     if (error.name === 'required') {
-      error.message = ''
+      error.message = ERROR_MESSAGES.REQUIRED
+    } else {
+      if (error.property === '.metadata.referrer.address') {
+        error.message = ERROR_MESSAGES.INVALID_ADDRESS
+      }
+
+      if (error.property === '.metadata.quote.slippageBips') {
+        error.message = ERROR_MESSAGES.ONLY_DIGITS
+      }
     }
-    return error
-  })
+
+    return [...errorsList, error]
+  }, [])
 }
 
-export const validate = (formData: any, errors: FormValidation, schema: JSONSchema7): FormValidation => {
-  const { quote, referrer } = formData.metadata
-  if (schema.properties) {
-    let metadata
-    let required
-    if (quote?.enableQuote) {
-      metadata = schema.properties['metadata']['properties']['quote']['dependencies']
-      required = metadata.enableQuote.oneOf[1].required
-
-      required.forEach((requiredField: string) => {
-        if (!quote[requiredField]) {
-          errors.metadata['quote'][`${requiredField}`].addError(ERROR_MESSAGES.REQUIRED)
-        }
-      })
-
-      if (
-        quote.slippageBips &&
-        !quote.slippageBips.match(metadata.enableQuote.oneOf[1].properties.slippageBips.pattern)
-      ) {
-        if (!errors.metadata['quote'].slippageBips.__errors.length) {
-          errors.metadata['quote'].slippageBips.addError(ERROR_MESSAGES.ONLY_DIGITS)
-        }
-      }
-    }
-    if (referrer?.enableReferrer) {
-      metadata = schema.properties['metadata']['properties']['referrer']['dependencies']
-      required = metadata.enableReferrer.oneOf[1].required
-
-      required.forEach((requiredField: string) => {
-        if (!referrer[requiredField]) {
-          errors.metadata['referrer'][`${requiredField}`].addError(ERROR_MESSAGES.REQUIRED)
-        }
-      })
-
-      if (referrer.address && !referrer.address.match(metadata.enableReferrer.oneOf[1].properties.address.pattern)) {
-        if (!errors.metadata['referrer'].address.__errors.length) {
-          errors.metadata['referrer'].address.addError(ERROR_MESSAGES.INVALID_ADDRESS)
-        }
-      }
-    }
+const deleteAllPropertiesByName = (schema: JSONSchema7, property: string): void => {
+  if (schema[property]) {
+    deletePropertyPath(schema, property)
   }
-
-  return errors
+  if (!schema.properties) return
+  for (const field in schema.properties) {
+    deleteAllPropertiesByName(schema.properties[field] as JSONSchema7, property)
+  }
 }
 
 export const deletePropertyPath = (obj: any, path: any): void => {
@@ -175,13 +134,6 @@ const quoteDependencies = {
       {
         properties: {
           enableQuote: {
-            const: false,
-          },
-        },
-      },
-      {
-        properties: {
-          enableQuote: {
             const: true,
           },
         },
@@ -194,13 +146,6 @@ const quoteDependencies = {
 const referrerDependencies = {
   enableReferrer: {
     oneOf: [
-      {
-        properties: {
-          enableReferrer: {
-            const: false,
-          },
-        },
-      },
       {
         properties: {
           enableReferrer: {

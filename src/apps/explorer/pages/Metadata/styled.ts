@@ -91,6 +91,12 @@ export const Wrapper = styled(WrapperTemplate)`
         text-decoration: none;
       }
     }
+    button {
+      &:disabled {
+        opacity: 0.3;
+        pointer-events: none;
+      }
+    }
     input[type='text'] {
       height: 5rem;
       flex: 1 1 auto;
@@ -121,5 +127,12 @@ export const Wrapper = styled(WrapperTemplate)`
 
   ${media.mediumDown} {
     flex-flow: column wrap;
+  }
+`
+export const IpfsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  button {
+    margin-top: 1rem;
   }
 `
