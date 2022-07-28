@@ -157,3 +157,20 @@ const referrerDependencies = {
     ],
   },
 }
+
+export const ipfsSchema: JSONSchema7 = {
+  type: 'object',
+  required: ['pinataApiKey', 'pinataApiSecret'],
+  properties: {
+    pinataApiKey: {
+      type: 'string',
+      title: 'Pinata API key',
+      description: 'Add your Pinata API key',
+    },
+    pinataApiSecret: {
+      type: 'string',
+      title: 'Pinata API secret',
+      description: 'Add your Pinata API secret',
+    },
+  },
+}
