@@ -37,8 +37,8 @@ const AppDataWrapper = styled.div`
     margin-top: 10px;
 
     span div {
-      ${media.mediumUp} {
-        width: 95%;
+      ${media.desktop} {
+        width: 35vw;
       }
       ${media.mobile} {
         width: 75vw;
