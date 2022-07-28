@@ -40,7 +40,7 @@ export const Wrapper = styled(WrapperTemplate)`
   }
   .metadata-form {
     fieldset {
-      padding: 3rem;
+      padding: 2rem;
       border-radius: 0.6rem;
       border: 1px solid ${({ theme }): string => theme.borderPrimary};
       legend {
@@ -49,6 +49,7 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     .form-group {
       margin-bottom: 2rem;
+      max-width: 45rem;
     }
     .field-description {
       font-size: 1.3rem;
@@ -69,6 +70,7 @@ export const Wrapper = styled(WrapperTemplate)`
       font-weight: ${({ theme }): string => theme.fontBold};
       font-size: 1.5rem;
       margin-bottom: 1rem;
+      width: 100%;
       color: ${({ theme }): string => theme.orange1};
       border: 1px solid ${({ theme }): string => theme.orange1};
       background-color: ${({ theme }): string => theme.orangeOpacity};
@@ -82,7 +84,7 @@ export const Wrapper = styled(WrapperTemplate)`
       }
 
       ${media.mediumDown} {
-        min-width: 18rem;
+        /* min-width: 18rem; */
       }
 
       :hover {
