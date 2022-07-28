@@ -125,118 +125,112 @@ const MetadataPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <React.StrictMode>
-        <Title>Metadata Details</Title>
-        <Content>
-          <div className="form-container">
-            <Form
-              className="data-form"
-              liveOmit
-              liveValidate={invalidFormDataAttempted.metadata}
-              omitExtraData
-              showErrorList={false}
-              noHtml5Validate
-              onChange={handleOnChange}
-              formData={formData}
-              validate={(formData: FormProps, errors: FormValidation): FormValidation =>
-                handleErrors(formData, errors, 'metadata')
-              }
-              transformErrors={transformErrors}
-              ref={formRef}
-              autoComplete="off"
-              onSubmit={onSubmit}
-              onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, metadata: true }))}
-              schema={schema}
+      <Title>Metadata Details</Title>
+      <Content>
+        <div className="form-container">
+          <Form
+            className="data-form"
+            liveOmit
+            liveValidate={invalidFormDataAttempted.metadata}
+            omitExtraData
+            showErrorList={false}
+            noHtml5Validate
+            onChange={handleOnChange}
+            formData={formData}
+            validate={(formData: FormProps, errors: FormValidation): FormValidation =>
+              handleErrors(formData, errors, 'metadata')
+            }
+            transformErrors={transformErrors}
+            ref={formRef}
+            autoComplete="off"
+            onSubmit={onSubmit}
+            onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, metadata: true }))}
+            schema={schema}
+          >
+            {ipfsHashInfo && (
+              <RowWithCopyButton
+                className="appData-hash"
+                textToCopy={ipfsHashInfo.appDataHash}
+                contentsToDisplay={ipfsHashInfo.appDataHash}
+              />
+            )}
+            <button
+              type="submit"
+              className="btn btn-info"
+              disabled={JSON.parse(disabled).metadata}
+              onClick={formRef.current ? formRef.current.submit : undefined}
             >
-              {ipfsHashInfo && (
-                <RowWithCopyButton
-                  className="appData-hash"
-                  textToCopy={ipfsHashInfo.appDataHash}
-                  contentsToDisplay={ipfsHashInfo.appDataHash}
-                />
-              )}
-              <button
-                type="submit"
-                className="btn btn-info"
-                disabled={JSON.parse(disabled).metadata}
-                onClick={formRef.current ? formRef.current.submit : undefined}
-              >
-                GENERATE METADATA DOC
-              </button>
-            </Form>
-            <AppDataWrapper>
-              <div className="hidden-content">
-                <RowWithCopyButton
-                  textToCopy={JSON.stringify(handleFormatData(formData), null, 2)}
-                  contentsToDisplay={
-                    <pre className="json-formatter">{JSON.stringify(handleFormatData(formData), null, 2)}</pre>
+              GENERATE METADATA DOC
+            </button>
+          </Form>
+          <AppDataWrapper>
+            <div className="hidden-content">
+              <RowWithCopyButton
+                textToCopy={JSON.stringify(handleFormatData(formData), null, 2)}
+                contentsToDisplay={
+                  <pre className="json-formatter">{JSON.stringify(handleFormatData(formData), null, 2)}</pre>
+                }
+              />
+            </div>
+          </AppDataWrapper>
+        </div>
+        <div className="ipfs-container">
+          {appDataDoc && (
+            <>
+              <IpfsWrapper>
+                <Form
+                  showErrorList={false}
+                  onSubmit={onUploadToIPFS}
+                  liveValidate={invalidFormDataAttempted.ipfs}
+                  className="data-form"
+                  onChange={handleIPFSOnChange}
+                  formData={ipfsCredentials}
+                  ref={ipfsFormRef}
+                  noHtml5Validate
+                  validate={(formData: FormProps, errors: FormValidation): FormValidation =>
+                    handleErrors(formData, errors, 'ipfs')
                   }
-                />
-              </div>
-            </AppDataWrapper>
-          </div>
-          <div className="ipfs-container">
-            {appDataDoc && (
-              <>
-                <IpfsWrapper>
-                  <Form
-                    showErrorList={false}
-                    onSubmit={onUploadToIPFS}
-                    liveValidate={invalidFormDataAttempted.ipfs}
-                    className="data-form"
-                    onChange={handleIPFSOnChange}
-                    formData={ipfsCredentials}
-                    ref={ipfsFormRef}
-                    noHtml5Validate
-                    validate={(formData: FormProps, errors: FormValidation): FormValidation =>
-                      handleErrors(formData, errors, 'ipfs')
-                    }
-                    onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, ipfs: true }))}
-                    transformErrors={transformErrors}
-                    schema={ipfsSchema}
+                  onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, ipfs: true }))}
+                  transformErrors={transformErrors}
+                  schema={ipfsSchema}
+                >
+                  <button
+                    className="btn btn-info"
+                    type="submit"
+                    disabled={JSON.parse(disabled).ipfs}
+                    onClick={ipfsFormRef.current ? ipfsFormRef.current.submit : undefined}
                   >
-                    <button
-                      className="btn btn-info"
-                      type="submit"
-                      disabled={JSON.parse(disabled).ipfs}
-                      onClick={ipfsFormRef.current ? ipfsFormRef.current.submit : undefined}
-                    >
-                      UPLOAD APP DATA TO IPFS
-                    </button>
-                  </Form>
-                </IpfsWrapper>
-              </>
-            )}
-            {isDocUploaded && (
-              <>
-                <RowWithCopyButton
-                  className="appData-hash"
-                  textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
-                  contentsToDisplay={
-                    <a
-                      href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {ipfsHashInfo?.cidV0}
-                    </a>
-                  }
-                />
-                <Notification
-                  type="success"
-                  message="Document uploaded successfully!"
-                  closable={false}
-                  appendMessage={false}
-                />
-              </>
-            )}
-            {isLoading && <Spinner />}
-            {error && !isDocUploaded && (
-              <Notification type="error" message={error} closable={false} appendMessage={false} />
-            )}
-          </div>
-        </Content>
-      </React.StrictMode>
+                    UPLOAD APP DATA TO IPFS
+                  </button>
+                </Form>
+              </IpfsWrapper>
+            </>
+          )}
+          {isDocUploaded && (
+            <>
+              <RowWithCopyButton
+                className="appData-hash"
+                textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
+                contentsToDisplay={
+                  <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`} target="_blank" rel="noopener noreferrer">
+                    {ipfsHashInfo?.cidV0}
+                  </a>
+                }
+              />
+              <Notification
+                type="success"
+                message="Document uploaded successfully!"
+                closable={false}
+                appendMessage={false}
+              />
+            </>
+          )}
+          {isLoading && <Spinner />}
+          {error && !isDocUploaded && (
+            <Notification type="error" message={error} closable={false} appendMessage={false} />
+          )}
+        </div>
+      </Content>
     </Wrapper>
   )
 }
