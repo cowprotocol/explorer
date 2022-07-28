@@ -37,6 +37,30 @@ export const Wrapper = styled(WrapperTemplate)`
         line-height: 1.25;
       }
     }
+    .hidden-content {
+      margin-top: 10px;
+      ${media.desktop} {
+        position: fixed;
+      }
+      ${media.mediumUp} {
+        position: fixed;
+      }
+
+      span div {
+        ${media.desktop} {
+          width: 30vw;
+        }
+        ${media.mediumDown} {
+          width: 35vw;
+        }
+        ${media.mobile} {
+          width: 75vw;
+        }
+        ${media.tinyDown} {
+          width: 70vw;
+        }
+      }
+    }
   }
   .metadata-form {
     fieldset {

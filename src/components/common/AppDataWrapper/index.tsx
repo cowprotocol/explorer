@@ -35,16 +35,10 @@ const AppDataWrapper = styled.div`
   }
   .hidden-content {
     margin-top: 10px;
-    ${media.desktop} {
-      position: fixed;
-    }
-    ${media.mediumUp} {
-      position: fixed;
-    }
 
     span div {
-      ${media.desktop} {
-        width: 30vw;
+      ${media.mediumUp} {
+        width: 95%;
       }
       ${media.mobile} {
         width: 75vw;
