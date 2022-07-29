@@ -159,6 +159,10 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     .form-group {
       margin-bottom: 1rem;
+      .title-container {
+        display: flex;
+        align-items: center;
+      }
       max-width: 40rem;
       ${media.mobile} {
         max-width: 100%;

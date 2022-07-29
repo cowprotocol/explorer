@@ -1,4 +1,5 @@
-import { AjvError } from '@rjsf/core'
+import React from 'react'
+import { AjvError, FieldProps } from '@rjsf/core'
 import {
   LATEST_APP_DATA_VERSION,
   LATEST_QUOTE_METADATA_VERSION,
@@ -6,6 +7,7 @@ import {
   getAppDataSchema,
 } from '@cowprotocol/app-data'
 import { JSONSchema7 } from 'json-schema'
+import { HelpTooltip } from 'components/Tooltip'
 
 const ERROR_MESSAGES = {
   REQUIRED: 'Required field.',
@@ -172,5 +174,77 @@ export const ipfsSchema: JSONSchema7 = {
       title: 'Pinata API secret',
       description: 'Add your Pinata API secret',
     },
+  },
+}
+
+export const CustomField = (props: FieldProps): React.ReactElement => {
+  const { schema, onChange, readonly, required, formData, idSchema, uiSchema } = props
+  return (
+    <div className="form-group field field-string">
+      <div className="title-container">
+        <label className="control-label" htmlFor={idSchema.$id}>
+          {schema.title}
+          {required && '*'}&nbsp;
+        </label>
+        {uiSchema.tooltip && <HelpTooltip tooltip={uiSchema.tooltip} />}
+      </div>
+      <p id={`${idSchema.$id}__description`} className="field-description">
+        {schema.description}
+      </p>
+      <input
+        required={required}
+        readOnly={readonly}
+        defaultValue={formData}
+        onChange={(event): void => onChange(event.target.value)}
+        className="form-control"
+        id={idSchema.$id}
+        type="text"
+      />
+    </div>
+  )
+}
+
+export const uiSchema = {
+  environment: {
+    'ui:field': 'cField',
+    tooltip: 'Select the environment to use',
+  },
+  version: {
+    'ui:field': 'cField',
+    tooltip: 'Select the environment to use',
+  },
+  appCode: {
+    'ui:field': 'cField',
+    tooltip: 'Select the environment to use',
+  },
+  metadata: {
+    referrer: {
+      version: {
+        'ui:field': 'cField',
+        tooltip: 'Select the environment to use',
+      },
+      address: {
+        'ui:field': 'cField',
+        tooltip: 'Select the environment to use',
+      },
+    },
+    quote: {
+      version: {
+        'ui:field': 'cField',
+        tooltip: 'Select the environment to use',
+      },
+      slippageBips: {
+        'ui:field': 'cField',
+        tooltip: 'Select the environment to use',
+      },
+    },
+  },
+  pinataApiKey: {
+    'ui:field': 'cField',
+    tooltip: 'Select the environment to use',
+  },
+  pinataApiSecret: {
+    'ui:field': 'cField',
+    tooltip: 'Select the environment to use',
   },
 }

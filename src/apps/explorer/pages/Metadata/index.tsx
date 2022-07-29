@@ -9,7 +9,15 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
 import { Notification } from 'components/Notification'
-import { INITIAL_FORM_VALUES, getSchema, transformErrors, deletePropertyPath, ipfsSchema } from './config'
+import {
+  INITIAL_FORM_VALUES,
+  getSchema,
+  transformErrors,
+  deletePropertyPath,
+  ipfsSchema,
+  uiSchema,
+  CustomField,
+} from './config'
 import { IpfsWrapper, Wrapper } from './styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 
@@ -34,6 +42,11 @@ const MetadataPage: React.FC = () => {
   const network = useNetworkId()
   const formRef = React.useRef<Form<FormProps>>(null)
   const ipfsFormRef = React.useRef<Form<FormProps>>(null)
+
+  const toggleDisable = (data: { [key: string]: boolean }): void => {
+    const disable = { ...JSON.parse(disabled), ...data }
+    setDisabled(JSON.stringify(disable))
+  }
 
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
@@ -68,16 +81,14 @@ const MetadataPage: React.FC = () => {
     const ref = form === 'metadata' ? formRef : ipfsFormRef
     if (!ref.current) return errors
     const { errors: formErrors } = ref.current?.state as FormProps
-    const disable = { ...JSON.parse(disabled), [form]: formErrors.length > 0 }
-    setDisabled(JSON.stringify(disable))
+    toggleDisable({ [form]: formErrors.length > 0 })
     return errors
   }
 
   const handleOnChange = ({ formData }: FormProps): void => {
     setFormData(formData)
     if (JSON.stringify(handleFormatData(formData)) !== JSON.stringify(INITIAL_FORM_VALUES)) {
-      const disable = { ...JSON.parse(disabled), metadata: false }
-      setDisabled(JSON.stringify(disable))
+      toggleDisable({ metadata: false })
     }
   }
 
@@ -102,8 +113,7 @@ const MetadataPage: React.FC = () => {
   const handleIPFSOnChange = ({ formData }: FormProps): void => {
     setIpfsCredentials(formData)
     if (JSON.stringify(formData) !== JSON.stringify({})) {
-      const disable = { ...JSON.parse(disabled), ipfs: false }
-      setDisabled(JSON.stringify(disable))
+      toggleDisable({ ipfs: false })
     }
   }
 
@@ -126,7 +136,7 @@ const MetadataPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <Title>Metadata Details</Title>
+      <Title>App Data Details</Title>
       <Content>
         <div className="form-container">
           <Form
@@ -135,6 +145,7 @@ const MetadataPage: React.FC = () => {
             liveValidate={invalidFormDataAttempted.metadata}
             omitExtraData
             showErrorList={false}
+            fields={{ cField: CustomField }}
             noHtml5Validate
             onChange={handleOnChange}
             formData={formData}
@@ -147,6 +158,7 @@ const MetadataPage: React.FC = () => {
             onSubmit={onSubmit}
             onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, metadata: true }))}
             schema={schema}
+            uiSchema={uiSchema}
           >
             {ipfsHashInfo && (
               <RowWithCopyButton
@@ -204,6 +216,7 @@ const MetadataPage: React.FC = () => {
                   className="data-form"
                   onChange={handleIPFSOnChange}
                   formData={ipfsCredentials}
+                  fields={{ cField: CustomField }}
                   ref={ipfsFormRef}
                   noHtml5Validate
                   validate={(formData: FormProps, errors: FormValidation): FormValidation =>
@@ -212,6 +225,7 @@ const MetadataPage: React.FC = () => {
                   onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, ipfs: true }))}
                   transformErrors={transformErrors}
                   schema={ipfsSchema}
+                  uiSchema={uiSchema}
                 >
                   <button
                     className="btn btn-info"
