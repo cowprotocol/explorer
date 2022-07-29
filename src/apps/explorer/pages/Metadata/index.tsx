@@ -11,6 +11,7 @@ import AppDataWrapper from 'components/common/AppDataWrapper'
 import { Notification } from 'components/Notification'
 import { INITIAL_FORM_VALUES, getSchema, transformErrors, deletePropertyPath, ipfsSchema } from './config'
 import { IpfsWrapper, Wrapper } from './styled'
+import { ExternalLink } from 'components/analytics/ExternalLink'
 
 type FormProps = Record<string, any>
 
@@ -165,6 +166,24 @@ const MetadataPage: React.FC = () => {
           </Form>
           <AppDataWrapper>
             <div className="hidden-content">
+              <p>AppData Root Schema information can be found in:</p>
+              <ExternalLink
+                target={'_blank'}
+                rel="noopener noreferrer"
+                href={`https://docs.cow.fi/front-end/creating-app-ids`}
+              >
+                {' '}
+                AppData documentation
+              </ExternalLink>{' '}
+              |
+              <ExternalLink
+                target={'_blank'}
+                rel="noopener noreferrer"
+                href={`https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/metadata`}
+              >
+                {' '}
+                Metadata documentation
+              </ExternalLink>
               <RowWithCopyButton
                 textToCopy={JSON.stringify(handleFormatData(formData), null, 2)}
                 contentsToDisplay={

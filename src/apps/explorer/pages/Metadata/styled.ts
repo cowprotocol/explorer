@@ -111,7 +111,7 @@ export const Wrapper = styled(WrapperTemplate)`
     box-sizing: border-box;
     border: 0.1rem solid transparent;
     transition: border 0.2s ease-in-out;
-    margin-top: 1rem;
+    margin: 0.5rem 0 1rem 0;
 
     &:focus {
       border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
