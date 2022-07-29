@@ -44,6 +44,10 @@ export const Wrapper = styled(WrapperTemplate)`
       ${media.mediumUp} {
         position: fixed;
       }
+      ${media.mobile} {
+        position: sticky;
+        bottom: 20px;
+      }
 
       span div {
         ${media.desktop} {
@@ -64,11 +68,13 @@ export const Wrapper = styled(WrapperTemplate)`
   .form-container {
     display: flex;
     flex: 1;
+    ${media.mobile} {
+      flex-direction: column;
+    }
   }
   .ipfs-container {
     display: flex;
     flex-direction: column;
-    max-width: 250px;
     margin-top: 1rem;
     form {
       input {
@@ -144,7 +150,7 @@ export const Wrapper = styled(WrapperTemplate)`
   }
   .data-form {
     fieldset {
-      padding: 2rem;
+      padding: 0.6rem 1rem;
       border-radius: 0.6rem;
       border: 1px solid ${({ theme }): string => theme.borderPrimary};
       legend {
@@ -152,8 +158,11 @@ export const Wrapper = styled(WrapperTemplate)`
       }
     }
     .form-group {
-      margin-bottom: 2rem;
-      max-width: 45rem;
+      margin-bottom: 1rem;
+      max-width: 40rem;
+      ${media.mobile} {
+        max-width: 100%;
+      }
     }
     .field-description {
       font-size: 1.3rem;
@@ -175,7 +184,11 @@ export const Wrapper = styled(WrapperTemplate)`
 export const IpfsWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 40rem;
+  ${media.mobile} {
+    width: 100%;
+  }
   button {
-    margin-top: 1rem;
+    margin: 1rem 0;
   }
 `
