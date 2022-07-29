@@ -207,15 +207,15 @@ export const CustomField = (props: FieldProps): React.ReactElement => {
 export const uiSchema = {
   environment: {
     'ui:field': 'cField',
-    tooltip: 'Select the environment to use',
+    tooltip: 'Select the environment to use. E.g: development, staging, production.',
   },
   version: {
     'ui:field': 'cField',
-    tooltip: 'Select the environment to use',
+    tooltip: 'The schema will be versioned using Semantic Versioning.',
   },
   appCode: {
     'ui:field': 'cField',
-    tooltip: 'Select the environment to use',
+    tooltip: 'The code identifying the CLI, UI, service generating the order.',
   },
   metadata: {
     referrer: {
