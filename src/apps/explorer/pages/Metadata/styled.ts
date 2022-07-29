@@ -8,13 +8,14 @@ export const Wrapper = styled(WrapperTemplate)`
   ${Content} {
     display: flex;
     flex-direction: column;
-    ${media.mobile} {
-      flex-direction: column;
-    }
+
     ${AppDataWrapper} {
       flex: 1;
       align-items: center;
       padding-left: 2rem;
+      ${media.mobile} {
+        padding-left: 0;
+      }
     }
     .json-formatter {
       line-height: 1.25;
@@ -37,7 +38,12 @@ export const Wrapper = styled(WrapperTemplate)`
       }
     }
     .hidden-content {
-      margin-top: 10px;
+      margin-top: 3rem;
+      background: ${({ theme }): string => theme.greyOpacity};
+      padding: 1rem;
+      border-radius: 0.5rem;
+      font-size: 1.3rem;
+
       ${media.desktop} {
         position: fixed;
       }
@@ -45,8 +51,10 @@ export const Wrapper = styled(WrapperTemplate)`
         position: fixed;
       }
       ${media.mobile} {
-        position: sticky;
-        bottom: 20px;
+        margin-top: 1.5rem;
+        background: none;
+        padding: 0;
+        font-size: 1.2rem;
       }
 
       span div {
@@ -65,6 +73,7 @@ export const Wrapper = styled(WrapperTemplate)`
       }
     }
   }
+
   .form-container {
     display: flex;
     flex: 1;
@@ -136,10 +145,6 @@ export const Wrapper = styled(WrapperTemplate)`
 
     ${media.mobile} {
       margin: 1rem 0 0 0;
-    }
-
-    ${media.mediumDown} {
-      /* min-width: 18rem; */
     }
 
     :hover {
