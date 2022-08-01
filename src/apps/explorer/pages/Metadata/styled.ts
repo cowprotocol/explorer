@@ -31,24 +31,30 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     .appData-hash {
       margin-bottom: 1.5rem;
+      max-width: 40rem;
+      ${media.mobile} {
+        max-width: none;
+      }
       span,
       a {
         font-size: 1.3rem;
-        line-height: 1.25;
+        line-height: 1.3;
       }
     }
     .hidden-content {
-      margin-top: 3rem;
       background: ${({ theme }): string => theme.greyOpacity};
-      padding: 1rem;
+      padding: 0 1rem;
       border-radius: 0.5rem;
       font-size: 1.3rem;
+      line-height: 1.6;
 
       ${media.desktop} {
         position: fixed;
+        width: 30vw;
       }
       ${media.mediumUp} {
         position: fixed;
+        width: 35vw;
       }
       ${media.mobile} {
         margin-top: 1.5rem;
@@ -56,27 +62,16 @@ export const Wrapper = styled(WrapperTemplate)`
         padding: 0;
         font-size: 1.2rem;
       }
-
-      span div {
-        ${media.desktop} {
-          width: 30vw;
-        }
-        ${media.mediumDown} {
-          width: 35vw;
-        }
-        ${media.mobile} {
-          width: 75vw;
-        }
-        ${media.tinyDown} {
-          width: 70vw;
-        }
-      }
     }
   }
 
   .form-container {
     display: flex;
     flex: 1;
+    p {
+      line-height: 1.6rem;
+    }
+
     ${media.mobile} {
       flex-direction: column;
     }
