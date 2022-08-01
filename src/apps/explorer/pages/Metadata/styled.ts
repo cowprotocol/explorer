@@ -80,6 +80,11 @@ export const Wrapper = styled(WrapperTemplate)`
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
+    width: 40rem;
+    gap: 2rem;
+    ${media.mobile} {
+      width: 100%;
+    }
     form {
       input {
         width: 100%;
