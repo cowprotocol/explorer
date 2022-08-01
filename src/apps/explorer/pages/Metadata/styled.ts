@@ -79,7 +79,7 @@ export const Wrapper = styled(WrapperTemplate)`
   .ipfs-container {
     display: flex;
     flex-direction: column;
-    margin-top: 1rem;
+    margin-top: 2rem;
     width: 40rem;
     gap: 2rem;
     ${media.mobile} {
@@ -199,5 +199,16 @@ export const IpfsWrapper = styled.div`
   }
   button {
     margin: 1rem 0;
+  }
+  .form-group:first-child {
+    margin-top: -0.7rem;
+    label {
+      background: ${({ theme }): string => theme.bg1};
+      padding: 0 0.2rem;
+    }
+    svg {
+      background: ${({ theme }): string => theme.bg1};
+      width: 2.2rem;
+    }
   }
 `
