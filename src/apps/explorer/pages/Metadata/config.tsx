@@ -195,7 +195,7 @@ export const CustomField = (props: FieldProps): React.ReactElement => {
         required={required}
         readOnly={readonly}
         defaultValue={formData}
-        onChange={(event): void => onChange(event.target.value)}
+        onChange={(event): void => onChange(event.target.value || undefined)}
         className="form-control"
         id={idSchema.$id}
         type="text"

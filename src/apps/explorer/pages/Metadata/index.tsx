@@ -106,7 +106,7 @@ const MetadataPage: React.FC = () => {
     } finally {
       setAppDataDoc(res)
       setIsLoading(false)
-      setInvalidFormDataAttempted((prevState) => ({ ...prevState, metadata: false }))
+      setInvalidFormDataAttempted((prevState) => ({ ...prevState, metadata: true }))
     }
   }
 
@@ -130,7 +130,7 @@ const MetadataPage: React.FC = () => {
       setIsDocUploaded(false)
     } finally {
       setIsLoading(false)
-      setInvalidFormDataAttempted((prevState) => ({ ...prevState, ipfs: false }))
+      setInvalidFormDataAttempted((prevState) => ({ ...prevState, ipfs: true }))
     }
   }
 
