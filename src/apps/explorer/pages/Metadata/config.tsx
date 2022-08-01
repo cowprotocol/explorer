@@ -1,5 +1,5 @@
-import React from 'react'
-import { AjvError, FieldProps } from '@rjsf/core'
+import React, { RefObject } from 'react'
+import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
 import {
   LATEST_APP_DATA_VERSION,
   LATEST_QUOTE_METADATA_VERSION,
@@ -19,6 +19,8 @@ export const INITIAL_FORM_VALUES = {
   version: LATEST_APP_DATA_VERSION,
   metadata: {},
 }
+
+export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
   const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)).default as JSONSchema7
@@ -98,6 +100,17 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
 
     return [...errorsList, error]
   }, [])
+}
+
+export const handleErrors = (
+  ref: RefObject<Form<FormProps>>,
+  errors: FormValidation,
+  handler: (value: boolean) => void,
+): FormValidation => {
+  if (!ref.current) return errors
+  const { errors: formErrors } = ref.current?.state as FormProps
+  handler(formErrors.length > 0)
+  return errors
 }
 
 const deleteAllPropertiesByName = (schema: JSONSchema7, property: string): void => {
@@ -239,6 +252,9 @@ export const uiSchema = {
       },
     },
   },
+}
+
+export const ipfsUiSchema = {
   pinataApiKey: {
     'ui:field': 'cField',
     tooltip: 'Select the environment to use',

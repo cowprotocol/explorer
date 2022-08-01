@@ -13,23 +13,24 @@ import {
   INITIAL_FORM_VALUES,
   getSchema,
   transformErrors,
+  handleErrors,
   deletePropertyPath,
   ipfsSchema,
   uiSchema,
+  ipfsUiSchema,
   CustomField,
+  FormProps,
 } from './config'
 import { IpfsWrapper, Wrapper } from './styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 
-type FormProps = Record<string, any>
-
-const MetadataPage: React.FC = () => {
+const AppDataPage: React.FC = () => {
   const [schema, setSchema] = useState<JSONSchema7>({})
-  const [formData, setFormData] = useState({})
-
-  const [disabled, setDisabled] = useState<string>(JSON.stringify({ metadata: true, ipfs: true }))
-  const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ metadata: boolean; ipfs: boolean }>({
-    metadata: false,
+  const [appDataForm, setAppDataForm] = useState({})
+  const [disabledAppData, setDisabledAppData] = useState<boolean>(true)
+  const [disabledIPFS, setDisabledIPFS] = useState<boolean>(true)
+  const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>({
+    appData: false,
     ipfs: false,
   })
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -43,20 +44,19 @@ const MetadataPage: React.FC = () => {
   const formRef = React.useRef<Form<FormProps>>(null)
   const ipfsFormRef = React.useRef<Form<FormProps>>(null)
 
-  const toggleDisable = (data: { [key: string]: boolean }): void => {
-    const disable = { ...JSON.parse(disabled), ...data }
-    setDisabled(JSON.stringify(disable))
-  }
-
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
       const latestSchema = await getSchema()
       setSchema(latestSchema)
-      setFormData(INITIAL_FORM_VALUES)
+      setAppDataForm(INITIAL_FORM_VALUES)
     }
 
     fetchSchema()
   }, [])
+
+  const toggleInvalid = (data: { [key: string]: boolean }): void => {
+    setInvalidFormDataAttempted((prevState) => ({ ...prevState, ...data }))
+  }
 
   const handleFormatData = (formData: any): any => {
     if (!formData.metadata || !Object.keys(formData.metadata).length) return formData
@@ -77,18 +77,16 @@ const MetadataPage: React.FC = () => {
     return formattedData
   }
 
-  const handleErrors = (_: FormProps, errors: FormValidation, form: string): FormValidation => {
-    const ref = form === 'metadata' ? formRef : ipfsFormRef
-    if (!ref.current) return errors
-    const { errors: formErrors } = ref.current?.state as FormProps
-    toggleDisable({ [form]: formErrors.length > 0 })
-    return errors
-  }
+  const handleMetadataErrors = (_: FormProps, errors: FormValidation): FormValidation =>
+    handleErrors(formRef, errors, setDisabledAppData)
+
+  const handleIPFSErrors = (_: FormProps, errors: FormValidation): FormValidation =>
+    handleErrors(ipfsFormRef, errors, setDisabledIPFS)
 
   const handleOnChange = ({ formData }: FormProps): void => {
-    setFormData(formData)
+    setAppDataForm(formData)
     if (JSON.stringify(handleFormatData(formData)) !== JSON.stringify(INITIAL_FORM_VALUES)) {
-      toggleDisable({ metadata: false })
+      setDisabledAppData(false)
     }
   }
 
@@ -106,14 +104,14 @@ const MetadataPage: React.FC = () => {
     } finally {
       setAppDataDoc(res)
       setIsLoading(false)
-      setInvalidFormDataAttempted((prevState) => ({ ...prevState, metadata: true }))
+      toggleInvalid({ appData: true })
     }
   }
 
-  const handleIPFSOnChange = ({ formData }: FormProps): void => {
-    setIpfsCredentials(formData)
-    if (JSON.stringify(formData) !== JSON.stringify({})) {
-      toggleDisable({ ipfs: false })
+  const handleIPFSOnChange = ({ formData: ipfsData }: FormProps): void => {
+    setIpfsCredentials(ipfsData)
+    if (JSON.stringify(ipfsData) !== JSON.stringify({})) {
+      setDisabledIPFS(false)
     }
   }
 
@@ -130,7 +128,7 @@ const MetadataPage: React.FC = () => {
       setIsDocUploaded(false)
     } finally {
       setIsLoading(false)
-      setInvalidFormDataAttempted((prevState) => ({ ...prevState, ipfs: true }))
+      toggleInvalid({ ipfs: true })
     }
   }
 
@@ -142,21 +140,19 @@ const MetadataPage: React.FC = () => {
           <Form
             className="data-form"
             liveOmit
-            liveValidate={invalidFormDataAttempted.metadata}
+            liveValidate={invalidFormDataAttempted.appData}
             omitExtraData
             showErrorList={false}
             fields={{ cField: CustomField }}
             noHtml5Validate
             onChange={handleOnChange}
-            formData={formData}
-            validate={(formData: FormProps, errors: FormValidation): FormValidation =>
-              handleErrors(formData, errors, 'metadata')
-            }
+            formData={appDataForm}
+            validate={handleMetadataErrors}
             transformErrors={transformErrors}
             ref={formRef}
             autoComplete="off"
             onSubmit={onSubmit}
-            onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, metadata: true }))}
+            onError={(): void => toggleInvalid({ appData: true })}
             schema={schema}
             uiSchema={uiSchema}
           >
@@ -170,10 +166,10 @@ const MetadataPage: React.FC = () => {
             <button
               type="submit"
               className="btn btn-info"
-              disabled={JSON.parse(disabled).metadata}
+              disabled={disabledAppData}
               onClick={formRef.current ? formRef.current.submit : undefined}
             >
-              GENERATE METADATA DOC
+              GENERATE APPDATA DOC
             </button>
           </Form>
           <AppDataWrapper>
@@ -197,9 +193,9 @@ const MetadataPage: React.FC = () => {
                 Metadata documentation
               </ExternalLink>
               <RowWithCopyButton
-                textToCopy={JSON.stringify(handleFormatData(formData), null, 2)}
+                textToCopy={JSON.stringify(handleFormatData(appDataForm), null, 2)}
                 contentsToDisplay={
-                  <pre className="json-formatter">{JSON.stringify(handleFormatData(formData), null, 2)}</pre>
+                  <pre className="json-formatter">{JSON.stringify(handleFormatData(appDataForm), null, 2)}</pre>
                 }
               />
             </div>
@@ -210,27 +206,25 @@ const MetadataPage: React.FC = () => {
             <>
               <IpfsWrapper>
                 <Form
+                  className="data-form"
                   showErrorList={false}
                   onSubmit={onUploadToIPFS}
                   liveValidate={invalidFormDataAttempted.ipfs}
-                  className="data-form"
                   onChange={handleIPFSOnChange}
                   formData={ipfsCredentials}
+                  validate={handleIPFSErrors}
                   fields={{ cField: CustomField }}
                   ref={ipfsFormRef}
                   noHtml5Validate
-                  validate={(formData: FormProps, errors: FormValidation): FormValidation =>
-                    handleErrors(formData, errors, 'ipfs')
-                  }
-                  onError={(): void => setInvalidFormDataAttempted((prevState) => ({ ...prevState, ipfs: true }))}
+                  onError={(): void => toggleInvalid({ ipfs: true })}
                   transformErrors={transformErrors}
                   schema={ipfsSchema}
-                  uiSchema={uiSchema}
+                  uiSchema={ipfsUiSchema}
                 >
                   <button
                     className="btn btn-info"
                     type="submit"
-                    disabled={JSON.parse(disabled).ipfs}
+                    disabled={disabledIPFS}
                     onClick={ipfsFormRef.current ? ipfsFormRef.current.submit : undefined}
                   >
                     UPLOAD APP DATA TO IPFS
@@ -268,4 +262,4 @@ const MetadataPage: React.FC = () => {
   )
 }
 
-export default MetadataPage
+export default AppDataPage
