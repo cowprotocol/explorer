@@ -239,21 +239,21 @@ export const uiSchema = {
     referrer: {
       version: {
         'ui:field': 'cField',
-        tooltip: 'Select the environment to use',
+        tooltip: 'The schema will be versioned using Semantic Versioning.',
       },
       address: {
         'ui:field': 'cField',
-        tooltip: 'Select the environment to use',
+        tooltip: 'Add a valid address to enable referrer.',
       },
     },
     quote: {
       version: {
         'ui:field': 'cField',
-        tooltip: 'Select the environment to use',
+        tooltip: 'The schema will be versioned using Semantic Versioning.',
       },
       slippageBips: {
         'ui:field': 'cField',
-        tooltip: 'Select the environment to use',
+        tooltip: 'Set the slippage in BIPS (e.g. "0.3").',
       },
     },
   },
@@ -262,10 +262,10 @@ export const uiSchema = {
 export const ipfsUiSchema = {
   pinataApiKey: {
     'ui:field': 'cField',
-    tooltip: 'Select the environment to use',
+    tooltip: 'Add your Pinata API key.',
   },
   pinataApiSecret: {
     'ui:field': 'cField',
-    tooltip: 'Select the environment to use',
+    tooltip: 'Add your Pinata API secret key.',
   },
 }
