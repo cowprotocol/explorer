@@ -102,6 +102,7 @@ export const Wrapper = styled(WrapperTemplate)`
   }
   input[type='text'] {
     height: 5rem;
+    width: 100%;
     flex: 1 1 auto;
     background: ${({ theme }): string => theme.greyOpacity};
     &:read-only {
