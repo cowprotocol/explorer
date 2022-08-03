@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
-import { AppDataDoc, IpfsHashInfo } from '@cowprotocol/cow-sdk'
+import { IpfsHashInfo } from '@cowprotocol/cow-sdk'
 import { COW_SDK, DEFAULT_IPFS_READ_URI } from 'const'
 import { useNetworkId } from 'state/network'
 import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
@@ -35,7 +35,6 @@ const AppDataPage: React.FC = () => {
     ipfs: false,
   })
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [appDataDoc, setAppDataDoc] = useState<AppDataDoc>()
   const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>()
   const [ipfsCredentials, setIpfsCredentials] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>({})
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(false)
@@ -96,7 +95,6 @@ const AppDataPage: React.FC = () => {
   const handleOnChange = ({ formData }: FormProps): void => {
     setAppDataForm(formData)
     if (ipfsHashInfo) {
-      setAppDataDoc(undefined)
       setIpfsHashInfo(undefined)
       setIsDocUploaded(false)
       resetFormFields('appData')
@@ -110,15 +108,12 @@ const AppDataPage: React.FC = () => {
   const onSubmit = async ({ formData }: FormProps): Promise<void> => {
     if (!network) return
     setIsLoading(true)
-    const res = COW_SDK[network]?.metadataApi.generateAppDataDoc(handleFormatData(formData))
     try {
-      if (!res) return
-      const hashInfo = await COW_SDK[network]?.metadataApi.calculateAppDataHash(res)
+      const hashInfo = await COW_SDK[network]?.metadataApi.calculateAppDataHash(handleFormatData(formData))
       setIpfsHashInfo(hashInfo)
     } catch (e) {
       setError(e.message)
     } finally {
-      setAppDataDoc(res)
       setIsLoading(false)
       toggleInvalid({ appData: true })
     }
@@ -132,11 +127,11 @@ const AppDataPage: React.FC = () => {
   }
 
   const onUploadToIPFS = async ({ formData }: FormProps): Promise<void> => {
-    if (!network || !appDataDoc) return
+    if (!network || !ipfsHashInfo) return
     setIsLoading(true)
     try {
       await COW_SDK[network]?.updateContext({ ipfs: formData })
-      await COW_SDK[network]?.metadataApi.uploadMetadataDocToIpfs(appDataDoc)
+      await COW_SDK[network]?.metadataApi.uploadMetadataDocToIpfs(handleFormatData(appDataForm))
       setIsDocUploaded(true)
     } catch (e) {
       if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
@@ -215,7 +210,7 @@ const AppDataPage: React.FC = () => {
           </AppDataWrapper>
         </div>
         <div className="ipfs-container">
-          {appDataDoc && (
+          {ipfsHashInfo && (
             <>
               <IpfsWrapper>
                 <Form
