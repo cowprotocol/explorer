@@ -86,7 +86,7 @@ export function FilledProgress(props: Props): JSX.Element {
   const formattedMainAmount = formatSmartMaxPrecision(mainAmount, mainToken)
   const formattedSwappedAmount = formatSmartMaxPrecision(swappedAmount, swappedToken)
 
-  const formattedPercentage = filledPercentage.times('100').toString(10)
+  const formattedPercentage = filledPercentage.times('100').decimalPlaces(2).toString()
 
   return (
     <Wrapper>
