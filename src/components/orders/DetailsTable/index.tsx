@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
@@ -7,7 +7,6 @@ import { Order } from 'api/operator'
 import { capitalize } from 'utils'
 
 import { HelpTooltip } from 'components/Tooltip'
-import { Notification } from 'components/Notification'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
@@ -22,14 +21,9 @@ import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import AppDataWrapper from 'components/common/AppDataWrapper'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
-import useSafeState from 'hooks/useSafeState'
-import { useNetworkId } from 'state/network'
-import { AppDataDoc } from '@cowprotocol/cow-sdk'
-import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
+import DecodeAppData from 'components/AppData/DecodeAppData'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -171,70 +165,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
     sellToken,
     appData,
   } = order
-  const [appDataLoading, setAppDataLoading] = useSafeState(false)
-  const [appDataError, setAppDataError] = useSafeState(false)
-  const [decodedAppData, setDecodedAppData] = useSafeState<AppDataDoc | void | undefined>(undefined)
-  const [ipfsUri, setIpfsUri] = useSafeState<string>('')
-
-  const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
-  const network = useNetworkId()
-
-  useEffect(() => {
-    const fetchIPFS = async (): Promise<void> => {
-      try {
-        const decodedAppDataHex = await getCidHashFromAppData(appData.toString(), network || undefined)
-        setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${decodedAppDataHex}`)
-      } catch {
-        setAppDataError(true)
-      }
-    }
-
-    fetchIPFS()
-  }, [appData, network, setAppDataError, setIpfsUri])
 
   if (!buyToken || !sellToken) {
-    return null
-  }
-
-  const handleDecodedAppData = async (): Promise<void> => {
-    setShowDecodedAppData(!showDecodedAppData)
-    if (decodedAppData) return
-    if (IPFS_INVALID_APP_IDS.includes(appData.toString())) {
-      setAppDataError(true)
-      return
-    }
-    setAppDataLoading(true)
-    try {
-      const decodedAppData = await getDecodedAppData(appData.toString(), network || undefined)
-      setDecodedAppData(decodedAppData)
-    } catch (e) {
-      setDecodedAppData(undefined)
-      setAppDataError(true)
-    } finally {
-      setAppDataLoading(false)
-    }
-  }
-
-  const renderAppData = (): JSX.Element | null => {
-    if (appDataLoading) return <Spinner />
-    if (showDecodedAppData) {
-      if (appDataError)
-        return (
-          <Notification
-            type="error"
-            message="Error when getting metadata info."
-            closable={false}
-            appendMessage={false}
-          />
-        )
-      return (
-        <RowWithCopyButton
-          textToCopy={JSON.stringify(decodedAppData, null, 2)}
-          onCopy={(): void => onCopy('appDataDecoded')}
-          contentsToDisplay={<pre className="json-formatter">{JSON.stringify(decodedAppData, null, 2)}</pre>}
-        />
-      )
-    }
     return null
   }
 
@@ -415,27 +347,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.appData} /> AppData
             </td>
             <td>
-              <AppDataWrapper>
-                <div className="data-container">
-                  {appDataError ? (
-                    <span className="app-data">{appData}</span>
-                  ) : (
-                    <RowWithCopyButton
-                      textToCopy={ipfsUri}
-                      onCopy={(): void => onCopy('IpfsAppDataUri')}
-                      contentsToDisplay={
-                        <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
-                          {appData}
-                        </a>
-                      }
-                    />
-                  )}
-                  <a className="showMoreAnchor" onClick={handleDecodedAppData}>
-                    {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-                  </a>
-                </div>
-                <div className="hidden-content">{renderAppData()}</div>
-              </AppDataWrapper>
+              <DecodeAppData appData={appData} />
             </td>
           </tr>
         </>

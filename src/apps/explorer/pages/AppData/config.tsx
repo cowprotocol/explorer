@@ -195,6 +195,20 @@ export const ipfsSchema: JSONSchema7 = {
   },
 }
 
+export const decodeAppDataSchema: JSONSchema7 = {
+  type: 'object',
+  title: 'App Data Decode',
+  description: 'This is a description',
+  required: ['appData'],
+  properties: {
+    appData: {
+      type: 'string',
+      title: 'App Data',
+      description: 'Add your App Data hash',
+    },
+  },
+}
+
 export const CustomField = (props: FieldProps): React.ReactElement => {
   const { schema, onChange, readonly, required, formData, idSchema, uiSchema } = props
   return (

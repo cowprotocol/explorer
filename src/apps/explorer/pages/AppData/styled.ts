@@ -2,13 +2,41 @@ import styled from 'styled-components'
 import { ContentCard as Content, Wrapper as WrapperTemplate } from 'apps/explorer/pages/styled'
 import { media } from 'theme/styles/media'
 import AppDataWrapper from 'components/common/AppDataWrapper'
+import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
+
+export const StyledExplorerTabs = styled(ExplorerTabs)`
+  margin: 1.6rem auto 0;
+`
 
 export const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
+  .appData-tab {
+    &--form {
+      .tab-content {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    &--decode {
+      .data-container {
+        line-height: 1.6;
+        font-size: 1.3rem;
+      }
+      .data-form {
+        width: 100%;
+        max-width: 24vw;
+        margin-right: 2rem;
+      }
+      .hidden-content {
+        position: initial;
+      }
+    }
+  }
   ${Content} {
     display: flex;
     flex-direction: column;
-
+    border: 0;
+    padding: 0;
     ${AppDataWrapper} {
       flex: 1;
       align-items: center;
@@ -29,6 +57,13 @@ export const Wrapper = styled(WrapperTemplate)`
         max-width: none;
       }
     }
+    .hidden-content {
+      background: ${({ theme }): string => theme.greyOpacity};
+      padding: 0 1rem;
+      border-radius: 0.5rem;
+      font-size: 1.3rem;
+      line-height: 1.6;
+    }
     .appData-hash {
       margin: 0 0 1rem 0;
       max-width: 53rem;
@@ -42,13 +77,16 @@ export const Wrapper = styled(WrapperTemplate)`
         line-height: 1.3;
       }
     }
-    .hidden-content {
-      background: ${({ theme }): string => theme.greyOpacity};
-      padding: 0 1rem;
-      border-radius: 0.5rem;
-      font-size: 1.3rem;
-      line-height: 1.6;
+  }
 
+  .form-container {
+    display: flex;
+    flex: 1;
+    p {
+      line-height: 1.6rem;
+    }
+
+    .hidden-content {
       ${media.desktop} {
         position: fixed;
         width: 30vw;
@@ -66,14 +104,6 @@ export const Wrapper = styled(WrapperTemplate)`
       h4 {
         margin: 1rem 0 0.75rem 0;
       }
-    }
-  }
-
-  .form-container {
-    display: flex;
-    flex: 1;
-    p {
-      line-height: 1.6rem;
     }
 
     ${media.mobile} {

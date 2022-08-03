@@ -4,7 +4,6 @@ import { JSONSchema7 } from 'json-schema'
 import { IpfsHashInfo } from '@cowprotocol/cow-sdk'
 import { COW_SDK, DEFAULT_IPFS_READ_URI } from 'const'
 import { useNetworkId } from 'state/network'
-import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
@@ -22,10 +21,10 @@ import {
   CustomField,
   FormProps,
 } from './config'
-import { IpfsWrapper, Wrapper } from './styled'
+import { IpfsWrapper } from './styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 
-const AppDataPage: React.FC = () => {
+const FormPage: React.FC = () => {
   const [schema, setSchema] = useState<JSONSchema7>({})
   const [appDataForm, setAppDataForm] = useState({})
   const [disabledAppData, setDisabledAppData] = useState<boolean>(true)
@@ -146,126 +145,120 @@ const AppDataPage: React.FC = () => {
   }
 
   return (
-    <Wrapper>
-      <Title>App Data Details</Title>
-      <Content>
-        <div className="form-container">
-          <Form
-            className="data-form"
-            liveOmit
-            liveValidate={invalidFormDataAttempted.appData}
-            omitExtraData
-            showErrorList={false}
-            fields={{ cField: CustomField }}
-            noHtml5Validate
-            onChange={handleOnChange}
-            formData={appDataForm}
-            validate={handleMetadataErrors}
-            transformErrors={transformErrors}
-            ref={formRef}
-            autoComplete="off"
-            onSubmit={onSubmit}
-            onError={(): void => toggleInvalid({ appData: true })}
-            schema={schema}
-            uiSchema={uiSchema}
-          >
-            <button className="btn btn-info" disabled={disabledAppData} type="submit">
-              GENERATE APPDATA DOC
-            </button>
-          </Form>
-          <AppDataWrapper>
-            <div className="hidden-content">
-              <p>AppData Root Schema information can be found in:</p>
-              <ExternalLink
-                target={'_blank'}
-                rel="noopener noreferrer"
-                href={`https://docs.cow.fi/front-end/creating-app-ids`}
-              >
-                {' '}
-                AppData documentation
-              </ExternalLink>{' '}
-              |
-              <ExternalLink
-                target={'_blank'}
-                rel="noopener noreferrer"
-                href={`https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/metadata`}
-              >
-                {' '}
-                Metadata documentation
-              </ExternalLink>
-              <RowWithCopyButton
-                textToCopy={JSON.stringify(handleFormatData(appDataForm), null, 2)}
-                contentsToDisplay={
-                  <pre className="json-formatter">{JSON.stringify(handleFormatData(appDataForm), null, 2)}</pre>
-                }
-              />
-              {ipfsHashInfo && (
-                <>
-                  <h4>AppData Hash</h4>
-                  <RowWithCopyButton
-                    className="appData-hash"
-                    textToCopy={ipfsHashInfo.appDataHash}
-                    contentsToDisplay={ipfsHashInfo.appDataHash}
-                  />
-                </>
-              )}
-            </div>
-          </AppDataWrapper>
-        </div>
-        <div className="ipfs-container">
-          {ipfsHashInfo && (
-            <>
-              <IpfsWrapper>
-                <Form
-                  className="data-form"
-                  showErrorList={false}
-                  onSubmit={onUploadToIPFS}
-                  liveValidate={invalidFormDataAttempted.ipfs}
-                  onChange={handleIPFSOnChange}
-                  formData={ipfsCredentials}
-                  validate={handleIPFSErrors}
-                  fields={{ cField: CustomField }}
-                  ref={ipfsFormRef}
-                  noHtml5Validate
-                  onError={(): void => toggleInvalid({ ipfs: true })}
-                  transformErrors={transformErrors}
-                  schema={ipfsSchema}
-                  uiSchema={ipfsUiSchema}
-                >
-                  <button className="btn btn-info" disabled={disabledIPFS} type="submit">
-                    UPLOAD APP DATA TO IPFS
-                  </button>
-                </Form>
-              </IpfsWrapper>
-            </>
-          )}
-          {isDocUploaded && (
-            <>
+    <>
+      <div className="form-container">
+        <Form
+          className="data-form"
+          liveOmit
+          liveValidate={invalidFormDataAttempted.appData}
+          omitExtraData
+          showErrorList={false}
+          fields={{ cField: CustomField }}
+          noHtml5Validate
+          onChange={handleOnChange}
+          formData={appDataForm}
+          validate={handleMetadataErrors}
+          transformErrors={transformErrors}
+          ref={formRef}
+          autoComplete="off"
+          onSubmit={onSubmit}
+          onError={(): void => toggleInvalid({ appData: true })}
+          schema={schema}
+          uiSchema={uiSchema}
+        >
+          <button className="btn btn-info" disabled={disabledAppData} type="submit">
+            GENERATE APPDATA DOC
+          </button>
+        </Form>
+        <AppDataWrapper>
+          <div className="hidden-content">
+            <p>AppData Root Schema information can be found in:</p>
+            <ExternalLink
+              target={'_blank'}
+              rel="noopener noreferrer"
+              href={`https://docs.cow.fi/front-end/creating-app-ids`}
+            >
+              {' '}
+              AppData documentation
+            </ExternalLink>{' '}
+            |
+            <ExternalLink
+              target={'_blank'}
+              rel="noopener noreferrer"
+              href={`https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/metadata`}
+            >
+              {' '}
+              Metadata documentation
+            </ExternalLink>
+            <RowWithCopyButton
+              textToCopy={JSON.stringify(handleFormatData(appDataForm), null, 2)}
+              contentsToDisplay={
+                <pre className="json-formatter">{JSON.stringify(handleFormatData(appDataForm), null, 2)}</pre>
+              }
+            />
+            {ipfsHashInfo && (
               <RowWithCopyButton
                 className="appData-hash"
-                textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
-                contentsToDisplay={
-                  <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`} target="_blank" rel="noopener noreferrer">
-                    {ipfsHashInfo?.cidV0}
-                  </a>
-                }
+                textToCopy={ipfsHashInfo.appDataHash}
+                contentsToDisplay={ipfsHashInfo.appDataHash}
               />
-              <Notification
-                type="success"
-                message="Document uploaded successfully!"
-                closable={false}
-                appendMessage={false}
-              />
-            </>
-          )}
-          {isLoading && <Spinner />}
-          {error && !isDocUploaded && (
-            <Notification type="error" message={error} closable={false} appendMessage={false} />
-          )}
-        </div>
-      </Content>
-    </Wrapper>
+            )}
+          </div>
+        </AppDataWrapper>
+      </div>
+      <div className="ipfs-container">
+        {ipfsHashInfo && (
+          <>
+            <IpfsWrapper>
+              <Form
+                className="data-form"
+                showErrorList={false}
+                onSubmit={onUploadToIPFS}
+                liveValidate={invalidFormDataAttempted.ipfs}
+                onChange={handleIPFSOnChange}
+                formData={ipfsCredentials}
+                validate={handleIPFSErrors}
+                fields={{ cField: CustomField }}
+                ref={ipfsFormRef}
+                noHtml5Validate
+                onError={(): void => toggleInvalid({ ipfs: true })}
+                transformErrors={transformErrors}
+                schema={ipfsSchema}
+                uiSchema={ipfsUiSchema}
+              >
+                <button className="btn btn-info" disabled={disabledIPFS} type="submit">
+                  UPLOAD APP DATA TO IPFS
+                </button>
+              </Form>
+            </IpfsWrapper>
+          </>
+        )}
+        {isDocUploaded && (
+          <>
+            <RowWithCopyButton
+              className="appData-hash"
+              textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
+              contentsToDisplay={
+                <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`} target="_blank" rel="noopener noreferrer">
+                  {ipfsHashInfo?.cidV0}
+                </a>
+              }
+            />
+            <Notification
+              type="success"
+              message="Document uploaded successfully!"
+              closable={false}
+              appendMessage={false}
+            />
+          </>
+        )}
+        {isLoading && <Spinner />}
+        {error && !isDocUploaded && (
+          <Notification type="error" message={error} closable={false} appendMessage={false} />
+        )}
+      </div>
+    </>
   )
 }
 
-export default AppDataPage
+export default FormPage

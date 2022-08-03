@@ -56,11 +56,11 @@ const NotFound = React.lazy(
     ),
 )
 
-const MetadataDetails = React.lazy(
+const AppDataDetails = React.lazy(
   () =>
     import(
       /* webpackChunkName: "Metadata_chunk"*/
-      './pages/Metadata'
+      './pages/AppData'
     ),
 )
 
@@ -140,7 +140,7 @@ const AppContent = (): JSX.Element => {
           <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
           <Route path={pathPrefix + '/tx/:txHash'} exact component={TransactionDetails} />
           <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
-          <Route path={pathPrefix + '/metadata'} exact component={MetadataDetails} />
+          <Route path={pathPrefix + '/metadata'} exact component={AppDataDetails} />
           <Route component={NotFound} />
         </Switch>
       </React.Suspense>
