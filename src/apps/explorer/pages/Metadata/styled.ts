@@ -30,10 +30,11 @@ export const Wrapper = styled(WrapperTemplate)`
       }
     }
     .appData-hash {
-      margin-bottom: 1.5rem;
-      max-width: 40rem;
+      margin: 0 0 1rem 0;
+      max-width: 53rem;
       ${media.mobile} {
         max-width: none;
+        margin: 1rem 0;
       }
       span,
       a {
@@ -61,6 +62,9 @@ export const Wrapper = styled(WrapperTemplate)`
         background: none;
         padding: 0;
         font-size: 1.2rem;
+      }
+      h4 {
+        margin: 1rem 0 0.75rem 0;
       }
     }
   }

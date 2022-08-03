@@ -169,13 +169,6 @@ const AppDataPage: React.FC = () => {
             schema={schema}
             uiSchema={uiSchema}
           >
-            {ipfsHashInfo && (
-              <RowWithCopyButton
-                className="appData-hash"
-                textToCopy={ipfsHashInfo.appDataHash}
-                contentsToDisplay={ipfsHashInfo.appDataHash}
-              />
-            )}
             <button className="btn btn-info" disabled={disabledAppData} type="submit">
               GENERATE APPDATA DOC
             </button>
@@ -206,6 +199,16 @@ const AppDataPage: React.FC = () => {
                   <pre className="json-formatter">{JSON.stringify(handleFormatData(appDataForm), null, 2)}</pre>
                 }
               />
+              {ipfsHashInfo && (
+                <>
+                  <h4>AppData Hash</h4>
+                  <RowWithCopyButton
+                    className="appData-hash"
+                    textToCopy={ipfsHashInfo.appDataHash}
+                    contentsToDisplay={ipfsHashInfo.appDataHash}
+                  />
+                </>
+              )}
             </div>
           </AppDataWrapper>
         </div>
