@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Form, { AjvError, FormValidation } from '@rjsf/core'
+import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
 import { AppDataDoc, IpfsHashInfo } from '@cowprotocol/cow-sdk'
 import { COW_SDK, DEFAULT_IPFS_READ_URI } from 'const'
@@ -60,11 +60,11 @@ const AppDataPage: React.FC = () => {
   }
 
   const resetFormFields = (form: string): void => {
+    setDisabledIPFS(true)
+    setIpfsCredentials({})
+    toggleInvalid({ ipfs: false })
     if (form === 'appData') {
       setDisabledAppData(true)
-    } else {
-      setDisabledIPFS(true)
-      setIpfsCredentials({})
     }
   }
 
@@ -95,22 +95,22 @@ const AppDataPage: React.FC = () => {
 
   const handleOnChange = ({ formData }: FormProps): void => {
     setAppDataForm(formData)
-    if (appDataDoc) {
+    if (ipfsHashInfo) {
       setAppDataDoc(undefined)
       setIpfsHashInfo(undefined)
+      setIsDocUploaded(false)
       resetFormFields('appData')
+      setError(undefined)
     }
     if (JSON.stringify(handleFormatData(formData)) !== JSON.stringify(INITIAL_FORM_VALUES)) {
       setDisabledAppData(false)
     }
   }
 
-  const onSubmit = async (formData: FormProps): Promise<void> => {
-    if (!network || !formRef.current) return
-    const { errors }: { errors: AjvError[] } = formRef.current.validate(formData)
-    if (errors.length > 0) return
+  const onSubmit = async ({ formData }: FormProps): Promise<void> => {
+    if (!network) return
     setIsLoading(true)
-    const res = COW_SDK[network]?.metadataApi.generateAppDataDoc(formData)
+    const res = COW_SDK[network]?.metadataApi.generateAppDataDoc(handleFormatData(formData))
     try {
       if (!res) return
       const hashInfo = await COW_SDK[network]?.metadataApi.calculateAppDataHash(res)
@@ -131,10 +131,8 @@ const AppDataPage: React.FC = () => {
     }
   }
 
-  const onUploadToIPFS = async (formData: FormProps): Promise<void> => {
-    if (!network || !appDataDoc || !ipfsFormRef.current) return
-    const { errors }: { errors: AjvError[] } = ipfsFormRef.current.validate(formData)
-    if (errors.length > 0) return
+  const onUploadToIPFS = async ({ formData }: FormProps): Promise<void> => {
+    if (!network || !appDataDoc) return
     setIsLoading(true)
     try {
       await COW_SDK[network]?.updateContext({ ipfs: formData })
@@ -183,11 +181,7 @@ const AppDataPage: React.FC = () => {
                 contentsToDisplay={ipfsHashInfo.appDataHash}
               />
             )}
-            <button
-              className="btn btn-info"
-              disabled={disabledAppData}
-              onClick={(): Promise<void> => onSubmit(appDataForm)}
-            >
+            <button className="btn btn-info" disabled={disabledAppData} type="submit">
               GENERATE APPDATA DOC
             </button>
           </Form>
@@ -240,11 +234,7 @@ const AppDataPage: React.FC = () => {
                   schema={ipfsSchema}
                   uiSchema={ipfsUiSchema}
                 >
-                  <button
-                    className="btn btn-info"
-                    disabled={disabledIPFS}
-                    onClick={(): Promise<void> => onUploadToIPFS(ipfsCredentials)}
-                  >
+                  <button className="btn btn-info" disabled={disabledIPFS} type="submit">
                     UPLOAD APP DATA TO IPFS
                   </button>
                 </Form>
