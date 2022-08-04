@@ -49,7 +49,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
     ${({ partiallyFilled, theme }): FlattenSimpleInterpolation | null =>
       partiallyFilled
         ? css`
-            content: 'Partial filled';
+            content: 'Partially filled';
             background: ${theme.orange};
             font-size: 0.85em; /* Intentional use of "em" to be relative to parent's font size */
             color: ${theme.textPrimary1};
