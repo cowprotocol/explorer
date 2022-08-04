@@ -87,6 +87,10 @@ export const Wrapper = styled(WrapperTemplate)`
     }
 
     .hidden-content {
+      ${media.desktopLarge} {
+        position: fixed;
+        width: 25vw;
+      }
       ${media.desktop} {
         position: fixed;
         width: 30vw;
