@@ -24,8 +24,12 @@ export const Wrapper = styled(WrapperTemplate)`
       }
       .data-form {
         width: 100%;
-        max-width: 24vw;
+        max-width: 40rem;
         margin-right: 2rem;
+        ${media.mobile} {
+          max-width: 100%;
+          margin-right: 0;
+        }
       }
       .hidden-content {
         position: initial;
@@ -66,7 +70,7 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     .appData-hash {
       margin: 0 0 1rem 0;
-      max-width: 53rem;
+      max-width: 54rem;
       ${media.mobile} {
         max-width: none;
         margin: 1rem 0;
@@ -82,6 +86,10 @@ export const Wrapper = styled(WrapperTemplate)`
   .form-container {
     display: flex;
     flex: 1;
+    ${media.mobile} {
+      margin: 2rem 0;
+      flex-direction: column;
+    }
     p {
       line-height: 1.6rem;
     }
@@ -108,10 +116,6 @@ export const Wrapper = styled(WrapperTemplate)`
       h4 {
         margin: 1rem 0 0.75rem 0;
       }
-    }
-
-    ${media.mobile} {
-      flex-direction: column;
     }
   }
   .ipfs-container {

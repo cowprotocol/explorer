@@ -197,7 +197,7 @@ export const ipfsSchema: JSONSchema7 = {
 
 export const decodeAppDataSchema: JSONSchema7 = {
   type: 'object',
-  title: 'App Data Decode',
+  title: 'AppData Decode',
   description: 'This is a description',
   required: ['appData'],
   properties: {

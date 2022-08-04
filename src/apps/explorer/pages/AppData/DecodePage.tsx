@@ -26,7 +26,7 @@ const DecodePage: React.FC = () => {
   const onError = (_: FormProps, errors: FormValidation): FormValidation => handleErrors(formRef, errors, setDisabled)
 
   return (
-    <>
+    <div className="form-container">
       <Form
         className="data-form"
         showErrorList={false}
@@ -46,7 +46,7 @@ const DecodePage: React.FC = () => {
         </button>
       </Form>
       {isSubmitted && <DecodeAppData appData={formData?.appData} />}
-    </>
+    </div>
   )
 }
 
