@@ -41,10 +41,40 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
     `
 }
 
-const Wrapper = styled.div`
+type PartiallyTagPosition = 'right' | 'bottom'
+type PartiallyTagProps = { partiallyFilled: boolean; tagPosition: PartiallyTagPosition }
+
+const PartiallyTagLabel = css<PartiallyTagProps>`
+  &:after {
+    ${({ partiallyFilled, theme }): FlattenSimpleInterpolation | null =>
+      partiallyFilled
+        ? css`
+            content: 'partial fill';
+            background: ${theme.orange};
+            font-size: 0.85em; /* Intentional use of "em" to be relative to parent's font size */
+            color: ${theme.textPrimary1};
+            width: 100%;
+            text-align: center;
+            border-radius: 0 0 0.4rem 0.4rem;
+          `
+        : null}
+
+    ${({ partiallyFilled, tagPosition }): FlattenSimpleInterpolation | null =>
+      partiallyFilled && tagPosition === 'right'
+        ? css`
+            border-radius: 0 0.4rem 0.4rem 0;
+            display: flex;
+            align-items: center;
+            padding: 0 0.6rem;
+          `
+        : null}
+  }
+`
+const Wrapper = styled.div<PartiallyTagProps>`
   display: flex;
-  align-items: center;
+  flex-direction: ${({ tagPosition }): string => (tagPosition === 'bottom' ? 'column' : 'row')};
   font-size: ${({ theme }): string => theme.fontSizeDefault};
+  ${PartiallyTagLabel}
 `
 const frameAnimation = keyframes`
     100% {
@@ -55,7 +85,7 @@ type ShimmingProps = {
   shimming?: boolean
 }
 
-const Label = styled.div<DisplayProps & ShimmingProps>`
+const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps>`
   font-weight: ${({ theme }): string => theme.fontBold};
   text-transform: capitalize;
   border-radius: 0.4rem;
@@ -74,16 +104,21 @@ const Label = styled.div<DisplayProps & ShimmingProps>`
           animation-name: ${frameAnimation};
         `
       : null}
+  ${({ partiallyFilled, tagPosition }): FlattenSimpleInterpolation | null =>
+    partiallyFilled
+      ? tagPosition === 'bottom'
+        ? css`
+            font-size: 1.14rem;
+            border-radius: 0.4rem 0.4rem 0 0;
+          `
+        : css`
+            border-radius: 0.4rem 0 0 0.4rem;
+          `
+      : null}
 `
 
 const StyledFAIcon = styled(FontAwesomeIcon)`
   margin: 0 0.75rem 0 0;
-`
-
-const PartialFill = styled.div`
-  margin-left: 1rem;
-  font-size: 0.85em; /* Intentional use of "em" to be relative to parent's font size */
-  color: ${({ theme }): string => theme.textPrimary1};
 `
 
 function getStatusIcon(status: OrderStatus): IconDefinition {
@@ -110,19 +145,19 @@ function StatusIcon({ status }: DisplayProps): JSX.Element {
   return <StyledFAIcon icon={icon} spin={isOpen} />
 }
 
-export type Props = DisplayProps & { partiallyFilled: boolean }
+export type Props = DisplayProps & { partiallyFilled: boolean; partiallyTagPosition?: PartiallyTagPosition }
 
 export function StatusLabel(props: Props): JSX.Element {
-  const { status, partiallyFilled } = props
+  const { status, partiallyFilled, partiallyTagPosition = 'bottom' } = props
   const shimming = status === 'signing' || status === 'cancelling'
 
+  console.log()
   return (
-    <Wrapper>
-      <Label status={status} shimming={shimming}>
+    <Wrapper partiallyFilled={partiallyFilled} tagPosition={partiallyTagPosition}>
+      <Label status={status} shimming={shimming} partiallyFilled={partiallyFilled} tagPosition={partiallyTagPosition}>
         <StatusIcon status={status} />
         {status}
       </Label>
-      {partiallyFilled && <PartialFill>(partial fill)</PartialFill>}
     </Wrapper>
   )
 }
