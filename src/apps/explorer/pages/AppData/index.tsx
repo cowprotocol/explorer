@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faCode, faListUl, faCode } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from 'hooks/useQuery'
 import FormPage from './FormPage'
 import DecodePage from './DecodePage'
@@ -31,7 +31,7 @@ const tabItems = (): TabItemInterface[] => {
     },
     {
       id: TabView.DECODE,
-      tab: <TabIcon title="Decode" iconFontName={faProjectDiagram} />,
+      tab: <TabIcon title="Decode" iconFontName={faCode} />,
       content: <DecodePage />,
     },
   ]
