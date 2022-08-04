@@ -10,32 +10,6 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
 
 export const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
-  .appData-tab {
-    &--form {
-      .tab-content {
-        display: flex;
-        flex-direction: column;
-      }
-    }
-    &--decode {
-      .data-container {
-        line-height: 1.6;
-        font-size: 1.3rem;
-      }
-      .data-form {
-        width: 100%;
-        max-width: 40rem;
-        margin-right: 2rem;
-        ${media.mobile} {
-          max-width: 100%;
-          margin-right: 0;
-        }
-      }
-      .hidden-content {
-        position: initial;
-      }
-    }
-  }
   ${Content} {
     display: flex;
     flex-direction: column;
@@ -62,11 +36,13 @@ export const Wrapper = styled(WrapperTemplate)`
       }
     }
     .hidden-content {
-      background: ${({ theme }): string => theme.greyOpacity};
       padding: 0 1rem;
       border-radius: 0.5rem;
       font-size: 1.3rem;
       line-height: 1.6;
+      &:not(.error) {
+        background: ${({ theme }): string => theme.greyOpacity};
+      }
     }
     .appData-hash {
       margin: 0 0 1rem 0;
@@ -234,6 +210,32 @@ export const Wrapper = styled(WrapperTemplate)`
 
   ${media.mediumDown} {
     flex-flow: column wrap;
+  }
+  .appData-tab {
+    &--form {
+      .tab-content {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+    &--decode {
+      .data-container {
+        line-height: 1.6;
+        font-size: 1.3rem;
+      }
+      .data-form {
+        width: 100%;
+        max-width: 40rem;
+        margin-right: 2rem;
+        ${media.mobile} {
+          max-width: 100%;
+          margin-right: 0;
+        }
+      }
+      .hidden-content {
+        position: initial;
+      }
+    }
   }
 `
 export const IpfsWrapper = styled.div`

@@ -18,6 +18,9 @@ const DecodePage: React.FC = () => {
 
   const handleOnChange = ({ formData }: FormProps): void => {
     setFormdata(formData)
+    if (isSubmitted) {
+      setIsSubmitted(false)
+    }
     if (JSON.stringify(formData) !== JSON.stringify({})) {
       setDisabled(false)
     }
@@ -45,7 +48,7 @@ const DecodePage: React.FC = () => {
           DECODE APP DATA
         </button>
       </Form>
-      {isSubmitted && <DecodeAppData appData={formData?.appData} />}
+      {isSubmitted && <DecodeAppData showExpanded appData={formData?.appData} />}
     </div>
   )
 }
