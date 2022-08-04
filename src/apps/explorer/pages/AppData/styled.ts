@@ -90,6 +90,9 @@ export const Wrapper = styled(WrapperTemplate)`
       margin: 2rem 0;
       flex-direction: column;
     }
+    ${media.mediumDown} {
+      margin: 2rem 0;
+    }
     p {
       line-height: 1.6rem;
     }
