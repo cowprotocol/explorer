@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
-import { faCode, faListUl, faCode } from '@fortawesome/free-solid-svg-icons'
+import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from 'hooks/useQuery'
 import FormPage from './FormPage'
 import DecodePage from './DecodePage'
