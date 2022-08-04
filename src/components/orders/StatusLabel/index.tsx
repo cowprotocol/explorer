@@ -151,7 +151,6 @@ export function StatusLabel(props: Props): JSX.Element {
   const { status, partiallyFilled, partiallyTagPosition = 'bottom' } = props
   const shimming = status === 'signing' || status === 'cancelling'
 
-  console.log()
   return (
     <Wrapper partiallyFilled={partiallyFilled} tagPosition={partiallyTagPosition}>
       <Label status={status} shimming={shimming} partiallyFilled={partiallyFilled} tagPosition={partiallyTagPosition}>
