@@ -197,11 +197,14 @@ const FormPage: React.FC = () => {
               }
             />
             {ipfsHashInfo && (
-              <RowWithCopyButton
-                className="appData-hash"
-                textToCopy={ipfsHashInfo.appDataHash}
-                contentsToDisplay={ipfsHashInfo.appDataHash}
-              />
+              <>
+                <h4>AppData Hash</h4>
+                <RowWithCopyButton
+                  className="appData-hash"
+                  textToCopy={ipfsHashInfo.appDataHash}
+                  contentsToDisplay={ipfsHashInfo.appDataHash}
+                />
+              </>
             )}
           </div>
         </AppDataWrapper>
