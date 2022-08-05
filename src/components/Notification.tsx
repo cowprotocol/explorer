@@ -4,6 +4,7 @@ import { transparentize } from 'polished'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationEllipsis, faExclamationTriangle, faCircleCheck } from './icons'
 import { BASE_COLOURS } from 'theme'
+import { media } from 'theme/styles/media'
 
 export interface NotificationProps {
   type: 'warn' | 'error' | 'success'
@@ -31,6 +32,9 @@ export const NotificationWrap = styled.p<{ isActive?: boolean; type: string }>`
     margin: 0 16px;
     line-height: 1.2;
     max-width: calc(100% - 90px);
+    ${media.mobile} {
+      max-width: none;
+    }
     a {
       color: ${BASE_COLOURS.orange1};
     }
