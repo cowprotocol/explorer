@@ -361,7 +361,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.status} /> Status
             </td>
             <td>
-              <StatusLabel status={status} partiallyFilled={partiallyFilled} partiallyTagPosition="right" />
+              <StatusLabel status={status} partialFill={partiallyFilled} partialTagPosition="right" />
             </td>
           </tr>
           <tr>

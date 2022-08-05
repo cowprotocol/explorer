@@ -12,9 +12,16 @@ import {
 
 import { OrderStatus } from 'api/operator'
 
-type DisplayProps = { status: OrderStatus }
+type CustomOrderStatus = OrderStatus | 'partial fill'
+type DisplayProps = { status: CustomOrderStatus }
 
-function setStatusColors({ theme, status }: { theme: DefaultTheme; status: OrderStatus }): string {
+function setStatusColors({
+  theme,
+  status,
+}: {
+  theme: DefaultTheme
+  status: CustomOrderStatus
+}): string | FlattenSimpleInterpolation {
   let background, text
 
   switch (status) {
@@ -33,6 +40,17 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
       text = theme.labelTextOpen
       background = theme.labelBgOpen
       break
+    case 'partial fill':
+      return css`
+        background: linear-gradient(180deg, rgba(0, 216, 151, 0.1) 0%, rgba(217, 109, 73, 0.1) 100%);
+        font-size: 0.9em;
+        color: ${theme.green};
+        align-items: end;
+        .svg-inline--fa {
+          font-size: 1.3rem;
+          margin-right: 0.5rem;
+        }
+      `
   }
 
   return `
@@ -42,14 +60,14 @@ function setStatusColors({ theme, status }: { theme: DefaultTheme; status: Order
 }
 
 type PartiallyTagPosition = 'right' | 'bottom'
-type PartiallyTagProps = { partiallyFilled: boolean; tagPosition: PartiallyTagPosition }
+type PartiallyTagProps = { partialFill: boolean; tagPosition: PartiallyTagPosition }
 
 const PartiallyTagLabel = css<PartiallyTagProps>`
   &:after {
-    ${({ partiallyFilled, theme }): FlattenSimpleInterpolation | null =>
-      partiallyFilled
+    ${({ partialFill, theme }): FlattenSimpleInterpolation | null =>
+      partialFill
         ? css`
-            content: 'Partially filled';
+            content: 'Partial fill';
             background: ${theme.orange};
             font-size: 0.85em; /* Intentional use of "em" to be relative to parent's font size */
             color: ${theme.textPrimary1};
@@ -59,8 +77,8 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
           `
         : null}
 
-    ${({ partiallyFilled, tagPosition }): FlattenSimpleInterpolation | null =>
-      partiallyFilled && tagPosition === 'right'
+    ${({ partialFill, tagPosition }): FlattenSimpleInterpolation | null =>
+      partialFill && tagPosition === 'right'
         ? css`
             border-radius: 0 0.4rem 0.4rem 0;
             display: flex;
@@ -87,13 +105,13 @@ type ShimmingProps = {
 
 const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps>`
   font-weight: ${({ theme }): string => theme.fontBold};
-  text-transform: capitalize;
   border-radius: 0.4rem;
   line-height: 1;
   padding: 0.75rem 1rem;
   display: flex;
   align-items: center;
-  ${({ theme, status }): string => setStatusColors({ theme, status })}
+  min-height: 2.8rem;
+  ${({ theme, status }): string | FlattenSimpleInterpolation => setStatusColors({ theme, status })}
   ${({ shimming }): FlattenSimpleInterpolation | null =>
     shimming
       ? css`
@@ -104,7 +122,7 @@ const Label = styled.div<DisplayProps & ShimmingProps & PartiallyTagProps>`
           animation-name: ${frameAnimation};
         `
       : null}
-  ${({ partiallyFilled, tagPosition }): FlattenSimpleInterpolation | null =>
+  ${({ partialFill: partiallyFilled, tagPosition }): FlattenSimpleInterpolation | null =>
     partiallyFilled
       ? tagPosition === 'bottom'
         ? css`
@@ -121,7 +139,7 @@ const StyledFAIcon = styled(FontAwesomeIcon)`
   margin: 0 0.75rem 0 0;
 `
 
-function getStatusIcon(status: OrderStatus): IconDefinition {
+function getStatusIcon(status: CustomOrderStatus): IconDefinition {
   switch (status) {
     case 'expired':
       return faClock
@@ -135,6 +153,8 @@ function getStatusIcon(status: OrderStatus): IconDefinition {
       return faKey
     case 'open':
       return faCircleNotch
+    case 'partial fill':
+      return faCheckCircle
   }
 }
 
@@ -145,17 +165,20 @@ function StatusIcon({ status }: DisplayProps): JSX.Element {
   return <StyledFAIcon icon={icon} spin={isOpen} />
 }
 
-export type Props = DisplayProps & { partiallyFilled: boolean; partiallyTagPosition?: PartiallyTagPosition }
+export type Props = DisplayProps & { partialFill: boolean; partialTagPosition?: PartiallyTagPosition }
 
 export function StatusLabel(props: Props): JSX.Element {
-  const { status, partiallyFilled, partiallyTagPosition = 'bottom' } = props
+  const { status, partialFill: partiallyFilled, partialTagPosition = 'bottom' } = props
   const shimming = status === 'signing' || status === 'cancelling'
+  const isExpired = status === 'expired'
+  const tagPartiallyFilled = !isExpired && partiallyFilled
+  const _status = isExpired && partiallyFilled ? 'partial fill' : status
 
   return (
-    <Wrapper partiallyFilled={partiallyFilled} tagPosition={partiallyTagPosition}>
-      <Label status={status} shimming={shimming} partiallyFilled={partiallyFilled} tagPosition={partiallyTagPosition}>
-        <StatusIcon status={status} />
-        {status}
+    <Wrapper partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>
+      <Label status={_status} shimming={shimming} partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>
+        <StatusIcon status={_status} />
+        {_status.at(0)?.toUpperCase() + _status.slice(1)}
       </Label>
     </Wrapper>
   )

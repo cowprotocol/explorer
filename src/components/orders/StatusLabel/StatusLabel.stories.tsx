@@ -33,10 +33,10 @@ export const Signing = Template.bind({})
 Signing.args = { status: 'signing' }
 
 export const OpenPartiallyFilled = Template.bind({})
-OpenPartiallyFilled.args = { status: 'open', partiallyFilled: true }
+OpenPartiallyFilled.args = { status: 'open', partialFill: true }
 export const ExpiredPartiallyFilled = Template.bind({})
-ExpiredPartiallyFilled.args = { status: 'expired', partiallyFilled: true }
+ExpiredPartiallyFilled.args = { status: 'expired', partialFill: true }
 export const CancelledPartiallyFilled = Template.bind({})
-CancelledPartiallyFilled.args = { status: 'cancelled', partiallyFilled: true }
+CancelledPartiallyFilled.args = { status: 'cancelled', partialFill: true }
 export const CancellingPartiallyFilled = Template.bind({})
-CancellingPartiallyFilled.args = { status: 'cancelling', partiallyFilled: true }
+CancellingPartiallyFilled.args = { status: 'cancelling', partialFill: true }
