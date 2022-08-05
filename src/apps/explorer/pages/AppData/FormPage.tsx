@@ -230,7 +230,7 @@ const FormPage: React.FC = () => {
                 uiSchema={ipfsUiSchema}
               >
                 <button className="btn btn-info" disabled={disabledIPFS} type="submit">
-                  UPLOAD APP DATA TO IPFS
+                  UPLOAD APPDATA TO IPFS
                 </button>
               </Form>
             </IpfsWrapper>

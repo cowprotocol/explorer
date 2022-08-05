@@ -203,8 +203,8 @@ export const decodeAppDataSchema: JSONSchema7 = {
   properties: {
     appData: {
       type: 'string',
-      title: 'App Data',
-      description: 'Add your App Data hash',
+      title: 'AppData',
+      description: 'Add your AppData hash',
     },
   },
 }
