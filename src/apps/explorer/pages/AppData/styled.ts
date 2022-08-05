@@ -222,6 +222,7 @@ export const Wrapper = styled(WrapperTemplate)`
       .data-container {
         line-height: 1.6;
         font-size: 1.3rem;
+        margin: 1rem 0;
       }
       .data-form {
         width: 100%;
