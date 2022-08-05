@@ -178,7 +178,7 @@ export function StatusLabel(props: Props): JSX.Element {
     <Wrapper partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>
       <Label status={_status} shimming={shimming} partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>
         <StatusIcon status={_status} />
-        {_status.at(0)?.toUpperCase() + _status.slice(1)}
+        {_status.charAt(0).toUpperCase() + _status.slice(1)}
       </Label>
     </Wrapper>
   )
