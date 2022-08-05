@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from 'react'
-import AppDataWrapper from 'components/common/AppDataWrapper'
 import { AppDataDoc } from '@cowprotocol/cow-sdk'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { Notification } from 'components/Notification'
@@ -8,6 +7,7 @@ import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
 import { useNetworkId } from 'state/network'
+import { Wrapper } from 'apps/explorer/pages/AppData/styled'
 
 type Props = {
   appData: number
@@ -99,7 +99,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
   }
 
   return (
-    <AppDataWrapper>
+    <Wrapper>
       <div className="data-container">
         {appDataError ? (
           <span className="app-data">{appData}</span>
@@ -118,7 +118,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
         </a>
       </div>
       <div className={`hidden-content ${appDataError && 'error'}`}>{renderAppData()}</div>
-    </AppDataWrapper>
+    </Wrapper>
   )
 }
 

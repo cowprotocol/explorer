@@ -89,7 +89,7 @@ export const Wrapper = styled(WrapperTemplate)`
       ${media.mobile} {
         margin-top: 1.5rem;
         background: none;
-        padding: 0;
+        padding: 1rem;
         font-size: 1.2rem;
       }
       h4 {
