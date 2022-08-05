@@ -8,6 +8,7 @@ import {
   faTimesCircle,
   IconDefinition,
   faKey,
+  faCircleHalfStroke,
 } from '@fortawesome/free-solid-svg-icons'
 
 import { OrderStatus } from 'api/operator'
@@ -154,7 +155,7 @@ function getStatusIcon(status: CustomOrderStatus): IconDefinition {
     case 'open':
       return faCircleNotch
     case 'partial fill':
-      return faCheckCircle
+      return faCircleHalfStroke
   }
 }
 
