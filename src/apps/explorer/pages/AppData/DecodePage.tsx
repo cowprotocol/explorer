@@ -29,7 +29,7 @@ const DecodePage: React.FC = () => {
   const onError = (_: FormProps, errors: FormValidation): FormValidation => handleErrors(formRef, errors, setDisabled)
 
   return (
-    <div className="form-container">
+    <div className="decode-container">
       <Form
         className="data-form"
         showErrorList={false}

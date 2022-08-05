@@ -97,6 +97,20 @@ export const Wrapper = styled(WrapperTemplate)`
       }
     }
   }
+  .decode-container {
+    display: flex;
+    flex: 1;
+    div {
+      align-items: flex-start !important;
+    }
+    ${media.mobile} {
+      margin: 2rem 0;
+      flex-direction: column;
+    }
+    ${media.mediumDown} {
+      margin: 2rem 0;
+    }
+  }
   .ipfs-container {
     display: flex;
     flex-direction: column;
