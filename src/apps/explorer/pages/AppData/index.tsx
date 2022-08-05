@@ -55,7 +55,7 @@ const AppDataPage: React.FC = () => {
 
   return (
     <Wrapper>
-      <Title>App Data Details</Title>
+      <Title>AppData Details</Title>
       <Content>
         <StyledExplorerTabs
           className={`appData-tab--${TabView[tabViewSelected].toLowerCase()}`}

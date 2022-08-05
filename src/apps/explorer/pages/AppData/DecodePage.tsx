@@ -45,7 +45,7 @@ const DecodePage: React.FC = () => {
         schema={decodeAppDataSchema}
       >
         <button className="btn btn-info" disabled={disabled} type="submit">
-          DECODE APP DATA
+          DECODE APPDATA
         </button>
       </Form>
       {isSubmitted && <DecodeAppData showExpanded appData={formData?.appData} />}
