@@ -166,10 +166,10 @@ function StatusIcon({ status }: DisplayProps): JSX.Element {
   return <StyledFAIcon icon={icon} spin={isOpen} />
 }
 
-export type Props = DisplayProps & { partialFill: boolean; partialTagPosition?: PartiallyTagPosition }
+export type Props = DisplayProps & { partiallyFilled: boolean; partialTagPosition?: PartiallyTagPosition }
 
 export function StatusLabel(props: Props): JSX.Element {
-  const { status, partialFill: partiallyFilled, partialTagPosition = 'bottom' } = props
+  const { status, partiallyFilled: partiallyFilled, partialTagPosition = 'bottom' } = props
   const shimming = status === 'signing' || status === 'cancelling'
   const isExpired = status === 'expired'
   const tagPartiallyFilled = !isExpired && partiallyFilled

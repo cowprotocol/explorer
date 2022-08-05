@@ -140,7 +140,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
       <td>
         <HeaderTitle>Status</HeaderTitle>
         <HeaderValue>
-          <StatusLabel status={order.status} partialFill={partiallyFilled} />
+          <StatusLabel status={order.status} partiallyFilled={partiallyFilled} />
         </HeaderValue>
       </td>
     </tr>
