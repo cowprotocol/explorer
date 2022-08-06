@@ -13,7 +13,7 @@ import {
 
 import { OrderStatus } from 'api/operator'
 
-type CustomOrderStatus = OrderStatus | 'partial fill'
+type CustomOrderStatus = OrderStatus | 'partially filled'
 type DisplayProps = { status: CustomOrderStatus }
 
 function setStatusColors({
@@ -41,14 +41,15 @@ function setStatusColors({
       text = theme.labelTextOpen
       background = theme.labelBgOpen
       break
-    case 'partial fill':
+    case 'partially filled':
       return css`
-        background: linear-gradient(180deg, rgba(0, 216, 151, 0.1) 0%, rgba(217, 109, 73, 0.1) 100%);
-        font-size: 0.9em;
+        background: linear-gradient(270deg, rgba(0, 216, 151, 0.1) 0%, rgba(217, 109, 73, 0.1) 100%);
+        font-size: 1.16rem;
         color: ${theme.green};
-        align-items: end;
+        display: flex;
+        align-items: flex-start;
         .svg-inline--fa {
-          font-size: 1.3rem;
+          font-size: 1.1rem;
           margin-right: 0.5rem;
         }
       `
@@ -65,32 +66,35 @@ type PartiallyTagProps = { partialFill: boolean; tagPosition: PartiallyTagPositi
 
 const PartiallyTagLabel = css<PartiallyTagProps>`
   &:after {
-    ${({ partialFill, theme }): FlattenSimpleInterpolation | null =>
+    ${({ partialFill, theme, tagPosition }): FlattenSimpleInterpolation | null =>
       partialFill
         ? css`
-            content: 'Partial fill';
-            background: ${theme.orange};
-            font-size: 0.85em; /* Intentional use of "em" to be relative to parent's font size */
-            color: ${theme.textPrimary1};
-            width: 100%;
-            text-align: center;
-            border-radius: 0 0 0.4rem 0.4rem;
-          `
-        : null}
-
-    ${({ partialFill, tagPosition }): FlattenSimpleInterpolation | null =>
-      partialFill && tagPosition === 'right'
-        ? css`
-            border-radius: 0 0.4rem 0.4rem 0;
+            content: 'Partially filled';
             display: flex;
+            justify-content: center;
+            align-content: center;
             align-items: center;
-            padding: 0 0.6rem;
+            font-weight: ${theme.fontMedium};
+            font-size: 0.71em; /* Intentional use of "em" to be relative to parent's font size */
+            color: ${theme.green};
+            min-height: 1.35rem;
+            ${tagPosition === 'bottom'
+              ? `
+              background: linear-gradient(0deg, rgba(0, 216, 151, 0.2) 60%, rgba(217, 109, 73, 0.2) 100%);
+              border-radius: 0 0 0.4rem 0.4rem;
+            `
+              : `
+              background: linear-gradient(270deg, rgba(0, 216, 151, 0.2) 60%, rgba(217, 109, 73, 0.2) 100%);
+              border-radius: 0 0.4rem 0.4rem 0;
+              padding: 0 0.6rem;
+              font-size: 0.78em;
+            `}
           `
         : null}
   }
 `
 const Wrapper = styled.div<PartiallyTagProps>`
-  display: flex;
+  display: ${({ tagPosition }): string => (tagPosition === 'bottom' ? 'inline-flex' : 'flex')};
   flex-direction: ${({ tagPosition }): string => (tagPosition === 'bottom' ? 'column' : 'row')};
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   ${PartiallyTagLabel}
@@ -154,7 +158,7 @@ function getStatusIcon(status: CustomOrderStatus): IconDefinition {
       return faKey
     case 'open':
       return faCircleNotch
-    case 'partial fill':
+    case 'partially filled':
       return faCircleHalfStroke
   }
 }
@@ -173,7 +177,7 @@ export function StatusLabel(props: Props): JSX.Element {
   const shimming = status === 'signing' || status === 'cancelling'
   const isExpired = status === 'expired'
   const tagPartiallyFilled = !isExpired && partiallyFilled
-  const _status = isExpired && partiallyFilled ? 'partial fill' : status
+  const _status = isExpired && partiallyFilled ? 'partially filled' : status
 
   return (
     <Wrapper partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>

@@ -6,7 +6,7 @@ import StyledUserDetailsTable from '../../common/StyledUserDetailsTable'
 export const WrapperUserDetailsTable = styled(StyledUserDetailsTable)`
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 12rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 10rem minmax(21.6rem, 2fr) 1fr;
+    grid-template-columns: 12rem 5.5rem repeat(2, minmax(16rem, 1.5fr)) minmax(18rem, 2fr) 10rem minmax(21.6rem, 2fr) 1.36fr;
   }
   tr > td {
     span.span-inside-tooltip {
