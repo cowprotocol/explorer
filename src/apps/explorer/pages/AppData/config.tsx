@@ -202,13 +202,13 @@ export const ipfsSchema: JSONSchema7 = {
 export const decodeAppDataSchema: JSONSchema7 = {
   type: 'object',
   title: 'AppData Decode',
-  description: 'Decode a text file document from AppData hash',
+  description: 'Decode a text file document from AppData hash.',
   required: ['appData'],
   properties: {
     appData: {
       type: 'string',
       title: 'AppData',
-      description: 'Add your AppData hash',
+      description: 'Add your AppData hash.',
       pattern: '^0x[a-fA-F0-9]{64}',
     },
   },
