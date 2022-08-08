@@ -6,9 +6,9 @@ import { formatDistanceToNowStrict } from 'date-fns'
 import { Card, CardContent } from 'components/common/Card'
 import { CardRow } from 'components/common/CardRow'
 import { TotalSummaryResponse } from './useGetSummaryData'
-import { abbreviateString } from 'utils'
+import { abbreviateString, getPercentageDifference } from 'utils'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
-import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import { getColorBySign } from 'components/common/Card/card.utils'
 import { CopyButton } from 'components/common/CopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { numberFormatter } from './utils'
@@ -61,8 +61,9 @@ export function SummaryCards({ summaryData, children }: SummaryCardsProps): JSX.
   const isDesktop = useMediaBreakpoint(['xl', 'lg'])
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
   const rowsByCard = isDesktop ? '2row' : '3row'
-  const diffTransactions = (dailyTransactions && calcDiff(dailyTransactions.now, dailyTransactions.before)) || 0
-  const diffFees = (dailyFees && calcDiff(dailyFees.now, dailyFees.before)) || 0
+  const diffTransactions =
+    (dailyTransactions && getPercentageDifference(dailyTransactions.now, dailyTransactions.before)) || 0
+  const diffFees = (dailyFees && getPercentageDifference(dailyFees.now, dailyFees.before)) || 0
 
   return (
     <CardRow>
