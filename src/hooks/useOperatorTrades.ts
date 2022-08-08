@@ -1,3 +1,4 @@
+import { TradeMetaData } from '@cowprotocol/cow-sdk'
 import { getTrades, Order, Trade } from 'api/operator'
 import { useCallback, useEffect, useState } from 'react'
 import { useNetworkId } from 'state/network'
@@ -34,7 +35,12 @@ export function useTrades(params: Params): Result {
     setIsLoading(true)
 
     try {
-      const trades = await getTrades({ networkId, owner, orderId })
+      let trades: TradeMetaData[] = []
+      if (orderId) {
+        trades = await getTrades({ networkId, orderId })
+      } else if (owner) {
+        trades = await getTrades({ networkId, owner })
+      }
 
       // TODO: fetch buy/sellToken objects
       setTrades(trades.map((trade) => transformTrade(trade)))

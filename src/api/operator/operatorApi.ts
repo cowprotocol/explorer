@@ -1,5 +1,6 @@
+import { GetTradesParams } from '@cowprotocol/cow-sdk'
 import { Network } from 'types'
-import { COW_SDK, COW_SDK_DEV } from 'const'
+import { COW_SDK } from 'const'
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
@@ -7,10 +8,10 @@ import {
   GetOrderParams,
   GetAccountOrdersParams,
   GetOrdersParams,
-  GetTradesParams,
   RawOrder,
   RawTrade,
   GetTxOrdersParams,
+  WithNetworkId,
 } from './types'
 import { fetchQuery } from 'api/baseApi'
 
@@ -29,8 +30,6 @@ function getOperatorUrl(): Partial<Record<Network, string>> {
     }
   }
 }
-
-const COW_SDK_ENV = isProd || isStaging ? COW_SDK : COW_SDK_DEV
 
 const API_BASE_URL = getOperatorUrl()
 
@@ -66,20 +65,8 @@ function _get(networkId: Network, url: string): Promise<Response> {
  */
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
-  const cowInstance = COW_SDK[networkId]
-  const cowInstanceDev = COW_SDK_DEV[networkId]
 
-  if (!cowInstance || !cowInstanceDev) return null
-
-  let order = null
-
-  try {
-    order = await cowInstance.cowApi.getOrder(orderId)
-  } catch (error) {
-    order = await cowInstanceDev.cowApi.getOrder(orderId)
-  }
-
-  return order
+  return COW_SDK.cowApi.getOrder(orderId, { chainId: networkId })
 }
 
 /**
@@ -123,11 +110,8 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  */
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
-  const cowInstance = COW_SDK_ENV[networkId]
 
-  if (!cowInstance) return []
-
-  return cowInstance.cowApi.getOrders({ owner, offset, limit })
+  return COW_SDK.cowApi.getOrders({ owner, offset, limit }, { chainId: networkId })
 }
 
 /**
@@ -138,12 +122,11 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  const cowInstance = COW_SDK[networkId]
-  const cowInstanceDev = COW_SDK_DEV[networkId]
-
-  if (!cowInstance || !cowInstanceDev) return []
-
-  const orders = await Promise.all([cowInstance.cowApi.getTxOrders(txHash), cowInstanceDev.cowApi.getTxOrders(txHash)])
+  // sdk not merging array responses yet
+  const orders = await Promise.all([
+    COW_SDK.cowApi.getTxOrders(txHash, { chainId: networkId, env: 'prod' }),
+    COW_SDK.cowApi.getTxOrders(txHash, { chainId: networkId, env: 'staging' }),
+  ])
 
   return [...orders[0], ...orders[1]]
 }
@@ -157,18 +140,16 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  *
  * Both filters cannot be used at the same time
  */
-export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
-  const { networkId, owner = '', orderId = '' } = params
-  const cowInstance = COW_SDK[networkId]
-  const cowInstanceDev = COW_SDK_DEV[networkId]
-
-  if (!cowInstance || !cowInstanceDev) return []
-
+export async function getTrades(params: GetTradesParams & WithNetworkId): Promise<RawTrade[]> {
+  const { networkId, owner, orderId } = params
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderId })
 
+  // sdk not merging array responses yet
   const trades = await Promise.all([
-    cowInstance.cowApi.getTrades({ owner, orderId }),
-    cowInstanceDev.cowApi.getTrades({ owner, orderId }),
+    // @ts-expect-error to avoid duplication we just pass both parameters
+    COW_SDK.cowApi.getTrades({ owner, orderId }, { chainId: networkId, env: 'prod' }),
+    // @ts-expect-error to avoid duplication we just pass both parameters
+    COW_SDK.cowApi.getTrades({ owner, orderId }, { chainId: networkId, env: 'staging' }),
   ])
 
   return [...trades[0], ...trades[1]]
