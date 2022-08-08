@@ -6,7 +6,7 @@ import { COW_SDK, NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { UTCTimestamp } from 'lightweight-charts'
-import { isNativeToken } from 'utils'
+import { getPercentageDifference, isNativeToken } from 'utils'
 
 export function useGetTokens(networkId: Network | undefined, tableState: TableState): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)
@@ -265,10 +265,6 @@ export type TokenData = {
   lastDayPricePercentageDifference?: number
   lastWeekPricePercentageDifference?: number
   lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
-}
-
-function getPercentageDifference(a: number, b: number): number {
-  return a ? ((a - b) / a) * 100 : 0
 }
 
 function lastHoursTimestamp(n: number): string {
