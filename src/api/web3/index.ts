@@ -52,7 +52,7 @@ function infuraProvider(networkId: Network): string {
   }
 
   const network = getNetworkFromId(networkId).toLowerCase()
-  console.log({ network })
+
   if (isWebsocketConnection()) {
     return `wss://${network}.infura.io/ws/v3/${INFURA_ID}`
   } else {
