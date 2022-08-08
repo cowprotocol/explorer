@@ -78,13 +78,12 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
             font-size: 0.71em; /* Intentional use of "em" to be relative to parent's font size */
             color: ${theme.green};
             min-height: 1.35rem;
+            background: ${theme.greenOpacity};
             ${tagPosition === 'bottom'
               ? `
-              background: linear-gradient(0deg, rgba(0, 216, 151, 0.2) 60%, rgba(217, 109, 73, 0.2) 100%);
               border-radius: 0 0 0.4rem 0.4rem;
             `
               : `
-              background: linear-gradient(270deg, rgba(0, 216, 151, 0.2) 60%, rgba(217, 109, 73, 0.2) 100%);
               border-radius: 0 0.4rem 0.4rem 0;
               padding: 0 0.6rem;
               font-size: 0.78em;
