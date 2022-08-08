@@ -52,7 +52,7 @@ function infuraProvider(networkId: Network): string {
   }
 
   const network = getNetworkFromId(networkId).toLowerCase()
-
+  console.log({ network })
   if (isWebsocketConnection()) {
     return `wss://${network}.infura.io/ws/v3/${INFURA_ID}`
   } else {
@@ -88,6 +88,7 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
   switch (networkId) {
     case Network.MAINNET:
     case Network.RINKEBY:
+    case Network.GOERLI:
       return infuraProvider(networkId)
     case Network.GNOSIS_CHAIN:
       return 'https://rpc.gnosischain.com/'
