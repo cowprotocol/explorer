@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowSdk } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
@@ -228,19 +228,7 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
   },
 )
 
-export const COW_SDK: Record<SupportedChainId, CowSdk<SupportedChainId>> = {
-  [Network.MAINNET]: new CowSdk(Network.MAINNET),
-  [Network.RINKEBY]: new CowSdk(Network.RINKEBY),
-  [Network.GOERLI]: new CowSdk(Network.GOERLI),
-  [Network.GNOSIS_CHAIN]: new CowSdk(Network.GNOSIS_CHAIN),
-}
-
-export const COW_SDK_DEV: Record<SupportedChainId, CowSdk<SupportedChainId>> = {
-  [Network.MAINNET]: new CowSdk(Network.MAINNET, { env: 'staging' }),
-  [Network.RINKEBY]: new CowSdk(Network.RINKEBY, { env: 'staging' }),
-  [Network.GOERLI]: new CowSdk(Network.GOERLI, { env: 'staging' }),
-  [Network.GNOSIS_CHAIN]: new CowSdk(Network.GNOSIS_CHAIN, { env: 'staging' }),
-}
+export const COW_SDK = new CowSdk(Network.MAINNET)
 
 export const ETH: TokenErc20 = {
   name: 'ETH',
