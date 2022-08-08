@@ -13,6 +13,7 @@ const ERROR_MESSAGES = {
   REQUIRED: 'Required field.',
   INVALID_ADDRESS: 'This is not an address.',
   ONLY_DIGITS: 'Only digits are allowed.',
+  INVALID_APPDATA: 'This is not a valid AppData hash.',
 }
 
 export const INITIAL_FORM_VALUES = {
@@ -100,6 +101,9 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
 
       if (error.property === '.metadata.quote.slippageBips') {
         error.message = ERROR_MESSAGES.ONLY_DIGITS
+      }
+      if (error.property === '.appData') {
+        error.message = ERROR_MESSAGES.INVALID_APPDATA
       }
     }
 
@@ -198,13 +202,14 @@ export const ipfsSchema: JSONSchema7 = {
 export const decodeAppDataSchema: JSONSchema7 = {
   type: 'object',
   title: 'AppData Decode',
-  description: 'This is a description',
+  description: 'Decode a text file document from AppData hash',
   required: ['appData'],
   properties: {
     appData: {
       type: 'string',
       title: 'AppData',
       description: 'Add your AppData hash',
+      pattern: '^0x[a-fA-F0-9]{64}',
     },
   },
 }
