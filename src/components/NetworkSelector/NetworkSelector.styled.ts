@@ -4,7 +4,7 @@ import { COLOURS } from 'styles'
 import { media } from 'theme/styles/media'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 
-const { fadedGreyishWhiteOpacity, white, gnosisChainColor } = COLOURS
+const { fadedGreyishWhiteOpacity, white, gnosisChainColor, goerliColor } = COLOURS
 
 export const SelectorContainer = styled.div`
   display: flex;
@@ -59,7 +59,7 @@ export const Option = styled.div`
     border-radius: 100%;
     margin-right: 9px;
     &.goerli {
-      background: ${({ theme }): string => theme.yellow2};
+      background: ${(): string => goerliColor};
     }
     &.rinkeby {
       background: ${({ theme }): string => theme.yellow4};
@@ -85,7 +85,7 @@ export const NetworkLabel = styled.span`
   letter-spacing: 0.1rem;
 
   &.goerli {
-    background: ${({ theme }): string => theme.yellow2};
+    background: ${(): string => goerliColor};
     color: ${({ theme }): string => theme.black};
   }
 
