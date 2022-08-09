@@ -58,7 +58,7 @@ export const Option = styled.div`
     height: 8px;
     border-radius: 100%;
     margin-right: 9px;
-    &.goerli {
+    &.görli {
       background: ${(): string => goerliColor};
     }
     &.rinkeby {
@@ -84,7 +84,7 @@ export const NetworkLabel = styled.span`
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
 
-  &.goerli {
+  &.görli {
     background: ${(): string => goerliColor};
     color: ${({ theme }): string => theme.black};
   }
