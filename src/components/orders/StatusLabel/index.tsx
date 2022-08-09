@@ -171,7 +171,7 @@ function StatusIcon({ status }: DisplayProps): JSX.Element {
   return <StyledFAIcon icon={icon} spin={isOpen} />
 }
 
-export type Props = DisplayProps & { partiallyFilled: boolean; partialTagPosition?: PartiallyTagPosition }
+export type Props = { status: OrderStatus; partiallyFilled: boolean; partialTagPosition?: PartiallyTagPosition }
 
 export function StatusLabel(props: Props): JSX.Element {
   const { status, partiallyFilled: partiallyFilled, partialTagPosition = 'bottom' } = props
