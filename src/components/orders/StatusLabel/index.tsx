@@ -43,12 +43,14 @@ function setStatusColors({
       break
     case 'partially filled':
       return css`
-        background: linear-gradient(270deg, rgba(0, 216, 151, 0.1) 0%, rgba(217, 109, 73, 0.1) 100%);
+        background: ${theme.greenOpacity};
         font-size: 1.16rem;
         color: ${theme.green};
         display: flex;
         align-items: flex-start;
+        margin-right: -0.44rem;
         .svg-inline--fa {
+          margin-left: -0.4rem;
           font-size: 1.1rem;
           margin-right: 0.5rem;
         }
