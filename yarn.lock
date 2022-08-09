@@ -1279,10 +1279,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.3.1.tgz#a812b27bdd0c046ab730eb24911ef7c641ed0df8"
   integrity sha512-p93xODog3XG5eSDU5od1ERvYf7YIyXd7USknKcsWnka5VN5mDDjqjCKTLw8EoZdrCIEpf6fGd8At2nv+MsvNqA==
 
-"@cowprotocol/cow-sdk@1.0.0-RC.3":
-  version "1.0.0-RC.3"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-1.0.0-RC.3.tgz#b6bf78cbb6e66e95804679ab5b92f49da1a82d05"
-  integrity sha512-Jef69munoKMBmMOgZ+5P9oa6VzDHO61Bn61banmtPhVfaRwiC9GpkySFH9Q/5D2eBmQssP0cAmQSShe3nDchbw==
+"@cowprotocol/cow-sdk@1.0.0-RC.4":
+  version "1.0.0-RC.4"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-1.0.0-RC.4.tgz#cf34cd013cfdec3757a0ea412c22b6ffae9bc72e"
+  integrity sha512-iqygyhSzL6Ai/4y792c+czit88eKp8mgoF3F64WMKKo5kh/kZOkm3sbudz+i//hrP5ouDUOz5FbJBRDajT9wCw==
   dependencies:
     "@cowprotocol/app-data" "^0.0.1-RC.3"
     "@cowprotocol/contracts" "^1.3.1"
