@@ -15,6 +15,9 @@ import { OrderStatus } from 'api/operator'
 
 type CustomOrderStatus = OrderStatus | 'partially filled'
 type DisplayProps = { status: CustomOrderStatus }
+function canBePartiallyFilled(status: string): status is OrderStatus {
+  return ['open', 'cancelled', 'cancelling'].includes(status) // excluding 'expired' because it will have own statusLabel
+}
 
 function setStatusColors({
   theme,
@@ -177,7 +180,7 @@ export function StatusLabel(props: Props): JSX.Element {
   const { status, partiallyFilled: partiallyFilled, partialTagPosition = 'bottom' } = props
   const shimming = status === 'signing' || status === 'cancelling'
   const isExpired = status === 'expired'
-  const tagPartiallyFilled = !isExpired && partiallyFilled
+  const tagPartiallyFilled = partiallyFilled && canBePartiallyFilled(status)
   const _status = isExpired && partiallyFilled ? 'partially filled' : status
 
   return (
