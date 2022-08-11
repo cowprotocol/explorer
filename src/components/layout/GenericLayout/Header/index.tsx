@@ -32,6 +32,8 @@ const Logo = styled(Link)`
   display: flex;
   align-content: center;
   justify-content: center;
+  width: 12rem;
+  height: 3.9rem;
 
   &:hover {
     text-decoration: none;
@@ -42,8 +44,8 @@ const Logo = styled(Link)`
     background: url(${LogoImage}) no-repeat center/contain;
     border: 0;
     object-fit: contain;
-    width: inherit;
-    height: inherit;
+    width: 100%;
+    height: 100%;
     margin: auto;
   }
 
