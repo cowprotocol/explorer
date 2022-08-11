@@ -253,7 +253,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     }
     setAppDataLoading(true)
     try {
-      const decodedAppData = await getDecodedAppData(appData.toString(), network || undefined)
+      const decodedAppData = await getDecodedAppData(appData.toString())
       setDecodedAppData(decodedAppData)
     } catch (e) {
       setDecodedAppData(undefined)

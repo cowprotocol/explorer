@@ -14,7 +14,7 @@ export const useAppData = (
     async function getAppDataDoc(): Promise<void> {
       setLoading(true)
       try {
-        const decodedAppData = await getDecodedAppData(appDataHash, network)
+        const decodedAppData = await getDecodedAppData(appDataHash)
         setAppDataDoc(decodedAppData)
       } catch (e) {
         const msg = `Failed to fetch appData document`
@@ -30,11 +30,8 @@ export const useAppData = (
   return { isLoading, appDataDoc }
 }
 
-export const getDecodedAppData = (
-  appDataHash: string,
-  networkId = Network.MAINNET,
-): Promise<void | AnyAppDataDocVersion> | undefined => {
-  return COW_SDK[networkId]?.metadataApi.decodeAppData(appDataHash)
+export const getDecodedAppData = (appDataHash: string): Promise<void | AnyAppDataDocVersion> => {
+  return COW_SDK.metadataApi.decodeAppData(appDataHash)
 }
 
 export const getCidHashFromAppData = (
