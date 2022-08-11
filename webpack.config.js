@@ -77,7 +77,7 @@ module.exports = getWebpackConfig({
   },
   defineVars: {
     CONFIG: JSON.stringify(config),
-    CONTRACT_VERSION: JSON.stringify(require('@gnosis.pm/gp-v2-contracts/package.json').version),
+    CONTRACT_VERSION: JSON.stringify(require('@cowprotocol/contracts/package.json').version),
     DEX_JS_VERSION: JSON.stringify(require('@gnosis.pm/dex-js/package.json').version),
   },
 })

@@ -5,7 +5,7 @@ import { Order, RawOrder, RawTrade, Trade } from 'api/operator'
 import { ZERO_BIG_NUMBER } from 'const'
 
 import { USDT, WETH } from './erc20s'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export const RAW_ORDER = {
   creationDate: '2021-01-20T23:15:07.892538607Z',

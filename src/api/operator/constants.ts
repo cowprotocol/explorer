@@ -1,4 +1,4 @@
-import { GPv2Settlement, GPv2VaultRelayer } from '@gnosis.pm/gp-v2-contracts/networks.json'
+import { GPv2Settlement, GPv2VaultRelayer } from '@cowprotocol/contracts/networks.json'
 import { Network } from 'types'
 
 // TODO: When contracts are deployed, we can load this from the NPM package

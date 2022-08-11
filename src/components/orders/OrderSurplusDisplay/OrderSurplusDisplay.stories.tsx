@@ -11,7 +11,7 @@ import { ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { RICH_ORDER } from '../../../../test/data'
 import { Order } from 'api/operator'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export default {
   title: 'orders/OrderSurplusDisplay',

@@ -1,4 +1,4 @@
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 import { RawOrder, RawOrderStatusFromAPI } from 'api/operator'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
