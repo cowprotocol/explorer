@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { useNetworkId } from 'state/network'
 import { COW_SDK } from 'const'
-import { Network } from 'types'
 
 export const useAppData = (
   appDataHash: string,
@@ -34,9 +33,6 @@ export const getDecodedAppData = (appDataHash: string): Promise<void | AnyAppDat
   return COW_SDK.metadataApi.decodeAppData(appDataHash)
 }
 
-export const getCidHashFromAppData = (
-  appDataHash: string,
-  networkId = Network.MAINNET,
-): Promise<string | void> | undefined => {
-  return COW_SDK[networkId]?.metadataApi.appDataHexToCid(appDataHash)
+export const getCidHashFromAppData = (appDataHash: string): Promise<string | void> => {
+  return COW_SDK.metadataApi.appDataHexToCid(appDataHash)
 }

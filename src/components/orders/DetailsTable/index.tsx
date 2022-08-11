@@ -26,7 +26,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
-import { useNetworkId } from 'state/network'
 import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 
@@ -225,12 +224,11 @@ export function DetailsTable(props: Props): JSX.Element | null {
   const [ipfsUri, setIpfsUri] = useSafeState<string>('')
 
   const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
-  const network = useNetworkId()
 
   useEffect(() => {
     const fetchIPFS = async (): Promise<void> => {
       try {
-        const decodedAppDataHex = await getCidHashFromAppData(appData.toString(), network || undefined)
+        const decodedAppDataHex = await getCidHashFromAppData(appData.toString())
         setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${decodedAppDataHex}`)
       } catch {
         setAppDataError(true)
@@ -238,7 +236,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     }
 
     fetchIPFS()
-  }, [appData, network, setAppDataError, setIpfsUri])
+  }, [appData, setAppDataError, setIpfsUri])
 
   if (!buyToken || !sellToken) {
     return null
