@@ -273,11 +273,12 @@ export function DetailsTable(props: Props): JSX.Element | null {
             appendMessage={false}
           />
         )
+      const _appData = JSON.stringify(decodedAppData, null, 2)
       return (
         <RowWithCopyButton
-          textToCopy={JSON.stringify(decodedAppData, null, 2)}
+          textToCopy={_appData}
           onCopy={(): void => onCopy('appDataDecoded')}
-          contentsToDisplay={<pre className="json-formatter">{JSON.stringify(decodedAppData, null, 2)}</pre>}
+          contentsToDisplay={<pre className="json-formatter">{_appData}</pre>}
         />
       )
     }
