@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
 import { IpfsHashInfo } from '@cowprotocol/cow-sdk'
 import { COW_SDK, DEFAULT_IPFS_READ_URI } from 'const'
-import { useNetworkId } from 'state/network'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
@@ -14,7 +13,7 @@ import {
   getSchema,
   transformErrors,
   handleErrors,
-  deletePropertyPath,
+  handleFormatData,
   ipfsSchema,
   uiSchema,
   ipfsUiSchema,
@@ -23,6 +22,7 @@ import {
 } from './config'
 import { IpfsWrapper } from './styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
+import { Network } from 'types'
 
 const FormPage: React.FC = () => {
   const [schema, setSchema] = useState<JSONSchema7>({})
@@ -38,8 +38,6 @@ const FormPage: React.FC = () => {
   const [ipfsCredentials, setIpfsCredentials] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>({})
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(false)
   const [error, setError] = useState<string>()
-
-  const network = useNetworkId()
   const formRef = React.useRef<Form<FormProps>>(null)
   const ipfsFormRef = React.useRef<Form<FormProps>>(null)
 
@@ -57,58 +55,44 @@ const FormPage: React.FC = () => {
     setInvalidFormDataAttempted((prevState) => ({ ...prevState, ...data }))
   }
 
-  const resetFormFields = (form: string): void => {
-    setDisabledIPFS(true)
-    setIpfsCredentials({})
-    toggleInvalid({ ipfs: false })
-    if (form === 'appData') {
-      setDisabledAppData(true)
-    }
-  }
+  const handleMetadataErrors = useCallback(
+    (_: FormProps, errors: FormValidation): FormValidation => handleErrors(formRef, errors, setDisabledAppData),
+    [],
+  )
 
-  const handleFormatData = (formData: any): any => {
-    if (!formData.metadata || !Object.keys(formData.metadata).length) return formData
-    const formattedData = structuredClone(formData)
-    const isReferrerEnabled = formattedData.metadata.referrer.enableReferrer
-    const isQuoteEnabled = formattedData.metadata.quote.enableQuote
+  const handleIPFSErrors = useCallback(
+    (_: FormProps, errors: FormValidation): FormValidation => handleErrors(ipfsFormRef, errors, setDisabledIPFS),
+    [],
+  )
 
-    deletePropertyPath(formattedData, 'metadata.referrer.enableReferrer')
-    deletePropertyPath(formattedData, 'metadata.quote.enableQuote')
+  const handleOnChange = useCallback(
+    ({ formData }: FormProps): void => {
+      const resetFormFields = (form: string): void => {
+        setDisabledIPFS(true)
+        setIpfsCredentials({})
+        toggleInvalid({ ipfs: false })
+        if (form === 'appData') {
+          setDisabledAppData(true)
+        }
+      }
+      setAppDataForm(formData)
+      if (ipfsHashInfo) {
+        setIpfsHashInfo(undefined)
+        setIsDocUploaded(false)
+        resetFormFields('appData')
+        setError(undefined)
+      }
+      if (JSON.stringify(handleFormatData(formData)) !== JSON.stringify(INITIAL_FORM_VALUES)) {
+        setDisabledAppData(false)
+      }
+    },
+    [ipfsHashInfo],
+  )
 
-    if (!isReferrerEnabled) {
-      deletePropertyPath(formattedData, 'metadata.referrer')
-    }
-    if (!isQuoteEnabled) {
-      deletePropertyPath(formattedData, 'metadata.quote')
-    }
-
-    return formattedData
-  }
-
-  const handleMetadataErrors = (_: FormProps, errors: FormValidation): FormValidation =>
-    handleErrors(formRef, errors, setDisabledAppData)
-
-  const handleIPFSErrors = (_: FormProps, errors: FormValidation): FormValidation =>
-    handleErrors(ipfsFormRef, errors, setDisabledIPFS)
-
-  const handleOnChange = ({ formData }: FormProps): void => {
-    setAppDataForm(formData)
-    if (ipfsHashInfo) {
-      setIpfsHashInfo(undefined)
-      setIsDocUploaded(false)
-      resetFormFields('appData')
-      setError(undefined)
-    }
-    if (JSON.stringify(handleFormatData(formData)) !== JSON.stringify(INITIAL_FORM_VALUES)) {
-      setDisabledAppData(false)
-    }
-  }
-
-  const onSubmit = async ({ formData }: FormProps): Promise<void> => {
-    if (!network) return
+  const onSubmit = useCallback(async ({ formData }: FormProps): Promise<void> => {
     setIsLoading(true)
     try {
-      const hashInfo = await COW_SDK[network]?.metadataApi.calculateAppDataHash(handleFormatData(formData))
+      const hashInfo = await COW_SDK[Network.MAINNET]?.metadataApi.calculateAppDataHash(handleFormatData(formData))
       setIpfsHashInfo(hashInfo)
     } catch (e) {
       setError(e.message)
@@ -116,33 +100,36 @@ const FormPage: React.FC = () => {
       setIsLoading(false)
       toggleInvalid({ appData: true })
     }
-  }
+  }, [])
 
-  const handleIPFSOnChange = ({ formData: ipfsData }: FormProps): void => {
+  const handleIPFSOnChange = useCallback(({ formData: ipfsData }: FormProps): void => {
     setIpfsCredentials(ipfsData)
     if (JSON.stringify(ipfsData) !== JSON.stringify({})) {
       setDisabledIPFS(false)
     }
-  }
+  }, [])
 
-  const onUploadToIPFS = async ({ formData }: FormProps): Promise<void> => {
-    if (!network || !ipfsHashInfo) return
-    setIsLoading(true)
-    try {
-      await COW_SDK[network]?.updateContext({ ipfs: formData })
-      await COW_SDK[network]?.metadataApi.uploadMetadataDocToIpfs(handleFormatData(appDataForm))
-      setIsDocUploaded(true)
-    } catch (e) {
-      if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
-        e.message = 'Invalid API keys provided.'
+  const onUploadToIPFS = useCallback(
+    async ({ formData }: FormProps): Promise<void> => {
+      if (!ipfsHashInfo) return
+      setIsLoading(true)
+      try {
+        await COW_SDK[Network.MAINNET]?.updateContext({ ipfs: formData })
+        await COW_SDK[Network.MAINNET]?.metadataApi.uploadMetadataDocToIpfs(handleFormatData(appDataForm))
+        setIsDocUploaded(true)
+      } catch (e) {
+        if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
+          e.message = 'Invalid API keys provided.'
+        }
+        setError(e.message)
+        setIsDocUploaded(false)
+      } finally {
+        setIsLoading(false)
+        toggleInvalid({ ipfs: true })
       }
-      setError(e.message)
-      setIsDocUploaded(false)
-    } finally {
-      setIsLoading(false)
-      toggleInvalid({ ipfs: true })
-    }
-  }
+    },
+    [appDataForm, ipfsHashInfo],
+  )
 
   return (
     <>

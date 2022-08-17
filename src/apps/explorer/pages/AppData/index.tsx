@@ -26,7 +26,7 @@ const tabItems = (): TabItemInterface[] => {
   return [
     {
       id: TabView.FORM,
-      tab: <TabIcon title="Form" iconFontName={faListUl} />,
+      tab: <TabIcon title="Encode" iconFontName={faListUl} />,
       content: <FormPage />,
     },
     {

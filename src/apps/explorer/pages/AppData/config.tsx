@@ -28,11 +28,41 @@ export const INVALID_IPFS_CREDENTIALS = [
 
 export type FormProps = Record<string, any>
 
+const APP_VERSION = {
+  appData: LATEST_APP_DATA_VERSION,
+  quote: LATEST_QUOTE_METADATA_VERSION,
+  referrer: LATEST_REFERRER_METADATA_VERSION,
+}
+
 export const getSchema = async (): Promise<JSONSchema7> => {
   const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)).default as JSONSchema7
   deleteAllPropertiesByName(latestSchema, 'examples')
   deleteAllPropertiesByName(latestSchema, '$id')
   return formatSchema(latestSchema)
+}
+
+const setDependencies = (formattedSchema: JSONSchema7, field: string, dependencies: { [key: string]: any }): void => {
+  if (formattedSchema?.properties?.metadata['properties'][field]) {
+    const requiredFields = formattedSchema.properties.metadata['properties'][field].required
+    deletePropertyPath(formattedSchema, `properties.metadata.properties.${field}.required`)
+
+    formattedSchema.properties.metadata['properties'][field].properties.version['readOnly'] = true
+    formattedSchema.properties.metadata['properties'][field].properties.version['default'] = APP_VERSION[field]
+
+    const properties = formattedSchema.properties.metadata['properties'][field].properties
+    const [fieldKey] = Object.keys(dependencies)
+    formattedSchema.properties.metadata['properties'][field].properties = {
+      [fieldKey]: { type: 'boolean', title: 'Enable/Disable' },
+    }
+    dependencies[fieldKey].oneOf[0] = {
+      properties: {
+        ...dependencies[fieldKey].oneOf[0].properties,
+        ...properties,
+      },
+      required: requiredFields,
+    }
+    formattedSchema.properties.metadata['properties'][field].dependencies = dependencies
+  }
 }
 
 const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
@@ -43,51 +73,29 @@ const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
     formattedSchema.properties.version['default'] = LATEST_APP_DATA_VERSION
   }
 
-  if (formattedSchema?.properties?.metadata['properties'].quote) {
-    const requiredFields = formattedSchema.properties.metadata['properties'].quote.required
-    deletePropertyPath(formattedSchema, 'properties.metadata.properties.quote.required')
-
-    formattedSchema.properties.metadata['properties'].quote.properties.version['readOnly'] = true
-    formattedSchema.properties.metadata['properties'].quote.properties.version['default'] =
-      LATEST_QUOTE_METADATA_VERSION
-
-    formattedSchema.properties.version['default'] = LATEST_APP_DATA_VERSION
-    const quoteProperties = formattedSchema.properties.metadata['properties'].quote.properties
-    formattedSchema.properties.metadata['properties'].quote.properties = {
-      enableQuote: { type: 'boolean', title: 'Enable/Disable' },
-    }
-    quoteDependencies.enableQuote.oneOf[0] = {
-      properties: {
-        ...quoteDependencies.enableQuote.oneOf[0].properties,
-        ...quoteProperties,
-      },
-      required: requiredFields,
-    }
-    formattedSchema.properties.metadata['properties'].quote.dependencies = quoteDependencies
-  }
-
-  if (formattedSchema?.properties?.metadata['properties'].referrer) {
-    const requiredFields = formattedSchema.properties.metadata['properties'].referrer.required
-    deletePropertyPath(formattedSchema, 'properties.metadata.properties.referrer.required')
-
-    formattedSchema.properties.metadata['properties'].referrer.properties.version['readOnly'] = true
-    formattedSchema.properties.metadata['properties'].referrer.properties.version['default'] =
-      LATEST_REFERRER_METADATA_VERSION
-    const referrerProperties = formattedSchema.properties.metadata['properties'].referrer.properties
-    formattedSchema.properties.metadata['properties'].referrer.properties = {
-      enableReferrer: { type: 'boolean', title: 'Enable/Disable' },
-    }
-    referrerDependencies.enableReferrer.oneOf[0] = {
-      properties: {
-        ...referrerDependencies.enableReferrer.oneOf[0].properties,
-        ...referrerProperties,
-      },
-      required: requiredFields,
-    }
-    formattedSchema.properties.metadata['properties'].referrer.dependencies = referrerDependencies
-  }
+  setDependencies(formattedSchema, 'quote', quoteDependencies)
+  setDependencies(formattedSchema, 'referrer', referrerDependencies)
 
   return formattedSchema
+}
+
+export const handleFormatData = (formData: FormProps): any => {
+  if (!formData.metadata || !Object.keys(formData.metadata).length) return formData
+  const formattedData = structuredClone(formData)
+  const isReferrerEnabled = formattedData.metadata.referrer.enableReferrer
+  const isQuoteEnabled = formattedData.metadata.quote.enableQuote
+
+  deletePropertyPath(formattedData, 'metadata.referrer.enableReferrer')
+  deletePropertyPath(formattedData, 'metadata.quote.enableQuote')
+
+  if (!isReferrerEnabled) {
+    deletePropertyPath(formattedData, 'metadata.referrer')
+  }
+  if (!isQuoteEnabled) {
+    deletePropertyPath(formattedData, 'metadata.quote')
+  }
+
+  return formattedData
 }
 
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
