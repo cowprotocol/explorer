@@ -35,10 +35,12 @@ const Wrapper = styled.div`
 export function FilledProgress(props: Props): JSX.Element {
   const {
     order: {
+      executedFeeAmount,
       filledAmount,
       filledPercentage,
       fullyFilled,
       kind,
+      feeAmount,
       sellAmount,
       buyAmount,
       executedBuyAmount,
@@ -63,7 +65,7 @@ export function FilledProgress(props: Props): JSX.Element {
   if (kind === 'sell') {
     mainToken = sellToken
     mainAddress = sellTokenAddress
-    mainAmount = sellAmount
+    mainAmount = sellAmount.plus(feeAmount)
     swappedToken = buyToken
     swappedAddress = buyTokenAddress
     swappedAmount = executedBuyAmount
@@ -82,11 +84,11 @@ export function FilledProgress(props: Props): JSX.Element {
   const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
-  const formattedFilledAmount = formatSmartMaxPrecision(filledAmount, mainToken)
+  const formattedFilledAmount = formatSmartMaxPrecision(filledAmount.plus(executedFeeAmount), mainToken)
   const formattedMainAmount = formatSmartMaxPrecision(mainAmount, mainToken)
   const formattedSwappedAmount = formatSmartMaxPrecision(swappedAmount, swappedToken)
 
-  const formattedPercentage = filledPercentage.times('100').toString(10)
+  const formattedPercentage = filledPercentage.times('100').decimalPlaces(2).toString()
 
   return (
     <Wrapper>

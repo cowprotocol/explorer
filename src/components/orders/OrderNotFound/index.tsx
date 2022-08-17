@@ -129,7 +129,7 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
       </Content>
       {showLinkData && (
         <LinkData>
-          This is not a CowProtocol transaction. See it on <BlockExplorerLink {...(data as never)} />
+          This is not a CoW Protocol transaction. See it on <BlockExplorerLink {...(data as never)} />
         </LinkData>
       )}
     </>
