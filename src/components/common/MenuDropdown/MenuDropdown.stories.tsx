@@ -3,19 +3,45 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
-import { Menu, MenuProps } from '.'
-import { ExternalLink } from 'components/analytics/ExternalLink'
+import MenuDropdown, { MenuProps } from '.'
+// import { ExternalLink } from 'components/analytics/ExternalLink'
 
 export default {
   title: 'Common/Menu',
-  component: Menu,
+  component: MenuDropdown,
   decorators: [GlobalStyles, ThemeToggler],
 } as Meta
 
+const itemContent = {
+  kind: 'DROP_DOWN',
+  title: 'More',
+  items: [
+    {
+      sectionTitle: 'OVERVIEW',
+      links: [
+        {
+          title: 'Overview',
+          url: 'https://cow.fi',
+          /* icon?: string, // If icon uses a regular <img /> tag */
+          /*  iconSVG?: string // If icon is a <SVG> inline component */
+        },
+        {
+          title: 'Overview2',
+          url: 'https://cow.fi',
+        },
+        {
+          title: 'Overview3',
+          url: 'https://cow.fi',
+        },
+      ],
+    },
+  ],
+}
+
 const Template: Story<MenuProps> = (args) => (
   <div>
-    <Menu {...args}>
-      <li>
+    <MenuDropdown itemContent={itemContent} {...args} />
+    {/* <li>
         <ExternalLink target={'_blank'} href={'https://cow.fi'}>
           CoW Protocol
         </ExternalLink>
@@ -37,8 +63,7 @@ const Template: Story<MenuProps> = (args) => (
       </li>
       <li>
         <a>App Data</a>
-      </li>
-    </Menu>
+      </li> */}
   </div>
 )
 
