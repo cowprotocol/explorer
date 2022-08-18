@@ -76,7 +76,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
     ${({ partialFill, theme, tagPosition, filledPercentage }): FlattenSimpleInterpolation | null =>
       partialFill
         ? css`
-            content: ${`"${filledPercentage} filled"`};
+            content: ${tagPosition === 'bottom' ? `"${filledPercentage} filled"` : `"Partially filled"`};
             display: flex;
             justify-content: center;
             align-content: center;
@@ -194,7 +194,7 @@ export function StatusLabel({
   const customizeStatus = status === 'expired' || status === 'cancelled'
   const tagPartiallyFilled = partiallyFilled && canBePartiallyFilled(status)
   const formattedPercentage = filledPercentage !== undefined && formatPercentage(filledPercentage)
-  const _status = customizeStatus && partiallyFilled ? 'partially filled' : status
+  const _status: CustomOrderStatus = customizeStatus && partiallyFilled ? 'partially filled' : status
 
   return (
     <Wrapper
