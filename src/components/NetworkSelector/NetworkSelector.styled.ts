@@ -4,7 +4,7 @@ import { COLOURS } from 'styles'
 import { media } from 'theme/styles/media'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
 
-const { fadedGreyishWhiteOpacity, white, gnosisChainColor } = COLOURS
+const { fadedGreyishWhiteOpacity, white, gnosisChainColor, goerliColor } = COLOURS
 
 export const SelectorContainer = styled.div`
   display: flex;
@@ -22,7 +22,7 @@ export const OptionsContainer = styled.div<{ width: number }>`
   z-index: 1;
   margin: 0 auto;
   width: ${(props: { width: number }): string => `${184 + props.width}px`};
-  height: 128px;
+  height: 170px;
   left: 15px;
   top: 54px;
   background: ${({ theme }): string => theme.bg1};
@@ -58,6 +58,9 @@ export const Option = styled.div`
     height: 8px;
     border-radius: 100%;
     margin-right: 9px;
+    &.görli {
+      background: ${(): string => goerliColor};
+    }
     &.rinkeby {
       background: ${({ theme }): string => theme.yellow4};
     }
@@ -80,6 +83,11 @@ export const NetworkLabel = styled.span`
   text-transform: uppercase;
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
+
+  &.görli {
+    background: ${(): string => goerliColor};
+    color: ${({ theme }): string => theme.black};
+  }
 
   &.rinkeby {
     background: ${({ theme }): string => theme.yellow4};

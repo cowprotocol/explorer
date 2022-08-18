@@ -12,9 +12,9 @@ import {
   LogicalRange,
 } from 'lightweight-charts'
 
-import { formatSmart } from 'utils'
+import { formatSmart, getPercentageDifference } from 'utils'
 import Spinner from 'components/common/Spinner'
-import { calcDiff, getColorBySign } from 'components/common/Card/card.utils'
+import { getColorBySign } from 'components/common/Card/card.utils'
 import {
   ChartSkeleton,
   WrapperChart,
@@ -192,7 +192,7 @@ export function VolumeChart({
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [chartCreated, setChartCreated] = useState<IChartApi | null | undefined>()
   const theme = useTheme()
-  const diffPercentageVolume = currentVolume && changedVolume && calcDiff(currentVolume, changedVolume)
+  const diffPercentageVolume = currentVolume && changedVolume && getPercentageDifference(currentVolume, changedVolume)
   const captionNameColor = getColorBySign(diffPercentageVolume || 0)
   const [crossHairData, setCrossHairData] = useState<CrossHairData | null>(null)
   const network = useNetworkId()

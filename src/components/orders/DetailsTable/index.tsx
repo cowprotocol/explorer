@@ -26,8 +26,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
-import { useNetworkId } from 'state/network'
-import { AppDataDoc } from '@cowprotocol/cow-sdk'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 
 const Table = styled(SimpleTable)`
@@ -221,16 +220,15 @@ export function DetailsTable(props: Props): JSX.Element | null {
   } = order
   const [appDataLoading, setAppDataLoading] = useSafeState(false)
   const [appDataError, setAppDataError] = useSafeState(false)
-  const [decodedAppData, setDecodedAppData] = useSafeState<AppDataDoc | void | undefined>(undefined)
+  const [decodedAppData, setDecodedAppData] = useSafeState<AnyAppDataDocVersion | void | undefined>(undefined)
   const [ipfsUri, setIpfsUri] = useSafeState<string>('')
 
   const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
-  const network = useNetworkId()
 
   useEffect(() => {
     const fetchIPFS = async (): Promise<void> => {
       try {
-        const decodedAppDataHex = await getCidHashFromAppData(appData.toString(), network || undefined)
+        const decodedAppDataHex = await getCidHashFromAppData(appData.toString())
         setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${decodedAppDataHex}`)
       } catch {
         setAppDataError(true)
@@ -238,7 +236,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     }
 
     fetchIPFS()
-  }, [appData, network, setAppDataError, setIpfsUri])
+  }, [appData, setAppDataError, setIpfsUri])
 
   if (!buyToken || !sellToken) {
     return null
@@ -253,7 +251,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     }
     setAppDataLoading(true)
     try {
-      const decodedAppData = await getDecodedAppData(appData.toString(), network || undefined)
+      const decodedAppData = await getDecodedAppData(appData.toString())
       setDecodedAppData(decodedAppData)
     } catch (e) {
       setDecodedAppData(undefined)
@@ -275,11 +273,12 @@ export function DetailsTable(props: Props): JSX.Element | null {
             appendMessage={false}
           />
         )
+      const _appData = JSON.stringify(decodedAppData, null, 2)
       return (
         <RowWithCopyButton
-          textToCopy={JSON.stringify(decodedAppData, null, 2)}
+          textToCopy={_appData}
           onCopy={(): void => onCopy('appDataDecoded')}
-          contentsToDisplay={<pre className="json-formatter">{JSON.stringify(decodedAppData, null, 2)}</pre>}
+          contentsToDisplay={<pre className="json-formatter">{_appData}</pre>}
         />
       )
     }

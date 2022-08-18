@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CowSdk } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
@@ -224,38 +224,11 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
     [Network.MAINNET]: {},
     [Network.RINKEBY]: {},
     [Network.GNOSIS_CHAIN]: {},
+    [Network.GOERLI]: {},
   },
 )
 
-export const COW_SDK = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
-  Record<number, CowSdk<SupportedChainId> | null>
->((acc, networkId) => {
-  try {
-    acc[networkId] = new CowSdk(networkId)
-  } catch (error) {
-    console.error('Instantiating CowSdk failed', error)
-  }
-
-  console.info(`CowSdk initialized on chain ${networkId}`)
-
-  return acc
-}, {})
-
-export const COW_SDK_DEV = [Network.MAINNET, Network.RINKEBY, Network.GNOSIS_CHAIN].reduce<
-  Record<number, CowSdk<SupportedChainId> | null>
->((acc, networkId) => {
-  try {
-    acc[networkId] = new CowSdk(networkId, {
-      isDevEnvironment: true,
-    })
-  } catch (error) {
-    console.error('Instantiating CowSdk in development mode failed', error)
-  }
-
-  console.info(`CowSdk in development mode initialized on chain ${networkId}`)
-
-  return acc
-}, {})
+export const COW_SDK = new CowSdk(Network.MAINNET)
 
 export const ETH: TokenErc20 = {
   name: 'ETH',
@@ -274,6 +247,7 @@ export const XDAI: TokenErc20 = {
 export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
   '1': ETH,
   '4': ETH,
+  '5': ETH,
   '100': XDAI,
 }
 

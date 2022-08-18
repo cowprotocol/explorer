@@ -25,6 +25,7 @@ function _urlAvailableNetwork(): Partial<Record<Network, string>> {
     [Network.MAINNET]: urlNetwork(Network.MAINNET),
     [Network.RINKEBY]: urlNetwork(Network.RINKEBY),
     [Network.GNOSIS_CHAIN]: urlNetwork(Network.GNOSIS_CHAIN),
+    [Network.GOERLI]: urlNetwork(Network.GOERLI),
   }
 }
 

@@ -7,7 +7,7 @@ import { RawOrder } from 'api/operator'
 import { getOrderSurplus } from 'utils'
 
 import { RAW_ORDER } from '../../data'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 const ZERO_DOT_ZERO_ONE = new BigNumber('0.01')
 const TWENTY_PERCENT = new BigNumber('0.2')

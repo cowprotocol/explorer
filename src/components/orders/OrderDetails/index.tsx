@@ -67,7 +67,6 @@ export const OrderDetails: React.FC<Props> = (props) => {
       {order && areTokensLoaded && <DetailsTable order={{ ...order, txHash }} areTradesLoading={areTradesLoading} />}
       {/* TODO: add fills tab for partiallyFillable orders */}
       {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-      {/* TODO: create common loading indicator */}
       {isLoadingForTheFirstTime && <CowLoading />}
     </>
   )
