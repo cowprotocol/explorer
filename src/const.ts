@@ -228,7 +228,6 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
   },
 )
 
-
 export const COW_SDK = new CowSdk(Network.MAINNET)
 
 export const ETH: TokenErc20 = {

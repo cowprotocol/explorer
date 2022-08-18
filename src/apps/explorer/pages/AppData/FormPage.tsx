@@ -22,7 +22,6 @@ import {
 } from './config'
 import { IpfsWrapper } from './styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
-import { Network } from 'types'
 
 const FormPage: React.FC = () => {
   const [schema, setSchema] = useState<JSONSchema7>({})
@@ -92,7 +91,7 @@ const FormPage: React.FC = () => {
   const onSubmit = useCallback(async ({ formData }: FormProps): Promise<void> => {
     setIsLoading(true)
     try {
-      const hashInfo = await COW_SDK[Network.MAINNET]?.metadataApi.calculateAppDataHash(handleFormatData(formData))
+      const hashInfo = await COW_SDK.metadataApi.calculateAppDataHash(handleFormatData(formData))
       setIpfsHashInfo(hashInfo)
     } catch (e) {
       setError(e.message)
@@ -114,8 +113,8 @@ const FormPage: React.FC = () => {
       if (!ipfsHashInfo) return
       setIsLoading(true)
       try {
-        await COW_SDK[Network.MAINNET]?.updateContext({ ipfs: formData })
-        await COW_SDK[Network.MAINNET]?.metadataApi.uploadMetadataDocToIpfs(handleFormatData(appDataForm))
+        await COW_SDK.updateContext({ ipfs: formData })
+        await COW_SDK.metadataApi.uploadMetadataDocToIpfs(handleFormatData(appDataForm))
         setIsDocUploaded(true)
       } catch (e) {
         if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
