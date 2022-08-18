@@ -87,7 +87,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
             border: solid 0.1rem ${theme.greyOpacity};
             ${tagPosition === 'bottom'
               ? `
-              padding: 0.3rem 0 0.1rem 0;
+              padding: 0.4rem 0 0.1rem 0;
               border-radius: 0 0 0.4rem 0.4rem;
               border-top-width: 0;
             `
