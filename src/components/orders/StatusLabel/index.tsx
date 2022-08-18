@@ -13,12 +13,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import { OrderStatus } from 'api/operator'
-import { formatPercentage } from 'utils'
+import { capitalize, formatPercentage } from 'utils'
 
 type CustomOrderStatus = OrderStatus | 'partially filled'
 type DisplayProps = { status: CustomOrderStatus }
 function canBePartiallyFilled(status: string): status is OrderStatus {
-  return ['open', 'cancelling'].includes(status) // expired, cancelled are excluded, they use a customized
+  return ['open', 'cancelling'].includes(status) // expired, cancelled are excluded, they use a custom status "partially filled"
 }
 
 function setStatusColors({
@@ -87,6 +87,7 @@ const PartiallyTagLabel = css<PartiallyTagProps>`
             border: solid 0.1rem ${theme.greyOpacity};
             ${tagPosition === 'bottom'
               ? `
+              padding: 0.3rem 0 0.1rem 0;
               border-radius: 0 0 0.4rem 0.4rem;
               border-top-width: 0;
             `
@@ -204,7 +205,7 @@ export function StatusLabel({
     >
       <Label status={_status} shimming={shimming} partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>
         <StatusIcon status={_status} />
-        {_status.charAt(0).toUpperCase() + _status.slice(1)}
+        {capitalize(_status)}
       </Label>
     </Wrapper>
   )
