@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
@@ -7,7 +7,6 @@ import { Order } from 'api/operator'
 import { capitalize } from 'utils'
 
 import { HelpTooltip } from 'components/Tooltip'
-import { Notification } from 'components/Notification'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
@@ -24,10 +23,7 @@ import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
-import useSafeState from 'hooks/useSafeState'
-import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
-import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
+import DecodeAppData from 'components/AppData/DecodeAppData'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -80,7 +76,7 @@ const tooltip = {
   to: 'The account address which will/did receive the bought amount.',
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
   appData:
-    'The app data hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
+    'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
   status: 'The order status is either Open, Filled, Expired or Canceled.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
@@ -102,55 +98,6 @@ export const Wrapper = styled.div`
   flex-direction: row;
   ${media.mobile} {
     flex-direction: column;
-  }
-`
-
-const AppDataWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  .json-formatter {
-    word-break: break-all;
-    overflow: auto;
-    border: 1px solid ${({ theme }): string => theme.tableRowBorder};
-    padding: 0.75rem;
-    background: ${({ theme }): string => theme.tableRowBorder};
-    border-radius: 0.5rem;
-
-    ::-webkit-scrollbar {
-      width: 8px !important;
-      height: 8px !important;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: hsla(0, 0%, 100%, 0.1);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
-  .data-container {
-    margin-right: 0.75rem;
-    word-break: break-all;
-    display: flex;
-    flex-direction: column;
-    .app-data {
-      color: ${({ theme }): string => theme.orange1};
-    }
-  }
-  .hidden-content {
-    margin-top: 10px;
-
-    span div {
-      ${media.mediumUp} {
-        width: 95%;
-      }
-      ${media.mobile} {
-        width: 75vw;
-      }
-      ${media.tinyDown} {
-        width: 70vw;
-      }
-    }
   }
 `
 
@@ -218,70 +165,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
     sellToken,
     appData,
   } = order
-  const [appDataLoading, setAppDataLoading] = useSafeState(false)
-  const [appDataError, setAppDataError] = useSafeState(false)
-  const [decodedAppData, setDecodedAppData] = useSafeState<AnyAppDataDocVersion | void | undefined>(undefined)
-  const [ipfsUri, setIpfsUri] = useSafeState<string>('')
-
-  const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
-
-  useEffect(() => {
-    const fetchIPFS = async (): Promise<void> => {
-      try {
-        const decodedAppDataHex = await getCidHashFromAppData(appData.toString())
-        setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${decodedAppDataHex}`)
-      } catch {
-        setAppDataError(true)
-      }
-    }
-
-    fetchIPFS()
-  }, [appData, setAppDataError, setIpfsUri])
 
   if (!buyToken || !sellToken) {
-    return null
-  }
-
-  const handleDecodedAppData = async (): Promise<void> => {
-    setShowDecodedAppData(!showDecodedAppData)
-    if (decodedAppData) return
-    if (IPFS_INVALID_APP_IDS.includes(appData.toString())) {
-      setAppDataError(true)
-      return
-    }
-    setAppDataLoading(true)
-    try {
-      const decodedAppData = await getDecodedAppData(appData.toString())
-      setDecodedAppData(decodedAppData)
-    } catch (e) {
-      setDecodedAppData(undefined)
-      setAppDataError(true)
-    } finally {
-      setAppDataLoading(false)
-    }
-  }
-
-  const renderAppData = (): JSX.Element | null => {
-    if (appDataLoading) return <Spinner />
-    if (showDecodedAppData) {
-      if (appDataError)
-        return (
-          <Notification
-            type="error"
-            message="Error when getting metadata info."
-            closable={false}
-            appendMessage={false}
-          />
-        )
-      const _appData = JSON.stringify(decodedAppData, null, 2)
-      return (
-        <RowWithCopyButton
-          textToCopy={_appData}
-          onCopy={(): void => onCopy('appDataDecoded')}
-          contentsToDisplay={<pre className="json-formatter">{_appData}</pre>}
-        />
-      )
-    }
     return null
   }
 
@@ -462,27 +347,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.appData} /> AppData
             </td>
             <td>
-              <AppDataWrapper>
-                <div className="data-container">
-                  {appDataError ? (
-                    <span className="app-data">{appData}</span>
-                  ) : (
-                    <RowWithCopyButton
-                      textToCopy={ipfsUri}
-                      onCopy={(): void => onCopy('IpfsAppDataUri')}
-                      contentsToDisplay={
-                        <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
-                          {appData}
-                        </a>
-                      }
-                    />
-                  )}
-                  <a className="showMoreAnchor" onClick={handleDecodedAppData}>
-                    {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-                  </a>
-                </div>
-                <div className="hidden-content">{renderAppData()}</div>
-              </AppDataWrapper>
+              <DecodeAppData appData={appData} />
             </td>
           </tr>
         </>
