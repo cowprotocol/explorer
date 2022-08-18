@@ -87,7 +87,7 @@ export function useGetSummaryData(): TotalSummaryResponse | undefined {
 
   const fetchAndBuildSummary = useCallback(async () => {
     setSummary((summary) => ({ ...summary, isLoading: true }))
-    COW_SDK[network]?.cowSubgraphApi.runQuery(summaryQuery).then((data: SummaryQuery) => {
+    COW_SDK.cowSubgraphApi.runQuery(summaryQuery, undefined, { chainId: network }).then((data: SummaryQuery) => {
       const summary = buildSummary(data)
       setSummary({ ...summary, isLoading: false })
     })

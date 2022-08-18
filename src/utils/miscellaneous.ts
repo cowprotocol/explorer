@@ -295,3 +295,14 @@ export function cleanNetworkName(networkName: string | undefined): string {
 
   return networkName.replace(/\s+/g, '').toLowerCase()
 }
+/**
+ * Returns the difference in percentage between two numbers
+ *
+ * @export
+ * @param {number} a
+ * @param {number} b
+ * @return {*}  {number}
+ */
+export function getPercentageDifference(a: number, b: number): number {
+  return b ? ((a - b) / b) * 100 : 0
+}

@@ -12,7 +12,7 @@ import { ONE_BIG_NUMBER } from 'const'
 import { FilledProgress, Props } from '.'
 
 import { RICH_ORDER } from '../../../../test/data'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export default {
   title: 'Orders/FilledProgress',

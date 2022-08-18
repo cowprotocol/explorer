@@ -1,5 +1,5 @@
 import v1Networks from '@gnosis.pm/dex-contracts/networks.json'
-import v2Networks from '@gnosis.pm/gp-v2-contracts/networks.json'
+import v2Networks from '@cowprotocol/contracts/networks.json'
 
 import { Network } from 'types'
 

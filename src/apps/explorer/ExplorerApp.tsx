@@ -164,7 +164,7 @@ export const ExplorerApp: React.FC = () => {
           <Switch>
             <Route path="/mainnet" component={RedirectMainnet} />
             <Route path="/xdai" component={RedirectXdai} />
-            <Route path={['/gc', '/rinkeby', '/']} component={AppContent} />
+            <Route path={['/gc', '/rinkeby', '/goerli', '/']} component={AppContent} />
           </Switch>
         </Router>
         {process.env.NODE_ENV === 'development' && <Console />}

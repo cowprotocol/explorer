@@ -88,6 +88,7 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
   switch (networkId) {
     case Network.MAINNET:
     case Network.RINKEBY:
+    case Network.GOERLI:
       return infuraProvider(networkId)
     case Network.GNOSIS_CHAIN:
       return 'https://rpc.gnosischain.com/'
