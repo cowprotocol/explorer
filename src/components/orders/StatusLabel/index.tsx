@@ -1,4 +1,5 @@
 import React from 'react'
+import BigNumber from 'bignumber.js'
 import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -12,6 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 import { OrderStatus } from 'api/operator'
+import { formatPercentage } from 'utils'
 
 type CustomOrderStatus = OrderStatus | 'partially filled'
 type DisplayProps = { status: CustomOrderStatus }
@@ -67,28 +69,29 @@ function setStatusColors({
 }
 
 type PartiallyTagPosition = 'right' | 'bottom'
-type PartiallyTagProps = { partialFill: boolean; tagPosition: PartiallyTagPosition }
+type PartiallyTagProps = { partialFill: boolean; tagPosition: PartiallyTagPosition; filledPercentage?: string }
 
 const PartiallyTagLabel = css<PartiallyTagProps>`
   &:after {
-    ${({ partialFill, theme, tagPosition }): FlattenSimpleInterpolation | null =>
+    ${({ partialFill, theme, tagPosition, filledPercentage }): FlattenSimpleInterpolation | null =>
       partialFill
         ? css`
-            content: 'Partially filled';
+            content: ${`"${filledPercentage} filled"`};
             display: flex;
             justify-content: center;
             align-content: center;
             align-items: center;
             font-weight: ${theme.fontMedium};
             font-size: 0.71em; /* Intentional use of "em" to be relative to parent's font size */
-            color: ${theme.green};
             min-height: 1.35rem;
-            background: ${theme.greenOpacity};
+            border: solid 0.1rem ${theme.greyOpacity};
             ${tagPosition === 'bottom'
               ? `
               border-radius: 0 0 0.4rem 0.4rem;
+              border-top-width: 0;
             `
               : `
+              border-left-width: 0;
               border-radius: 0 0.4rem 0.4rem 0;
               padding: 0 0.6rem;
               font-size: 0.78em;
@@ -174,17 +177,31 @@ function StatusIcon({ status }: DisplayProps): JSX.Element {
   return <StyledFAIcon icon={icon} spin={isOpen} />
 }
 
-export type Props = { status: OrderStatus; partiallyFilled: boolean; partialTagPosition?: PartiallyTagPosition }
+export type Props = {
+  status: OrderStatus
+  partiallyFilled: boolean
+  filledPercentage?: BigNumber
+  partialTagPosition?: PartiallyTagPosition
+}
 
-export function StatusLabel(props: Props): JSX.Element {
-  const { status, partiallyFilled, partialTagPosition = 'bottom' } = props
+export function StatusLabel({
+  status,
+  partiallyFilled,
+  filledPercentage,
+  partialTagPosition = 'bottom',
+}: Props): JSX.Element {
   const shimming = status === 'signing' || status === 'cancelling'
   const customizeStatus = status === 'expired' || status === 'cancelled'
   const tagPartiallyFilled = partiallyFilled && canBePartiallyFilled(status)
+  const formattedPercentage = filledPercentage !== undefined && formatPercentage(filledPercentage)
   const _status = customizeStatus && partiallyFilled ? 'partially filled' : status
 
   return (
-    <Wrapper partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>
+    <Wrapper
+      partialFill={tagPartiallyFilled}
+      tagPosition={partialTagPosition}
+      filledPercentage={formattedPercentage || 'Partially filled'}
+    >
       <Label status={_status} shimming={shimming} partialFill={tagPartiallyFilled} tagPosition={partialTagPosition}>
         <StatusIcon status={_status} />
         {_status.charAt(0).toUpperCase() + _status.slice(1)}

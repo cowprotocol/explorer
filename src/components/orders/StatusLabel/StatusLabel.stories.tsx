@@ -5,6 +5,7 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 
 import { StatusLabel, Props } from '.'
+import BigNumber from 'bignumber.js'
 
 export default {
   title: 'Orders/StatusLabel',
@@ -32,11 +33,18 @@ Open.args = { status: 'open' }
 export const Signing = Template.bind({})
 Signing.args = { status: 'signing' }
 
+const partialFillProps = {
+  partiallyFilled: true,
+  filledPercentage: new BigNumber(5992146249).div(20085613995),
+}
 export const OpenPartiallyFilled = Template.bind({})
-OpenPartiallyFilled.args = { status: 'open', partiallyFilled: true }
+OpenPartiallyFilled.args = { status: 'open', ...partialFillProps }
 export const ExpiredPartiallyFilled = Template.bind({})
-ExpiredPartiallyFilled.args = { status: 'expired', partiallyFilled: true }
+ExpiredPartiallyFilled.args = { status: 'expired', ...partialFillProps }
 export const CancelledPartiallyFilled = Template.bind({})
-CancelledPartiallyFilled.args = { status: 'cancelled', partiallyFilled: true }
+CancelledPartiallyFilled.args = {
+  status: 'cancelled',
+  ...partialFillProps,
+}
 export const CancellingPartiallyFilled = Template.bind({})
-CancellingPartiallyFilled.args = { status: 'cancelling', partiallyFilled: true }
+CancellingPartiallyFilled.args = { status: 'cancelling', ...partialFillProps }
