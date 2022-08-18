@@ -110,8 +110,9 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
  */
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
-
-  return COW_SDK.cowApi.getOrders({ owner, offset, limit }, { chainId: networkId })
+  // since we are not merging responses yet, we fix the sdk env to the current one
+  const env = isProd ? 'prod' : 'staging'
+  return COW_SDK.cowApi.getOrders({ owner, offset, limit }, { chainId: networkId, env })
 }
 
 /**
