@@ -8,10 +8,10 @@ import { PREFIX_BY_NETWORK_ID, useNetworkId } from 'state/network'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEllipsisH, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FlexWrap } from 'apps/explorer/pages/styled'
-import { ExternalLink } from 'components/analytics/ExternalLink'
+// import { ExternalLink } from 'components/analytics/ExternalLink'
 import { useHistory } from 'react-router'
 import useOnClickOutside from 'hooks/useOnClickOutside'
-import { APP_NAME } from 'const'
+// import { APP_NAME } from 'const'
 //import MenuDropdown from 'components/common/MenuDropdown'
 
 export const Header: React.FC = () => {
@@ -44,7 +44,7 @@ export const Header: React.FC = () => {
           <li>
             <a onClick={(e): void => handleNavigate(e)}>Home</a>
           </li>
-          <li>
+          {/*   <li>
             <ExternalLink target={'_blank'} href={'https://cow.fi'}>
               {APP_NAME}
             </ExternalLink>
@@ -63,7 +63,7 @@ export const Header: React.FC = () => {
             <ExternalLink target={'_blank'} href={'https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2'}>
               Analytics
             </ExternalLink>
-          </li>
+          </li> */}
         </Navigation>
       </FlexWrap>
     </GenericHeader>

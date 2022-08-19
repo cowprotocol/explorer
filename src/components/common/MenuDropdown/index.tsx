@@ -1,5 +1,5 @@
 import React, { useState, createRef } from 'react'
-import { MenuFlyout, Content, MenuSection, MenuTitle } from './styled'
+import { MenuFlyout, Content, MenuSection, MenuTitle, MenuContainer } from './styled'
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
@@ -23,12 +23,15 @@ export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
   useOnClickOutside(node, () => isLargeAndUp && setShowMenu(false)) // only trigger on large screens
 
   return (
-    <MenuFlyout ref={node as never}>
-      <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
-        {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
-      </button>
-      {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
-    </MenuFlyout>
+    <MenuContainer>
+      <a>Home</a>
+      <MenuFlyout ref={node as never}>
+        <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
+          {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
+        </button>
+        {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
+      </MenuFlyout>
+    </MenuContainer>
   )
 }
 /* type MenuItemKind = 'DROP_DOWN' | 'EXTERNAL_LINK' */
