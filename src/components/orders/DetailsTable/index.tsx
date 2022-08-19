@@ -83,13 +83,15 @@ const tooltip = {
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
   type: 'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
-  amount: 'The total sell and buy amount for this order.',
+  amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
   priceLimit:
-    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',
-  priceExecution: 'The actual price at which this order has been matched and executed.',
+    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deduced from the sell amount',
+  priceExecution:
+    'The actual price at which this order has been matched and executed, after deducting the fees from the sold amount.',
   surplus:
     'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
-  filled: 'Indicates what percentage amount this order has been filled and the amount sold/bought.',
+  filled:
+    'Indicates what percentage amount this order has been filled and the amount sold/bought. Sold amount includes the fee.',
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
 }
 
