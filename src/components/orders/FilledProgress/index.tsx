@@ -62,7 +62,7 @@ export function FilledProgress(props: Props): JSX.Element {
   let swappedAmount
   let action
 
-  let filledAmountWithFee, mainAmountWithFee, swappedAmountWithFee
+  let filledAmountWithFee, swappedAmountWithFee
   if (kind === 'sell') {
     action = 'sold'
 
@@ -75,7 +75,6 @@ export function FilledProgress(props: Props): JSX.Element {
     swappedAmount = executedBuyAmount
 
     // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
-    mainAmountWithFee = mainAmount.plus(feeAmount)
     filledAmountWithFee = filledAmount.plus(executedFeeAmount)
     swappedAmountWithFee = swappedAmount
   } else {
@@ -90,7 +89,6 @@ export function FilledProgress(props: Props): JSX.Element {
     swappedAmount = executedSellAmount
 
     // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
-    mainAmountWithFee = mainAmount
     filledAmountWithFee = filledAmount
     swappedAmountWithFee = swappedAmount.plus(executedFeeAmount)
   }
@@ -100,7 +98,7 @@ export function FilledProgress(props: Props): JSX.Element {
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
 
-  const formattedMainAmount = formatSmartMaxPrecision(mainAmountWithFee, mainToken)
+  const formattedMainAmount = formatSmartMaxPrecision(mainAmount, mainToken)
   const formattedFilledAmount = formatSmartMaxPrecision(filledAmountWithFee, mainToken)
   const formattedSwappedAmount = formatSmartMaxPrecision(swappedAmountWithFee, swappedToken)
 
