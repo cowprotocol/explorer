@@ -7,6 +7,12 @@ export const MenuContainer = styled.nav`
   justify-content: flex-end;
   gap: 2rem;
 
+  ${media.mobile} {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+  }
+
   a {
     font-size: 1.6rem;
     font-weight: 600;
@@ -19,6 +25,7 @@ export const MenuContainer = styled.nav`
     transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
     color: ${({ theme }): string => theme.textSecondary2};
     :hover {
+      background: ${({ theme }): string => theme.bg2};
       text-decoration: none;
       color: ${({ theme }): string => theme.textSecondary1};
     }
@@ -31,6 +38,11 @@ export const MenuFlyout = styled.ol`
   margin: 0;
   position: relative;
   justify-content: flex-end;
+
+  ${media.mobile} {
+    display: flex;
+    flex-direction: column;
+  }
 
   > button {
     font-size: 1.6rem;
@@ -105,8 +117,8 @@ export const Content = styled.div`
   gap: 6.2rem;
   margin: 1.2rem 0 0;
 
-  ${media.desktopLarge} {
-    /* box-shadow: none;
+  ${media.mobile} {
+    box-shadow: none;
     background: transparent;
     padding: 0;
     position: relative;
@@ -114,7 +126,7 @@ export const Content = styled.div`
     left: initial;
     border-radius: 0;
     display: flex;
-    flex-flow: column wrap; */
+    flex-flow: column wrap;
   }
 
   > div {
