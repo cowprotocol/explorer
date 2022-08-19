@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from 'hooks/useQuery'
-import FormPage from './FormPage'
+import EncodePage from './EncodePage'
 import DecodePage from './DecodePage'
 import TabIcon from 'components/common/Tabs/TabIcon'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
@@ -11,7 +11,7 @@ import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
 import { StyledExplorerTabs, Wrapper } from './styled'
 
 enum TabView {
-  FORM = 1,
+  ENCODE = 1,
   DECODE,
 }
 
@@ -25,9 +25,9 @@ function useQueryViewParams(): { tab: string } {
 const tabItems = (): TabItemInterface[] => {
   return [
     {
-      id: TabView.FORM,
+      id: TabView.ENCODE,
       tab: <TabIcon title="Encode" iconFontName={faListUl} />,
-      content: <FormPage />,
+      content: <EncodePage />,
     },
     {
       id: TabView.DECODE,

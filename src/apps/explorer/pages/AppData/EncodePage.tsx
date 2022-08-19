@@ -23,7 +23,7 @@ import {
 import { IpfsWrapper } from './styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 
-const FormPage: React.FC = () => {
+const EncodePage: React.FC = () => {
   const [schema, setSchema] = useState<JSONSchema7>({})
   const [appDataForm, setAppDataForm] = useState({})
   const [disabledAppData, setDisabledAppData] = useState<boolean>(true)
@@ -250,4 +250,4 @@ const FormPage: React.FC = () => {
   )
 }
 
-export default FormPage
+export default EncodePage

@@ -226,7 +226,7 @@ export const Wrapper = styled(WrapperTemplate)`
     flex-flow: column wrap;
   }
   .appData-tab {
-    &--form {
+    &--encode {
       .tab-content {
         display: flex;
         flex-direction: column;
