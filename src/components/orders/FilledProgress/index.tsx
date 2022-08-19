@@ -62,31 +62,45 @@ export function FilledProgress(props: Props): JSX.Element {
   let swappedAmount
   let action
 
+  let filledAmountWithFee, swappedAmountWithFee
   if (kind === 'sell') {
+    action = 'sold'
+
     mainToken = sellToken
     mainAddress = sellTokenAddress
     mainAmount = sellAmount.plus(feeAmount)
+
     swappedToken = buyToken
     swappedAddress = buyTokenAddress
     swappedAmount = executedBuyAmount
-    action = 'sold'
+
+    // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
+    filledAmountWithFee = filledAmount.plus(executedFeeAmount)
+    swappedAmountWithFee = swappedAmount
   } else {
+    action = 'bought'
+
     mainToken = buyToken
     mainAddress = buyTokenAddress
     mainAmount = buyAmount
+
     swappedToken = sellToken
     swappedAddress = sellTokenAddress
     swappedAmount = executedSellAmount
-    action = 'bought'
+
+    // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
+    filledAmountWithFee = filledAmount
+    swappedAmountWithFee = swappedAmount.plus(executedFeeAmount)
   }
 
   // In case the token object is empty, display the address
   const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
-  const formattedFilledAmount = formatSmartMaxPrecision(filledAmount.plus(executedFeeAmount), mainToken)
+
   const formattedMainAmount = formatSmartMaxPrecision(mainAmount, mainToken)
-  const formattedSwappedAmount = formatSmartMaxPrecision(swappedAmount, swappedToken)
+  const formattedFilledAmount = formatSmartMaxPrecision(filledAmountWithFee, mainToken)
+  const formattedSwappedAmount = formatSmartMaxPrecision(swappedAmountWithFee, swappedToken)
 
   const formattedPercentage = filledPercentage.times('100').decimalPlaces(2).toString()
 
@@ -95,9 +109,11 @@ export function FilledProgress(props: Props): JSX.Element {
       <ProgressBar percentage={formattedPercentage} />
       <span>
         <b>
+          {/* Executed part (bought/sold tokens) */}
           {formattedFilledAmount} {mainSymbol}
         </b>{' '}
         {!fullyFilled && (
+          // Show the total amount to buy/sell. Only for orders that are not 100% executed
           <>
             of{' '}
             <b>
@@ -107,6 +123,9 @@ export function FilledProgress(props: Props): JSX.Element {
         )}
         {action}{' '}
         {touched && (
+          // Executed part of the trade:
+          //    Total buy tokens you receive (for sell orders)
+          //    Total sell tokens you pay (for buy orders)
           <>
             for a total of{' '}
             <b>
