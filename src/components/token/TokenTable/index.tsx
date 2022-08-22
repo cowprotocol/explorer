@@ -418,11 +418,11 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>Name</th>
           <th>Symbol</th>
           <th>Price</th>
-          <th>24h</th>
-          <th>7d</th>
-          <th>24h volume</th>
+          <th>Price (24h)</th>
+          <th>Price (7d)</th>
+          <th>Volume (24h)</th>
           <th>Total volume</th>
-          <th>Last 7 days</th>
+          <th>Price (last 7 days)</th>
         </tr>
       }
       body={tokenItems(tokens)}
