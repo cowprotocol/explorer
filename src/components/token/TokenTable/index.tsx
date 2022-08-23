@@ -321,7 +321,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>24h</HeaderTitle>
+        <HeaderTitle>Price (24h)</HeaderTitle>
         {handleLoadingState(
           lastDayPricePercentageDifference,
           <HeaderValue
@@ -332,7 +332,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         )}
       </td>
       <td>
-        <HeaderTitle>7d</HeaderTitle>
+        <HeaderTitle>Price (7d)</HeaderTitle>
         {handleLoadingState(
           lastWeekPricePercentageDifference,
           <HeaderValue
@@ -345,7 +345,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         )}
       </td>
       <td>
-        <HeaderTitle>24h volume</HeaderTitle>
+        <HeaderTitle>Volume (24h)</HeaderTitle>
         {handleLoadingState(
           lastDayUsdVolume,
           <HeaderValue>
@@ -376,7 +376,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Last 7 days</HeaderTitle>
+        <HeaderTitle>Price (last 7 days)</HeaderTitle>
         {handleLoadingState(lastWeekUsdPrices, <ChartWrapper ref={chartContainerRef} />)}
       </td>
     </tr>
@@ -418,11 +418,11 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>Name</th>
           <th>Symbol</th>
           <th>Price</th>
-          <th>24h</th>
-          <th>7d</th>
-          <th>24h volume</th>
+          <th>Price (24h)</th>
+          <th>Price (7d)</th>
+          <th>Volume (24h)</th>
           <th>Total volume</th>
-          <th>Last 7 days</th>
+          <th>Price (last 7 days)</th>
         </tr>
       }
       body={tokenItems(tokens)}
