@@ -2,7 +2,7 @@ import { GetTradesParams } from '@cowprotocol/cow-sdk'
 import { Network } from 'types'
 import { COW_SDK } from 'const'
 import { buildSearchString } from 'utils/url'
-import { isProd, isStaging } from 'utils/env'
+import { environmentName, Envs, isProd, isStaging } from 'utils/env'
 
 import {
   GetOrderParams,
@@ -14,6 +14,22 @@ import {
   WithNetworkId,
 } from './types'
 import { fetchQuery } from 'api/baseApi'
+
+// TODO: export this through the sdk
+export type ApiEnv = 'prod' | 'staging'
+
+function explorerToApiEnv(explorerEnv?: Envs): ApiEnv {
+  switch (explorerEnv) {
+    case 'production':
+    case 'staging':
+      return 'prod'
+    case 'development':
+    case 'barn':
+      return 'staging'
+    default:
+      return 'prod'
+  }
+}
 
 function getOperatorUrl(): Partial<Record<Network, string>> {
   if (isProd || isStaging) {
@@ -111,7 +127,7 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
   const { networkId, owner, offset, limit } = params
   // since we are not merging responses yet, we fix the sdk env to the current one
-  const env = isProd ? 'prod' : 'staging'
+  const env = explorerToApiEnv(environmentName)
   return COW_SDK.cowApi.getOrders({ owner, offset, limit }, { chainId: networkId, env })
 }
 
