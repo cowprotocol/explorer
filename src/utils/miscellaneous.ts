@@ -304,5 +304,11 @@ export function cleanNetworkName(networkName: string | undefined): string {
  * @return {*}  {number}
  */
 export function getPercentageDifference(a: number, b: number): number {
-  return b ? ((a - b) / b) * 100 : 0
+  const result = b ? ((a - b) / b) * 100 : 0
+
+  if (Number.isNaN(result)) {
+    return 0
+  }
+
+  return result
 }

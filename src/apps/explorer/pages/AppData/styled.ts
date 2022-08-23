@@ -74,10 +74,6 @@ export const Wrapper = styled(WrapperTemplate)`
     }
 
     .hidden-content {
-      ${media.desktopLarge} {
-        position: fixed;
-        width: 25vw;
-      }
       ${media.desktop} {
         position: fixed;
         width: 30vw;
@@ -91,6 +87,10 @@ export const Wrapper = styled(WrapperTemplate)`
         background: none;
         padding: 1rem;
         font-size: 1.2rem;
+      }
+      ${media.desktopLarge} {
+        position: fixed;
+        width: 60rem;
       }
       h4 {
         margin: 1rem 0 0.75rem 0;
@@ -226,7 +226,7 @@ export const Wrapper = styled(WrapperTemplate)`
     flex-flow: column wrap;
   }
   .appData-tab {
-    &--form {
+    &--encode {
       .tab-content {
         display: flex;
         flex-direction: column;
