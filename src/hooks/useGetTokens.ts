@@ -6,7 +6,7 @@ import { COW_SDK, NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { UTCTimestamp } from 'lightweight-charts'
-import { isNativeToken } from 'utils'
+import { getPercentageDifference, isNativeToken } from 'utils'
 
 export function useGetTokens(networkId: Network | undefined, tableState: TableState): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)
@@ -20,7 +20,11 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
       setTokens([])
       setHistoricalDataLoaded({})
       try {
-        const response = await COW_SDK[network]?.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(GET_TOKENS_QUERY)
+        const response = await COW_SDK.cowSubgraphApi.runQuery<{ tokens: TokenResponse[] }>(
+          GET_TOKENS_QUERY,
+          undefined,
+          { chainId: network },
+        )
         if (response) {
           const tokens = enhanceNativeToken(response.tokens, network)
           setTokens(tokens)
@@ -37,24 +41,26 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
   )
 
   const getTokens = useCallback(
-    (
-      network: Network,
-      tokenIds: string[],
-    ): { [tokenId: string]: Promise<SubgraphHistoricalDataResponse> | undefined } => {
+    (tokenIds: string[]): { [tokenId: string]: Promise<SubgraphHistoricalDataResponse> | undefined } => {
       const lastDayTimestamp = Number(lastHoursTimestamp(25)) // last 25 hours
       const lastWeekTimestamp = Number(lastDaysTimestamp(8)) // last 8 days
       const responses = {}
       for (const tokenId of tokenIds) {
-        const response = COW_SDK[network]?.cowSubgraphApi.runQuery<SubgraphHistoricalDataResponse>(
+        const response = COW_SDK.cowSubgraphApi.runQuery<SubgraphHistoricalDataResponse>(
           GET_HISTORICAL_DATA_QUERY,
-          { address: tokenId, lastDayTimestamp, lastWeekTimestamp },
+          {
+            address: tokenId,
+            lastDayTimestamp,
+            lastWeekTimestamp,
+          },
+          { chainId: networkId },
         )
         responses[tokenId] = response
       }
 
       return responses
     },
-    [],
+    [networkId],
   )
 
   const processTokenData = useCallback((data: SubgraphHistoricalDataResponse) => {
@@ -90,10 +96,10 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
   }, [])
 
   const getTokensHistoricalData = useCallback(
-    async (network: Network, tokenIds: string[]): Promise<{ [tokenId: string]: TokenData } | void> => {
+    async (tokenIds: string[]): Promise<{ [tokenId: string]: TokenData } | void> => {
       setIsLoading(true)
       try {
-        const tokens = await getTokens(network, tokenIds)
+        const tokens = await getTokens(tokenIds)
         const tokensData = {} as { [tokenId: string]: TokenData }
 
         for (const address of Object.keys(tokens)) {
@@ -138,7 +144,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     const tokenIds = pageTokens.map((token) => token.id)
 
     const setHistoricalData = async function (): Promise<void> {
-      const historicalData = await getTokensHistoricalData(networkId, tokenIds)
+      const historicalData = await getTokensHistoricalData(tokenIds)
 
       if (historicalData) {
         setTokens((tokens) => [...addHistoricalData(tokens, historicalData)])
@@ -259,10 +265,6 @@ export type TokenData = {
   lastDayPricePercentageDifference?: number
   lastWeekPricePercentageDifference?: number
   lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
-}
-
-function getPercentageDifference(a: number, b: number): number {
-  return a ? ((a - b) / a) * 100 : 0
 }
 
 function lastHoursTimestamp(n: number): string {

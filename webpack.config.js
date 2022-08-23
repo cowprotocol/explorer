@@ -27,9 +27,11 @@ const EXPLORER_APP = {
 
     OPERATOR_URL_STAGING_MAINNET: 'https://barn.api.cow.fi/mainnet/api',
     OPERATOR_URL_STAGING_RINKEBY: 'https://barn.api.cow.fi/rinkeby/api',
+    OPERATOR_URL_STAGING_GOERLI: 'https://barn.api.cow.fi/goerli/api',
     OPERATOR_URL_STAGING_XDAI: 'https://barn.api.cow.fi/xdai/api',
     OPERATOR_URL_PROD_MAINNET: 'https://api.cow.fi/mainnet/api',
     OPERATOR_URL_PROD_RINKEBY: 'https://api.cow.fi/rinkeby/api',
+    OPERATOR_URL_PROD_GOERLI: 'https://api.cow.fi/goerli/api',
     OPERATOR_URL_PROD_XDAI: 'https://api.cow.fi/xdai/api',
 
     GOOGLE_ANALYTICS_ID: undefined,
@@ -75,7 +77,7 @@ module.exports = getWebpackConfig({
   },
   defineVars: {
     CONFIG: JSON.stringify(config),
-    CONTRACT_VERSION: JSON.stringify(require('@gnosis.pm/gp-v2-contracts/package.json').version),
+    CONTRACT_VERSION: JSON.stringify(require('@cowprotocol/contracts/package.json').version),
     DEX_JS_VERSION: JSON.stringify(require('@gnosis.pm/dex-js/package.json').version),
   },
 })

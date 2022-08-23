@@ -7,7 +7,7 @@ import { RawOrder } from 'api/operator'
 import { getOrderExecutedPrice, getOrderLimitPrice, GetRawOrderPriceParams, GetOrderLimitPriceParams } from 'utils'
 
 import { RAW_ORDER } from '../../data'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 const ZERO_DOT_ONE = new BigNumber('0.1')
 

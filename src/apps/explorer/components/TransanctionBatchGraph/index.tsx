@@ -7,7 +7,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 import {
   faRedo,
   faDiceOne,

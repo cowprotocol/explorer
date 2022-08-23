@@ -7,7 +7,7 @@ import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/
 
 import { Order } from 'api/operator'
 import { RICH_ORDER, TUSD, WETH } from '../../../../test/data'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export default {
   title: 'transaction/TransactionTable',

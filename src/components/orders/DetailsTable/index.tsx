@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { media } from 'theme/styles/media'
 
@@ -7,7 +7,6 @@ import { Order } from 'api/operator'
 import { capitalize } from 'utils'
 
 import { HelpTooltip } from 'components/Tooltip'
-import { Notification } from 'components/Notification'
 
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
@@ -24,11 +23,7 @@ import { triggerEvent } from 'api/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
-import useSafeState from 'hooks/useSafeState'
-import { useNetworkId } from 'state/network'
-import { AppDataDoc } from '@cowprotocol/cow-sdk'
-import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
+import DecodeAppData from 'components/AppData/DecodeAppData'
 
 const Table = styled(SimpleTable)`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
@@ -81,20 +76,22 @@ const tooltip = {
   to: 'The account address which will/did receive the bought amount.',
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
   appData:
-    'The app data hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
+    'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
   status: 'The order status is either Open, Filled, Expired or Canceled.',
   submission:
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
   type: 'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
-  amount: 'The total sell and buy amount for this order.',
+  amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
   priceLimit:
-    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',
-  priceExecution: 'The actual price at which this order has been matched and executed.',
+    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deduced from the sell amount',
+  priceExecution:
+    'The actual price at which this order has been matched and executed, after deducting the fees from the sold amount.',
   surplus:
     'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
-  filled: 'Indicates what percentage amount this order has been filled and the amount sold/bought.',
+  filled:
+    'Indicates what percentage amount this order has been filled and the amount sold/bought. Sold amount includes the fee.',
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
 }
 
@@ -103,55 +100,6 @@ export const Wrapper = styled.div`
   flex-direction: row;
   ${media.mobile} {
     flex-direction: column;
-  }
-`
-
-const AppDataWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  .json-formatter {
-    word-break: break-all;
-    overflow: auto;
-    border: 1px solid ${({ theme }): string => theme.tableRowBorder};
-    padding: 0.75rem;
-    background: ${({ theme }): string => theme.tableRowBorder};
-    border-radius: 0.5rem;
-
-    ::-webkit-scrollbar {
-      width: 8px !important;
-      height: 8px !important;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: hsla(0, 0%, 100%, 0.1);
-      border-radius: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background-color: rgba(0, 0, 0, 0.2);
-    }
-  }
-  .data-container {
-    margin-right: 0.75rem;
-    word-break: break-all;
-    display: flex;
-    flex-direction: column;
-    .app-data {
-      color: ${({ theme }): string => theme.orange1};
-    }
-  }
-  .hidden-content {
-    margin-top: 10px;
-
-    span div {
-      ${media.mediumUp} {
-        width: 95%;
-      }
-      ${media.mobile} {
-        width: 75vw;
-      }
-      ${media.tinyDown} {
-        width: 70vw;
-      }
-    }
   }
 `
 
@@ -219,70 +167,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
     sellToken,
     appData,
   } = order
-  const [appDataLoading, setAppDataLoading] = useSafeState(false)
-  const [appDataError, setAppDataError] = useSafeState(false)
-  const [decodedAppData, setDecodedAppData] = useSafeState<AppDataDoc | void | undefined>(undefined)
-  const [ipfsUri, setIpfsUri] = useSafeState<string>('')
-
-  const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(false)
-  const network = useNetworkId()
-
-  useEffect(() => {
-    const fetchIPFS = async (): Promise<void> => {
-      try {
-        const decodedAppDataHex = await getCidHashFromAppData(appData.toString(), network || undefined)
-        setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${decodedAppDataHex}`)
-      } catch {
-        setAppDataError(true)
-      }
-    }
-
-    fetchIPFS()
-  }, [appData, network, setAppDataError, setIpfsUri])
 
   if (!buyToken || !sellToken) {
-    return null
-  }
-
-  const handleDecodedAppData = async (): Promise<void> => {
-    setShowDecodedAppData(!showDecodedAppData)
-    if (decodedAppData) return
-    if (IPFS_INVALID_APP_IDS.includes(appData.toString())) {
-      setAppDataError(true)
-      return
-    }
-    setAppDataLoading(true)
-    try {
-      const decodedAppData = await getDecodedAppData(appData.toString(), network || undefined)
-      setDecodedAppData(decodedAppData)
-    } catch (e) {
-      setDecodedAppData(undefined)
-      setAppDataError(true)
-    } finally {
-      setAppDataLoading(false)
-    }
-  }
-
-  const renderAppData = (): JSX.Element | null => {
-    if (appDataLoading) return <Spinner />
-    if (showDecodedAppData) {
-      if (appDataError)
-        return (
-          <Notification
-            type="error"
-            message="Error when getting metadata info."
-            closable={false}
-            appendMessage={false}
-          />
-        )
-      return (
-        <RowWithCopyButton
-          textToCopy={JSON.stringify(decodedAppData, null, 2)}
-          onCopy={(): void => onCopy('appDataDecoded')}
-          contentsToDisplay={<pre className="json-formatter">{JSON.stringify(decodedAppData, null, 2)}</pre>}
-        />
-      )
-    }
     return null
   }
 
@@ -362,7 +248,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.status} /> Status
             </td>
             <td>
-              <StatusLabel status={status} partiallyFilled={partiallyFilled} />
+              <StatusLabel status={status} partiallyFilled={partiallyFilled} partialTagPosition="right" />
             </td>
           </tr>
           <tr>
@@ -463,27 +349,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.appData} /> AppData
             </td>
             <td>
-              <AppDataWrapper>
-                <div className="data-container">
-                  {appDataError ? (
-                    <span className="app-data">{appData}</span>
-                  ) : (
-                    <RowWithCopyButton
-                      textToCopy={ipfsUri}
-                      onCopy={(): void => onCopy('IpfsAppDataUri')}
-                      contentsToDisplay={
-                        <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
-                          {appData}
-                        </a>
-                      }
-                    />
-                  )}
-                  <a className="showMoreAnchor" onClick={handleDecodedAppData}>
-                    {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-                  </a>
-                </div>
-                <div className="hidden-content">{renderAppData()}</div>
-              </AppDataWrapper>
+              <DecodeAppData appData={appData} />
             </td>
           </tr>
         </>

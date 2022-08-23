@@ -1,10 +1,10 @@
-import { domain as domainGp, signOrder as signOrderGp, Order } from '@gnosis.pm/gp-v2-contracts'
+import { domain as domainGp, signOrder as signOrderGp, Order } from '@cowprotocol/contracts'
 
 import { GP_SETTLEMENT_CONTRACT_ADDRESS } from './constants'
 import { TypedDataDomain, Signer } from 'ethers'
 import { Network } from 'types'
 
-export { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+export { OrderKind } from '@cowprotocol/contracts'
 export type UnsignedOrder = Order
 
 export interface SignOrderParams {

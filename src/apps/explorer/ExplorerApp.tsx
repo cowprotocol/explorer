@@ -56,6 +56,14 @@ const NotFound = React.lazy(
     ),
 )
 
+const AppDataDetails = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "Metadata_chunk"*/
+      './pages/AppData'
+    ),
+)
+
 const SearchNotFound = React.lazy(
   () =>
     import(
@@ -132,6 +140,7 @@ const AppContent = (): JSX.Element => {
           <Route path={pathPrefix + '/address/:address'} exact component={UserDetails} />
           <Route path={pathPrefix + '/tx/:txHash'} exact component={TransactionDetails} />
           <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
+          <Route path={pathPrefix + '/appdata'} exact component={AppDataDetails} />
           <Route component={NotFound} />
         </Switch>
       </React.Suspense>
@@ -155,7 +164,7 @@ export const ExplorerApp: React.FC = () => {
           <Switch>
             <Route path="/mainnet" component={RedirectMainnet} />
             <Route path="/xdai" component={RedirectXdai} />
-            <Route path={['/gc', '/rinkeby', '/']} component={AppContent} />
+            <Route path={['/gc', '/rinkeby', '/goerli', '/']} component={AppContent} />
           </Switch>
         </Router>
         {process.env.NODE_ENV === 'development' && <Console />}

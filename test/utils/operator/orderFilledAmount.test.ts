@@ -5,7 +5,7 @@ import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER
 import { getOrderFilledAmount } from 'utils'
 
 import { RAW_ORDER } from '../../../test/data'
-import { OrderKind } from '@gnosis.pm/gp-v2-contracts'
+import { OrderKind } from '@cowprotocol/contracts'
 
 const TEN_PERCENT = new BigNumber('0.1')
 const ONE_HUNDRED_PERCENT = ONE_BIG_NUMBER

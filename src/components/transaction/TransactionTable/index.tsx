@@ -55,6 +55,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
     buyAmount,
     creationDate,
     partiallyFilled = false,
+    filledPercentage,
     sellToken,
     sellAmount,
     kind,
@@ -140,7 +141,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted, invertLimi
       <td>
         <HeaderTitle>Status</HeaderTitle>
         <HeaderValue>
-          <StatusLabel status={order.status} partiallyFilled={partiallyFilled} />
+          <StatusLabel status={order.status} partiallyFilled={partiallyFilled} filledPercentage={filledPercentage} />
         </HeaderValue>
       </td>
     </tr>
