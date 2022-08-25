@@ -31,7 +31,7 @@ type EncodeProps = {
 
 const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
   const { encode } = tabData
-  const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema || {})
+  const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
   const [disabledAppData, setDisabledAppData] = useState<boolean>(
     encode.options.disabledAppData !== undefined ? encode.options.disabledAppData : true,
@@ -40,21 +40,17 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
     encode.options.disabledIPFS !== undefined ? encode.options.disabledIPFS : true,
   )
   const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>(
-    encode.options.invalidFormDataAttempted || {
+    encode.options.invalidFormDataAttempted ?? {
       appData: false,
       ipfs: false,
     },
   )
-  const [isLoading, setIsLoading] = useState<boolean>(
-    encode.options.isLoading !== undefined ? encode.options.isLoading : false,
-  )
+  const [isLoading, setIsLoading] = useState<boolean>(encode.options.isLoading ?? false)
   const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>(encode.options.ipfsHashInfo)
   const [ipfsCredentials, setIpfsCredentials] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>(
-    encode.options.ipfsCredentials || {},
+    encode.options.ipfsCredentials ?? {},
   )
-  const [isDocUploaded, setIsDocUploaded] = useState<boolean>(
-    encode.options.isDocUploaded !== undefined ? encode.options.isDocUploaded : false,
-  )
+  const [isDocUploaded, setIsDocUploaded] = useState<boolean>(encode.options.isDocUploaded ?? false)
   const [error, setError] = useState<string | undefined>(encode.options.error)
   const formRef = React.useRef<Form<FormProps>>(null)
   const ipfsFormRef = React.useRef<Form<FormProps>>(null)
@@ -120,8 +116,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
   const handleOnChange = useCallback(
     ({ formData }: FormProps): void => {
       const resetFormFields = (form: string): void => {
-        setDisabledIPFS(true)
-        setIpfsCredentials({})
         toggleInvalid({ ipfs: false })
         if (form === 'appData') {
           setDisabledAppData(true)
