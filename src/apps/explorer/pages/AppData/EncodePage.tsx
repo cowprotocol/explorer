@@ -262,6 +262,9 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
                 schema={ipfsSchema}
                 uiSchema={ipfsUiSchema}
               >
+                <span className="disclaimer">
+                  IPFS credentials are saved in memory for the current page and will be cleaned-up afterwards.
+                </span>
                 <button className="btn btn-info" disabled={disabledIPFS} type="submit">
                   UPLOAD APPDATA TO IPFS
                 </button>

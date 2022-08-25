@@ -128,6 +128,10 @@ export const Wrapper = styled(WrapperTemplate)`
     p {
       padding-right: 0;
     }
+    .disclaimer {
+      font-size: 1.2rem;
+      line-height: 1.3;
+    }
   }
   button {
     &:disabled {
