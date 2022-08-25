@@ -1,5 +1,40 @@
-import styled from 'styled-components/macro'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
 import { media } from 'theme/styles/media'
+
+export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
+  width: 100%;
+  .mobile-menu {
+    background: ${({ theme }): string => theme.bg2};
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  ${media.mobile} {
+    grid-template-columns: unset;
+    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | false =>
+      isMobileMenuOpen &&
+      css`
+        position: absolute;
+        top: 0;
+        z-index: 3;
+
+        &::before {
+          content: '';
+          width: 100%;
+          display: flex;
+          height: 60px;
+          background: transparent;
+          position: fixed;
+          top: 0;
+          left: 0;
+          z-index: 101;
+        }
+      `}
+  }
+`
 
 export const MenuContainer = styled.nav`
   display: flex;

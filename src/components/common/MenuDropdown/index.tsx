@@ -1,17 +1,20 @@
-import React, { useState, createRef } from 'react'
-import { MenuFlyout, Content, MenuSection, MenuTitle, MenuContainer } from './styled'
+import React, { useState, createRef, useCallback, useEffect } from 'react'
+import { MenuFlyout, Content, MenuSection, MenuTitle, MenuContainer, Wrapper } from './styled'
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 import useOnClickOutside from 'hooks/useOnClickOutside'
+import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
+import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
 export interface MenuProps {
   title: string
   children: React.ReactNode
+  isMobileMenuOpen?: boolean
 }
 
-export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
+export function MenuItemsPanel({ title, children, isMobileMenuOpen = false }: MenuProps): JSX.Element {
   const isLargeAndUp = useMediaBreakpoint(['lg'])
   const node = createRef<HTMLOListElement>()
   const [showMenu, setShowMenu] = useState(false)
@@ -23,7 +26,7 @@ export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
   useOnClickOutside(node, () => isLargeAndUp && setShowMenu(false)) // only trigger on large screens
 
   return (
-    <MenuContainer>
+    <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
       <a>Home</a>
       <MenuFlyout ref={node as never}>
         <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
@@ -69,21 +72,37 @@ export type MenuLink = BasicMenuLink
 
 export const DropDown = ({ itemContent }: DropdownProps): JSX.Element => {
   const { title, items } = itemContent
+  const isUpToLarge = useMediaBreakpoint(['xs', 'sm'])
+  const [isOrdersPanelOpen] = useState<boolean>(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const handleMobileMenuOnClick = useCallback(() => {
+    isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
+  }, [isUpToLarge, isMobileMenuOpen])
+  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
+  // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
+  useEffect(() => {
+    isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge])
 
   return (
-    <MenuItemsPanel title={title}>
-      {items?.map((item, index) => {
-        const { sectionTitle, links } = item
-        return (
-          <MenuSection key={index}>
-            {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
-            {links.map((link, linkIndex) => (
-              <Link key={linkIndex} link={link} />
-            ))}
-          </MenuSection>
-        )
-      })}
-    </MenuItemsPanel>
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
+      {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
+      {(isMobileMenuOpen || !isUpToLarge) && (
+        <MenuItemsPanel title={title} isMobileMenuOpen={isMobileMenuOpen}>
+          {items?.map((item, index) => {
+            const { sectionTitle, links } = item
+            return (
+              <MenuSection key={index}>
+                {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+                {links.map((link, linkIndex) => (
+                  <Link key={linkIndex} link={link} />
+                ))}
+              </MenuSection>
+            )
+          })}
+        </MenuItemsPanel>
+      )}
+    </Wrapper>
   )
 }
 

@@ -6,6 +6,15 @@ import { GlobalStyles, ThemeToggler } from 'storybook/decorators'
 import MenuDropdown, { MenuProps } from '.'
 // import { ExternalLink } from 'components/analytics/ExternalLink'
 
+/* import IMAGE_DOCS from 'assets/cow-swap/doc.svg'
+import IMAGE_INFO from 'assets/cow-swap/info.svg'
+import IMAGE_CODE from 'assets/cow-swap/code.svg'
+import IMAGE_DISCORD from 'assets/cow-swap/discord.svg'
+import IMAGE_TWITTER from 'assets/cow-swap/twitter.svg'
+import IMAGE_PIE from 'assets/cow-swap/pie.svg' */
+
+import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
+
 export default {
   title: 'Common/Menu',
   component: MenuDropdown,
@@ -22,8 +31,8 @@ const itemContent = {
         {
           title: 'CoW Protocol',
           url: 'https://cow.fi',
-          /* icon?: string, // If icon uses a regular <img /> tag */
-          /*  iconSVG?: string // If icon is a <SVG> inline component */
+          /* icon?: 'IMAGE_CARRET_DOWN', // If icon uses a regular <img /> tag */
+          iconSVG: IMAGE_CARRET_DOWN, // If icon is a <SVG> inline component
         },
         {
           title: 'Documentation',
@@ -63,29 +72,6 @@ const itemContent = {
 const Template: Story<MenuProps> = (args) => (
   <div>
     <MenuDropdown itemContent={itemContent} {...args} />
-    {/* <li>
-        <ExternalLink target={'_blank'} href={'https://cow.fi'}>
-          CoW Protocol
-        </ExternalLink>
-      </li>
-      <li>
-        <ExternalLink target={'_blank'} href={'https://docs.cow.fi'}>
-          Documentation
-        </ExternalLink>
-      </li>
-      <li>
-        <ExternalLink target={'_blank'} href={'https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2'}>
-          Analytics
-        </ExternalLink>
-      </li>
-      <li>
-        <ExternalLink target={'_blank'} href={'https://discord.gg/cowprotocol'}>
-          Discord
-        </ExternalLink>
-      </li>
-      <li>
-        <a>App Data</a>
-      </li> */}
   </div>
 )
 
