@@ -1,5 +1,12 @@
 import React, { useState, createRef, useCallback, useEffect } from 'react'
-import { MenuFlyout, Content, MenuSection, MenuTitle, MenuContainer, Wrapper } from './styled'
+import {
+  MenuFlyout,
+  Content,
+  MenuSection,
+  MenuTitle,
+  MenuContainer,
+  Wrapper,
+} from 'components/common/MenuDropdown/styled'
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'

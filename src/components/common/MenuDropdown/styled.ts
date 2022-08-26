@@ -1,4 +1,4 @@
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components/macro'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import { media } from 'theme/styles/media'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
