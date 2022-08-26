@@ -25,7 +25,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
       css`
         position: absolute;
         top: 0;
-        z-index: 3;
+        z-index: 4;
         right: 0;
         margin-top: 20px;
 
