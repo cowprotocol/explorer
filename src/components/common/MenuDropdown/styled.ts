@@ -16,10 +16,13 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
 
     ${media.mobile} {
       width: 100vw;
+      bottom: 40px;
+      right: 1px;
     }
   }
   ${media.mobile} {
     grid-template-columns: unset;
+    margin-bottom: 1.1rem;
     ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | false =>
       isMobileMenuOpen &&
       css`
