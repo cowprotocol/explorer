@@ -3,6 +3,8 @@ import { media } from 'theme/styles/media'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
+  display: flex;
+  justify-content: flex-end;
   .mobile-menu {
     background: ${({ theme }): string => theme.bg2};
     min-height: 100vh;
@@ -11,6 +13,10 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
+
+    ${media.mobile} {
+      width: 100vw;
+    }
   }
   ${media.mobile} {
     grid-template-columns: unset;
@@ -20,6 +26,8 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
         position: absolute;
         top: 0;
         z-index: 3;
+        right: 0;
+        margin-top: 20px;
 
         &::before {
           content: '';

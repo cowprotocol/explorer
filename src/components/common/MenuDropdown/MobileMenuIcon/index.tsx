@@ -6,7 +6,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   display: flex;
   cursor: pointer;
   margin: 0 6px 0 16px;
-  position: relative;
+  position: fixed;
   width: 3.4rem;
   height: 1.8rem;
 
@@ -23,6 +23,14 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
   span:nth-child(1) {
     left: 0;
     top: 0;
+    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | null =>
+      isMobileMenuOpen
+        ? css`
+            transform: rotate(45deg);
+            top: 50%;
+            bottom: 50%;
+          `
+        : null}
   }
 
   span:nth-child(2) {
@@ -30,36 +38,29 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
     opacity: 1;
     top: 50%;
     bottom: 50%;
+    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | null =>
+      isMobileMenuOpen
+        ? css`
+            opacity: 0;
+          `
+        : null}
   }
 
   span:nth-child(3) {
     bottom: 0;
     left: 0;
     width: 75%;
+    ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | null =>
+      isMobileMenuOpen
+        ? css`
+            transform: rotate(-45deg);
+            top: 50%;
+            bottom: 50%;
+            width: 100%;
+          `
+        : null}
   }
-
-  ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | false =>
-    isMobileMenuOpen &&
-    css`
-      span:nth-child(1) {
-        transform: rotate(45deg);
-        top: 50%;
-        bottom: 50%;
-      }
-
-      span:nth-child(2) {
-        opacity: 0;
-      }
-
-      span:nth-child(3) {
-        transform: rotate(-45deg);
-        top: 50%;
-        bottom: 50%;
-        width: 100%;
-      }
-    `};
 `
-
 interface IconProps {
   isMobileMenuOpen: boolean
   width?: number
