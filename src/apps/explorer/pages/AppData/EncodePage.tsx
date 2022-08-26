@@ -33,12 +33,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
-  const [disabledAppData, setDisabledAppData] = useState<boolean>(
-    encode.options.disabledAppData !== undefined ? encode.options.disabledAppData : true,
-  )
-  const [disabledIPFS, setDisabledIPFS] = useState<boolean>(
-    encode.options.disabledIPFS !== undefined ? encode.options.disabledIPFS : true,
-  )
+  const [disabledAppData, setDisabledAppData] = useState<boolean>(encode.options.disabledAppData ?? true)
+  const [disabledIPFS, setDisabledIPFS] = useState<boolean>(encode.options.disabledIPFS ?? true)
   const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>(
     encode.options.invalidFormDataAttempted ?? {
       appData: false,

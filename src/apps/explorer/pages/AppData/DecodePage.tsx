@@ -13,9 +13,7 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
   const { decode } = tabData
   const [formData, setFormdata] = useState<FormProps>(decode.formData)
   const [isSubmitted, setIsSubmitted] = useState<boolean>(decode.options.isSubmitted ?? false)
-  const [disabled, setDisabled] = useState<boolean>(
-    decode.options.disabled !== undefined ? decode.options.disabled : true,
-  )
+  const [disabled, setDisabled] = useState<boolean>(decode.options.disabled ?? true)
   const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<boolean>(
     decode.options.invalidFormDataAttempted ?? false,
   )
