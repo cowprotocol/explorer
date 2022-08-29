@@ -7,6 +7,7 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
 import { Notification } from 'components/Notification'
+import { ExternalLink } from 'components/analytics/ExternalLink'
 import {
   INITIAL_FORM_VALUES,
   INVALID_IPFS_CREDENTIALS,
@@ -20,23 +21,33 @@ import {
   CustomField,
   FormProps,
 } from './config'
+import { TabData } from '.'
 import { IpfsWrapper } from './styled'
-import { ExternalLink } from 'components/analytics/ExternalLink'
 
-const EncodePage: React.FC = () => {
-  const [schema, setSchema] = useState<JSONSchema7>({})
-  const [appDataForm, setAppDataForm] = useState({})
-  const [disabledAppData, setDisabledAppData] = useState<boolean>(true)
-  const [disabledIPFS, setDisabledIPFS] = useState<boolean>(true)
-  const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>({
-    appData: false,
-    ipfs: false,
-  })
-  const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>()
-  const [ipfsCredentials, setIpfsCredentials] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>({})
-  const [isDocUploaded, setIsDocUploaded] = useState<boolean>(false)
-  const [error, setError] = useState<string>()
+type EncodeProps = {
+  tabData: TabData
+  setTabData: React.Dispatch<React.SetStateAction<TabData>>
+}
+
+const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
+  const { encode } = tabData
+  const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
+  const [appDataForm, setAppDataForm] = useState(encode.formData)
+  const [disabledAppData, setDisabledAppData] = useState<boolean>(encode.options.disabledAppData ?? true)
+  const [disabledIPFS, setDisabledIPFS] = useState<boolean>(encode.options.disabledIPFS ?? true)
+  const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>(
+    encode.options.invalidFormDataAttempted ?? {
+      appData: false,
+      ipfs: false,
+    },
+  )
+  const [isLoading, setIsLoading] = useState<boolean>(encode.options.isLoading ?? false)
+  const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>(encode.options.ipfsHashInfo)
+  const [ipfsCredentials, setIpfsCredentials] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>(
+    encode.options.ipfsCredentials ?? {},
+  )
+  const [isDocUploaded, setIsDocUploaded] = useState<boolean>(encode.options.isDocUploaded ?? false)
+  const [error, setError] = useState<string | undefined>(encode.options.error)
   const formRef = React.useRef<Form<FormProps>>(null)
   const ipfsFormRef = React.useRef<Form<FormProps>>(null)
 
@@ -47,8 +58,42 @@ const EncodePage: React.FC = () => {
       setAppDataForm(INITIAL_FORM_VALUES)
     }
 
-    fetchSchema()
-  }, [])
+    if (!Object.keys(schema).length) {
+      fetchSchema()
+    }
+  }, [schema])
+
+  useEffect(() => {
+    setTabData((prevState) => ({
+      ...prevState,
+      encode: {
+        formData: appDataForm,
+        options: {
+          schema,
+          disabledAppData,
+          disabledIPFS,
+          invalidFormDataAttempted,
+          isLoading,
+          ipfsHashInfo,
+          ipfsCredentials,
+          isDocUploaded,
+          error,
+        },
+      },
+    }))
+  }, [
+    appDataForm,
+    disabledAppData,
+    disabledIPFS,
+    error,
+    invalidFormDataAttempted,
+    ipfsCredentials,
+    ipfsHashInfo,
+    isDocUploaded,
+    isLoading,
+    schema,
+    setTabData,
+  ])
 
   const toggleInvalid = (data: { [key: string]: boolean }): void => {
     setInvalidFormDataAttempted((prevState) => ({ ...prevState, ...data }))
@@ -67,8 +112,6 @@ const EncodePage: React.FC = () => {
   const handleOnChange = useCallback(
     ({ formData }: FormProps): void => {
       const resetFormFields = (form: string): void => {
-        setDisabledIPFS(true)
-        setIpfsCredentials({})
         toggleInvalid({ ipfs: false })
         if (form === 'appData') {
           setDisabledAppData(true)
@@ -215,6 +258,9 @@ const EncodePage: React.FC = () => {
                 schema={ipfsSchema}
                 uiSchema={ipfsUiSchema}
               >
+                <span className="disclaimer">
+                  IPFS credentials are saved in memory for the current page and will be cleaned-up afterwards.
+                </span>
                 <button className="btn btn-info" disabled={disabledIPFS} type="submit">
                   UPLOAD APPDATA TO IPFS
                 </button>

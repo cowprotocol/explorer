@@ -1,13 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { decodeAppDataSchema, FormProps, handleErrors, transformErrors } from './config'
 import DecodeAppData from 'components/AppData/DecodeAppData'
+import { TabData } from '.'
 
-const DecodePage: React.FC = () => {
-  const [formData, setFormdata] = useState<FormProps>()
-  const [isSubmitted, setIsSubmitted] = useState<boolean>(false)
-  const [disabled, setDisabled] = useState<boolean>(true)
-  const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<boolean>(false)
+type DecodeProps = {
+  tabData: TabData
+  setTabData: React.Dispatch<React.SetStateAction<TabData>>
+}
+
+const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
+  const { decode } = tabData
+  const [formData, setFormdata] = useState<FormProps>(decode.formData)
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(decode.options.isSubmitted ?? false)
+  const [disabled, setDisabled] = useState<boolean>(decode.options.disabled ?? true)
+  const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<boolean>(
+    decode.options.invalidFormDataAttempted ?? false,
+  )
+
+  useEffect(() => {
+    setTabData((prevState) => ({
+      ...prevState,
+      decode: {
+        formData,
+        options: {
+          isSubmitted,
+          disabled,
+          invalidFormDataAttempted,
+        },
+      },
+    }))
+  }, [disabled, formData, invalidFormDataAttempted, isSubmitted, setTabData])
 
   const formRef = React.useRef<Form<FormProps>>(null)
 
