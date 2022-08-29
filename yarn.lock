@@ -1267,6 +1267,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@cowprotocol/app-data@0.0.1-RC.5":
+  version "0.0.1-RC.5"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-0.0.1-RC.5.tgz#9ad8c3e45865cc6e1b7e68f7e4f967b0a432af4a"
+  integrity sha512-cMzXAWt9pLoXaJRExcQHW6QN/ls4sNCrqCHAmi6TCVKaLfHelvjSmyHTEqE0OBwXrCuOeuIzE0jhiEJ7U6qEpg==
+  dependencies:
+    ajv "^8.11.0"
+
 "@cowprotocol/app-data@^0.0.1-RC.3":
   version "0.0.1-RC.3"
   resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-0.0.1-RC.3.tgz#929341c4a74dedff86dc416be1be3d3e5d29d26e"
@@ -2210,12 +2217,10 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.1.2"
 
-
 "@fortawesome/free-regular-svg-icons@^6.1.2":
   version "6.1.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/free-regular-svg-icons/-/free-regular-svg-icons-6.1.2.tgz#9f04009098addcc11d0d185126f058ed042c3099"
   integrity sha512-xR4hA+tAwsaTHGfb+25H1gVU/aJ0Rzu+xIUfnyrhaL13yNQ7TWiI2RvzniAaB+VGHDU2a+Pk96Ve+pkN3/+TTQ==
-
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.1.2"
 
