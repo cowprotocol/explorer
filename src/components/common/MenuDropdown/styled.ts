@@ -15,23 +15,22 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     align-items: flex-start;
 
     ${media.mobile} {
-      width: 100vw;
-      bottom: 40px;
-      right: 1px;
+      width: 100%;
+      bottom: 42px;
+      right: 0;
+      overflow: hidden;
     }
   }
   ${media.mobile} {
     grid-template-columns: unset;
-    margin-bottom: 1.1rem;
     ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | false =>
       isMobileMenuOpen &&
       css`
-        position: absolute;
+        /* position: absolute; */
         top: 0;
         z-index: 4;
         right: 0;
-        margin-top: 20px;
-
+        /* margin-top: 20px;*/
         &::before {
           content: '';
           width: 100%;
@@ -54,16 +53,28 @@ export const MenuContainer = styled.nav`
   gap: 2rem;
 
   ${media.mobile} {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 3;
+    outline: 0;
+    padding: 80px 8px;
+    overflow: hidden scroll;
+    transform: translate3d(0px, 0px, 0px);
     display: flex;
-    flex-flow: column wrap;
-    align-items: center;
   }
 
   a {
     font-size: 1.6rem;
     font-weight: 600;
     appearance: none;
-    outline: 0px;
+    outline: 0;
     border-radius: 1.6rem;
     padding: 1.1rem 1.2rem;
     cursor: pointer;
@@ -74,6 +85,13 @@ export const MenuContainer = styled.nav`
       background: ${({ theme }): string => theme.bg2};
       text-decoration: none;
       color: ${({ theme }): string => theme.textSecondary1};
+    }
+    ${media.mobile} {
+      width: 100%;
+      border-bottom: 1px solid ${({ theme }): string => theme.bg3};
+      border-radius: 0;
+      padding: 2.8rem 1rem;
+      font-size: 1.8rem;
     }
   }
 `
@@ -88,6 +106,20 @@ export const MenuFlyout = styled.ol`
   ${media.mobile} {
     display: flex;
     flex-direction: column;
+    > button {
+      font-size: 1.8rem;
+      width: 100%;
+      border-radius: 0;
+      margin: 0px;
+      font-weight: 600;
+      padding: 28px 10px;
+
+      /* &.expanded {
+      } */
+
+      /* &:hover {
+      } */
+    }
   }
 
   > button {
@@ -173,6 +205,7 @@ export const Content = styled.div`
     border-radius: 0;
     display: flex;
     flex-flow: column wrap;
+    margin: 1.2rem;
   }
 
   > div {

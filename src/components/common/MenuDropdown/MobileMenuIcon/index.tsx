@@ -1,14 +1,18 @@
 import React from 'react'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import { media } from 'theme/styles/media'
 
 const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?: number; lineSize?: number }>`
   z-index: 102;
   display: flex;
   cursor: pointer;
   margin: 0 6px 0 16px;
-  position: fixed;
+  position: relative;
   width: 3.4rem;
   height: 1.8rem;
+  ${media.mobile} {
+    width: 2.8rem;
+  }
 
   span {
     background-color: ${({ theme }): string => theme.textSecondary1};

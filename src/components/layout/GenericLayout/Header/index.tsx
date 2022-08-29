@@ -34,6 +34,7 @@ const Logo = styled(Link)`
   justify-content: center;
   width: 12rem;
   height: 3.9rem;
+  z-index: 5;
 
   &:hover {
     text-decoration: none;
