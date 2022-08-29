@@ -53,24 +53,32 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
 
   return (
     <div className="decode-container">
-      <Form
-        className="data-form"
-        showErrorList={false}
-        onChange={handleOnChange}
-        formData={formData}
-        ref={formRef}
-        onSubmit={onSubmit}
-        transformErrors={transformErrors}
-        liveValidate={invalidFormDataAttempted}
-        noHtml5Validate
-        validate={onError}
-        onError={(): void => setInvalidFormDataAttempted(true)}
-        schema={decodeAppDataSchema}
-      >
-        <button className="btn btn-info" disabled={disabled} type="submit">
-          DECODE APPDATA
-        </button>
-      </Form>
+      <div className="left-panel">
+        <div className="info-header">
+          <p>
+            The digest hash is what is used as <strong>appData</strong> and should be included in your orders to track
+            your created <strong>appCode</strong>.
+          </p>
+        </div>
+        <Form
+          className="data-form"
+          showErrorList={false}
+          onChange={handleOnChange}
+          formData={formData}
+          ref={formRef}
+          onSubmit={onSubmit}
+          transformErrors={transformErrors}
+          liveValidate={invalidFormDataAttempted}
+          noHtml5Validate
+          validate={onError}
+          onError={(): void => setInvalidFormDataAttempted(true)}
+          schema={decodeAppDataSchema}
+        >
+          <button className="btn btn-info" disabled={disabled} type="submit">
+            DECODE APPDATA
+          </button>
+        </Form>
+      </div>
       {isSubmitted && <DecodeAppData showExpanded appData={formData?.appData} />}
     </div>
   )

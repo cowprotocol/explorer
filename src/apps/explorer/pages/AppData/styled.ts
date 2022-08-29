@@ -10,6 +10,17 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
 
 export const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
+  .info-header {
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    &.inner-form {
+      margin-bottom: 3rem;
+      font-size: 1.25rem;
+    }
+    p {
+      margin: 0;
+    }
+  }
   ${Content} {
     display: flex;
     flex-direction: column;
@@ -102,6 +113,11 @@ export const Wrapper = styled(WrapperTemplate)`
     flex: 1;
     div {
       align-items: flex-start !important;
+    }
+    .left-pannel {
+      display: flex;
+      flex-direction: column;
+      width: 40vw;
     }
     ${media.mobile} {
       margin: 2rem 0;

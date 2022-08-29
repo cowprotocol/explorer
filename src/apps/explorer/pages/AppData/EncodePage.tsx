@@ -175,6 +175,14 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
 
   return (
     <>
+      <div className="info-header">
+        <p>The metadata document is a JSON file that follows a specific format.</p>
+        <p>Each metadata will contain version as a mandatory field.</p>
+        <p>
+          The schema is defined using a <a href="https://json-schema.org">https://json-schema.org</a> schema
+          specification.
+        </p>
+      </div>
       <div className="form-container">
         <Form
           className="data-form"
@@ -242,6 +250,13 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
         {ipfsHashInfo && (
           <>
             <IpfsWrapper>
+              <div className="info-header inner-form">
+                <p>If you upload the file directly, the resulting hash/appDataHash might differ.</p>
+                <p>
+                  The hash/IPFS CID calculated by the tool is a stringified file without a new line at the end. That
+                  means that you will get different results if the file is uploaded directly as a file.
+                </p>
+              </div>
               <Form
                 className="data-form"
                 showErrorList={false}
