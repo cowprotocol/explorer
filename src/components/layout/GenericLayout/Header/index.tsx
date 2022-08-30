@@ -16,6 +16,7 @@ const HeaderStyled = styled.header`
   box-sizing: border-box;
   padding: 0 1.6rem;
   max-width: 140rem;
+  z-index: 5;
 
   ${media.mediumDown} {
     max-width: 94rem;
@@ -34,7 +35,7 @@ const Logo = styled(Link)`
   justify-content: center;
   width: 12rem;
   height: 3.9rem;
-  z-index: 5;
+  z-index: 6;
 
   &:hover {
     text-decoration: none;

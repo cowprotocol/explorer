@@ -15,10 +15,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     align-items: flex-start;
 
     ${media.mobile} {
-      width: 100%;
-      bottom: 42px;
-      right: 0;
-      overflow: hidden;
+      gap: 0;
     }
   }
   ${media.mobile} {
@@ -26,16 +23,14 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     ${({ isMobileMenuOpen }): FlattenSimpleInterpolation | false =>
       isMobileMenuOpen &&
       css`
-        /* position: absolute; */
         top: 0;
         z-index: 4;
         right: 0;
-        /* margin-top: 20px;*/
         &::before {
           content: '';
           width: 100%;
           display: flex;
-          height: 60px;
+          height: 6rem;
           background: transparent;
           position: fixed;
           top: 0;
@@ -56,7 +51,8 @@ export const MenuContainer = styled.nav`
     width: 100%;
     height: 100%;
     position: fixed;
-    flex-flow: column nowrap;
+    flex-direction: column;
+    flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: flex-start;
     top: 0;
@@ -64,9 +60,8 @@ export const MenuContainer = styled.nav`
     bottom: 0;
     z-index: 3;
     outline: 0;
-    padding: 80px 8px;
+    padding: 8rem 0.8rem;
     overflow: hidden scroll;
-    transform: translate3d(0px, 0px, 0px);
     display: flex;
   }
 
@@ -88,7 +83,7 @@ export const MenuContainer = styled.nav`
     }
     ${media.mobile} {
       width: 100%;
-      border-bottom: 1px solid ${({ theme }): string => theme.bg3};
+      border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
       border-radius: 0;
       padding: 2.8rem 1rem;
       font-size: 1.8rem;
@@ -106,20 +101,7 @@ export const MenuFlyout = styled.ol`
   ${media.mobile} {
     display: flex;
     flex-direction: column;
-    > button {
-      font-size: 1.8rem;
-      width: 100%;
-      border-radius: 0;
-      margin: 0px;
-      font-weight: 600;
-      padding: 28px 10px;
-
-      /* &.expanded {
-      } */
-
-      /* &:hover {
-      } */
-    }
+    width: 100%;
   }
 
   > button {
@@ -131,13 +113,20 @@ export const MenuFlyout = styled.ol`
     font-weight: 600;
     appearance: none;
     outline: 0;
-    /* margin: 0.4rem; */
     padding: 0.8rem 1.2rem;
     border: 0;
     cursor: pointer;
     background: transparent;
     transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
     color: ${({ theme }): string => theme.textSecondary2};
+
+    ${media.mobile} {
+      width: 100%;
+      border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
+      border-radius: 0;
+      padding: 2.8rem 1rem;
+      font-size: 1.8rem;
+    }
 
     &.expanded {
       border: none;
@@ -151,11 +140,8 @@ export const MenuFlyout = styled.ol`
         content: '';
         display: block;
         position: absolute;
-        height: 18px;
+        height: 1.8rem;
         width: 100%;
-        bottom: -18px;
-        left: 0;
-        background: transparent;
         ${media.desktopLarge} {
           content: none;
         }
@@ -167,6 +153,10 @@ export const MenuFlyout = styled.ol`
       width: 1.6rem;
       height: 0.6rem;
       object-fit: contain;
+      ${media.mobile} {
+        margin: 0 0 0 auto;
+        height: 1rem;
+      }
     }
 
     > svg.expanded {
@@ -188,7 +178,7 @@ export const Content = styled.div`
   position: absolute;
   top: 100%;
   right: 0;
-  border-radius: 16px;
+  border-radius: 1.6rem;
   background: ${({ theme }): string => theme.black};
   box-shadow: 0 1.2rem 1.8rem ${({ theme }): string => theme.bg3};
   padding: 3.2rem;
@@ -215,13 +205,13 @@ export const Content = styled.div`
 `
 
 export const MenuTitle = styled.b`
-  font-size: 12px;
+  font-size: 1.2rem;
   text-transform: uppercase;
   font-weight: 600;
   opacity: 0.75;
-  letter-spacing: 2px;
+  letter-spacing: 0.2rem;
   display: flex;
-  margin: 0 0 6px;
+  margin: 0 0 0.6rem;
   color: ${({ theme }): string => theme.textSecondary2};
 `
 
@@ -243,7 +233,7 @@ export const MenuSection = styled.div`
     outline: 0;
     border: 0;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 1.5rem;
     white-space: nowrap;
     font-weight: 500;
     margin: 0;
@@ -263,15 +253,14 @@ export const MenuSection = styled.div`
 
   a > svg,
   a > img {
-    width: 18px;
+    width: 1.8rem;
     height: auto;
-    max-height: 21px;
+    max-height: 2.1rem;
     object-fit: contain;
     color: ${({ theme }): string => theme.textActive1};
   }
 
   a > svg > path {
-    /* fill: ${({ theme }): string => theme.textSecondary1}; */
     fill: white;
   }
 `

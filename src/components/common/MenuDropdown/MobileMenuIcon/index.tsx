@@ -2,11 +2,11 @@ import React from 'react'
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import { media } from 'theme/styles/media'
 
-const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?: number; lineSize?: number }>`
+const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   z-index: 102;
   display: flex;
   cursor: pointer;
-  margin: 0 6px 0 16px;
+  margin: 0 0.6rem 0 1.6rem;
   position: relative;
   width: 3.4rem;
   height: 1.8rem;
@@ -16,7 +16,7 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
 
   span {
     background-color: ${({ theme }): string => theme.textSecondary1};
-    border-radius: 3px;
+    border-radius: 0.3rem;
     height: 0.2rem;
     position: absolute;
     transition: all 0.15s cubic-bezier(0.8, 0.5, 0.2, 1.4);
@@ -67,9 +67,6 @@ const Wrapper = styled.div<{ isMobileMenuOpen: boolean; height?: number; width?:
 `
 interface IconProps {
   isMobileMenuOpen: boolean
-  width?: number
-  height?: number
-  lineSize?: number
   onClick?: () => void
 }
 
