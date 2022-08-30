@@ -14,6 +14,7 @@ export interface Colors {
   bg1: Color
   bg2: Color
   bg3: Color
+  bg4: Color
   shade: Color
   boxShadow: Color
 
@@ -98,6 +99,7 @@ export const LIGHT_COLOURS = {
   bg1: '#F7F8FA',
   bg2: '#F7F8FA',
   bg3: '#232432',
+  bg4: '#0e0f14',
   shade: '#2E2F3B',
   boxShadow: 'rgba(0, 0, 0, 0.16)',
 
@@ -135,6 +137,7 @@ export const DARK_COLOURS = {
   bg1: '#16171F',
   bg2: '#2C2D3F',
   bg3: '#232432',
+  bg4: '#0e0f14',
   bgDisabled: '#ffffff80',
   shade: '#2E2F3B',
   boxShadow: 'rgba(0, 0, 0, 0.16)',

@@ -6,7 +6,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   display: flex;
   justify-content: flex-end;
   .mobile-menu {
-    background: ${({ theme }): string => theme.bg2};
+    background: ${({ theme }): string => theme.bg4};
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -130,7 +130,6 @@ export const MenuFlyout = styled.ol`
 
     &.expanded {
       border: none;
-      background: ${({ theme }): string => theme.bg1};
     }
 
     &:hover {
@@ -179,7 +178,7 @@ export const Content = styled.div`
   top: 100%;
   right: 0;
   border-radius: 1.6rem;
-  background: ${({ theme }): string => theme.black};
+  background: ${({ theme }): string => theme.bg4};
   box-shadow: 0 1.2rem 1.8rem ${({ theme }): string => theme.bg3};
   padding: 3.2rem;
   gap: 6.2rem;
