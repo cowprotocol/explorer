@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { toast, ToastContainer as PreToastContainer } from 'react-toastify'
 
 import greenCheck from 'assets/img/check-green.svg'
-import { TOAST_NOTIFICATION_DURATION } from 'apps/explorer/const'
+import { TOAST_NOTIFICATION_DURATION } from 'const'
 
 const ToastContainer = styled(PreToastContainer).attrs({
   // custom props
