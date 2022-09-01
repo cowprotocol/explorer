@@ -19,7 +19,7 @@ export interface MenuProps {
   title: string
   children: React.ReactNode
   isMobileMenuOpen?: boolean
-  showDropdown: boolean
+  showDropdown?: boolean
   url?: string
 }
 
