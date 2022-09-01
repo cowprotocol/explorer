@@ -19,6 +19,8 @@ export interface MenuProps {
   title: string
   children: React.ReactNode
   isMobileMenuOpen?: boolean
+  showDropdown: boolean
+  url?: string
 }
 
 /* interface MenuImageProps {
@@ -61,7 +63,13 @@ function InternalExternalLink({ link, handleMobileMenuOnClick }: InternalExterna
   }
 }
  */
-export function MenuItemsPanel({ title, children, isMobileMenuOpen = false }: MenuProps): JSX.Element {
+export function MenuItemsPanel({
+  title,
+  children,
+  isMobileMenuOpen = false,
+  showDropdown,
+  url = '',
+}: MenuProps): JSX.Element {
   const isLargeAndUp = useMediaBreakpoint(['lg'])
   const node = createRef<HTMLOListElement>()
   const [showMenu, setShowMenu] = useState(false)
@@ -74,11 +82,15 @@ export function MenuItemsPanel({ title, children, isMobileMenuOpen = false }: Me
 
   return (
     <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
-      <a>Home</a>
       <MenuFlyout ref={node as never}>
-        <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
-          {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
-        </button>
+        {showDropdown ? (
+          <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
+            {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
+          </button>
+        ) : (
+          /* {url && <Link link={url} />} */
+          console.log(url)
+        )}
         {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
       </MenuFlyout>
     </MenuContainer>
@@ -101,10 +113,11 @@ export interface DropDownItem {
   kind: string
   title: string
   items: DropDownSubItem[]
+  url?: string
 }
 
 interface DropdownProps {
-  itemContent: DropDownItem
+  menuContent: DropDownItem[]
 }
 
 function Link({ link }: { link: MenuLink }): JSX.Element {
@@ -117,8 +130,8 @@ function Link({ link }: { link: MenuLink }): JSX.Element {
 
 export type MenuLink = BasicMenuLink
 
-export const DropDown = ({ itemContent }: DropdownProps): JSX.Element => {
-  const { title, items } = itemContent
+export const DropDown = ({ menuContent }: DropdownProps): JSX.Element => {
+  // const { title, items } = menuContent
   const isUpToLarge = useMediaBreakpoint(['xs', 'sm'])
   const [isOrdersPanelOpen] = useState<boolean>(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -134,21 +147,28 @@ export const DropDown = ({ itemContent }: DropdownProps): JSX.Element => {
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
-      {(isMobileMenuOpen || !isUpToLarge) && (
-        <MenuItemsPanel title={title} isMobileMenuOpen={isMobileMenuOpen}>
-          {items?.map((item, index) => {
-            const { sectionTitle, links } = item
-            return (
-              <MenuSection key={index}>
-                {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
-                {links.map((link, linkIndex) => (
-                  <Link key={linkIndex} link={link} />
-                ))}
-              </MenuSection>
-            )
-          })}
-        </MenuItemsPanel>
-      )}
+      {(isMobileMenuOpen || !isUpToLarge) &&
+        menuContent.map((menu) => (
+          <MenuItemsPanel
+            title={menu.title}
+            key={menu.title}
+            showDropdown={menu.kind === 'DROP_DOWN'}
+            isMobileMenuOpen={isMobileMenuOpen}
+            url={menu.url}
+          >
+            {menu.items.map((item, index) => {
+              const { sectionTitle, links } = item
+              return (
+                <MenuSection key={index}>
+                  {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+                  {links.map((link, linkIndex) => (
+                    <Link key={linkIndex} link={link} />
+                  ))}
+                </MenuSection>
+              )
+            })}
+          </MenuItemsPanel>
+        ))}
     </Wrapper>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useState, createRef } from 'react'
 
 import { Header as GenericHeader } from 'components/layout/GenericLayout/Header'
-import { itemContent } from 'components/common/MenuDropdown/mainMenu'
+import { menuContent } from 'components/common/MenuDropdown/mainMenu'
 import { NetworkSelector } from 'components/NetworkSelector'
 import { PREFIX_BY_NETWORK_ID, useNetworkId } from 'state/network'
 import { FlexWrap } from 'apps/explorer/pages/styled'
@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
     <GenericHeader logoAlt="CoW Protocol Explorer" linkTo={`/${prefixNetwork || ''}`}>
       <NetworkSelector networkId={networkId} />
       <FlexWrap ref={flexWrapDivRef} grow={1}>
-        <MenuDropdown itemContent={itemContent} />
+        <MenuDropdown menuContent={menuContent} />
       </FlexWrap>
     </GenericHeader>
   )
