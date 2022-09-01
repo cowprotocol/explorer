@@ -1,5 +1,3 @@
-// to-do DELETE THIS FILE
-
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
 import { CowSdk } from '@cowprotocol/cow-sdk'

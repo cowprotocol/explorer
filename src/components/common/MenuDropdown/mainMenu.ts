@@ -1,4 +1,4 @@
-import { DOCS_LINK, DISCORD_LINK /* Routes  */ } from 'apps/explorer/const'
+import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, DUNE_DASHBOARD_LINK, Routes } from 'apps/explorer/const'
 
 import IMAGE_DISCORD from 'assets/img/discord.svg'
 
@@ -10,8 +10,8 @@ export const itemContent = {
       sectionTitle: 'OVERVIEW',
       links: [
         {
-          title: 'CoW Protocossl',
-          url: 'https://cow.fi',
+          title: 'CoW Protocol',
+          url: PROTOCOL_LINK,
         },
         {
           title: 'Documentation',
@@ -19,7 +19,7 @@ export const itemContent = {
         },
         {
           title: 'Analytics',
-          url: 'https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2',
+          url: DUNE_DASHBOARD_LINK,
         },
       ],
     },
@@ -39,7 +39,7 @@ export const itemContent = {
       links: [
         {
           title: 'App Data',
-          url: '#',
+          url: Routes.APPDATA,
           /* icon?: string, // If icon uses a regular <img /> tag */
           /*  iconSVG?: string // If icon is a <SVG> inline component */
         },
