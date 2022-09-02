@@ -11,11 +11,10 @@ import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { ExternalLink } from 'components/analytics/ExternalLink'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
-import { getNetworkFromId } from '@gnosis.pm/dex-js'
-import { useNetworkId } from 'state/network'
 
 export interface MenuProps {
   title: string
@@ -26,8 +25,6 @@ export interface MenuProps {
 }
 
 export function MenuItemsPanel({ title, children, showDropdown, url = '' }: MenuProps): JSX.Element {
-  const networkId = useNetworkId() || 1
-  const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : ''
   const isLargeAndUp = useMediaBreakpoint(['lg'])
   const node = createRef<HTMLOListElement>()
   const [showMenu, setShowMenu] = useState(false)
@@ -45,12 +42,13 @@ export function MenuItemsPanel({ title, children, showDropdown, url = '' }: Menu
           {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
         </button>
       ) : (
-        url && <a href={`/${network}${url}`}>{title}</a>
+        url && <LinkWithPrefixNetwork to={`${url}`}>{title}</LinkWithPrefixNetwork>
       )}
       {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
     </MenuFlyout>
   )
 }
+
 /* type MenuItemKind = 'DROP_DOWN' | 'EXTERNAL_LINK' */
 
 export interface BasicMenuLink {
