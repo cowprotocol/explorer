@@ -15,13 +15,19 @@ export const Wrapper = styled(WrapperTemplate)`
     line-height: 1.3;
     display: block;
     margin-bottom: 1rem;
+    ol {
+      padding-left: 2rem;
+      li {
+        margin: 0.5rem 0 0.5rem 0;
+      }
+    }
   }
   .info-header {
     margin-bottom: 2rem;
     font-size: 1.5rem;
     &.box {
       padding: 3rem 4rem;
-      background: #22232d;
+      background: ${({ theme }): string => theme.bg3};
       border-radius: 0.4rem;
     }
     a {
@@ -75,6 +81,10 @@ export const Wrapper = styled(WrapperTemplate)`
     .appData-hash {
       margin: 0 0 1rem 0;
       max-width: 54rem;
+      border: 1px solid ${({ theme }): string => theme.tableRowBorder};
+      padding: 0.75rem;
+      background: ${({ theme }): string => theme.tableRowBorder};
+      border-radius: 0.5rem;
       ${media.mobile} {
         max-width: none;
         margin: 1rem 0;

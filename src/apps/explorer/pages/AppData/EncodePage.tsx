@@ -309,13 +309,18 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
                 uiSchema={ipfsUiSchema}
               >
                 <span className="disclaimer">
-                  <strong>Note:</strong> The credentials are kept in memory only while you are at this page. When you
-                  navigate away or close the browser tab it’ll be cleared.
-                </span>
-                <span className="disclaimer">
-                  <strong>Note:</strong> If you upload the file directly, the resulting hash/appDataHash might differ.
-                  The hash/IPFS CID calculated by the tool is a minified and stringified file without a new line at the
-                  end. That means that you will get different results if the file is uploaded directly as a file.
+                  <strong>Notes:</strong>
+                  <ol>
+                    <li>
+                      The credentials are kept in memory only while you are at this page. When you navigate away or
+                      close the browser tab it’ll be cleared.
+                    </li>
+                    <li>
+                      If you upload the file directly, the resulting hash/appDataHash might differ. The hash/IPFS CID
+                      calculated by the tool is a minified and stringified file without a new line at the end. That
+                      means that you will get different results if the file is uploaded directly as a file.
+                    </li>
+                  </ol>
                 </span>
                 <button className="btn btn-info" disabled={disabledIPFS} type="submit">
                   UPLOAD APPDATA TO IPFS
