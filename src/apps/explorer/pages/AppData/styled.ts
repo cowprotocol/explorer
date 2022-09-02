@@ -10,10 +10,27 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
 
 export const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
+  .disclaimer {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    display: block;
+    margin-bottom: 1rem;
+  }
   .info-header {
     margin-bottom: 2rem;
     font-size: 1.5rem;
+    &.box {
+      padding: 3rem 4rem;
+      background: #22232d;
+      border-radius: 0.4rem;
+    }
+    a {
+      margin: 0 0.5rem 0 0.5rem;
+    }
     &.inner-form {
+      h2 {
+        margin-bottom: 2rem;
+      }
       margin-bottom: 3rem;
       font-size: 1.25rem;
     }
@@ -143,10 +160,6 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     p {
       padding-right: 0;
-    }
-    .disclaimer {
-      font-size: 1.2rem;
-      line-height: 1.3;
     }
   }
   button {

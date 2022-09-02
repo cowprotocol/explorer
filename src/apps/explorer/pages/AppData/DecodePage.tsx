@@ -54,10 +54,14 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
   return (
     <div className="decode-container">
       <div className="left-panel">
-        <div className="info-header">
+        <div className="info-header box">
           <p>
-            The digest hash is what is used as <strong>appData</strong> and should be included in your orders to track
-            your created <strong>appCode</strong>.
+            The decode tool allows you to decode an <strong>appData</strong> hash into the corresponding stored JSON
+            document, if any.
+          </p>
+          <p>
+            <strong>Note:</strong> Not all hexes correspond to an IPFS file and even so it doesn’t guarantee that the
+            file is following our defined JSON schema.
           </p>
         </div>
         <Form

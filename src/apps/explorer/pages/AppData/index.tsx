@@ -12,9 +12,9 @@ import { FormProps } from './config'
 
 import { StyledExplorerTabs, Wrapper } from './styled'
 
-enum TabView {
+export enum TabView {
   ENCODE = 1,
-  DECODE,
+  DECODE = 2,
 }
 
 export type TabData = {
@@ -29,12 +29,16 @@ function useQueryViewParams(): { tab: string } {
   return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
-const tabItems = (tabData: TabData, setTabData: React.Dispatch<React.SetStateAction<TabData>>): TabItemInterface[] => {
+const tabItems = (
+  tabData: TabData,
+  setTabData: React.Dispatch<React.SetStateAction<TabData>>,
+  onChangeTab: (tabId: number) => void,
+): TabItemInterface[] => {
   return [
     {
       id: TabView.ENCODE,
       tab: <TabIcon title="Encode" iconFontName={faListUl} />,
-      content: <EncodePage tabData={tabData} setTabData={setTabData} />,
+      content: <EncodePage tabData={tabData} setTabData={setTabData} handleTabChange={onChangeTab} />,
     },
     {
       id: TabView.DECODE,
@@ -56,7 +60,6 @@ const AppDataPage: React.FC = () => {
   const onChangeTab = useCallback((tabId: number) => {
     const newTabViewName = TabView[tabId]
     if (!newTabViewName) return
-
     setTabViewSelected(TabView[newTabViewName])
   }, [])
 
@@ -70,7 +73,7 @@ const AppDataPage: React.FC = () => {
       <Content>
         <StyledExplorerTabs
           className={`appData-tab--${TabView[tabViewSelected].toLowerCase()}`}
-          tabItems={tabItems(tabData, setTabData)}
+          tabItems={tabItems(tabData, setTabData, onChangeTab)}
           defaultTab={tabViewSelected}
           onChange={(key: number): void => onChangeTab(key)}
         />

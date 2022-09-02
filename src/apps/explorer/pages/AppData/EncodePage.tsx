@@ -21,15 +21,16 @@ import {
   CustomField,
   FormProps,
 } from './config'
-import { TabData } from '.'
+import { TabData, TabView } from '.'
 import { IpfsWrapper } from './styled'
 
 type EncodeProps = {
   tabData: TabData
   setTabData: React.Dispatch<React.SetStateAction<TabData>>
+  handleTabChange: (tabId: number) => void
 }
 
-const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
+const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChange }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
@@ -175,12 +176,24 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
 
   return (
     <>
-      <div className="info-header">
-        <p>The metadata document is a JSON file that follows a specific format.</p>
-        <p>Each metadata will contain version as a mandatory field.</p>
+      <div className="info-header box">
         <p>
-          The schema is defined using a <a href="https://json-schema.org">https://json-schema.org</a> schema
-          specification.
+          The <strong>appData</strong> optional field part of CoW Protocol orders is the hex digest of an IPFS
+          document’s CID of a JSON file.
+        </p>
+        <p>
+          The JSON file follows a
+          <a target="_blank" href="https://json-schema.org" rel="noreferrer">
+            JSON schema
+          </a>
+          defined on app-data
+          <a target="_blank" href="https://github.com/cowprotocol/app-data" rel="noreferrer">
+            repo.
+          </a>
+        </p>
+        <p>
+          This page offers an easy way to create such JSON with the most up to date version and offers a way to upload
+          it to IPFS.
         </p>
       </div>
       <div className="form-container">
@@ -209,6 +222,9 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
         </Form>
         <AppDataWrapper>
           <div className="hidden-content">
+            <p>
+              This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
+            </p>
             <p>AppData Root Schema information can be found in:</p>
             <ExternalLink
               target={'_blank'}
@@ -236,11 +252,16 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
             {ipfsHashInfo && (
               <>
                 <h4>AppData Hash</h4>
+                <p>
+                  This is the corresponding hash of the above document. Use this in your orders <strong>appData</strong>{' '}
+                  field.
+                </p>
                 <RowWithCopyButton
                   className="appData-hash"
                   textToCopy={ipfsHashInfo.appDataHash}
                   contentsToDisplay={ipfsHashInfo.appDataHash}
                 />
+                <p>Note: Don’t forget to upload this file to IPFS!</p>
               </>
             )}
           </div>
@@ -251,10 +272,24 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
           <>
             <IpfsWrapper>
               <div className="info-header inner-form">
-                <p>If you upload the file directly, the resulting hash/appDataHash might differ.</p>
+                <h2>IPFS UPLOAD</h2>
                 <p>
-                  The hash/IPFS CID calculated by the tool is a stringified file without a new line at the end. That
-                  means that you will get different results if the file is uploaded directly as a file.
+                  We offer an integrated way to upload the generated file to IPFS directly through
+                  <a target="_blank" href="https://docs.pinata.cloud/pinata-api" rel="noreferrer">
+                    Pinata’s
+                  </a>
+                  API.
+                </p>
+                <p>
+                  Insert your credentials and hit upload. The resulting <strong>appData</strong> hash is displayed on
+                  the generated section.
+                </p>
+                <p>
+                  Once uploaded, you can use the <strong>appData</strong> hash in the
+                  <a href="" onClick={(): void => handleTabChange(TabView.DECODE)}>
+                    Decode
+                  </a>
+                  tab to verify it.
                 </p>
               </div>
               <Form
@@ -274,7 +309,13 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData }) => {
                 uiSchema={ipfsUiSchema}
               >
                 <span className="disclaimer">
-                  IPFS credentials are saved in memory for the current page and will be cleaned-up afterwards.
+                  <strong>Note:</strong> The credentials are kept in memory only while you are at this page. When you
+                  navigate away or close the browser tab it’ll be cleared.
+                </span>
+                <span className="disclaimer">
+                  <strong>Note:</strong> If you upload the file directly, the resulting hash/appDataHash might differ.
+                  The hash/IPFS CID calculated by the tool is a minified and stringified file without a new line at the
+                  end. That means that you will get different results if the file is uploaded directly as a file.
                 </span>
                 <button className="btn btn-info" disabled={disabledIPFS} type="submit">
                   UPLOAD APPDATA TO IPFS
