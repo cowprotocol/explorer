@@ -6,7 +6,7 @@ export const menuContent = [
   {
     title: 'Home',
     items: [],
-    kind: 'EXTERNAL_LINK',
+    kind: 'INTERNAL_LINK',
     url: Routes.HOME,
   },
   {
