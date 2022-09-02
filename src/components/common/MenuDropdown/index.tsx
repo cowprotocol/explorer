@@ -13,6 +13,7 @@ import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { ExternalLink } from 'components/analytics/ExternalLink'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
+import LogoWrapper from 'components/common/LogoWrapper'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 import { getNetworkFromId } from '@gnosis.pm/dex-js'
 import { useNetworkId } from 'state/network'
@@ -56,7 +57,7 @@ export function MenuItemsPanel({ title, children, showDropdown, url = '' }: Menu
 export interface BasicMenuLink {
   title: string
   url: string
-  icon?: string // If icon uses a regular <img /> tag
+  icon?: typeof LogoWrapper // If icon uses a regular <img /> tag
   iconSVG?: string // If icon is a <SVG> inline component
 }
 export interface DropDownSubItem {
