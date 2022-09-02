@@ -135,6 +135,9 @@ export const MenuFlyout = styled.ol`
     &:hover {
       background: ${({ theme }): string => theme.bg2};
       color: ${({ theme }): string => theme.textSecondary1};
+      ${media.mobile} {
+        background: none;
+      }
       &::after {
         content: '';
         display: block;
