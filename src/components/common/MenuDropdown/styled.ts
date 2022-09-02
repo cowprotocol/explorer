@@ -87,6 +87,9 @@ export const MenuContainer = styled.nav`
       border-radius: 0;
       padding: 2.8rem 1rem;
       font-size: 1.8rem;
+      :hover {
+        background: none;
+      }
     }
   }
 `
