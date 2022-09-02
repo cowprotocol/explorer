@@ -25,13 +25,7 @@ export interface MenuProps {
   url?: string
 }
 
-export function MenuItemsPanel({
-  title,
-  children,
-  isMobileMenuOpen = false,
-  showDropdown,
-  url = '',
-}: MenuProps): JSX.Element {
+export function MenuItemsPanel({ title, children, showDropdown, url = '' }: MenuProps): JSX.Element {
   const networkId = useNetworkId() || 1
   const network = networkId !== 1 ? getNetworkFromId(networkId).toLowerCase() : ''
   const isLargeAndUp = useMediaBreakpoint(['lg'])
@@ -45,18 +39,16 @@ export function MenuItemsPanel({
   useOnClickOutside(node, () => isLargeAndUp && setShowMenu(false)) // only trigger on large screens
 
   return (
-    <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
-      <MenuFlyout ref={node as never}>
-        {showDropdown ? (
-          <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
-            {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
-          </button>
-        ) : (
-          url && <a href={`/${network}${url}`}>{title}</a>
-        )}
-        {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
-      </MenuFlyout>
-    </MenuContainer>
+    <MenuFlyout ref={node as never}>
+      {showDropdown ? (
+        <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
+          {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
+        </button>
+      ) : (
+        url && <a href={`/${network}${url}`}>{title}</a>
+      )}
+      {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
+    </MenuFlyout>
   )
 }
 /* type MenuItemKind = 'DROP_DOWN' | 'EXTERNAL_LINK' */
@@ -110,28 +102,30 @@ export const DropDown = ({ menuContent }: DropdownProps): JSX.Element => {
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
-      {(isMobileMenuOpen || !isUpToLarge) &&
-        menuContent.map((menu) => (
-          <MenuItemsPanel
-            title={menu.title}
-            key={menu.title}
-            showDropdown={menu.kind === 'DROP_DOWN'}
-            isMobileMenuOpen={isMobileMenuOpen}
-            url={menu.url}
-          >
-            {menu.items.map((item, index) => {
-              const { sectionTitle, links } = item
-              return (
-                <MenuSection key={index}>
-                  {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
-                  {links.map((link, linkIndex) => (
-                    <Link key={linkIndex} link={link} />
-                  ))}
-                </MenuSection>
-              )
-            })}
-          </MenuItemsPanel>
-        ))}
+      <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
+        {(isMobileMenuOpen || !isUpToLarge) &&
+          menuContent.map((menu) => (
+            <MenuItemsPanel
+              title={menu.title}
+              key={menu.title}
+              showDropdown={menu.kind === 'DROP_DOWN'}
+              isMobileMenuOpen={isMobileMenuOpen}
+              url={menu.url}
+            >
+              {menu.items.map((item, index) => {
+                const { sectionTitle, links } = item
+                return (
+                  <MenuSection key={index}>
+                    {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+                    {links.map((link, linkIndex) => (
+                      <Link key={linkIndex} link={link} />
+                    ))}
+                  </MenuSection>
+                )
+              })}
+            </MenuItemsPanel>
+          ))}
+      </MenuContainer>
     </Wrapper>
   )
 }
