@@ -13,6 +13,9 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
+    ${media.desktop} {
+      display: none;
+    }
 
     ${media.mobile} {
       gap: 0;
@@ -47,7 +50,7 @@ export const MenuContainer = styled.nav`
   justify-content: flex-end;
   gap: 2rem;
 
-  ${media.mobile} {
+  ${media.mobile}, ${media.mediumOnly} {
     width: 100%;
     height: 100%;
     position: fixed;
@@ -62,7 +65,7 @@ export const MenuContainer = styled.nav`
     outline: 0;
     padding: 8rem 0.8rem;
     overflow: hidden scroll;
-    display: flex;
+    display: none; /* flex */
   }
 
   a {
@@ -201,6 +204,7 @@ export const Content = styled.div`
     display: flex;
     flex-flow: column wrap;
     margin: 1.2rem;
+    gap: 3.6rem;
   }
 
   > div {
@@ -218,6 +222,9 @@ export const MenuTitle = styled.b`
   display: flex;
   margin: 0 0 0.6rem;
   color: ${({ theme }): string => theme.textSecondary2};
+  ${media.mobile} {
+    display: none;
+  }
 `
 
 export const MenuSection = styled.div`
@@ -229,6 +236,11 @@ export const MenuSection = styled.div`
   justify-items: flex-start;
   margin: 0;
   gap: 2.4rem;
+  ${media.mobile} {
+    /* padding: 8px 10px 28px; */
+    gap: 3.6rem;
+    opacity: 0.7;
+  }
 
   a,
   button {
