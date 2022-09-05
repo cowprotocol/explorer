@@ -32,13 +32,14 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     a {
       margin: 0 0.5rem 0 0.5rem;
+      color: ${({ theme }): string => theme.orange};
     }
     &.inner-form {
       h2 {
         margin-bottom: 2rem;
       }
       margin-bottom: 3rem;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
     }
     p {
       margin: 0;
@@ -152,6 +153,12 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     ${media.mediumDown} {
       margin: 2rem 0;
+    }
+  }
+  .decode-section {
+    min-width: 45vh;
+    .hidden-content {
+      max-width: 40vh;
     }
   }
   .ipfs-container {

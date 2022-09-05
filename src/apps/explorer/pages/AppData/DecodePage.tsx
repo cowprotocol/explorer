@@ -83,7 +83,11 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
           </button>
         </Form>
       </div>
-      {isSubmitted && <DecodeAppData showExpanded appData={formData?.appData} />}
+      {isSubmitted && (
+        <div className="decode-section">
+          <DecodeAppData showExpanded appData={formData?.appData} />
+        </div>
+      )}
     </div>
   )
 }

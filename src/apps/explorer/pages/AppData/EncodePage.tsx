@@ -7,7 +7,6 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
 import { Notification } from 'components/Notification'
-import { ExternalLink } from 'components/analytics/ExternalLink'
 import {
   INITIAL_FORM_VALUES,
   INVALID_IPFS_CREDENTIALS,
@@ -225,24 +224,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
             <p>
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
-            <p>AppData Root Schema information can be found in:</p>
-            <ExternalLink
-              target={'_blank'}
-              rel="noopener noreferrer"
-              href={`https://docs.cow.fi/front-end/creating-app-ids`}
-            >
-              {' '}
-              AppData documentation
-            </ExternalLink>{' '}
-            |
-            <ExternalLink
-              target={'_blank'}
-              rel="noopener noreferrer"
-              href={`https://docs.cow.fi/front-end/creating-app-ids/create-the-order-meta-data-file/metadata`}
-            >
-              {' '}
-              Metadata documentation
-            </ExternalLink>
             <RowWithCopyButton
               textToCopy={JSON.stringify(handleFormatData(appDataForm), null, 2)}
               contentsToDisplay={
@@ -286,9 +267,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
                 </p>
                 <p>
                   Once uploaded, you can use the <strong>appData</strong> hash in the
-                  <a href="" onClick={(): void => handleTabChange(TabView.DECODE)}>
-                    Decode
-                  </a>
+                  <a onClick={(): void => handleTabChange(TabView.DECODE)}>Decode</a>
                   tab to verify it.
                 </p>
               </div>
