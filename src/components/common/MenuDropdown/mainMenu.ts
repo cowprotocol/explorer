@@ -1,18 +1,14 @@
-import React from 'react'
-
 import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, DUNE_DASHBOARD_LINK, Routes } from 'apps/explorer/const'
 import IMAGE_DISCORD from 'assets/img/discord.svg'
-import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
+import { MenuItemKind, MenuTreeItem } from './types'
 
-export const menuContent = [
+export const menuContent: MenuTreeItem[] = [
   {
     title: 'Home',
-    items: [],
-    kind: 'INTERNAL_LINK',
     url: Routes.HOME,
   },
   {
-    kind: 'DROP_DOWN',
+    kind: MenuItemKind.DROP_DOWN,
     title: 'More',
     items: [
       {
@@ -21,14 +17,17 @@ export const menuContent = [
           {
             title: 'CoW Protocol',
             url: PROTOCOL_LINK,
+            kind: MenuItemKind.EXTERNAL_LINK,
           },
           {
             title: 'Documentation',
             url: DOCS_LINK,
+            kind: MenuItemKind.EXTERNAL_LINK,
           },
           {
             title: 'Analytics',
             url: DUNE_DASHBOARD_LINK,
+            kind: MenuItemKind.EXTERNAL_LINK,
           },
         ],
       },
@@ -38,8 +37,8 @@ export const menuContent = [
           {
             title: 'Discord',
             url: DISCORD_LINK,
-            icon: <LogoWrapper className="github-logo" src={LOGO_MAP.github} title="Open it on Github" />, // If icon uses a regular <img /> tag */
             iconSVG: IMAGE_DISCORD, // If icon is a <SVG> inline component
+            kind: MenuItemKind.EXTERNAL_LINK,
           },
         ],
       },

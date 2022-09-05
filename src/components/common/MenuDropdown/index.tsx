@@ -10,11 +10,12 @@ import {
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
-import { ExternalLink } from 'components/analytics/ExternalLink'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
+import { MenuItemKind, DropDownItem } from './types'
+import InternalExternalLink from './InternalExternalLink'
 
 export interface MenuProps {
   title: string
@@ -49,39 +50,9 @@ export function MenuItemsPanel({ title, children, showDropdown, url = '' }: Menu
   )
 }
 
-/* type MenuItemKind = 'DROP_DOWN' | 'EXTERNAL_LINK' */
-
-export interface BasicMenuLink {
-  title: string
-  url: string
-  icon?: JSX.Element // If icon uses a regular <img /> tag
-  iconSVG?: string // If icon is a <SVG> inline component
-}
-export interface DropDownSubItem {
-  sectionTitle?: string
-  links: MenuLink[]
-}
-
-export interface DropDownItem {
-  kind: string
-  title: string
-  items: DropDownSubItem[]
-  url?: string
-}
-
 interface DropdownProps {
   menuContent: DropDownItem[]
 }
-
-function Link({ link }: { link: MenuLink }): JSX.Element {
-  return (
-    <ExternalLink target={'_blank'} href={link.url}>
-      {link.title}
-    </ExternalLink>
-  )
-}
-
-export type MenuLink = BasicMenuLink
 
 export const DropDown = ({ menuContent }: DropdownProps): JSX.Element => {
   // const { title, items } = menuContent
@@ -106,7 +77,7 @@ export const DropDown = ({ menuContent }: DropdownProps): JSX.Element => {
             <MenuItemsPanel
               title={menu.title}
               key={menu.title}
-              showDropdown={menu.kind === 'DROP_DOWN'}
+              showDropdown={menu.kind === MenuItemKind.DROP_DOWN}
               isMobileMenuOpen={isMobileMenuOpen}
               url={menu.url}
             >
@@ -116,7 +87,7 @@ export const DropDown = ({ menuContent }: DropdownProps): JSX.Element => {
                   <MenuSection key={index}>
                     {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
                     {links.map((link, linkIndex) => (
-                      <Link key={linkIndex} link={link} />
+                      <InternalExternalLink key={linkIndex} link={link} />
                     ))}
                   </MenuSection>
                 )
