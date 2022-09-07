@@ -197,7 +197,6 @@ export const decodeAppDataSchema: JSONSchema7 = {
     appData: {
       type: 'string',
       title: 'AppData',
-      description: 'Add your AppData hash.',
       pattern: '^0x[a-fA-F0-9]{64}',
     },
   },

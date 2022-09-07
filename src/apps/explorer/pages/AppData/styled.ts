@@ -284,6 +284,9 @@ export const Wrapper = styled(WrapperTemplate)`
         font-size: 1.3rem;
         margin: 1rem 0;
       }
+      .main-container {
+        width: 100%;
+      }
       .data-form {
         width: 100%;
         max-width: 40rem;
@@ -291,6 +294,9 @@ export const Wrapper = styled(WrapperTemplate)`
         ${media.mobile} {
           max-width: 100%;
           margin-right: 0;
+        }
+        input {
+          margin-top: 1rem;
         }
       }
       .hidden-content {

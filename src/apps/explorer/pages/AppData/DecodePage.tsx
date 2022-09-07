@@ -52,7 +52,7 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
   const onError = (_: FormProps, errors: FormValidation): FormValidation => handleErrors(formRef, errors, setDisabled)
 
   return (
-    <div>
+    <div className="main-container">
       <div className="info-header box">
         <p>
           The decode tool allows you to decode an <strong>appData</strong> hash into the corresponding stored JSON
