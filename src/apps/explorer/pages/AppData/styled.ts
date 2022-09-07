@@ -42,6 +42,7 @@ export const Wrapper = styled(WrapperTemplate)`
       font-size: 1.2rem;
     }
     p {
+      line-height: 1.5;
       margin: 0;
     }
   }
@@ -138,6 +139,7 @@ export const Wrapper = styled(WrapperTemplate)`
   }
   .decode-container {
     display: flex;
+    justify-content: space-between;
     flex: 1;
     div {
       align-items: flex-start !important;
@@ -153,12 +155,6 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     ${media.mediumDown} {
       margin: 2rem 0;
-    }
-  }
-  .decode-section {
-    min-width: 45vh;
-    .hidden-content {
-      max-width: 40vh;
     }
   }
   .ipfs-container {

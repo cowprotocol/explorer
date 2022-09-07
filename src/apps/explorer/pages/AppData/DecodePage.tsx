@@ -52,42 +52,44 @@ const DecodePage: React.FC<DecodeProps> = ({ tabData, setTabData }) => {
   const onError = (_: FormProps, errors: FormValidation): FormValidation => handleErrors(formRef, errors, setDisabled)
 
   return (
-    <div className="decode-container">
-      <div className="left-panel">
-        <div className="info-header box">
-          <p>
-            The decode tool allows you to decode an <strong>appData</strong> hash into the corresponding stored JSON
-            document, if any.
-          </p>
-          <p>
-            <strong>Note:</strong> Not all hexes correspond to an IPFS file and even so it doesn’t guarantee that the
-            file is following our defined JSON schema.
-          </p>
-        </div>
-        <Form
-          className="data-form"
-          showErrorList={false}
-          onChange={handleOnChange}
-          formData={formData}
-          ref={formRef}
-          onSubmit={onSubmit}
-          transformErrors={transformErrors}
-          liveValidate={invalidFormDataAttempted}
-          noHtml5Validate
-          validate={onError}
-          onError={(): void => setInvalidFormDataAttempted(true)}
-          schema={decodeAppDataSchema}
-        >
-          <button className="btn btn-info" disabled={disabled} type="submit">
-            DECODE APPDATA
-          </button>
-        </Form>
+    <div>
+      <div className="info-header box">
+        <p>
+          The decode tool allows you to decode an <strong>appData</strong> hash into the corresponding stored JSON
+          document, if any.
+        </p>
+        <p>
+          <strong>Note:</strong> Not all hexes correspond to an IPFS file and even so it doesn’t guarantee that the file
+          is following our defined JSON schema.
+        </p>
       </div>
-      {isSubmitted && (
-        <div className="decode-section">
-          <DecodeAppData showExpanded appData={formData?.appData} />
+      <div className="decode-container">
+        <div className="left-panel">
+          <Form
+            className="data-form"
+            showErrorList={false}
+            onChange={handleOnChange}
+            formData={formData}
+            ref={formRef}
+            onSubmit={onSubmit}
+            transformErrors={transformErrors}
+            liveValidate={invalidFormDataAttempted}
+            noHtml5Validate
+            validate={onError}
+            onError={(): void => setInvalidFormDataAttempted(true)}
+            schema={decodeAppDataSchema}
+          >
+            <button className="btn btn-info" disabled={disabled} type="submit">
+              DECODE APPDATA
+            </button>
+          </Form>
         </div>
-      )}
+        {isSubmitted && (
+          <div className="decode-section">
+            <DecodeAppData showExpanded appData={formData?.appData} />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
