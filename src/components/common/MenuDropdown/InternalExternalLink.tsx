@@ -17,7 +17,7 @@ function MenuImage(props: MenuImageProps): JSX.Element | null {
   }
 }
 
-export default function InternalExternalLink({ link }: { link: MenuLink }): JSX.Element {
+export default function InternalExternalMenuLink({ link }: { link: MenuLink }): JSX.Element {
   const { kind, title, url, iconSVG, icon } = link
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK

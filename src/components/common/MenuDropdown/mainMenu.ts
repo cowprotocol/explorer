@@ -2,7 +2,7 @@ import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, DUNE_DASHBOARD_LINK, Routes } f
 import IMAGE_DISCORD from 'assets/img/discord.svg'
 import { MenuItemKind, MenuTreeItem } from './types'
 
-export const menuContent: MenuTreeItem[] = [
+export const MAIN_MENU: MenuTreeItem[] = [
   {
     title: 'Home',
     url: Routes.HOME,

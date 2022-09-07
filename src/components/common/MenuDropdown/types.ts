@@ -23,7 +23,6 @@ export interface DropDownItem {
   kind: MenuItemKind.DROP_DOWN
   title: string
   items: DropDownSubItem[]
-  url?: string
 }
 
 export interface MenuImageProps {

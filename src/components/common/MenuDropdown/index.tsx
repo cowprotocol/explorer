@@ -1,23 +1,15 @@
-import React, { useState, createRef, useCallback, useEffect } from 'react'
-import {
-  MenuFlyout,
-  Content,
-  MenuSection,
-  MenuTitle,
-  MenuContainer,
-  Wrapper,
-} from 'components/common/MenuDropdown/styled'
+import React, { useState, createRef } from 'react'
+import { MenuFlyout, Content, MenuSection, MenuTitle, MenuContainer } from 'components/common/MenuDropdown/styled'
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import useOnClickOutside from 'hooks/useOnClickOutside'
-import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
-import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
-import { MenuItemKind, DropDownItem } from './types'
-import InternalExternalLink from './InternalExternalLink'
+import { DropDownItem, MenuItemKind } from './types'
+import InternalExternalMenuLink from './InternalExternalLink'
+import { ContextProps } from './MenuTree'
 
-export interface MenuProps {
+interface MenuProps {
   title: string
   children: React.ReactNode
   isMobileMenuOpen?: boolean
@@ -50,52 +42,35 @@ export function MenuItemsPanel({ title, children, showDropdown, url = '' }: Menu
   )
 }
 
-interface DropdownProps {
-  menuContent: DropDownItem[]
+export interface DropdownProps {
+  menuItem: DropDownItem
+  context: ContextProps
 }
 
-export const DropDown = ({ menuContent }: DropdownProps): JSX.Element => {
-  // const { title, items } = menuContent
-  const isUpToLarge = useMediaBreakpoint(['xs', 'sm'])
-  const [isOrdersPanelOpen] = useState<boolean>(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const handleMobileMenuOnClick = useCallback(() => {
-    isUpToLarge && setIsMobileMenuOpen(!isMobileMenuOpen)
-  }, [isUpToLarge, isMobileMenuOpen])
-  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
-  // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
-  useEffect(() => {
-    isMobileMenuOpen || isOrdersPanelOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
-  }, [isOrdersPanelOpen, isMobileMenuOpen, isUpToLarge])
+export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {
+  const { isMobileMenuOpen } = context
 
   return (
-    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
-      {isUpToLarge && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
-      <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
-        {(isMobileMenuOpen || !isUpToLarge) &&
-          menuContent.map((menu) => (
-            <MenuItemsPanel
-              title={menu.title}
-              key={menu.title}
-              showDropdown={menu.kind === MenuItemKind.DROP_DOWN}
-              isMobileMenuOpen={isMobileMenuOpen}
-              url={menu.url}
-            >
-              {menu.items.map((item, index) => {
-                const { sectionTitle, links } = item
-                return (
-                  <MenuSection key={index}>
-                    {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
-                    {links.map((link, linkIndex) => (
-                      <InternalExternalLink key={linkIndex} link={link} />
-                    ))}
-                  </MenuSection>
-                )
-              })}
-            </MenuItemsPanel>
-          ))}
-      </MenuContainer>
-    </Wrapper>
+    <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
+      <MenuItemsPanel
+        title={menuItem.title}
+        key={menuItem.title}
+        isMobileMenuOpen={isMobileMenuOpen}
+        showDropdown={menuItem.kind === MenuItemKind.DROP_DOWN}
+      >
+        {menuItem.items.map((item, index) => {
+          const { sectionTitle, links } = item
+          return (
+            <MenuSection key={index}>
+              {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+              {links.map((link, linkIndex) => (
+                <InternalExternalMenuLink key={linkIndex} link={link} />
+              ))}
+            </MenuSection>
+          )
+        })}
+      </MenuItemsPanel>
+    </MenuContainer>
   )
 }
 
