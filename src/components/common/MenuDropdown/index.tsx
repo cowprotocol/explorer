@@ -3,7 +3,6 @@ import { MenuFlyout, Content, MenuSection, MenuTitle } from 'components/common/M
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
-import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import { DropDownItem, MenuItemKind } from './types'
 import InternalExternalMenuLink from './InternalExternalLink'
@@ -17,8 +16,8 @@ interface MenuProps {
   url?: string
 }
 
-export function MenuItemsPanel({ title, children, showDropdown, url = '' }: MenuProps): JSX.Element {
-  const isLargeAndUp = useMediaBreakpoint(['lg'])
+export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
+  const isLargeAndUp = useMediaBreakpoint(['lg', 'xl'])
   const node = createRef<HTMLOListElement>()
   const [showMenu, setShowMenu] = useState(false)
 
@@ -30,13 +29,9 @@ export function MenuItemsPanel({ title, children, showDropdown, url = '' }: Menu
 
   return (
     <MenuFlyout ref={node as never}>
-      {showDropdown ? (
-        <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
-          {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
-        </button>
-      ) : (
-        url && <LinkWithPrefixNetwork to={`${url}`}>{title}</LinkWithPrefixNetwork>
-      )}
+      <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
+        {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
+      </button>
       {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
     </MenuFlyout>
   )
