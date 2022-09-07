@@ -1,5 +1,5 @@
 import React, { useState, createRef } from 'react'
-import { MenuFlyout, Content, MenuSection, MenuTitle, MenuContainer } from 'components/common/MenuDropdown/styled'
+import { MenuFlyout, Content, MenuSection, MenuTitle } from 'components/common/MenuDropdown/styled'
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
@@ -51,26 +51,24 @@ export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {
   const { isMobileMenuOpen } = context
 
   return (
-    <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
-      <MenuItemsPanel
-        title={menuItem.title}
-        key={menuItem.title}
-        isMobileMenuOpen={isMobileMenuOpen}
-        showDropdown={menuItem.kind === MenuItemKind.DROP_DOWN}
-      >
-        {menuItem.items.map((item, index) => {
-          const { sectionTitle, links } = item
-          return (
-            <MenuSection key={index}>
-              {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
-              {links.map((link, linkIndex) => (
-                <InternalExternalMenuLink key={linkIndex} link={link} />
-              ))}
-            </MenuSection>
-          )
-        })}
-      </MenuItemsPanel>
-    </MenuContainer>
+    <MenuItemsPanel
+      title={menuItem.title}
+      key={menuItem.title}
+      isMobileMenuOpen={isMobileMenuOpen}
+      showDropdown={menuItem.kind === MenuItemKind.DROP_DOWN}
+    >
+      {menuItem.items.map((item, index) => {
+        const { sectionTitle, links } = item
+        return (
+          <MenuSection key={index}>
+            {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
+            {links.map((link, linkIndex) => (
+              <InternalExternalMenuLink key={linkIndex} link={link} />
+            ))}
+          </MenuSection>
+        )
+      })}
+    </MenuItemsPanel>
   )
 }
 

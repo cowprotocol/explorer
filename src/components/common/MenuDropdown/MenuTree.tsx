@@ -4,6 +4,7 @@ import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExt
 import { MAIN_MENU } from 'components/common/MenuDropdown/mainMenu'
 import { Wrapper } from 'components/common/MenuDropdown/styled'
 import { MenuItemKind, MenuTreeItem } from 'components/common/MenuDropdown/types'
+import { MenuContainer } from 'components/common/MenuDropdown/styled'
 import DropDown from '.'
 
 export interface ContextProps {
@@ -40,9 +41,11 @@ export function MenuTree({ isMobileMenuOpen, handleMobileMenuOnClick }: MenuTree
   const context = { handleMobileMenuOnClick, isMobileMenuOpen }
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
-      {MAIN_MENU.map((menuItem, index) => (
-        <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
-      ))}
+      <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
+        {MAIN_MENU.map((menuItem, index) => (
+          <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
+        ))}
+      </MenuContainer>
     </Wrapper>
   )
 }
