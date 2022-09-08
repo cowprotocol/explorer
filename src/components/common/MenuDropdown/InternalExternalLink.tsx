@@ -1,7 +1,8 @@
 import React from 'react'
 import SVG from 'react-inlinesvg'
-
+import { StyledIcon } from 'components/common/MenuDropdown/styled'
 import { ExternalLink } from 'components/analytics/ExternalLink'
+import { faExternalLink } from '@fortawesome/free-solid-svg-icons'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { MenuImageProps, MenuItemKind, MenuLink } from './types'
 
@@ -28,6 +29,7 @@ export default function InternalExternalMenuLink({
 }: InternalExternalLinkProps): JSX.Element {
   const { kind, title, url, iconSVG, icon } = link
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
+  const menuImageExternal = <StyledIcon icon={faExternalLink} />
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK
 
   if (isExternal) {
@@ -35,6 +37,7 @@ export default function InternalExternalMenuLink({
       <ExternalLink target={'_blank'} href={url} onClick={handleMobileMenuOnClick}>
         {menuImage}
         {title}
+        {menuImageExternal}
       </ExternalLink>
     )
   } else {

@@ -1,5 +1,6 @@
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
 import { media } from 'theme/styles/media'
+import Icon from 'components/Icon'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
@@ -282,4 +283,11 @@ export const MenuSection = styled.div`
   a > svg > path {
     fill: white;
   }
+`
+
+export const StyledIcon = styled(Icon)`
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  opacity: 0.3;
 `
