@@ -179,23 +179,8 @@ export const GET_TOKENS_QUERY = gql`
 `
 
 export const GET_HISTORICAL_DATA_QUERY = gql`
-  query GetHistoricalData($address: ID!, $lastDayTimestamp: Int!, $lastWeekTimestamp: Int!) {
+  query GetHistoricalData($address: ID!, $lastWeekTimestamp: Int!) {
     tokenHourlyTotals(
-      first: 25
-      orderBy: timestamp
-      orderDirection: desc
-      where: { token: $address, timestamp_gt: $lastDayTimestamp }
-    ) {
-      token {
-        address
-      }
-      timestamp
-      totalVolumeUsd
-      averagePrice
-    }
-
-    tokenDailyTotals(
-      first: 8
       orderBy: timestamp
       orderDirection: desc
       where: { token: $address, timestamp_gt: $lastWeekTimestamp }
@@ -204,6 +189,7 @@ export const GET_HISTORICAL_DATA_QUERY = gql`
         address
       }
       timestamp
+      totalVolumeUsd
       averagePrice
     }
   }
@@ -226,15 +212,8 @@ export type TokenDailyTotals = {
   averagePrice: string
 }
 
-export type TokenWeeklyTotals = {
-  token: { address: string }
-  timestamp: number
-  averagePrice: string
-}
-
 export type SubgraphHistoricalDataResponse = {
   tokenHourlyTotals: Array<TokenDailyTotals>
-  tokenDailyTotals: Array<TokenWeeklyTotals>
 }
 
 export type Token = {
@@ -280,7 +259,6 @@ function enhanceNativeToken(tokens: TokenResponse[], network: Network): TokenRes
     if (!isNativeToken(token.address)) {
       return token
     }
-    console.log(NATIVE_TOKEN_PER_NETWORK[network], token)
     return {
       ...token,
       ...NATIVE_TOKEN_PER_NETWORK[network],
