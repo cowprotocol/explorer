@@ -274,10 +274,8 @@ export const MenuSection = styled.div`
   a > svg,
   a > img {
     width: 1.8rem;
-    height: auto;
-    max-height: 2.1rem;
+    height: 2.1rem;
     object-fit: contain;
-    color: ${({ theme }): string => theme.textActive1};
   }
 
   a > svg > path {
