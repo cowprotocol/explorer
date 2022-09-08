@@ -20,7 +20,6 @@ export const Header: React.FC = () => {
   }, [isMobileMenuOpen, isMobile])
 
   const handleMobileMenuOnClick = useCallback(() => {
-    console.log('entre', isMobileMenuOpen)
     isMobile && setMobileMenuOpen(!isMobileMenuOpen)
   }, [isMobile, isMobileMenuOpen])
 
