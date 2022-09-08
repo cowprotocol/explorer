@@ -39,7 +39,8 @@ const Logo = styled(Link)`
 
   &:hover {
     text-decoration: none;
-    opacity: 0.9;
+    transform: rotate(-5deg);
+    transition: transform 0.3s ease 0s;
   }
 
   > img {
