@@ -74,7 +74,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
     const lastDayPrice = data.tokenHourlyTotals.find(
       (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
     )?.averagePrice
-    const lastWeekPrice = data.tokenDailyTotals.find(
+    const lastWeekPrice = data.tokenHourlyTotals.find(
       (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo,
     )?.averagePrice
 
@@ -86,7 +86,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
       lastWeekPricePercentageDifference: lastWeekPrice
         ? getPercentageDifference(Number(priceUsd), Number(lastWeekPrice))
         : undefined,
-      lastWeekUsdPrices: data.tokenDailyTotals
+      lastWeekUsdPrices: data.tokenHourlyTotals
         .map((x) => ({
           time: Number(x.timestamp) as UTCTimestamp,
           value: Number(x.averagePrice),
