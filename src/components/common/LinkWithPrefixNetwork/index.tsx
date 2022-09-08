@@ -13,7 +13,7 @@ export function LinkWithPrefixNetwork(props: LinkWithPrefixProps): JSX.Element {
   const _to = prefix ? `/${prefix}${to}` : to
 
   return (
-    <Link to={_to} {...otherParams} onClick={(event): void => onClickOptional && onClickOptional(event)}>
+    <Link to={_to} onClick={(event): void => onClickOptional && onClickOptional(event)} {...otherParams}>
       {children}
     </Link>
   )

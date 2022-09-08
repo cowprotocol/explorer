@@ -43,7 +43,7 @@ export interface DropdownProps {
 }
 
 export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {
-  const { isMobileMenuOpen } = context
+  const { isMobileMenuOpen, handleMobileMenuOnClick } = context
 
   return (
     <MenuItemsPanel
@@ -58,7 +58,7 @@ export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {
           <MenuSection key={index}>
             {sectionTitle && <MenuTitle>{sectionTitle}</MenuTitle>}
             {links.map((link, linkIndex) => (
-              <InternalExternalMenuLink key={linkIndex} link={link} />
+              <InternalExternalMenuLink key={linkIndex} link={link} handleMobileMenuOnClick={handleMobileMenuOnClick} />
             ))}
           </MenuSection>
         )
