@@ -139,10 +139,10 @@ export const Wrapper = styled(WrapperTemplate)`
   }
   .decode-container {
     display: flex;
-    justify-content: space-between;
+    gap: 10rem;
     flex: 1;
     div {
-      align-items: flex-start !important;
+      align-items: center;
     }
     .left-pannel {
       display: flex;
@@ -152,6 +152,7 @@ export const Wrapper = styled(WrapperTemplate)`
     ${media.mobile} {
       margin: 2rem 0;
       flex-direction: column;
+      gap: 5rem;
     }
     ${media.mediumDown} {
       margin: 2rem 0;
