@@ -70,7 +70,7 @@ const Template: Story<DropdownProps> = (args) => (
 )
 
 const defaultProps: Omit<DropdownProps, 'menuItem'> = {
-  context: { isMobileMenuOpen: false },
+  context: { isMobileMenuOpen: false, handleMobileMenuOnClick: () => console.log },
 }
 
 export const Default = Template.bind({})

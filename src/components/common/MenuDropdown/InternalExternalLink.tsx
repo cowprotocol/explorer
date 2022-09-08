@@ -17,21 +17,34 @@ function MenuImage(props: MenuImageProps): JSX.Element | null {
   }
 }
 
-export default function InternalExternalMenuLink({ link }: { link: MenuLink }): JSX.Element {
+interface InternalExternalLinkProps {
+  link: MenuLink
+  handleMobileMenuOnClick?: () => void
+}
+
+export default function InternalExternalMenuLink({
+  link,
+  handleMobileMenuOnClick,
+}: InternalExternalLinkProps): JSX.Element {
   const { kind, title, url, iconSVG, icon } = link
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
   const isExternal = kind === MenuItemKind.EXTERNAL_LINK
 
   if (isExternal) {
     return (
-      <ExternalLink target={'_blank'} href={url}>
+      <ExternalLink target={'_blank'} href={url} onClick={handleMobileMenuOnClick}>
         {menuImage}
         {title}
       </ExternalLink>
     )
   } else {
     return (
-      <LinkWithPrefixNetwork to={url} rel="noopener noreferrer" target="_self">
+      <LinkWithPrefixNetwork
+        to={url}
+        rel="noopener noreferrer"
+        target="_self"
+        onClickOptional={handleMobileMenuOnClick}
+      >
         {menuImage}
         {title}
       </LinkWithPrefixNetwork>

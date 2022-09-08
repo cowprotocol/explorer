@@ -71,6 +71,7 @@ interface IconProps {
 }
 
 export default function MobileMenuIcon(params: IconProps): JSX.Element {
+  console.log('___MMI_isMobileOpen', params.isMobileMenuOpen)
   return (
     <Wrapper {...params}>
       <span></span>
