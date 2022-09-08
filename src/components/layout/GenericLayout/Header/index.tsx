@@ -36,6 +36,7 @@ const Logo = styled(Link)`
   width: 12rem;
   height: 3.9rem;
   z-index: 6;
+  transition: transform 0.3s ease 0s;
 
   &:hover {
     text-decoration: none;
