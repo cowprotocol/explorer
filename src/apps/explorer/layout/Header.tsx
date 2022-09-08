@@ -31,7 +31,11 @@ export const Header: React.FC = () => {
   const prefixNetwork = PREFIX_BY_NETWORK_ID.get(networkId)
 
   return (
-    <GenericHeader logoAlt="CoW Protocol Explorer" linkTo={`/${prefixNetwork || ''}`}>
+    <GenericHeader
+      logoAlt="CoW Protocol Explorer"
+      linkTo={`/${prefixNetwork || ''}`}
+      onClickOptional={handleMobileMenuOnClick}
+    >
       <NetworkSelector networkId={networkId} />
       <FlexWrap grow={1}>
         <MenuTree isMobileMenuOpen={isMobileMenuOpen} handleMobileMenuOnClick={handleMobileMenuOnClick} />

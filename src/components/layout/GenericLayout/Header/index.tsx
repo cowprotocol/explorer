@@ -69,11 +69,12 @@ const Logo = styled(Link)`
 type Props = PropsWithChildren<{
   linkTo?: string
   logoAlt?: string
+  onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
 }>
 
-export const Header: React.FC<Props> = ({ children, linkTo, logoAlt }) => (
+export const Header: React.FC<Props> = ({ children, linkTo, logoAlt, onClickOptional }) => (
   <HeaderStyled>
-    <Logo to={linkTo || '/'}>
+    <Logo to={linkTo || '/'} onClick={(event): void => onClickOptional && onClickOptional(event)}>
       <img src={LogoImage} alt={logoAlt || 'Trading interface homepage'} />
     </Logo>
     {children}
