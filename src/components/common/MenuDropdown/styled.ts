@@ -256,11 +256,13 @@ export const MenuSection = styled.div`
     margin: 0;
     padding: 0;
     color: ${({ theme }): string => theme.textSecondary1};
-    gap: 2.4rem;
+    gap: 1.2rem;
+    align-items: center;
 
     &:hover {
       text-decoration: underline;
       font-weight: 500;
+      background: transparent;
     }
 
     &.ACTIVE {
