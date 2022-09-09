@@ -34,7 +34,7 @@ export const Header: React.FC = () => {
     <GenericHeader
       logoAlt="CoW Protocol Explorer"
       linkTo={`/${prefixNetwork || ''}`}
-      onClickOptional={handleMobileMenuOnClick}
+      onClickOptional={isMobileMenuOpen ? handleMobileMenuOnClick : undefined}
     >
       <NetworkSelector networkId={networkId} />
       <FlexWrap grow={1}>
