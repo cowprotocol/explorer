@@ -205,7 +205,7 @@ export type TokenResponse = {
   totalVolumeUsd: string
 }
 
-export type TokenDailyTotals = {
+export type TokenHourlyTotals = {
   token: { address: string }
   timestamp: number
   totalVolumeUsd: string
@@ -213,7 +213,7 @@ export type TokenDailyTotals = {
 }
 
 export type SubgraphHistoricalDataResponse = {
-  tokenHourlyTotals: Array<TokenDailyTotals>
+  tokenHourlyTotals: Array<TokenHourlyTotals>
 }
 
 export type Token = {
