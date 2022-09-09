@@ -65,8 +65,8 @@ export const MenuContainer = styled.nav`
     z-index: 3;
     outline: 0;
     padding: 8rem 0.8rem;
-    overflow: hidden scroll;
-    display: none; /* flex */
+    overflow: hidden auto;
+    display: none;
   }
 
   a {
