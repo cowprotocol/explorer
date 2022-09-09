@@ -240,7 +240,6 @@ export const MenuSection = styled.div`
   margin: 0;
   gap: 2.4rem;
   ${media.mobile} {
-    /* padding: 8px 10px 28px; */
     gap: 3.6rem;
     opacity: 0.7;
   }

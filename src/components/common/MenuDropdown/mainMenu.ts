@@ -57,8 +57,6 @@ export const MAIN_MENU: MenuTreeItem[] = [
             title: 'AppData',
             url: Routes.APPDATA,
             iconSVG: IMAGE_APPDATA,
-            /* icon?: string, // If icon uses a regular <img /> tag */
-            /*  iconSVG?: string // If icon is a <SVG> inline component */
           },
         ],
       },
