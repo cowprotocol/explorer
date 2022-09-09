@@ -42,6 +42,9 @@ const Logo = styled(Link)`
     text-decoration: none;
     transform: rotate(-5deg);
     transition: transform 0.3s ease 0s;
+    ${media.mobile} {
+      transform: none;
+    }
   }
 
   > img {
