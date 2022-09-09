@@ -42,12 +42,7 @@ export default function InternalExternalMenuLink({
     )
   } else {
     return (
-      <LinkWithPrefixNetwork
-        to={url}
-        rel="noopener noreferrer"
-        target="_self"
-        onClickOptional={handleMobileMenuOnClick}
-      >
+      <LinkWithPrefixNetwork to={url} target="_self" onClickOptional={handleMobileMenuOnClick}>
         {menuImage}
         {title}
       </LinkWithPrefixNetwork>
