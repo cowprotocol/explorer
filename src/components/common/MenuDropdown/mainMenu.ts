@@ -54,7 +54,7 @@ export const MAIN_MENU: MenuTreeItem[] = [
         sectionTitle: 'OTHER',
         links: [
           {
-            title: 'App Data',
+            title: 'AppData',
             url: Routes.APPDATA,
             iconSVG: IMAGE_APPDATA,
             /* icon?: string, // If icon uses a regular <img /> tag */
