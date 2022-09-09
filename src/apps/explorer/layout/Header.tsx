@@ -20,8 +20,8 @@ export const Header: React.FC = () => {
   }, [isMobileMenuOpen, isMobile])
 
   const handleMobileMenuOnClick = useCallback(() => {
-    isMobile && setMobileMenuOpen(!isMobileMenuOpen)
-  }, [isMobile, isMobileMenuOpen])
+    isMobile && setMobileMenuOpen((isMobileMenuOpen) => !isMobileMenuOpen)
+  }, [isMobile])
 
   const networkId = useNetworkId()
   if (!networkId) {
