@@ -22,6 +22,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
 
     ${media.mobile} {
       gap: 0;
+      flex-wrap: nowrap;
     }
   }
   ${media.mobile} {
@@ -36,8 +37,8 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
           content: '';
           width: 100%;
           display: flex;
-          height: 6rem;
-          background: transparent;
+          height: 7rem;
+          background: var(--color-menu-mobile);
           position: fixed;
           top: 0;
           left: 0;
