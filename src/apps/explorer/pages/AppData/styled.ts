@@ -51,9 +51,13 @@ export const Wrapper = styled(WrapperTemplate)`
     flex-direction: column;
     border: 0;
     padding: 0;
+    .form-container {
+      ${AppDataWrapper} {
+        align-items: center;
+      }
+    }
     ${AppDataWrapper} {
       flex: 1;
-      align-items: center;
       padding-left: 2rem;
       ${media.mobile} {
         padding-left: 0;
@@ -62,10 +66,7 @@ export const Wrapper = styled(WrapperTemplate)`
     .json-formatter {
       line-height: 1.25;
       ${media.desktopMediumDown} {
-        max-width: 37vw;
-      }
-      ${media.mediumDownMd} {
-        max-width: 33vw;
+        max-width: 45vw;
       }
       ${media.mobile} {
         max-width: none;
@@ -141,9 +142,6 @@ export const Wrapper = styled(WrapperTemplate)`
     display: flex;
     gap: 10rem;
     flex: 1;
-    div {
-      align-items: center;
-    }
     .left-pannel {
       display: flex;
       flex-direction: column;
