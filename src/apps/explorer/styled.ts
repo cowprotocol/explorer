@@ -19,6 +19,7 @@ export const ScrollBarStyle = css`
 export const GlobalStyle = createGlobalStyle`
   html {
     height: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
   html,
   body,
