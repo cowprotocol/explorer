@@ -6,7 +6,7 @@ import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import useOnClickOutside from 'hooks/useOnClickOutside'
 import { DropDownItem, MenuItemKind } from './types'
 import InternalExternalMenuLink from './InternalExternalLink'
-import { ContextProps } from './MenuTree'
+import { MenuTreeProps } from './MenuTree'
 
 interface MenuProps {
   title: string
@@ -39,7 +39,7 @@ export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
 
 export interface DropdownProps {
   menuItem: DropDownItem
-  context: ContextProps
+  context: MenuTreeProps
 }
 
 export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {

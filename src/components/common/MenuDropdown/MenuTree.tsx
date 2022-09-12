@@ -6,13 +6,9 @@ import { Wrapper, MenuContainer } from 'components/common/MenuDropdown/styled'
 import { MenuItemKind, MenuTreeItem } from 'components/common/MenuDropdown/types'
 import DropDown from '.'
 
-export interface ContextProps {
-  handleMobileMenuOnClick: () => void
-  isMobileMenuOpen: boolean
-}
 interface MenuItemWithDropDownProps {
   menuItem: MenuTreeItem
-  context: ContextProps
+  context: MenuTreeProps
 }
 
 function MenuItemWithDropDown(props: MenuItemWithDropDownProps): JSX.Element | null {
@@ -36,13 +32,13 @@ export interface MenuTreeProps {
   handleMobileMenuOnClick: () => void
 }
 
-export function MenuTree({ isMobileMenuOpen, handleMobileMenuOnClick }: MenuTreeProps): JSX.Element {
-  const context = { handleMobileMenuOnClick, isMobileMenuOpen }
+export function MenuTree(props: MenuTreeProps): JSX.Element {
+  const { isMobileMenuOpen } = props
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
         {MAIN_MENU.map((menuItem, index) => (
-          <MenuItemWithDropDown key={index} menuItem={menuItem} context={context} />
+          <MenuItemWithDropDown key={index} menuItem={menuItem} context={props} />
         ))}
       </MenuContainer>
     </Wrapper>
