@@ -242,7 +242,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
                   textToCopy={ipfsHashInfo.appDataHash}
                   contentsToDisplay={ipfsHashInfo.appDataHash}
                 />
-                <p>Note: Don’t forget to upload this file to IPFS!</p>
+                <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
               </>
             )}
           </div>
