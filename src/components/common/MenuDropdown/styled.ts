@@ -78,7 +78,7 @@ export const MenuContainer = styled.nav`
     appearance: none;
     outline: 0;
     border-radius: 1.6rem;
-    padding: 1rem 1.2rem;
+    padding: 1.1rem 1.2rem;
     cursor: pointer;
     background: transparent;
     transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
