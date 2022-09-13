@@ -116,11 +116,13 @@ export const Wrapper = styled(WrapperTemplate)`
 
     .hidden-content {
       ${media.desktop} {
-        position: fixed;
+        position: sticky;
+        top: 2.8rem;
         width: 30vw;
       }
       ${media.mediumUp} {
-        position: fixed;
+        position: sticky;
+        top: 3rem;
         width: 35vw;
       }
       ${media.mobile} {
@@ -130,7 +132,8 @@ export const Wrapper = styled(WrapperTemplate)`
         font-size: 1.2rem;
       }
       ${media.desktopLarge} {
-        position: fixed;
+        position: sticky;
+        top: 4rem;
         width: 60rem;
       }
       h4 {
