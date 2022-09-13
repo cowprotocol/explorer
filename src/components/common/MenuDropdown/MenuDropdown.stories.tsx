@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 
 import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
@@ -70,17 +70,32 @@ const DropdownMenu: DropDownItem = {
   ],
 }
 
-const Template: Story<DropdownProps> = (args) => (
-  <>
-    <MenuDropdown menuItem={DropdownMenu} {...{ context: args.context }} />
-  </>
-)
+const useMobileMenuOpen = (): {
+  isMobileMenuOpen: boolean
+  handleMobileMenuOnClick: Dispatch<SetStateAction<boolean>>
+} => {
+  const [isMobileMenuOpen, handleMobileMenuOnClick] = useState(false)
+  return { isMobileMenuOpen, handleMobileMenuOnClick }
+}
+
+const Template: Story<DropdownProps> = () => {
+  const context = useMobileMenuOpen()
+  return (
+    <MenuDropdown
+      menuItem={DropdownMenu}
+      context={{
+        isMobileMenuOpen: context.isMobileMenuOpen,
+        handleMobileMenuOnClick: (): void => context.handleMobileMenuOnClick((prevState) => !prevState),
+      }}
+    />
+  )
+}
 
 const defaultProps: Omit<DropdownProps, 'menuItem'> = {
   context: { isMobileMenuOpen: false, handleMobileMenuOnClick: () => console.log },
 }
 
-export const Default = Template.bind({})
-Default.args = {
+export const singleDropdown = Template.bind({})
+singleDropdown.args = {
   ...defaultProps,
 }
