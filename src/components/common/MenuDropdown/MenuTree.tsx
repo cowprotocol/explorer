@@ -30,14 +30,15 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps): JSX.Element | n
 export interface MenuTreeProps {
   isMobileMenuOpen: boolean
   handleMobileMenuOnClick: () => void
+  menuList?: MenuTreeItem[]
 }
 
 export function MenuTree(props: MenuTreeProps): JSX.Element {
-  const { isMobileMenuOpen } = props
+  const { isMobileMenuOpen, menuList = MAIN_MENU } = props
   return (
     <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
       <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
-        {MAIN_MENU.map((menuItem, index) => (
+        {menuList.map((menuItem, index) => (
           <MenuItemWithDropDown key={index} menuItem={menuItem} context={props} />
         ))}
       </MenuContainer>

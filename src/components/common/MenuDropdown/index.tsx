@@ -39,7 +39,7 @@ export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
 
 export interface DropdownProps {
   menuItem: DropDownItem
-  context: MenuTreeProps
+  context: Omit<MenuTreeProps, 'menuList'>
 }
 
 export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {
