@@ -101,7 +101,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
     handleNextPage,
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
-  const { tokens, isLoading, error } = useGetTokens(networkId, tableState)
+  const { tokens, isLoading, error } = useGetTokens(networkId)
   const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol', 'address'])
   const resultsLength = query.length ? filteredTokens.length : tokens.length
 
@@ -121,6 +121,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
 
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
+
     return data
       .map((token) => ({
         ...token,

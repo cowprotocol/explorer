@@ -19,6 +19,7 @@ import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/uti
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
+import { formatDate } from 'utils'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -253,6 +254,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
     lastWeekUsdPrices,
     lastWeekPricePercentageDifference,
     lastDayUsdVolume,
+    lastDayUsdTimestamp,
     totalVolumeUsd,
   } = token
   const erc20 = { name, address, symbol, decimals } as TokenErc20
@@ -345,7 +347,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
         )}
       </td>
       <td>
-        <HeaderTitle>Volume (24h)</HeaderTitle>
+        <HeaderTitle>Volume (24h)&darr;</HeaderTitle>
         {handleLoadingState(
           lastDayUsdVolume,
           <HeaderValue>
@@ -356,7 +358,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
                       price: new BigNumber(lastDayUsdVolume),
                       decimals: 2,
                       thousands: true,
-                    })}`
+                    })} - ${lastDayUsdTimestamp ? formatDate(lastDayUsdTimestamp * 1000, 'yyyy-MM-dd') : ''}`
                   : '$0'
               }
             >
@@ -420,7 +422,7 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>Price</th>
           <th>Price (24h)</th>
           <th>Price (7d)</th>
-          <th>Volume (24h)</th>
+          <th>Volume (24h) &darr;</th>
           <th>Total volume</th>
           <th>Price (last 7 days)</th>
         </tr>
