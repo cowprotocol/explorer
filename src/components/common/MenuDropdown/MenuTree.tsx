@@ -45,8 +45,8 @@ export function MenuTree(props: MenuTreeProps): JSX.Element {
             <MenuItemWithDropDown key={index} menuItem={menuItem} context={props} />
           ))}
         </MenuContainer>
+        {isMobile && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
       </Wrapper>
-      {isMobile && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
     </>
   )
 }
