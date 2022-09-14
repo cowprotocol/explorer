@@ -6,7 +6,6 @@ import { PREFIX_BY_NETWORK_ID, useNetworkId } from 'state/network'
 import { FlexWrap } from 'apps/explorer/pages/styled'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { MenuTree } from 'components/common/MenuDropdown/MenuTree'
-import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
 import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
 export const Header: React.FC = () => {
@@ -38,9 +37,12 @@ export const Header: React.FC = () => {
     >
       <NetworkSelector networkId={networkId} />
       <FlexWrap grow={1}>
-        <MenuTree isMobileMenuOpen={isMobileMenuOpen} handleMobileMenuOnClick={handleMobileMenuOnClick} />
+        <MenuTree
+          isMobile={isMobile}
+          isMobileMenuOpen={isMobileMenuOpen}
+          handleMobileMenuOnClick={handleMobileMenuOnClick}
+        />
       </FlexWrap>
-      {isMobile && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
     </GenericHeader>
   )
 }

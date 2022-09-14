@@ -39,7 +39,7 @@ export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
 
 export interface DropdownProps {
   menuItem: DropDownItem
-  context: Omit<MenuTreeProps, 'menuList'>
+  context: Omit<MenuTreeProps, 'menuList' | 'isMobile'>
 }
 
 export const DropDown = ({ menuItem, context }: DropdownProps): JSX.Element => {

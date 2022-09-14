@@ -3,6 +3,7 @@ import { Story, Meta } from '@storybook/react/types-6-0'
 
 import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
 
+import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 import { MenuTree, MenuTreeProps } from 'components/common/MenuDropdown/MenuTree'
 import { MenuItemKind, MenuTreeItem } from './types'
 
@@ -84,14 +85,16 @@ const useMobileMenuOpen = (): {
   return { isMobileMenuOpen, handleMobileMenuOnClick }
 }
 
-const Template: Story<MenuTreeProps> = () => {
+const Template: Story<MenuTreeProps> = (args) => {
   const context = useMobileMenuOpen()
+  const isMobile = useMediaBreakpoint(['xs', 'sm'])
+
   return (
     <MenuTree
-      {...{
-        isMobileMenuOpen: context.isMobileMenuOpen,
-        handleMobileMenuOnClick: (): void => context.handleMobileMenuOnClick((prevState) => !prevState),
-      }}
+      {...args}
+      isMobile={isMobile}
+      isMobileMenuOpen={context.isMobileMenuOpen}
+      handleMobileMenuOnClick={(): void => context.handleMobileMenuOnClick((prevState) => !prevState)}
     />
   )
 }
