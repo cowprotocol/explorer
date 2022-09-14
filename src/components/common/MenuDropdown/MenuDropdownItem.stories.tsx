@@ -13,7 +13,7 @@ import IMAGE_DOC from 'assets/img/doc.svg'
 import IMAGE_APPDATA from 'assets/img/code.svg'
 
 export default {
-  title: 'Common/Dropdown',
+  title: 'Common/MenuDropdownItem',
   component: MenuDropdown,
   decorators: [Router, GlobalStyles, ThemeToggler],
 } as Meta
