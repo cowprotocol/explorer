@@ -6,15 +6,14 @@ import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
 import MenuDropdown, { DropdownProps } from '.'
 import { DropDownItem, MenuItemKind } from './types'
 
-import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, DUNE_DASHBOARD_LINK, Routes } from 'apps/explorer/const'
+import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, Routes } from 'apps/explorer/const'
 import IMAGE_COW from 'assets/img/CowProtocol-logo.svg'
 import IMAGE_DISCORD from 'assets/img/discord.svg'
 import IMAGE_DOC from 'assets/img/doc.svg'
-import IMAGE_ANALYTICS from 'assets/img/pie.svg'
 import IMAGE_APPDATA from 'assets/img/code.svg'
 
 export default {
-  title: 'Common/Menu',
+  title: 'Common/Dropdown',
   component: MenuDropdown,
   decorators: [Router, GlobalStyles, ThemeToggler],
 } as Meta
@@ -24,33 +23,27 @@ const DropdownMenu: DropDownItem = {
   title: 'Dropdown menu',
   items: [
     {
-      sectionTitle: 'OVERVIEW',
+      sectionTitle: 'Section 1',
       links: [
         {
-          title: 'CoW Protocol',
+          title: 'Option 1',
           url: PROTOCOL_LINK,
           kind: MenuItemKind.EXTERNAL_LINK,
           iconSVG: IMAGE_COW,
         },
         {
-          title: 'Documentation',
+          title: 'Option 2',
           url: DOCS_LINK,
           kind: MenuItemKind.EXTERNAL_LINK,
           iconSVG: IMAGE_DOC,
         },
-        {
-          title: 'Analytics',
-          url: DUNE_DASHBOARD_LINK,
-          kind: MenuItemKind.EXTERNAL_LINK,
-          iconSVG: IMAGE_ANALYTICS,
-        },
       ],
     },
     {
-      sectionTitle: 'COMMUNITY',
+      sectionTitle: 'Section 2',
       links: [
         {
-          title: 'Discord',
+          title: 'Option 3',
           url: DISCORD_LINK,
           iconSVG: IMAGE_DISCORD,
           kind: MenuItemKind.EXTERNAL_LINK,
@@ -58,10 +51,10 @@ const DropdownMenu: DropDownItem = {
       ],
     },
     {
-      sectionTitle: 'OTHER',
+      sectionTitle: 'Section 3',
       links: [
         {
-          title: 'AppData',
+          title: 'Option 4',
           url: Routes.APPDATA,
           iconSVG: IMAGE_APPDATA,
         },
