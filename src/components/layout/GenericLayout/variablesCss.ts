@@ -33,6 +33,7 @@ const DarkColors = `
 
   // --color-primary: #1E1F2B;
   --color-primary: #181923;
+  --color-menu-mobile: #0e0f14; /* bg4 */
   --color-transparent: transparent;
   --color-long: var(--color-green);
   --color-short: var(--color-red);
