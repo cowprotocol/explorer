@@ -59,7 +59,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
           { chainId: network },
         )
         if (response) {
-          const tokensData = {} as { [tokenId: string]: TokenData }
+          const tokensData: { [tokenId: string]: TokenData } = {}
           for (const tokenDailyTotal of response.tokenDailyTotals) {
             const { token, totalVolumeUsd } = tokenDailyTotal
             const tokenData = processTokenData({ tokenHourlyTotals: token.hourlyTotals }, Number(totalVolumeUsd))
