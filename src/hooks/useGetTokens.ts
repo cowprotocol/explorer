@@ -12,36 +12,39 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
   const [error, setError] = useState<UiError>()
   const [tokens, setTokens] = useState<Token[]>([])
 
-  const processTokenData = useCallback((data: SubgraphHistoricalDataResponse, lastDayUsdVolume: number) => {
-    const { averagePrice: priceUsd, timestamp } = data.tokenHourlyTotals.slice(-1)[0]
-    const lastDayTimestampFrom = Number(lastHoursTimestamp(25))
-    const lastDayTimestampTo = Number(lastHoursTimestamp(23))
-    const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
-    const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
-    const lastDayPrice = data.tokenHourlyTotals.find(
-      (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
-    )?.averagePrice
-    const lastWeekPrice = data.tokenHourlyTotals.find(
-      (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo,
-    )?.averagePrice
+  const processTokenData = useCallback(
+    (data: SubgraphHistoricalDataResponse, lastDayUsdVolume: number, timestamp: number) => {
+      const { averagePrice: priceUsd } = data.tokenHourlyTotals.slice(-1)[0]
+      const lastDayTimestampFrom = Number(lastHoursTimestamp(25))
+      const lastDayTimestampTo = Number(lastHoursTimestamp(23))
+      const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
+      const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
+      const lastDayPrice = data.tokenHourlyTotals.find(
+        (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
+      )?.averagePrice
+      const lastWeekPrice = data.tokenHourlyTotals.find(
+        (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo,
+      )?.averagePrice
 
-    return {
-      timestamp,
-      lastDayUsdVolume,
-      lastDayPricePercentageDifference: lastDayPrice
-        ? getPercentageDifference(Number(priceUsd), Number(lastDayPrice))
-        : undefined,
-      lastWeekPricePercentageDifference: lastWeekPrice
-        ? getPercentageDifference(Number(priceUsd), Number(lastWeekPrice))
-        : undefined,
-      lastWeekUsdPrices: data.tokenHourlyTotals
-        .map((x) => ({
-          time: Number(x.timestamp) as UTCTimestamp,
-          value: Number(x.averagePrice),
-        }))
-        .sort((a, b) => a.time - b.time),
-    }
-  }, [])
+      return {
+        timestamp,
+        lastDayUsdVolume,
+        lastDayPricePercentageDifference: lastDayPrice
+          ? getPercentageDifference(Number(priceUsd), Number(lastDayPrice))
+          : undefined,
+        lastWeekPricePercentageDifference: lastWeekPrice
+          ? getPercentageDifference(Number(priceUsd), Number(lastWeekPrice))
+          : undefined,
+        lastWeekUsdPrices: data.tokenHourlyTotals
+          .map((x) => ({
+            time: Number(x.timestamp) as UTCTimestamp,
+            value: Number(x.averagePrice),
+          }))
+          .sort((a, b) => a.time - b.time),
+      }
+    },
+    [],
+  )
 
   const fetchTokens = useCallback(
     async (network: Network): Promise<void> => {
@@ -61,8 +64,12 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
         if (response) {
           const tokensData: { [tokenId: string]: TokenData } = {}
           for (const tokenDailyTotal of response.tokenDailyTotals) {
-            const { token, totalVolumeUsd } = tokenDailyTotal
-            const tokenData = processTokenData({ tokenHourlyTotals: token.hourlyTotals }, Number(totalVolumeUsd))
+            const { token, totalVolumeUsd, timestamp } = tokenDailyTotal
+            const tokenData = processTokenData(
+              { tokenHourlyTotals: token.hourlyTotals },
+              Number(totalVolumeUsd),
+              timestamp,
+            )
             tokensData[token.address] = { ...tokenData }
           }
           const tokens = addHistoricalData(
@@ -117,7 +124,7 @@ export const GET_TOKENS_QUERY = gql`
         decimals
         totalVolumeUsd
         priceUsd
-        hourlyTotals(where: { timestamp_gt: $lastWeekTimestamp }) {
+        hourlyTotals(first: 1000, where: { timestamp_gt: $lastWeekTimestamp }) {
           timestamp
           averagePrice
         }
@@ -178,7 +185,7 @@ function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenDa
 }
 
 export type TokenData = {
-  timestamp?: number
+  timestamp: number
   lastDayUsdVolume?: number
   lastDayPricePercentageDifference?: number
   lastWeekPricePercentageDifference?: number

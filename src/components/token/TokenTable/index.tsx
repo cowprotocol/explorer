@@ -32,6 +32,25 @@ const Wrapper = styled(StyledUserDetailsTable)`
     border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
     > tr {
       min-height: 7.4rem;
+      &.header-row {
+        display: none;
+        ${media.mobile} {
+          display: flex;
+          background: transparent;
+          border: none;
+          padding: 0;
+          margin: 0;
+          box-shadow: none;
+          min-height: 2rem;
+          td {
+            padding: 0;
+            margin: 0;
+            .mobile-header {
+              margin: 0;
+            }
+          }
+        }
+      }
     }
     > tr > td:first-child {
       padding: 0 2rem;
@@ -47,7 +66,8 @@ const Wrapper = styled(StyledUserDetailsTable)`
     :nth-child(5),
     :nth-child(6),
     :nth-child(7) {
-      justify-content: right;
+      justify-content: center;
+      text-align: center;
     }
   }
   > tbody > tr > td:nth-child(8),
@@ -142,10 +162,6 @@ const HeaderTitle = styled.span`
     margin-right: 3rem;
     svg {
       margin-left: 5px;
-    }
-    &.mobile-header {
-      height: 2rem;
-      margin-left: 1rem;
     }
   }
 `
@@ -305,100 +321,95 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
   }
 
   return (
-    <>
-      <HeaderTitle className="mobile-header">Sorted by Volume(24h)</HeaderTitle>
-      <tr key={id}>
-        <td>
-          <HeaderTitle>#</HeaderTitle>
-          <HeaderValue>{index + 1}</HeaderValue>
-        </td>
-        <td>
-          <HeaderTitle>Name</HeaderTitle>
-          <TokenWrapper>
-            <TokenDisplay erc20={erc20} network={network} />
-          </TokenWrapper>
-        </td>
-        <td>
-          <HeaderTitle>Symbol</HeaderTitle>
-          <HeaderValue>{symbol}</HeaderValue>
-        </td>
-        <td>
-          <HeaderTitle>Price</HeaderTitle>
-          <HeaderValue>
-            <TextWithTooltip textInTooltip={`$${Number(priceUsd) || 0}`}>
-              ${Number(priceUsd) ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
-            </TextWithTooltip>
-          </HeaderValue>
-        </td>
-        <td>
-          <HeaderTitle>Price (24h)</HeaderTitle>
-          {handleLoadingState(
-            lastDayPricePercentageDifference,
-            <HeaderValue
-              captionColor={
-                lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'
-              }
-            >
-              {lastDayPricePercentageDifference && lastDayPricePercentageDifference.toFixed(2)}%
-            </HeaderValue>,
-          )}
-        </td>
-        <td>
-          <HeaderTitle>Price (7d)</HeaderTitle>
-          {handleLoadingState(
-            lastWeekPricePercentageDifference,
-            <HeaderValue
-              captionColor={
-                lastWeekPricePercentageDifference ? getColorBySign(lastWeekPricePercentageDifference) : 'grey'
-              }
-            >
-              {lastWeekPricePercentageDifference && lastWeekPricePercentageDifference.toFixed(2)}%
-            </HeaderValue>,
-          )}
-        </td>
-        <td>
-          <HeaderTitle>Volume (24h)</HeaderTitle>
-          {handleLoadingState(
-            lastDayUsdVolume,
-            <HeaderValue>
-              <TextWithTooltip
-                textInTooltip={
-                  <TooltipWrapper>
-                    {lastDayUsdVolume ? (
-                      <>
-                        <span>
-                          ${formatPrice({ price: new BigNumber(lastDayUsdVolume), decimals: 2, thousands: true })}
-                        </span>
-                        <br />
-                        <span>Last Updated: {timestamp ? formatDate(timestamp * 1000, 'yyyy-MM-dd HH:mm') : ''}</span>
-                      </>
-                    ) : (
-                      '$0'
-                    )}
-                  </TooltipWrapper>
-                }
-              >
-                ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
-              </TextWithTooltip>
-            </HeaderValue>,
-          )}
-        </td>
-        <td>
-          <HeaderTitle>Total volume</HeaderTitle>
+    <tr key={id}>
+      <td>
+        <HeaderTitle>#</HeaderTitle>
+        <HeaderValue>{index + 1}</HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Name</HeaderTitle>
+        <TokenWrapper>
+          <TokenDisplay erc20={erc20} network={network} />
+        </TokenWrapper>
+      </td>
+      <td>
+        <HeaderTitle>Symbol</HeaderTitle>
+        <HeaderValue>{symbol}</HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Price</HeaderTitle>
+        <HeaderValue>
+          <TextWithTooltip textInTooltip={`$${Number(priceUsd) || 0}`}>
+            ${Number(priceUsd) ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
+          </TextWithTooltip>
+        </HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Price (24h)</HeaderTitle>
+        {handleLoadingState(
+          lastDayPricePercentageDifference,
+          <HeaderValue
+            captionColor={lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'}
+          >
+            {lastDayPricePercentageDifference && lastDayPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>,
+        )}
+      </td>
+      <td>
+        <HeaderTitle>Price (7d)</HeaderTitle>
+        {handleLoadingState(
+          lastWeekPricePercentageDifference,
+          <HeaderValue
+            captionColor={
+              lastWeekPricePercentageDifference ? getColorBySign(lastWeekPricePercentageDifference) : 'grey'
+            }
+          >
+            {lastWeekPricePercentageDifference && lastWeekPricePercentageDifference.toFixed(2)}%
+          </HeaderValue>,
+        )}
+      </td>
+      <td>
+        <HeaderTitle>Volume (24h)</HeaderTitle>
+        {handleLoadingState(
+          lastDayUsdVolume,
           <HeaderValue>
             <TextWithTooltip
-              textInTooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}`}
+              textInTooltip={
+                <TooltipWrapper>
+                  {lastDayUsdVolume ? (
+                    <>
+                      <span>
+                        ${formatPrice({ price: new BigNumber(lastDayUsdVolume), decimals: 2, thousands: true })}
+                      </span>
+                      <br />
+                      <span>Last Updated: {timestamp ? formatDate(timestamp * 1000, 'yyyy-MM-dd HH:mm') : ''}</span>
+                    </>
+                  ) : (
+                    '$0'
+                  )}
+                </TooltipWrapper>
+              }
             >
-              ${numberFormatter(Number(totalVolumeUsd))}
+              ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
             </TextWithTooltip>
-          </HeaderValue>
-        </td>
-        <td>
-          <HeaderTitle>Price (last 7 days)</HeaderTitle>
-          {handleLoadingState(lastWeekUsdPrices, <ChartWrapper ref={chartContainerRef} />)}
-        </td>
-      </tr>
-    </>
+          </HeaderValue>,
+        )}
+      </td>
+      <td>
+        <HeaderTitle>Total volume</HeaderTitle>
+        <HeaderValue>
+          <TextWithTooltip
+            textInTooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}`}
+          >
+            ${numberFormatter(Number(totalVolumeUsd))}
+          </TextWithTooltip>
+        </HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Price (last 7 days)</HeaderTitle>
+        {handleLoadingState(lastWeekUsdPrices, <ChartWrapper ref={chartContainerRef} />)}
+      </td>
+    </tr>
   )
 }
 
@@ -419,6 +430,11 @@ const TokenTable: React.FC<Props> = (props) => {
     } else {
       tableContent = (
         <>
+          <tr className="header-row">
+            <td>
+              <HeaderTitle className="mobile-header">Sorted by Volume(24h): From highest to lowest</HeaderTitle>
+            </td>
+          </tr>
           {items.map((item, i) => (
             <RowToken key={`${item.id}-${i}`} index={i + tableState.pageOffset} token={item} />
           ))}
@@ -439,7 +455,7 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>Price</th>
           <th>Price (24h)</th>
           <th>Price (7d)</th>
-          <th>Volume (24h) &darr;</th>
+          <th>Volume (24h)&darr;</th>
           <th>Total volume</th>
           <th>Price (last 7 days)</th>
         </tr>
