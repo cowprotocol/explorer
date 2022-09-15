@@ -77,7 +77,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
       border-radius: 6px;
-      margin-top: 16px;
+      margin-top: 10px;
       padding: 12px;
       &:hover {
         background: none;
@@ -143,6 +143,10 @@ const HeaderTitle = styled.span`
     svg {
       margin-left: 5px;
     }
+    &.mobile-header {
+      height: 2rem;
+      margin-left: 1rem;
+    }
   }
 `
 
@@ -165,13 +169,15 @@ const TokenWrapper = styled.div`
 
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
-
   ${media.mobile} {
     flex-wrap: wrap;
     text-align: end;
   }
 `
 
+const TooltipWrapper = styled.div`
+  text-align: center;
+`
 const ChartWrapper = styled.div`
   position: relative;
   ${media.mobile} {
@@ -254,8 +260,8 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
     lastWeekUsdPrices,
     lastWeekPricePercentageDifference,
     lastDayUsdVolume,
-    lastDayUsdTimestamp,
     totalVolumeUsd,
+    timestamp,
   } = token
   const erc20 = { name, address, symbol, decimals } as TokenErc20
   const network = useNetworkId()
@@ -299,89 +305,100 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
   }
 
   return (
-    <tr key={id}>
-      <td>
-        <HeaderTitle>#</HeaderTitle>
-        <HeaderValue>{index + 1}</HeaderValue>
-      </td>
-      <td>
-        <HeaderTitle>Name</HeaderTitle>
-        <TokenWrapper>
-          <TokenDisplay erc20={erc20} network={network} />
-        </TokenWrapper>
-      </td>
-      <td>
-        <HeaderTitle>Symbol</HeaderTitle>
-        <HeaderValue>{symbol}</HeaderValue>
-      </td>
-      <td>
-        <HeaderTitle>Price</HeaderTitle>
-        <HeaderValue>
-          <TextWithTooltip textInTooltip={`$${Number(priceUsd) || 0}`}>
-            ${Number(priceUsd) ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
-          </TextWithTooltip>
-        </HeaderValue>
-      </td>
-      <td>
-        <HeaderTitle>Price (24h)</HeaderTitle>
-        {handleLoadingState(
-          lastDayPricePercentageDifference,
-          <HeaderValue
-            captionColor={lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'}
-          >
-            {lastDayPricePercentageDifference && lastDayPricePercentageDifference.toFixed(2)}%
-          </HeaderValue>,
-        )}
-      </td>
-      <td>
-        <HeaderTitle>Price (7d)</HeaderTitle>
-        {handleLoadingState(
-          lastWeekPricePercentageDifference,
-          <HeaderValue
-            captionColor={
-              lastWeekPricePercentageDifference ? getColorBySign(lastWeekPricePercentageDifference) : 'grey'
-            }
-          >
-            {lastWeekPricePercentageDifference && lastWeekPricePercentageDifference.toFixed(2)}%
-          </HeaderValue>,
-        )}
-      </td>
-      <td>
-        <HeaderTitle>Volume (24h)&darr;</HeaderTitle>
-        {handleLoadingState(
-          lastDayUsdVolume,
+    <>
+      <HeaderTitle className="mobile-header">Sorted by Volume(24h)</HeaderTitle>
+      <tr key={id}>
+        <td>
+          <HeaderTitle>#</HeaderTitle>
+          <HeaderValue>{index + 1}</HeaderValue>
+        </td>
+        <td>
+          <HeaderTitle>Name</HeaderTitle>
+          <TokenWrapper>
+            <TokenDisplay erc20={erc20} network={network} />
+          </TokenWrapper>
+        </td>
+        <td>
+          <HeaderTitle>Symbol</HeaderTitle>
+          <HeaderValue>{symbol}</HeaderValue>
+        </td>
+        <td>
+          <HeaderTitle>Price</HeaderTitle>
           <HeaderValue>
-            <TextWithTooltip
-              textInTooltip={
-                lastDayUsdVolume
-                  ? `$${formatPrice({
-                      price: new BigNumber(lastDayUsdVolume),
-                      decimals: 2,
-                      thousands: true,
-                    })} - ${lastDayUsdTimestamp ? formatDate(lastDayUsdTimestamp * 1000, 'yyyy-MM-dd') : ''}`
-                  : '$0'
+            <TextWithTooltip textInTooltip={`$${Number(priceUsd) || 0}`}>
+              ${Number(priceUsd) ? formatPrice({ price: new BigNumber(priceUsd), decimals: 4, thousands: true }) : 0}
+            </TextWithTooltip>
+          </HeaderValue>
+        </td>
+        <td>
+          <HeaderTitle>Price (24h)</HeaderTitle>
+          {handleLoadingState(
+            lastDayPricePercentageDifference,
+            <HeaderValue
+              captionColor={
+                lastDayPricePercentageDifference ? getColorBySign(lastDayPricePercentageDifference) : 'grey'
               }
             >
-              ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
+              {lastDayPricePercentageDifference && lastDayPricePercentageDifference.toFixed(2)}%
+            </HeaderValue>,
+          )}
+        </td>
+        <td>
+          <HeaderTitle>Price (7d)</HeaderTitle>
+          {handleLoadingState(
+            lastWeekPricePercentageDifference,
+            <HeaderValue
+              captionColor={
+                lastWeekPricePercentageDifference ? getColorBySign(lastWeekPricePercentageDifference) : 'grey'
+              }
+            >
+              {lastWeekPricePercentageDifference && lastWeekPricePercentageDifference.toFixed(2)}%
+            </HeaderValue>,
+          )}
+        </td>
+        <td>
+          <HeaderTitle>Volume (24h)</HeaderTitle>
+          {handleLoadingState(
+            lastDayUsdVolume,
+            <HeaderValue>
+              <TextWithTooltip
+                textInTooltip={
+                  <TooltipWrapper>
+                    {lastDayUsdVolume ? (
+                      <>
+                        <span>
+                          ${formatPrice({ price: new BigNumber(lastDayUsdVolume), decimals: 2, thousands: true })}
+                        </span>
+                        <br />
+                        <span>Last Updated: {timestamp ? formatDate(timestamp * 1000, 'yyyy-MM-dd HH:mm') : ''}</span>
+                      </>
+                    ) : (
+                      '$0'
+                    )}
+                  </TooltipWrapper>
+                }
+              >
+                ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
+              </TextWithTooltip>
+            </HeaderValue>,
+          )}
+        </td>
+        <td>
+          <HeaderTitle>Total volume</HeaderTitle>
+          <HeaderValue>
+            <TextWithTooltip
+              textInTooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}`}
+            >
+              ${numberFormatter(Number(totalVolumeUsd))}
             </TextWithTooltip>
-          </HeaderValue>,
-        )}
-      </td>
-      <td>
-        <HeaderTitle>Total volume</HeaderTitle>
-        <HeaderValue>
-          <TextWithTooltip
-            textInTooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}`}
-          >
-            ${numberFormatter(Number(totalVolumeUsd))}
-          </TextWithTooltip>
-        </HeaderValue>
-      </td>
-      <td>
-        <HeaderTitle>Price (last 7 days)</HeaderTitle>
-        {handleLoadingState(lastWeekUsdPrices, <ChartWrapper ref={chartContainerRef} />)}
-      </td>
-    </tr>
+          </HeaderValue>
+        </td>
+        <td>
+          <HeaderTitle>Price (last 7 days)</HeaderTitle>
+          {handleLoadingState(lastWeekUsdPrices, <ChartWrapper ref={chartContainerRef} />)}
+        </td>
+      </tr>
+    </>
   )
 }
 

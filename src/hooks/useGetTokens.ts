@@ -13,8 +13,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
   const [tokens, setTokens] = useState<Token[]>([])
 
   const processTokenData = useCallback((data: SubgraphHistoricalDataResponse, lastDayUsdVolume: number) => {
-    const priceUsd = data.tokenHourlyTotals[0]?.averagePrice
-
+    const { averagePrice: priceUsd, timestamp } = data.tokenHourlyTotals.slice(-1)[0]
     const lastDayTimestampFrom = Number(lastHoursTimestamp(25))
     const lastDayTimestampTo = Number(lastHoursTimestamp(23))
     const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
@@ -27,7 +26,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
     )?.averagePrice
 
     return {
-      lastDayUsdTimestamp: lastDayTimestampFrom,
+      timestamp,
       lastDayUsdVolume,
       lastDayPricePercentageDifference: lastDayPrice
         ? getPercentageDifference(Number(priceUsd), Number(lastDayPrice))
@@ -157,8 +156,8 @@ export type SubgraphHistoricalDataResponse = {
 export type Token = {
   lastDayPricePercentageDifference?: number | null
   lastWeekPricePercentageDifference?: number | null
-  lastDayUsdTimestamp?: number | null
   lastDayUsdVolume?: number | null
+  timestamp?: number | null
   lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }> | null
 } & TokenResponse &
   TokenErc20
@@ -168,8 +167,8 @@ function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenDa
     const token = tokens.find((token) => token.address === address)
     const values = prices[address]
     if (token) {
+      token.timestamp = values.timestamp
       token.lastDayUsdVolume = values.lastDayUsdVolume
-      token.lastDayUsdTimestamp = values.lastDayUsdTimestamp
       token.lastDayPricePercentageDifference = values.lastDayPricePercentageDifference
       token.lastWeekPricePercentageDifference = values.lastWeekPricePercentageDifference
       token.lastWeekUsdPrices = values.lastWeekUsdPrices
@@ -179,8 +178,8 @@ function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenDa
 }
 
 export type TokenData = {
+  timestamp?: number
   lastDayUsdVolume?: number
-  lastDayUsdTimestamp?: number
   lastDayPricePercentageDifference?: number
   lastWeekPricePercentageDifference?: number
   lastWeekUsdPrices?: Array<{ time: UTCTimestamp; value: number }>
