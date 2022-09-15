@@ -226,6 +226,7 @@ export const Wrapper = styled(WrapperTemplate)`
     padding: 0.8rem 1.5rem;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
+    font-family: 'Inter var', sans-serif;
 
     ${media.mobile} {
       margin: 1rem 0 0 0;

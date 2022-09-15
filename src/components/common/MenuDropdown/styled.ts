@@ -130,7 +130,7 @@ export const MenuFlyout = styled.ol`
     background: transparent;
     transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
     color: ${({ theme }): string => theme.textSecondary2};
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter var', sans-serif;
 
     ${media.mobile} {
       width: 100%;
