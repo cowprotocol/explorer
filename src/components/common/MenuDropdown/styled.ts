@@ -52,6 +52,7 @@ export const MenuContainer = styled.nav`
   display: flex;
   position: relative;
   justify-content: flex-end;
+  align-items: center;
   gap: 2rem;
 
   ${media.mobile}, ${media.mediumOnly} {
@@ -72,13 +73,13 @@ export const MenuContainer = styled.nav`
     display: none;
   }
 
-  a {
+  > a {
     font-size: 1.6rem;
     font-weight: 600;
     appearance: none;
     outline: 0;
     border-radius: 1.6rem;
-    padding: 1.1rem 1.2rem;
+    padding: 1.266rem 1.2rem;
     cursor: pointer;
     background: transparent;
     transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
@@ -129,6 +130,7 @@ export const MenuFlyout = styled.ol`
     background: transparent;
     transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
     color: ${({ theme }): string => theme.textSecondary2};
+    font-family: 'Inter', sans-serif;
 
     ${media.mobile} {
       width: 100%;
