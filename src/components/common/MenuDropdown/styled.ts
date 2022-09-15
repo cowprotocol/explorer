@@ -1,6 +1,7 @@
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
-import { media } from 'theme/styles/media'
+import { media, ResetButtonCSS } from 'theme/styles'
 import Icon from 'components/Icon'
+import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
 
 export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
   width: 100%;
@@ -72,33 +73,98 @@ export const MenuContainer = styled.nav`
     overflow: hidden auto;
     display: none;
   }
-
-  > a {
-    font-size: 1.6rem;
-    font-weight: 600;
-    appearance: none;
-    outline: 0;
-    border-radius: 1.6rem;
-    padding: 1.266rem 1.2rem;
-    cursor: pointer;
-    background: transparent;
-    transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
+`
+export const MenuItemCSS = css`
+  font-size: 1.6rem;
+  font-weight: 600;
+  appearance: none;
+  outline: 0;
+  border-radius: 1.6rem;
+  padding: 1.3rem 1.2rem;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
+  color: ${({ theme }): string => theme.textSecondary2};
+  :visited,
+  :link {
     color: ${({ theme }): string => theme.textSecondary2};
+  }
+
+  :hover {
+    background: ${({ theme }): string => theme.bg2};
+    text-decoration: none;
+    color: ${({ theme }): string => theme.textSecondary1};
+  }
+  ${media.mobile} {
+    width: 100%;
+    border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
+    border-radius: 0;
+    padding: 2.8rem 1rem;
+    font-size: 1.8rem;
     :hover {
-      background: ${({ theme }): string => theme.bg2};
-      text-decoration: none;
-      color: ${({ theme }): string => theme.textSecondary1};
+      background: none;
     }
+  }
+`
+export const AnchorMenuLink = styled(InternalExternalMenuLink)`
+  ${MenuItemCSS}
+`
+
+export const ButtonMenuItem = styled.button`
+  ${ResetButtonCSS}
+  ${MenuItemCSS}
+  display: flex;
+  align-items: center;
+
+  ${media.mobile} {
+    width: 100%;
+    border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
+    border-radius: 0;
+    padding: 2.8rem 1rem;
+    font-size: 1.8rem;
+  }
+
+  &.expanded {
+    border: none;
+  }
+
+  &:hover {
+    background: ${({ theme }): string => theme.bg2};
+    color: ${({ theme }): string => theme.textSecondary1};
     ${media.mobile} {
+      background: none;
+    }
+    &::after {
+      content: '';
+      display: block;
+      position: absolute;
+      height: 1.8rem;
       width: 100%;
-      border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
-      border-radius: 0;
-      padding: 2.8rem 1rem;
-      font-size: 1.8rem;
-      :hover {
-        background: none;
+      ${media.desktopLarge} {
+        content: none;
       }
     }
+  }
+
+  > svg {
+    margin: 0 0 0 0.6rem;
+    object-fit: contain;
+    ${media.mobile} {
+      margin: 0 0 0 auto;
+      height: 1rem;
+    }
+  }
+
+  > svg.expanded {
+    transition: transform 0.3s ease-in-out;
+    transform: rotate(180deg);
+  }
+
+  svg > path {
+    fill: ${({ theme }): string => theme.textSecondary2};
+  }
+  :hover > svg > path {
+    fill: ${({ theme }): string => theme.textSecondary1};
   }
 `
 
@@ -113,75 +179,6 @@ export const MenuFlyout = styled.ol`
     display: flex;
     flex-direction: column;
     width: 100%;
-  }
-
-  > button {
-    font-size: 1.6rem;
-    position: relative;
-    border-radius: 1.6rem;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    appearance: none;
-    outline: 0;
-    padding: 0.8rem 1.2rem;
-    border: 0;
-    cursor: pointer;
-    background: transparent;
-    transition: background 0.15s ease-in-out 0s, color 0.15s ease-in-out 0s;
-    color: ${({ theme }): string => theme.textSecondary2};
-    font-family: 'Inter var', sans-serif;
-
-    ${media.mobile} {
-      width: 100%;
-      border-bottom: 0.1rem solid ${({ theme }): string => theme.bg3};
-      border-radius: 0;
-      padding: 2.8rem 1rem;
-      font-size: 1.8rem;
-    }
-
-    &.expanded {
-      border: none;
-    }
-
-    &:hover {
-      background: ${({ theme }): string => theme.bg2};
-      color: ${({ theme }): string => theme.textSecondary1};
-      ${media.mobile} {
-        background: none;
-      }
-      &::after {
-        content: '';
-        display: block;
-        position: absolute;
-        height: 1.8rem;
-        width: 100%;
-        ${media.desktopLarge} {
-          content: none;
-        }
-      }
-    }
-
-    > svg {
-      margin: 0 0 0 0.6rem;
-      object-fit: contain;
-      ${media.mobile} {
-        margin: 0 0 0 auto;
-        height: 1rem;
-      }
-    }
-
-    > svg.expanded {
-      transition: transform 0.3s ease-in-out;
-      transform: rotate(180deg);
-    }
-
-    svg > path {
-      fill: ${({ theme }): string => theme.textSecondary2};
-    }
-    :hover > svg > path {
-      fill: ${({ theme }): string => theme.textSecondary1};
-    }
   }
 `
 
