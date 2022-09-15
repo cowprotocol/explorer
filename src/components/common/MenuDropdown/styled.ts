@@ -163,9 +163,7 @@ export const MenuFlyout = styled.ol`
     }
 
     > svg {
-      margin: 0 0 0 0.3rem;
-      width: 1.6rem;
-      height: 0.6rem;
+      margin: 0 0 0 0.6rem;
       object-fit: contain;
       ${media.mobile} {
         margin: 0 0 0 auto;
