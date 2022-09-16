@@ -149,6 +149,7 @@ export const ButtonMenuItem = styled.button`
   > svg {
     margin: 0 0 0 0.6rem;
     object-fit: contain;
+    transition: transform 0.3s ease-in-out;
     ${media.mobile} {
       margin: 0 0 0 auto;
       height: 1rem;
