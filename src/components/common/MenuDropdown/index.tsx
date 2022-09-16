@@ -1,5 +1,5 @@
 import React, { useState, createRef } from 'react'
-import { MenuFlyout, Content, MenuSection, MenuTitle } from 'components/common/MenuDropdown/styled'
+import { MenuFlyout, Content, MenuSection, MenuTitle, ButtonMenuItem } from 'components/common/MenuDropdown/styled'
 import IMAGE_CARRET_DOWN from 'assets/img/carret-down.svg'
 import SVG from 'react-inlinesvg'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
@@ -29,9 +29,9 @@ export function MenuItemsPanel({ title, children }: MenuProps): JSX.Element {
 
   return (
     <MenuFlyout ref={node as never}>
-      <button onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
+      <ButtonMenuItem onClick={handleOnClick} className={showMenu ? 'expanded' : ''}>
         {title} <SVG src={IMAGE_CARRET_DOWN} description="dropdown icon" className={showMenu ? 'expanded' : ''} />
-      </button>
+      </ButtonMenuItem>
       {showMenu && <Content onClick={handleOnClick}>{children}</Content>}
     </MenuFlyout>
   )

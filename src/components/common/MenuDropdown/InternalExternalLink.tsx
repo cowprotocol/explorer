@@ -18,7 +18,7 @@ function MenuImage(props: MenuImageProps): JSX.Element | null {
   }
 }
 
-interface InternalExternalLinkProps {
+interface InternalExternalLinkProps extends React.HTMLAttributes<HTMLAnchorElement> {
   link: MenuLink
   handleMobileMenuOnClick?: () => void
 }
@@ -26,6 +26,7 @@ interface InternalExternalLinkProps {
 export default function InternalExternalMenuLink({
   link,
   handleMobileMenuOnClick,
+  className,
 }: InternalExternalLinkProps): JSX.Element {
   const { kind, title, url, iconSVG, icon } = link
   const menuImage = <MenuImage title={title} icon={icon} iconSVG={iconSVG} />
@@ -34,7 +35,7 @@ export default function InternalExternalMenuLink({
 
   if (isExternal) {
     return (
-      <ExternalLink target={'_blank'} href={url} onClick={handleMobileMenuOnClick}>
+      <ExternalLink className={className} target={'_blank'} href={url} onClick={handleMobileMenuOnClick}>
         {menuImage}
         {title}
         {menuImageExternal}
@@ -42,7 +43,7 @@ export default function InternalExternalMenuLink({
     )
   } else {
     return (
-      <LinkWithPrefixNetwork to={url} target="_self" onClickOptional={handleMobileMenuOnClick}>
+      <LinkWithPrefixNetwork className={className} to={url} target="_self" onClickOptional={handleMobileMenuOnClick}>
         {menuImage}
         {title}
       </LinkWithPrefixNetwork>

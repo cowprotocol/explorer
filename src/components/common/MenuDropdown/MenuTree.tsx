@@ -1,8 +1,7 @@
 import React from 'react'
 
-import InternalExternalMenuLink from 'components/common/MenuDropdown/InternalExternalLink'
 import { MAIN_MENU } from 'components/common/MenuDropdown/mainMenu'
-import { Wrapper, MenuContainer } from 'components/common/MenuDropdown/styled'
+import { Wrapper, MenuContainer, AnchorMenuLink } from 'components/common/MenuDropdown/styled'
 import { MenuItemKind, MenuTreeItem } from 'components/common/MenuDropdown/types'
 import DropDown from '.'
 import MobileMenuIcon from 'components/common/MenuDropdown/MobileMenuIcon'
@@ -22,7 +21,7 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps): JSX.Element | n
     case undefined: // INTERNAL
     case MenuItemKind.EXTERNAL_LINK: // EXTERNAL
       // Render Internal/External links
-      return <InternalExternalMenuLink link={menuItem} handleMobileMenuOnClick={context.handleMobileMenuOnClick} />
+      return <AnchorMenuLink link={menuItem} handleMobileMenuOnClick={context.handleMobileMenuOnClick} />
     default:
       return null
   }
