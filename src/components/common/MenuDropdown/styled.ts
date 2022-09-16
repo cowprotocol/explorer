@@ -152,7 +152,6 @@ export const ButtonMenuItem = styled.button`
     transition: transform 0.3s ease-in-out;
     ${media.mobile} {
       margin: 0 0 0 auto;
-      height: 1rem;
     }
   }
 
