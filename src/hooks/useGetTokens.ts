@@ -64,13 +64,16 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
   )
 
   const processTokenData = useCallback((data: SubgraphHistoricalDataResponse) => {
-    const lastDayUsdVolume = data.tokenHourlyTotals.reduce((acc, curr) => acc + Number(curr.totalVolumeUsd), 0)
-    const priceUsd = data.tokenHourlyTotals[0]?.averagePrice
-
     const lastDayTimestampFrom = Number(lastHoursTimestamp(25))
     const lastDayTimestampTo = Number(lastHoursTimestamp(23))
     const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
     const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
+
+    const lastDayUsdVolume = data.tokenHourlyTotals
+      .filter((hourlyTotal) => hourlyTotal.timestamp >= lastDayTimestampFrom)
+      .reduce((acc, curr) => acc + Number(curr.totalVolumeUsd), 0)
+    const priceUsd = data.tokenHourlyTotals[0]?.averagePrice
+
     const lastDayPrice = data.tokenHourlyTotals.find(
       (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
     )?.averagePrice
