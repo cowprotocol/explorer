@@ -181,6 +181,7 @@ export const GET_TOKENS_QUERY = gql`
 export const GET_HISTORICAL_DATA_QUERY = gql`
   query GetHistoricalData($address: ID!, $lastWeekTimestamp: Int!) {
     tokenHourlyTotals(
+      first: 1000
       orderBy: timestamp
       orderDirection: desc
       where: { token: $address, timestamp_gt: $lastWeekTimestamp }
