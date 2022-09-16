@@ -14,7 +14,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
 
   const processTokenData = useCallback(
     (data: SubgraphHistoricalDataResponse, lastDayUsdVolume: number, timestamp: number) => {
-      const { averagePrice: priceUsd } = data.tokenHourlyTotals.slice(-1)[0]
+      const { averagePrice: priceUsd } = data.tokenHourlyTotals[0]
       const lastDayTimestampFrom = Number(lastHoursTimestamp(25))
       const lastDayTimestampTo = Number(lastHoursTimestamp(23))
       const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
@@ -124,7 +124,12 @@ export const GET_TOKENS_QUERY = gql`
         decimals
         totalVolumeUsd
         priceUsd
-        hourlyTotals(first: 1000, where: { timestamp_gt: $lastWeekTimestamp }) {
+        hourlyTotals(
+          first: 1000
+          orderBy: timestamp
+          orderDirection: desc
+          where: { timestamp_gt: $lastWeekTimestamp }
+        ) {
           timestamp
           averagePrice
         }

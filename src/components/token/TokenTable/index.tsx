@@ -382,7 +382,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
                         ${formatPrice({ price: new BigNumber(lastDayUsdVolume), decimals: 2, thousands: true })}
                       </span>
                       <br />
-                      <span>Last Updated: {timestamp ? formatDate(timestamp * 1000, 'yyyy-MM-dd HH:mm') : ''}</span>
+                      <span>Last updated: {timestamp ? formatDate(timestamp * 1000, 'yyyy-MM-dd HH:mm') : ''}</span>
                     </>
                   ) : (
                     '$0'
@@ -432,7 +432,7 @@ const TokenTable: React.FC<Props> = (props) => {
         <>
           <tr className="header-row">
             <td>
-              <HeaderTitle className="mobile-header">Sorted by Volume(24h): From highest to lowest</HeaderTitle>
+              <HeaderTitle className="mobile-header">Sorted by Volume(24h): from highest to lowest</HeaderTitle>
             </td>
           </tr>
           {items.map((item, i) => (
