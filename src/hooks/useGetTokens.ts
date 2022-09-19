@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { gql } from '@apollo/client'
-import { subDays, subHours } from 'date-fns'
+import { subDays, subHours, startOfToday, startOfYesterday } from 'date-fns'
 import { Network, UiError } from 'types'
 import { COW_SDK, NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -50,13 +50,15 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
     async (network: Network): Promise<void> => {
       setIsLoading(true)
       setTokens([])
-      const lastDayTimestamp = Number(lastHoursTimestamp(25)) // last 25 hours
+      const todayTimestamp = startOfToday().setUTCHours(0) / 1000
+      const yesterdayTimestamp = startOfYesterday().setUTCHours(0) / 1000
       const lastWeekTimestamp = Number(lastDaysTimestamp(8)) // last 8 days
       try {
         const response = await COW_SDK.cowSubgraphApi.runQuery<{ tokenDailyTotals: TokenDailyTotalsResponse[] }>(
           GET_TOKENS_QUERY,
           {
-            lastDayTimestamp,
+            todayTimestamp,
+            yesterdayTimestamp,
             lastWeekTimestamp,
           },
           { chainId: network },
@@ -107,12 +109,12 @@ type GetTokensResult = {
 }
 
 export const GET_TOKENS_QUERY = gql`
-  query GetTokens($lastDayTimestamp: Int!, $lastWeekTimestamp: Int!) {
+  query GetTokens($todayTimestamp: Int!, $yesterdayTimestamp: Int!, $lastWeekTimestamp: Int!) {
     tokenDailyTotals(
       first: 50
       orderBy: totalVolumeUsd
       orderDirection: desc
-      where: { timestamp_gt: $lastDayTimestamp }
+      where: { timestamp_gte: $yesterdayTimestamp, timestamp_lt: $todayTimestamp }
     ) {
       timestamp
       totalVolumeUsd
