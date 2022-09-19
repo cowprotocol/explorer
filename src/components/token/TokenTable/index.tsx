@@ -3,6 +3,7 @@ import styled, { DefaultTheme, useTheme } from 'styled-components'
 import { createChart, IChartApi } from 'lightweight-charts'
 import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import { fromUnixTime, startOfToday } from 'date-fns'
 
 import { Token } from 'hooks/useGetTokens'
 import { useNetworkId } from 'state/network'
@@ -19,7 +20,6 @@ import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/uti
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
-import { formatDate } from 'utils'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -382,7 +382,9 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
                         ${formatPrice({ price: new BigNumber(lastDayUsdVolume), decimals: 2, thousands: true })}
                       </span>
                       <br />
-                      <span>Last updated: {timestamp ? formatDate(timestamp * 1000, 'yyyy-MM-dd HH:mm') : ''}</span>
+                      <span>From: {timestamp ? fromUnixTime(timestamp).toISOString() : ''}</span>
+                      <br />
+                      <span>To: {fromUnixTime(startOfToday().setUTCHours(0) / 1000).toISOString()}</span>
                     </>
                   ) : (
                     '$0'
