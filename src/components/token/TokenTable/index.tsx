@@ -3,7 +3,7 @@ import styled, { DefaultTheme, useTheme } from 'styled-components'
 import { createChart, IChartApi } from 'lightweight-charts'
 import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
-import { fromUnixTime, startOfToday } from 'date-fns'
+import { format, fromUnixTime, startOfToday } from 'date-fns'
 
 import { Token } from 'hooks/useGetTokens'
 import { useNetworkId } from 'state/network'
@@ -382,9 +382,9 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
                         ${formatPrice({ price: new BigNumber(lastDayUsdVolume), decimals: 2, thousands: true })}
                       </span>
                       <br />
-                      <span>From: {timestamp ? fromUnixTime(timestamp).toISOString() : ''}</span>
+                      <span>From: {timestamp ? format(fromUnixTime(timestamp), 'P pp zzzz') : ''}</span>
                       <br />
-                      <span>To: {fromUnixTime(startOfToday().setUTCHours(0) / 1000).toISOString()}</span>
+                      <span>To: {format(fromUnixTime(startOfToday().setUTCHours(0) / 1000), 'P pp zzzz')}</span>
                     </>
                   ) : (
                     '$0'
