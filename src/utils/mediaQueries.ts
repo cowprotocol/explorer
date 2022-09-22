@@ -1,25 +1,33 @@
 import { Command } from 'types'
+import { media } from 'theme/styles/media'
 
 export type Breakpoints = 'xl' | 'lg' | 'md' | 'sm' | 'xs'
+
+const extrapolatedScreenSize = {
+  sm: media.xSmallScreen,
+  md: media.smallScreenUp,
+  lg: media.desktopScreen,
+  xl: media.desktopScreenLarge,
+}
 
 export const MEDIA_QUERY_MATCHES: Array<{ name: Breakpoints; query: string }> = [
   // must be in descending order for .find to match from largest to smallest
   // as sm will also match for xl and lg, for example
   {
     name: 'xl',
-    query: '(min-width:1200px)',
+    query: `(min-width:${extrapolatedScreenSize.xl})`,
   },
   {
     name: 'lg',
-    query: '(min-width:992px)',
+    query: `(min-width:${extrapolatedScreenSize.lg})`,
   },
   {
     name: 'md',
-    query: '(min-width:768px)',
+    query: `(min-width:${extrapolatedScreenSize.md})`,
   },
   {
     name: 'sm',
-    query: '(min-width:576px)',
+    query: `(min-width:${extrapolatedScreenSize.sm})`,
   },
   // anything smaller -- xs
 ]

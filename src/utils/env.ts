@@ -1,4 +1,4 @@
-type Envs = {
+type EnvsFlags = {
   isDev: boolean
   isStaging: boolean
   isProd: boolean
@@ -7,7 +7,7 @@ type Envs = {
 
 const getRegex = (regex: string | undefined): RegExp | undefined => (regex ? new RegExp(regex) : undefined)
 
-function checkEnvironment(host: string): Envs {
+function checkEnvironment(host: string): EnvsFlags {
   const domainDevRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_DEV)
   const domainStagingRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_STAGING)
   const domainProdRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_PROD)
@@ -23,7 +23,9 @@ function checkEnvironment(host: string): Envs {
 
 const { isDev, isStaging, isProd, isBarn } = checkEnvironment(window.location.host)
 
-export const environmentName = (function (): 'production' | 'barn' | 'staging' | 'development' | undefined {
+export type Envs = 'production' | 'barn' | 'staging' | 'development'
+
+export const environmentName = (function (): Envs | undefined {
   if (isProd) {
     return 'production'
   } else if (isBarn) {

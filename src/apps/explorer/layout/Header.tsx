@@ -1,22 +1,26 @@
-import React, { useState, createRef } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 
-import { MenuBarToggle, Navigation } from 'components/layout/GenericLayout/Navigation'
 import { Header as GenericHeader } from 'components/layout/GenericLayout/Header'
 import { NetworkSelector } from 'components/NetworkSelector'
 import { PREFIX_BY_NETWORK_ID, useNetworkId } from 'state/network'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisH, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { FlexWrap } from 'apps/explorer/pages/styled'
-import { ExternalLink } from 'components/analytics/ExternalLink'
-import { useHistory } from 'react-router'
-import useOnClickOutside from 'hooks/useOnClickOutside'
-import { APP_NAME } from 'const'
+import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
+import { MenuTree } from 'components/common/MenuDropdown/MenuTree'
+import { addBodyClass, removeBodyClass } from 'utils/toggleBodyClass'
 
 export const Header: React.FC = () => {
-  const history = useHistory()
-  const [isBarActive, setBarActive] = useState(false)
-  const flexWrapDivRef = createRef<HTMLDivElement>()
-  useOnClickOutside(flexWrapDivRef, () => isBarActive && setBarActive(false))
+  const isMobile = useMediaBreakpoint(['xs', 'sm'])
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Toggle the 'noScroll' class on body, whenever the mobile menu or orders panel is open.
+  // This removes the inner scrollbar on the page body, to prevent showing double scrollbars.
+  useEffect(() => {
+    isMobileMenuOpen ? addBodyClass('noScroll') : removeBodyClass('noScroll')
+  }, [isMobileMenuOpen, isMobile])
+
+  const handleMobileMenuOnClick = useCallback(() => {
+    isMobile && setMobileMenuOpen((isMobileMenuOpen) => !isMobileMenuOpen)
+  }, [isMobile])
 
   const networkId = useNetworkId()
   if (!networkId) {
@@ -25,44 +29,19 @@ export const Header: React.FC = () => {
 
   const prefixNetwork = PREFIX_BY_NETWORK_ID.get(networkId)
 
-  const handleNavigate = (e: React.MouseEvent<HTMLAnchorElement>): void => {
-    e.preventDefault()
-    setBarActive(false)
-    history.push(`/${prefixNetwork || ''}`)
-  }
-
   return (
-    <GenericHeader logoAlt="CoW Protocol Explorer" linkTo={`/${prefixNetwork || ''}`}>
+    <GenericHeader
+      logoAlt="CoW Protocol Explorer"
+      linkTo={`/${prefixNetwork || ''}`}
+      onClickOptional={isMobileMenuOpen ? handleMobileMenuOnClick : undefined}
+    >
       <NetworkSelector networkId={networkId} />
-      <FlexWrap ref={flexWrapDivRef} grow={1}>
-        <MenuBarToggle isActive={isBarActive} onClick={(): void => setBarActive(!isBarActive)}>
-          <FontAwesomeIcon icon={isBarActive ? faTimes : faEllipsisH} />
-        </MenuBarToggle>
-        <Navigation isActive={isBarActive}>
-          <li>
-            <a onClick={(e): void => handleNavigate(e)}>Home</a>
-          </li>
-          <li>
-            <ExternalLink target={'_blank'} href={'https://cow.fi'}>
-              {APP_NAME}
-            </ExternalLink>
-          </li>
-          <li>
-            <ExternalLink target={'_blank'} href={'https://docs.cow.fi'}>
-              Documentation
-            </ExternalLink>
-          </li>
-          <li>
-            <ExternalLink target={'_blank'} href={'https://discord.gg/cowprotocol'}>
-              Community
-            </ExternalLink>
-          </li>
-          <li>
-            <ExternalLink target={'_blank'} href={'https://dune.xyz/gnosis.protocol/Gnosis-Protocol-V2'}>
-              Analytics
-            </ExternalLink>
-          </li>
-        </Navigation>
+      <FlexWrap grow={1}>
+        <MenuTree
+          isMobile={isMobile}
+          isMobileMenuOpen={isMobileMenuOpen}
+          handleMobileMenuOnClick={handleMobileMenuOnClick}
+        />
       </FlexWrap>
     </GenericHeader>
   )

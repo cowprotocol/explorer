@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
 
 // Components
@@ -98,10 +98,19 @@ const Tabs: React.FC<Props> = (props) => {
 
   const [activeTab, setActiveTab] = useState(defaultTab)
 
-  function onTabClick(key: TabId): void {
-    setActiveTab(key)
-    onChange?.(key)
-  }
+  const onTabClick = useCallback(
+    (key: TabId): void => {
+      setActiveTab(key)
+      onChange?.(key)
+    },
+    [onChange],
+  )
+
+  useEffect(() => {
+    if (activeTab !== defaultTab) {
+      onTabClick(defaultTab)
+    }
+  }, [activeTab, defaultTab, onTabClick])
 
   return (
     <Wrapper>

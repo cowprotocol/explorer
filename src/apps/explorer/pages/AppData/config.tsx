@@ -1,11 +1,6 @@
 import React, { RefObject } from 'react'
 import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
-import {
-  LATEST_APP_DATA_VERSION,
-  LATEST_QUOTE_METADATA_VERSION,
-  LATEST_REFERRER_METADATA_VERSION,
-  getAppDataSchema,
-} from '@cowprotocol/app-data'
+import { LATEST_APP_DATA_VERSION, getAppDataSchema } from '@cowprotocol/app-data'
 import { JSONSchema7 } from 'json-schema'
 import { HelpTooltip } from 'components/Tooltip'
 
@@ -28,12 +23,6 @@ export const INVALID_IPFS_CREDENTIALS = [
 
 export type FormProps = Record<string, any>
 
-const APP_VERSION = {
-  appData: LATEST_APP_DATA_VERSION,
-  quote: LATEST_QUOTE_METADATA_VERSION,
-  referrer: LATEST_REFERRER_METADATA_VERSION,
-}
-
 export const getSchema = async (): Promise<JSONSchema7> => {
   const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)).default as JSONSchema7
   deleteAllPropertiesByName(latestSchema, 'examples')
@@ -45,9 +34,6 @@ const setDependencies = (formattedSchema: JSONSchema7, field: string, dependenci
   if (formattedSchema?.properties?.metadata['properties'][field]) {
     const requiredFields = formattedSchema.properties.metadata['properties'][field].required
     deletePropertyPath(formattedSchema, `properties.metadata.properties.${field}.required`)
-
-    formattedSchema.properties.metadata['properties'][field].properties.version['readOnly'] = true
-    formattedSchema.properties.metadata['properties'][field].properties.version['default'] = APP_VERSION[field]
 
     const properties = formattedSchema.properties.metadata['properties'][field].properties
     const [fieldKey] = Object.keys(dependencies)
@@ -67,11 +53,6 @@ const setDependencies = (formattedSchema: JSONSchema7, field: string, dependenci
 
 const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
   const formattedSchema = structuredClone(schema)
-
-  if (formattedSchema?.properties?.version) {
-    formattedSchema.properties.version['readOnly'] = true
-    formattedSchema.properties.version['default'] = LATEST_APP_DATA_VERSION
-  }
 
   setDependencies(formattedSchema, 'quote', quoteDependencies)
   setDependencies(formattedSchema, 'referrer', referrerDependencies)
@@ -216,7 +197,6 @@ export const decodeAppDataSchema: JSONSchema7 = {
     appData: {
       type: 'string',
       title: 'AppData',
-      description: 'Add your AppData hash.',
       pattern: '^0x[a-fA-F0-9]{64}',
     },
   },

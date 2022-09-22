@@ -16,6 +16,7 @@ const HeaderStyled = styled.header`
   box-sizing: border-box;
   padding: 0 1.6rem;
   max-width: 140rem;
+  z-index: 5;
 
   ${media.mediumDown} {
     max-width: 94rem;
@@ -34,10 +35,16 @@ const Logo = styled(Link)`
   justify-content: center;
   width: 12rem;
   height: 3.9rem;
+  z-index: 6;
+  transition: transform 0.3s ease 0s;
 
   &:hover {
     text-decoration: none;
-    opacity: 0.9;
+    transform: rotate(-5deg);
+    transition: transform 0.3s ease 0s;
+    ${media.mobile} {
+      transform: none;
+    }
   }
 
   > img {
@@ -67,11 +74,12 @@ const Logo = styled(Link)`
 type Props = PropsWithChildren<{
   linkTo?: string
   logoAlt?: string
+  onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
 }>
 
-export const Header: React.FC<Props> = ({ children, linkTo, logoAlt }) => (
+export const Header: React.FC<Props> = ({ children, linkTo, logoAlt, onClickOptional }) => (
   <HeaderStyled>
-    <Logo to={linkTo || '/'}>
+    <Logo to={linkTo || '/'} onClick={(event): void => onClickOptional && onClickOptional(event)}>
       <img src={LogoImage} alt={logoAlt || 'Trading interface homepage'} />
     </Logo>
     {children}

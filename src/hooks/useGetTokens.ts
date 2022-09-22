@@ -64,17 +64,20 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
   )
 
   const processTokenData = useCallback((data: SubgraphHistoricalDataResponse) => {
-    const lastDayUsdVolume = data.tokenHourlyTotals.reduce((acc, curr) => acc + Number(curr.totalVolumeUsd), 0)
-    const priceUsd = data.tokenHourlyTotals[0]?.averagePrice
-
     const lastDayTimestampFrom = Number(lastHoursTimestamp(25))
     const lastDayTimestampTo = Number(lastHoursTimestamp(23))
     const lastWeekTimestampFrom = Number(lastDaysTimestamp(8))
     const lastWeekTimestampTo = Number(lastDaysTimestamp(6))
+
+    const lastDayUsdVolume = data.tokenHourlyTotals
+      .filter((hourlyTotal) => hourlyTotal.timestamp >= lastDayTimestampFrom)
+      .reduce((acc, curr) => acc + Number(curr.totalVolumeUsd), 0)
+    const priceUsd = data.tokenHourlyTotals[0]?.averagePrice
+
     const lastDayPrice = data.tokenHourlyTotals.find(
       (x) => x.timestamp >= lastDayTimestampFrom && x.timestamp <= lastDayTimestampTo,
     )?.averagePrice
-    const lastWeekPrice = data.tokenDailyTotals.find(
+    const lastWeekPrice = data.tokenHourlyTotals.find(
       (x) => x.timestamp >= lastWeekTimestampFrom && x.timestamp <= lastWeekTimestampTo,
     )?.averagePrice
 
@@ -86,7 +89,7 @@ export function useGetTokens(networkId: Network | undefined, tableState: TableSt
       lastWeekPricePercentageDifference: lastWeekPrice
         ? getPercentageDifference(Number(priceUsd), Number(lastWeekPrice))
         : undefined,
-      lastWeekUsdPrices: data.tokenDailyTotals
+      lastWeekUsdPrices: data.tokenHourlyTotals
         .map((x) => ({
           time: Number(x.timestamp) as UTCTimestamp,
           value: Number(x.averagePrice),
@@ -179,23 +182,9 @@ export const GET_TOKENS_QUERY = gql`
 `
 
 export const GET_HISTORICAL_DATA_QUERY = gql`
-  query GetHistoricalData($address: ID!, $lastDayTimestamp: Int!, $lastWeekTimestamp: Int!) {
+  query GetHistoricalData($address: ID!, $lastWeekTimestamp: Int!) {
     tokenHourlyTotals(
-      first: 25
-      orderBy: timestamp
-      orderDirection: desc
-      where: { token: $address, timestamp_gt: $lastDayTimestamp }
-    ) {
-      token {
-        address
-      }
-      timestamp
-      totalVolumeUsd
-      averagePrice
-    }
-
-    tokenDailyTotals(
-      first: 8
+      first: 1000
       orderBy: timestamp
       orderDirection: desc
       where: { token: $address, timestamp_gt: $lastWeekTimestamp }
@@ -204,6 +193,7 @@ export const GET_HISTORICAL_DATA_QUERY = gql`
         address
       }
       timestamp
+      totalVolumeUsd
       averagePrice
     }
   }
@@ -219,22 +209,15 @@ export type TokenResponse = {
   totalVolumeUsd: string
 }
 
-export type TokenDailyTotals = {
+export type TokenHourlyTotals = {
   token: { address: string }
   timestamp: number
   totalVolumeUsd: string
   averagePrice: string
 }
 
-export type TokenWeeklyTotals = {
-  token: { address: string }
-  timestamp: number
-  averagePrice: string
-}
-
 export type SubgraphHistoricalDataResponse = {
-  tokenHourlyTotals: Array<TokenDailyTotals>
-  tokenDailyTotals: Array<TokenWeeklyTotals>
+  tokenHourlyTotals: Array<TokenHourlyTotals>
 }
 
 export type Token = {
@@ -247,7 +230,7 @@ export type Token = {
 
 function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenData }): Token[] {
   for (const address of Object.keys(prices)) {
-    const token = tokens.find((token) => token.address === address)
+    const token = tokens.find((token) => token.address.toLowerCase() === address.toLowerCase())
     const values = prices[address]
 
     if (token) {
@@ -280,7 +263,6 @@ function enhanceNativeToken(tokens: TokenResponse[], network: Network): TokenRes
     if (!isNativeToken(token.address)) {
       return token
     }
-    console.log(NATIVE_TOKEN_PER_NETWORK[network], token)
     return {
       ...token,
       ...NATIVE_TOKEN_PER_NETWORK[network],

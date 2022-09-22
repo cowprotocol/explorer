@@ -41,7 +41,7 @@ const AppDataWrapper = styled.div`
         width: 95%;
       }
       ${media.mobile} {
-        width: 75vw;
+        width: 78vw;
       }
       ${media.tinyDown} {
         width: 70vw;

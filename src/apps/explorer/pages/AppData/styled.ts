@@ -10,14 +10,54 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
 
 export const Wrapper = styled(WrapperTemplate)`
   max-width: 118rem;
+  .disclaimer {
+    font-size: 1.2rem;
+    line-height: 1.3;
+    display: block;
+    margin-bottom: 1rem;
+    ol {
+      padding-left: 2rem;
+      li {
+        margin: 0.5rem 0 0.5rem 0;
+      }
+    }
+  }
+  .info-header {
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    &.box {
+      padding: 3rem 4rem;
+      background: ${({ theme }): string => theme.bg3};
+      border-radius: 0.4rem;
+    }
+    a {
+      margin: 0 0.5rem 0 0.5rem;
+      color: ${({ theme }): string => theme.orange};
+    }
+    &.inner-form {
+      h2 {
+        margin-bottom: 2rem;
+      }
+      margin-bottom: 3rem;
+      font-size: 1.2rem;
+    }
+    p {
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
   ${Content} {
     display: flex;
     flex-direction: column;
     border: 0;
     padding: 0;
+    .form-container {
+      ${AppDataWrapper} {
+        align-items: center;
+      }
+    }
     ${AppDataWrapper} {
       flex: 1;
-      align-items: center;
       padding-left: 2rem;
       ${media.mobile} {
         padding-left: 0;
@@ -26,10 +66,7 @@ export const Wrapper = styled(WrapperTemplate)`
     .json-formatter {
       line-height: 1.25;
       ${media.desktopMediumDown} {
-        max-width: 37vw;
-      }
-      ${media.mediumDownMd} {
-        max-width: 33vw;
+        max-width: 45vw;
       }
       ${media.mobile} {
         max-width: none;
@@ -47,6 +84,10 @@ export const Wrapper = styled(WrapperTemplate)`
     .appData-hash {
       margin: 0 0 1rem 0;
       max-width: 54rem;
+      border: 1px solid ${({ theme }): string => theme.tableRowBorder};
+      padding: 0.75rem;
+      background: ${({ theme }): string => theme.tableRowBorder};
+      border-radius: 0.5rem;
       ${media.mobile} {
         max-width: none;
         margin: 1rem 0;
@@ -75,11 +116,13 @@ export const Wrapper = styled(WrapperTemplate)`
 
     .hidden-content {
       ${media.desktop} {
-        position: fixed;
+        position: sticky;
+        top: 2.8rem;
         width: 30vw;
       }
       ${media.mediumUp} {
-        position: fixed;
+        position: sticky;
+        top: 3rem;
         width: 35vw;
       }
       ${media.mobile} {
@@ -89,7 +132,8 @@ export const Wrapper = styled(WrapperTemplate)`
         font-size: 1.2rem;
       }
       ${media.desktopLarge} {
-        position: fixed;
+        position: sticky;
+        top: 4rem;
         width: 60rem;
       }
       h4 {
@@ -99,13 +143,17 @@ export const Wrapper = styled(WrapperTemplate)`
   }
   .decode-container {
     display: flex;
+    gap: 10rem;
     flex: 1;
-    div {
-      align-items: flex-start !important;
+    .left-pannel {
+      display: flex;
+      flex-direction: column;
+      width: 40vw;
     }
     ${media.mobile} {
       margin: 2rem 0;
       flex-direction: column;
+      gap: 5rem;
     }
     ${media.mediumDown} {
       margin: 2rem 0;
@@ -178,6 +226,7 @@ export const Wrapper = styled(WrapperTemplate)`
     padding: 0.8rem 1.5rem;
     transition-duration: 0.2s;
     transition-timing-function: ease-in-out;
+    font-family: 'Inter var', sans-serif;
 
     ${media.mobile} {
       margin: 1rem 0 0 0;
@@ -238,6 +287,9 @@ export const Wrapper = styled(WrapperTemplate)`
         font-size: 1.3rem;
         margin: 1rem 0;
       }
+      .main-container {
+        width: 100%;
+      }
       .data-form {
         width: 100%;
         max-width: 40rem;
@@ -245,6 +297,9 @@ export const Wrapper = styled(WrapperTemplate)`
         ${media.mobile} {
           max-width: 100%;
           margin-right: 0;
+        }
+        input {
+          margin-top: 1rem;
         }
       }
       .hidden-content {
