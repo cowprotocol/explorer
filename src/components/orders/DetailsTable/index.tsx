@@ -19,7 +19,7 @@ import { OrderSurplusDisplay } from 'components/orders/OrderSurplusDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
-import { triggerEvent } from 'api/analytics'
+import { sendEvent } from 'components/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -173,7 +173,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
   }
 
   const onCopy = (label: string): void =>
-    triggerEvent({
+    sendEvent({
       category: 'Order details',
       action: 'Copy',
       label,

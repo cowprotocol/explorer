@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch, Redirect } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch, Redirect, useLocation } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
@@ -11,10 +11,7 @@ import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 
 import { NetworkUpdater, RedirectMainnet, RedirectXdai } from 'state/network'
-import { initAnalytics } from 'api/analytics'
-import RouteAnalytics from 'components/analytics/RouteAnalytics'
-import NetworkAnalytics from 'components/analytics/NetworkAnalytics'
-import { DIMENSION_NAMES } from './const'
+import { useAnalyticsReporter } from 'components/analytics'
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
 import { environmentName } from 'utils/env'
@@ -37,13 +34,6 @@ if (SENTRY_DSN) {
     tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE ? Number(SENTRY_TRACES_SAMPLE_RATE) : 1.0,
   })
 }
-
-// Init analytics
-const GOOGLE_ANALYTICS_ID: string | undefined = process.env.GOOGLE_ANALYTICS_ID
-initAnalytics({
-  trackingCode: GOOGLE_ANALYTICS_ID,
-  dimensionNames: DIMENSION_NAMES,
-})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -111,24 +101,17 @@ function StateUpdaters(): JSX.Element {
   return <NetworkUpdater />
 }
 
-const Analytics = (): JSX.Element => (
-  <>
-    <Route component={RouteAnalytics} />
-    <Route component={NetworkAnalytics} />
-  </>
-)
-
 /** App content */
 const AppContent = (): JSX.Element => {
+  const location = useLocation()
   const { path } = useRouteMatch()
-
   const pathPrefix = path == '/' ? '' : path
+
+  useAnalyticsReporter(location)
 
   return (
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
-        <Analytics />
-
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
           <Route

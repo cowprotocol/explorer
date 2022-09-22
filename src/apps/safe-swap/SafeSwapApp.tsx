@@ -12,17 +12,6 @@ import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 
 import { NetworkUpdater, RedirectMainnet } from 'state/network'
-import { initAnalytics } from 'api/analytics'
-import RouteAnalytics from 'components/analytics/RouteAnalytics'
-import NetworkAnalytics from 'components/analytics/NetworkAnalytics'
-import { DIMENSION_NAMES } from './const'
-
-// Init analytics
-const GOOGLE_ANALYTICS_ID: string | undefined = process.env.GOOGLE_ANALYTICS_ID
-initAnalytics({
-  trackingCode: GOOGLE_ANALYTICS_ID,
-  dimensionNames: DIMENSION_NAMES,
-})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -50,13 +39,6 @@ function StateUpdaters(): JSX.Element {
   return <NetworkUpdater />
 }
 
-const Analytics = (): JSX.Element => (
-  <>
-    <Route component={RouteAnalytics} />
-    <Route component={NetworkAnalytics} />
-  </>
-)
-
 /** App content */
 const AppContent = (): JSX.Element => {
   const { path } = useRouteMatch()
@@ -66,8 +48,6 @@ const AppContent = (): JSX.Element => {
   return (
     <GenericLayout header={<Header />}>
       <React.Suspense fallback={null}>
-        <Analytics />
-
         <Switch>
           <Route path={pathPrefix + '/'} exact component={Home} />
           <Route component={NotFound} />
