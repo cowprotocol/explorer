@@ -54,6 +54,14 @@ const AppDataDetails = React.lazy(
     ),
 )
 
+const Solver = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "UserDetails_chunk"*/
+      './pages/Solver'
+    ),
+)
+
 const SearchNotFound = React.lazy(
   () =>
     import(
@@ -124,6 +132,7 @@ const AppContent = (): JSX.Element => {
           <Route path={pathPrefix + '/tx/:txHash'} exact component={TransactionDetails} />
           <Route path={pathPrefix + '/search/:searchString?'} exact component={SearchNotFound} />
           <Route path={pathPrefix + '/appdata'} exact component={AppDataDetails} />
+          <Route path={pathPrefix + '/solvers'} exact component={Solver} />
           <Route component={NotFound} />
         </Switch>
       </React.Suspense>
