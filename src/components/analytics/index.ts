@@ -80,21 +80,7 @@ export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['
   }, [chainId])
 
   useEffect(() => {
-    let title = 'Homepage'
-
-    if (pathname.startsWith('/orders')) {
-      title = 'Oders'
-    } else if (pathname.startsWith('/tx')) {
-      title = 'Transaction Details'
-    } else if (pathname.startsWith('/address')) {
-      title = 'User Details'
-    } else if (pathname.startsWith('/search')) {
-      title = 'Search Results'
-    } else if (pathname.startsWith('/appdata')) {
-      title = 'App Data'
-    }
-
-    googleAnalytics.pageview(`${pathname}${search}`, undefined, `${app} - ${title}`)
+    googleAnalytics.pageview(`${pathname}${search}`)
   }, [pathname, search, app])
 
   useEffect(() => {
