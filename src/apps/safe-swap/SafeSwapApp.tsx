@@ -1,6 +1,6 @@
 import React from 'react'
 import SafeProvider from '@gnosis.pm/safe-apps-react-sdk'
-import { BrowserRouter, HashRouter, Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { BrowserRouter, HashRouter, Redirect, Route, Switch, useRouteMatch, useLocation } from 'react-router-dom'
 import { hot } from 'react-hot-loader/root'
 import { withGlobalContext } from 'hooks/useGlobalState'
 
@@ -12,6 +12,8 @@ import { GenericLayout } from 'components/layout'
 import { Header } from './layout/Header'
 
 import { NetworkUpdater, RedirectMainnet } from 'state/network'
+
+import { useAnalyticsReporter } from 'components/analytics'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Router: typeof BrowserRouter & typeof HashRouter = (window as any).IS_IPFS ? HashRouter : BrowserRouter
@@ -41,7 +43,10 @@ function StateUpdaters(): JSX.Element {
 
 /** App content */
 const AppContent = (): JSX.Element => {
+  const location = useLocation()
   const { path } = useRouteMatch()
+
+  useAnalyticsReporter(location, 'SafeSwapApp')
 
   const pathPrefix = path == '/' ? '' : path
 

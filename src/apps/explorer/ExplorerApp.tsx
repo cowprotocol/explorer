@@ -107,7 +107,7 @@ const AppContent = (): JSX.Element => {
   const { path } = useRouteMatch()
   const pathPrefix = path == '/' ? '' : path
 
-  useAnalyticsReporter(location)
+  useAnalyticsReporter(location, 'Explorer')
 
   return (
     <GenericLayout header={<Header />}>

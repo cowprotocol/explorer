@@ -17,7 +17,7 @@ const storedClientId = window.localStorage.getItem(GOOGLE_ANALYTICS_CLIENT_ID_ST
 const googleAnalytics = new GoogleAnalyticsProvider()
 
 export function sendEvent(event: string | UaEventOptions, params?: any): void {
-  return googleAnalytics.sendEvent(event, params)
+  googleAnalytics.sendEvent(event, params)
 }
 
 export function outboundLink(
@@ -65,7 +65,7 @@ function reportWebVitals({ name, delta, id }: Metric): void {
 }
 
 // tracks web vitals and pageviews
-export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['location']): void {
+export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['location'], app: string): void {
   useEffect(() => {
     getFCP(reportWebVitals)
     getFID(reportWebVitals)
@@ -80,8 +80,22 @@ export function useAnalyticsReporter({ pathname, search }: RouteComponentProps['
   }, [chainId])
 
   useEffect(() => {
-    googleAnalytics.pageview(`${pathname}${search}`)
-  }, [pathname, search])
+    let title = 'Homepage'
+
+    if (pathname.startsWith('/orders')) {
+      title = 'Oders'
+    } else if (pathname.startsWith('/tx')) {
+      title = 'Transaction Details'
+    } else if (pathname.startsWith('/address')) {
+      title = 'User Details'
+    } else if (pathname.startsWith('/search')) {
+      title = 'Search Results'
+    } else if (pathname.startsWith('/appdata')) {
+      title = 'App Data'
+    }
+
+    googleAnalytics.pageview(`${pathname}${search}`, undefined, `${app} - ${title}`)
+  }, [pathname, search, app])
 
   useEffect(() => {
     // typed as 'any' in react-ga4 -.-
