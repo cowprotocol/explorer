@@ -118,6 +118,20 @@ const Solver: React.FC = () => {
     </WrapperExtraComponents>
   )
 
+  tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tableValues.length
+  tableState['totalResults'] = tableValues.length
+
+  useEffect(() => {
+    if (query.length) {
+      setPageOffset(0)
+    }
+  }, [query, setPageOffset])
+
+  useEffect(() => {
+    setQuery('')
+    setPageOffset(0)
+  }, [networkId, setPageOffset, setQuery])
+
   const onChangeTab = useCallback((tabId: number) => {
     const newTabViewName = TabView[tabId]
     if (!newTabViewName) return
