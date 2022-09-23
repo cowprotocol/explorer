@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from 'hooks/useQuery'
 import EncodePage from './EncodePage'
@@ -11,6 +12,7 @@ import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
 import { FormProps } from './config'
 
 import { StyledExplorerTabs, Wrapper } from './styled'
+import { APP_TITLE } from 'apps/explorer/const'
 
 export enum TabView {
   ENCODE = 1,
@@ -69,6 +71,9 @@ const AppDataPage: React.FC = () => {
 
   return (
     <Wrapper>
+      <Helmet>
+        <title>AppData Details - {APP_TITLE}</title>
+      </Helmet>
       <Title>AppData Details</Title>
       <Content>
         <StyledExplorerTabs

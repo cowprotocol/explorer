@@ -35,7 +35,7 @@ export default function InternalExternalMenuLink({
 
   if (isExternal) {
     return (
-      <ExternalLink className={className} target={'_blank'} href={url} onClick={handleMobileMenuOnClick}>
+      <ExternalLink target={'_blank'} href={url} onClickOptional={handleMobileMenuOnClick}>
         {menuImage}
         {title}
         {menuImageExternal}
