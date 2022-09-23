@@ -1,24 +1,49 @@
-import React, { PropsWithChildren, ReactNode } from 'react'
-import { OutboundLink, OutboundLinkProps } from 'react-ga'
+import React, { HTMLProps } from 'react'
+import { outboundLink } from 'components/analytics'
+import { anonymizeLink } from 'utils/anonymizeLink'
 
-type PropsOriginal = PropsWithChildren<OutboundLinkProps & React.HTMLProps<HTMLAnchorElement>>
-type Props = Omit<PropsOriginal, 'ref' | 'to' | 'eventLabel'> & {
-  eventLabel?: string
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
-  children?: ReactNode
-  href: string
+export function handleClickExternalLink(event: React.MouseEvent<HTMLAnchorElement>): void {
+  const { target, href } = event.currentTarget
+
+  const anonymizedHref = anonymizeLink(href)
+
+  // don't prevent default, don't redirect if it's a new tab
+  if (target === '_blank' || event.ctrlKey || event.metaKey) {
+    outboundLink({ label: anonymizedHref }, () => {
+      console.debug('Fired outbound link event', anonymizedHref)
+    })
+  } else {
+    event.preventDefault()
+    // send a ReactGA event and then trigger a location change
+    outboundLink({ label: anonymizedHref }, () => {
+      window.location.href = anonymizedHref
+    })
+  }
 }
 
-export const ExternalLink: React.FC<Props> = (props: Props) => {
-  const { eventLabel, children, href, onClick } = props
-  const outboundProps = {
-    ...props,
-    onClick,
-    eventLabel: eventLabel || href,
-  }
+/**
+ * Outbound link that handles firing google analytics events
+ */
+export function ExternalLink({
+  target = '_blank',
+  href,
+  rel = 'noopener noreferrer',
+  onClickOptional,
+  ...rest
+}: Omit<HTMLProps<HTMLAnchorElement>, 'as' | 'ref' | 'onClick'> & {
+  href: string
+  onClickOptional?: React.MouseEventHandler<HTMLAnchorElement>
+}): JSX.Element {
   return (
-    <OutboundLink to={href} {...outboundProps}>
-      {children}
-    </OutboundLink>
+    <a
+      target={target}
+      rel={rel}
+      href={href}
+      onClick={(event): void => {
+        if (onClickOptional) onClickOptional(event)
+        handleClickExternalLink(event)
+      }}
+      {...rest}
+    />
   )
 }

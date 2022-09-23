@@ -1,6 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import styled from 'styled-components'
+import { Helmet } from 'react-helmet'
 
 import OrdersTableWidget from '../components/OrdersTableWidget'
 import { useNetworkId } from 'state/network'
@@ -9,6 +10,7 @@ import RedirectToSearch from 'components/RedirectToSearch'
 import { useResolveEns } from 'hooks/useResolveEns'
 import { TitleAddress, Wrapper as WrapperMod, FlexContainerVar } from 'apps/explorer/pages/styled'
 import CowLoading from 'components/common/CowLoading'
+import { APP_TITLE } from 'apps/explorer/const'
 
 const Wrapper = styled(WrapperMod)`
   > h1 {
@@ -27,6 +29,9 @@ const UserDetails: React.FC = () => {
 
   return (
     <Wrapper>
+      <Helmet>
+        <title>User Details - {APP_TITLE}</title>
+      </Helmet>
       {addressAccount ? (
         <>
           <FlexContainerVar>
