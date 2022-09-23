@@ -3,6 +3,7 @@ import styled, { DefaultTheme, useTheme } from 'styled-components'
 import { createChart, IChartApi } from 'lightweight-charts'
 import BigNumber from 'bignumber.js'
 import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import { format, fromUnixTime, startOfToday } from 'date-fns'
 
 import { Token } from 'hooks/useGetTokens'
 import { useNetworkId } from 'state/network'
@@ -31,6 +32,25 @@ const Wrapper = styled(StyledUserDetailsTable)`
     border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
     > tr {
       min-height: 7.4rem;
+      &.header-row {
+        display: none;
+        ${media.mobile} {
+          display: flex;
+          background: transparent;
+          border: none;
+          padding: 0;
+          margin: 0;
+          box-shadow: none;
+          min-height: 2rem;
+          td {
+            padding: 0;
+            margin: 0;
+            .mobile-header {
+              margin: 0;
+            }
+          }
+        }
+      }
     }
     > tr > td:first-child {
       padding: 0 2rem;
@@ -46,7 +66,8 @@ const Wrapper = styled(StyledUserDetailsTable)`
     :nth-child(5),
     :nth-child(6),
     :nth-child(7) {
-      justify-content: right;
+      justify-content: center;
+      text-align: center;
     }
   }
   > tbody > tr > td:nth-child(8),
@@ -76,7 +97,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
       box-shadow: 0px 4px 12px ${({ theme }): string => theme.boxShadow};
       border-radius: 6px;
-      margin-top: 16px;
+      margin-top: 10px;
       padding: 12px;
       &:hover {
         background: none;
@@ -164,13 +185,15 @@ const TokenWrapper = styled.div`
 
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
-
   ${media.mobile} {
     flex-wrap: wrap;
     text-align: end;
   }
 `
 
+const TooltipWrapper = styled.div`
+  text-align: center;
+`
 const ChartWrapper = styled.div`
   position: relative;
   ${media.mobile} {
@@ -254,6 +277,7 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
     lastWeekPricePercentageDifference,
     lastDayUsdVolume,
     totalVolumeUsd,
+    timestamp,
   } = token
   const erc20 = { name, address, symbol, decimals } as TokenErc20
   const network = useNetworkId()
@@ -351,13 +375,21 @@ const RowToken: React.FC<RowProps> = ({ token, index }) => {
           <HeaderValue>
             <TextWithTooltip
               textInTooltip={
-                lastDayUsdVolume
-                  ? `$${formatPrice({
-                      price: new BigNumber(lastDayUsdVolume),
-                      decimals: 2,
-                      thousands: true,
-                    })}`
-                  : '$0'
+                <TooltipWrapper>
+                  {lastDayUsdVolume ? (
+                    <>
+                      <span>
+                        ${formatPrice({ price: new BigNumber(lastDayUsdVolume), decimals: 2, thousands: true })}
+                      </span>
+                      <br />
+                      <span>From: {timestamp ? format(fromUnixTime(timestamp), 'P pp zzzz') : ''}</span>
+                      <br />
+                      <span>To: {format(fromUnixTime(startOfToday().setUTCHours(0) / 1000), 'P pp zzzz')}</span>
+                    </>
+                  ) : (
+                    '$0'
+                  )}
+                </TooltipWrapper>
               }
             >
               ${lastDayUsdVolume && numberFormatter(lastDayUsdVolume)}
@@ -400,6 +432,11 @@ const TokenTable: React.FC<Props> = (props) => {
     } else {
       tableContent = (
         <>
+          <tr className="header-row">
+            <td>
+              <HeaderTitle className="mobile-header">Sorted by Volume(24h): from highest to lowest</HeaderTitle>
+            </td>
+          </tr>
           {items.map((item, i) => (
             <RowToken key={`${item.id}-${i}`} index={i + tableState.pageOffset} token={item} />
           ))}
@@ -420,7 +457,7 @@ const TokenTable: React.FC<Props> = (props) => {
           <th>Price</th>
           <th>Price (24h)</th>
           <th>Price (7d)</th>
-          <th>Volume (24h)</th>
+          <th>Volume (24h)&darr;</th>
           <th>Total volume</th>
           <th>Price (last 7 days)</th>
         </tr>
