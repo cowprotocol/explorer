@@ -19,7 +19,7 @@ export interface TableStateSetters {
   handlePreviousPage: () => void
 }
 
-type TableStateAndSetters = TableStateSetters & {
+export type TableStateAndSetters = TableStateSetters & {
   state: TableState
 }
 

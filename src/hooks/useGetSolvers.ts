@@ -10,28 +10,30 @@ export const useGetSolvers = (networkId: SupportedChainId = SupportedChainId.MAI
   const [error, setError] = useState<UiError>()
   const [solvers, setSolvers] = useState<Solver[]>([])
 
-  const fetchSolvers = useCallback(async (network: Network): Promise<void> => {
-    setIsLoading(true)
-    setSolvers([])
-    try {
-      const response = await COW_SDK.cowSubgraphApi.runQuery<{ users: Pick<Solver, 'id' | 'address'>[] }>(
-        GET_SOLVERS_QUERY,
-        undefined,
-        { chainId: network },
-      )
-      if (response) {
-        console.log(response)
-        const solversWithInfo = addExtraInfo(response.users)
-        setSolvers(solversWithInfo)
+  const fetchSolvers = useCallback(
+    async (network: Network): Promise<void> => {
+      setIsLoading(true)
+      setSolvers([])
+      try {
+        const response = await COW_SDK.cowSubgraphApi.runQuery<{ users: Pick<Solver, 'id' | 'address'>[] }>(
+          GET_SOLVERS_QUERY,
+          undefined,
+          { chainId: network },
+        )
+        if (response) {
+          const solversWithInfo = await addExtraInfo(response.users, networkId)
+          setSolvers(solversWithInfo)
+        }
+      } catch (e) {
+        const msg = `Failed to fetch tokens`
+        console.error(msg, e)
+        setError({ message: msg, type: 'error' })
+      } finally {
+        setIsLoading(false)
       }
-    } catch (e) {
-      const msg = `Failed to fetch tokens`
-      console.error(msg, e)
-      setError({ message: msg, type: 'error' })
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+    },
+    [networkId],
+  )
 
   useEffect(() => {
     if (!networkId) {
@@ -44,13 +46,24 @@ export const useGetSolvers = (networkId: SupportedChainId = SupportedChainId.MAI
   return { solvers, error, isLoading }
 }
 
-const addExtraInfo = (solvers: Pick<Solver, 'id' | 'address'>[]): Solver[] => {
-  return solvers.map((solver) => {
-    return {
-      ...solver,
-      ...ACTIVE_SOLVERS[solver.address],
-    }
-  })
+const addExtraInfo = async (
+  solvers: Pick<Solver, 'id' | 'address'>[],
+  network: SupportedChainId,
+): Promise<Solver[]> => {
+  return await Promise.all(
+    solvers.map(async (solver) => {
+      const { settlements } = await COW_SDK.cowSubgraphApi.runQuery<{ settlements: Settlement[] }>(
+        GET_SETTLEMENTS_QUERY,
+        { solver: solver.id },
+        { chainId: network },
+      )
+      return {
+        ...solver,
+        numberOfSettlements: settlements.length,
+        ...ACTIVE_SOLVERS[solver.address],
+      }
+    }),
+  )
 }
 
 export type Solver = {
@@ -59,7 +72,12 @@ export type Solver = {
   name: string
   environment: string
   numberOfTrades: number
+  numberOfSettlements: number
   solvedAmountUsd: number
+}
+
+export type Settlement = {
+  id: string
 }
 
 export const GET_SOLVERS_QUERY = gql`
@@ -69,6 +87,14 @@ export const GET_SOLVERS_QUERY = gql`
       address
       numberOfTrades
       solvedAmountUsd
+    }
+  }
+`
+
+export const GET_SETTLEMENTS_QUERY = gql`
+  query GetSettlements($solver: String) {
+    settlements(where: { solver: $solver }) {
+      id
     }
   }
 `

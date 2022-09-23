@@ -12,7 +12,7 @@ const PaginationTextCSS = css`
   white-space: nowrap;
 `
 
-const PaginationWrapper = styled.span`
+export const PaginationWrapper = styled.span`
   ${PaginationTextCSS}
   align-items: center;
   display: flex;

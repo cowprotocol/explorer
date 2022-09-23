@@ -186,7 +186,7 @@ interface RowProps {
 }
 
 const RowSolver: React.FC<RowProps> = ({ solver }) => {
-  const { id, name, address, numberOfTrades, solvedAmountUsd } = solver
+  const { id, name, address, numberOfTrades, numberOfSettlements, solvedAmountUsd } = solver
   const network = useNetworkId()
 
   if (!network) {
@@ -221,7 +221,7 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
       </td>
       <td>
         <HeaderTitle>Total Settlements</HeaderTitle>
-        <HeaderValue>45</HeaderValue>
+        <HeaderValue>{numberOfSettlements}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Solver Address</HeaderTitle>
