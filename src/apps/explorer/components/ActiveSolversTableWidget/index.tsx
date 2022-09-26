@@ -20,7 +20,8 @@ const TableWrapper = styled(CardRow)`
     width: 100%;
   }
   ${PaginationWrapper} {
-    margin: 0 auto;
+    width: 100%;
+    justify-content: flex-end;
   }
   div.tab-content {
     padding: 0 !important;

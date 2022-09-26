@@ -267,7 +267,7 @@ const SolverTable: React.FC<Props> = (props) => {
         <tr>
           <th>Name</th>
           <th>Trades</th>
-          <th>Total Volume</th>
+          <th>Total Volume&darr;</th>
           <th>Total Settlements</th>
           <th>Solver Address</th>
         </tr>

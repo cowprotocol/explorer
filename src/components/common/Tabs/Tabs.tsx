@@ -62,6 +62,10 @@ const Wrapper = styled.div`
     }
   }
   .tablist {
+    .extra-desktop {
+      display: flex;
+      flex: 1;
+    }
     ${media.mobile} {
       justify-content: start;
       .extra-desktop {
