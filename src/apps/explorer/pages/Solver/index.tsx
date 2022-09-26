@@ -97,13 +97,6 @@ const Solver: React.FC = () => {
     setPageOffset(0)
   }, [networkId, setPageOffset, setQuery])
 
-  const ExtraComponentNode: React.ReactNode = (
-    <WrapperExtraComponents>
-      <TableSearch placeholder="Search by solver, address or name" query={query} setQuery={setQuery} />
-      <TablePagination context={ActiveSolversTableContext} />
-    </WrapperExtraComponents>
-  )
-
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tableValues.length
   tableState['totalResults'] = tableValues.length
 
