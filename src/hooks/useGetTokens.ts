@@ -178,7 +178,7 @@ export type Token = {
 
 function addHistoricalData(tokens: Token[], prices: { [tokenId: string]: TokenData }): Token[] {
   for (const address of Object.keys(prices)) {
-    const token = tokens.find((token) => token.address === address)
+    const token = tokens.find((token) => token.address.toLowerCase() === address.toLowerCase())
     const values = prices[address]
     if (token) {
       token.timestamp = values.timestamp
