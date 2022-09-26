@@ -33,12 +33,13 @@ interface Props {
   networkId: BlockchainNetwork
   query: string
   tableState: TableState
+  data: Solver[]
   setTableValues: (data: unknown) => void
 }
 
-export const ActiveSolversTableWidget: React.FC<Props> = ({ query, tableState, setTableValues }) => {
+export const ActiveSolversTableWidget: React.FC<Props> = ({ query, tableState, setTableValues, data }) => {
   const networkId = useNetworkId() || undefined
-  const { solvers, isLoading, error } = useGetSolvers(networkId)
+  const { solvers, isLoading, error } = useGetSolvers(networkId, data)
   const filteredSolvers = useFlexSearch(query, solvers, ['name', 'address'])
 
   useEffect(() => {

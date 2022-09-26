@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { formatPrice } from '@gnosis.pm/dex-js'
 import { useNetworkId } from 'state/network'
 import { abbreviateString } from 'utils'
+import { Solver } from 'hooks/useGetSolvers'
 
 import StyledUserDetailsTable, {
   StyledUserDetailsTableProps,
@@ -12,10 +13,10 @@ import StyledUserDetailsTable, {
 
 import { media } from 'theme/styles/media'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Identicon from 'components/common/Identicon'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
-import { Solver } from 'hooks/useGetSolvers'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -54,17 +55,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 25rem 12rem minmax(7rem, 17rem) repeat(2, minmax(10rem, 1.5fr));
-  }
-  > tbody > tr > td,
-  > thead > tr > th {
-    :nth-child(4),
-    :nth-child(5),
-    :nth-child(6),
-    :nth-child(7) {
-      justify-content: center;
-      text-align: center;
-    }
+    grid-template-columns: 25rem 12rem minmax(7rem, 25rem) repeat(2, minmax(10rem, 1.5fr));
   }
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {
@@ -209,9 +200,9 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
         <HeaderValue>{numberOfTrades}</HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Total Volume</HeaderTitle>
+        <HeaderTitle>Total volume</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip textInTooltip={`$${Number(solvedAmountUsd) || 0}`}>
+          <TextWithTooltip textInTooltip={`$${Number(solvedAmountUsd).toFixed(2) || 0}`}>
             {Number(solvedAmountUsd)
               ? formatPrice({ price: new BigNumber(solvedAmountUsd), decimals: 2, thousands: true })
               : 0}
@@ -220,17 +211,22 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Total Settlements</HeaderTitle>
+        <HeaderTitle>Total settlements</HeaderTitle>
         <HeaderValue>{numberOfSettlements}</HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Solver Address</HeaderTitle>
+        <HeaderTitle>Solver address</HeaderTitle>
         <HeaderValue>
-          <BlockExplorerLink
-            type="address"
-            networkId={network}
-            identifier={address}
-            label={abbreviateString(address, 6, 4)}
+          <RowWithCopyButton
+            textToCopy={address}
+            contentsToDisplay={
+              <BlockExplorerLink
+                type="address"
+                networkId={network}
+                identifier={address}
+                label={abbreviateString(address, 6, 4)}
+              />
+            }
           />
         </HeaderValue>
       </td>

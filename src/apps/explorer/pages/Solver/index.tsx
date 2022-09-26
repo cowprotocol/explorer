@@ -32,6 +32,7 @@ const tabItems = (
   networkId: SupportedChainId | undefined,
   query: string,
   setTableValues: (data: { data: unknown[]; length: number; isLoading: boolean; error?: UiError }) => void,
+  data: unknown[],
   tableState: TableState,
 ): TabItemInterface[] => {
   return [
@@ -41,6 +42,7 @@ const tabItems = (
       content: (
         <ActiveSolversTableWidget
           query={query}
+          data={data as SolverType[]}
           tableState={tableState}
           networkId={networkId}
           setTableValues={setTableValues}
@@ -81,7 +83,6 @@ const Solver: React.FC = () => {
   })
   const [query, setQuery] = useState<string>('')
   const networkId = useNetworkId() || undefined
-
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tableValues.length
   tableState['totalResults'] = tableValues.length
 
@@ -132,7 +133,7 @@ const Solver: React.FC = () => {
         >
           <StyledExplorerTabs
             className={`solvers-tab--${TabView[tabViewSelected].toLowerCase()}`}
-            tabItems={tabItems(networkId, query, setTableValues, tableState)}
+            tabItems={tabItems(networkId, query, setTableValues, tableValues.data, tableState)}
             defaultTab={tabViewSelected}
             onChange={(key: number): void => onChangeTab(key)}
             extra={ExtraComponentNode}

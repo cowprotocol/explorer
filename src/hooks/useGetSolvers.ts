@@ -5,10 +5,14 @@ import { Network, UiError } from 'types'
 import { COW_SDK } from 'const'
 import { ACTIVE_SOLVERS } from 'apps/explorer/pages/Solver/data'
 
-export const useGetSolvers = (networkId: SupportedChainId = SupportedChainId.MAINNET): GetSolverResult => {
+export const useGetSolvers = (
+  networkId: SupportedChainId = SupportedChainId.MAINNET,
+  initData: Solver[],
+): GetSolverResult => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<UiError>()
-  const [solvers, setSolvers] = useState<Solver[]>([])
+  const [solvers, setSolvers] = useState<Solver[]>(initData)
+  const shouldRefetch = !initData.length
 
   const fetchSolvers = useCallback(
     async (network: Network): Promise<void> => {
@@ -22,7 +26,7 @@ export const useGetSolvers = (networkId: SupportedChainId = SupportedChainId.MAI
         )
         if (response) {
           const solversWithInfo = await addExtraInfo(response.users, networkId)
-          setSolvers(solversWithInfo)
+          setSolvers(solversWithInfo.sort((a, b) => b.solvedAmountUsd - a.solvedAmountUsd))
         }
       } catch (e) {
         const msg = `Failed to fetch tokens`
@@ -36,12 +40,12 @@ export const useGetSolvers = (networkId: SupportedChainId = SupportedChainId.MAI
   )
 
   useEffect(() => {
-    if (!networkId) {
+    if (!networkId || !shouldRefetch) {
       return
     }
 
     fetchSolvers(networkId)
-  }, [fetchSolvers, networkId])
+  }, [fetchSolvers, networkId, shouldRefetch])
 
   return { solvers, error, isLoading }
 }

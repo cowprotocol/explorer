@@ -10,12 +10,6 @@ import { TabList } from 'components/common/Tabs/Tabs'
 
 export const StyledExplorerTabs = styled(ExplorerTabs)`
   border: 0;
-  ${TabList} {
-    ${media.mobile} {
-      flex-direction: column;
-      border-bottom: none;
-    }
-  }
   ${TabList} > button {
     ${media.mobile} {
       font-size: 1.5rem;
@@ -26,6 +20,12 @@ export const StyledExplorerTabs = styled(ExplorerTabs)`
   }
   .tab-extra-content {
     justify-content: center;
+    ${media.mobile} {
+      form {
+        width: 92vw;
+        margin-top: 1rem;
+      }
+    }
   }
 `
 

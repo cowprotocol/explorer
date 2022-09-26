@@ -13,6 +13,10 @@ export const MAIN_MENU: MenuTreeItem[] = [
     url: Routes.HOME,
   },
   {
+    title: 'Solvers',
+    url: Routes.SOLVERS,
+  },
+  {
     kind: MenuItemKind.DROP_DOWN,
     title: 'More',
     items: [
