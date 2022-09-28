@@ -85,7 +85,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     color: ${({ theme }): string => theme.textPrimary1};
     /* StyleLint fights you for the sans-serif as it requires a fallback and can't detect it from the theme prop */
     font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;
-    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
+    font-feature-settings: 'ss01' on, 'ss02' on;
 
     @supports (font-variation-settings: normal) {
       font-family: ${({ theme }): string => theme.fontVariable}, sans-serif;
