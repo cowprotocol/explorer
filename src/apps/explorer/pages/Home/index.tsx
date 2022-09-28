@@ -8,7 +8,6 @@ import { useNetworkId } from 'state/network'
 import { TokensTableWidget } from 'apps/explorer/components/TokensTableWidget'
 import { Helmet } from 'react-helmet'
 import { APP_TITLE } from 'apps/explorer/const'
-import { useSolversInfo } from 'hooks/useSolversInfo'
 
 const Wrapper = styled(WrapperMod)`
   max-width: 140rem;
@@ -49,11 +48,6 @@ const SummaryWrapper = styled.section`
 
 export const Home: React.FC = () => {
   const networkId = useNetworkId() || undefined
-
-  // TODO: remove me!!!
-  const solverInfo = useSolversInfo(networkId)
-
-  console.log('solver info', solverInfo)
 
   return (
     <Wrapper>
