@@ -26,7 +26,12 @@ export const useGetSolvers = (
         )
         if (response) {
           const solversWithInfo = await addExtraInfo(response.users, networkId)
-          setSolvers(solversWithInfo.sort((a, b) => b.solvedAmountUsd - a.solvedAmountUsd))
+          const totalVolumeUsd = solversWithInfo.reduce((prev, current) => prev + Number(current.solvedAmountUsd), 0)
+          setSolvers(
+            totalVolumeUsd > 0
+              ? solversWithInfo.sort((a, b) => b.solvedAmountUsd - a.solvedAmountUsd)
+              : solversWithInfo.sort((a, b) => b.numberOfSettlements - a.numberOfSettlements),
+          )
         }
       } catch (e) {
         const msg = `Failed to fetch tokens`

@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { faChevronRight, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { media } from 'theme/styles/media'
-import { Dropdown, DropdownOption } from 'apps/explorer/components/common/Dropdown'
+import { Dropdown, DropdownDirection, DropdownOption } from 'apps/explorer/components/common/Dropdown'
 
 const PaginationTextCSS = css`
   color: ${({ theme }): string => theme.textPrimary1};
@@ -107,10 +107,15 @@ const quantityPerPage = [10, 20, 30, 50]
 type PaginationProps<T> = {
   context: Context<T>
   fixedResultsPerPage?: boolean
+  dropdownDirection?: DropdownDirection
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResultsPerPage }) => {
+const TablePagination: React.FC<PaginationProps<any>> = ({
+  context,
+  fixedResultsPerPage,
+  dropdownDirection = DropdownDirection.downwards,
+}) => {
   const {
     isLoading,
     tableState: { pageSize, pageOffset, hasNextPage, pageIndex, totalResults = -1 },
@@ -143,6 +148,7 @@ const TablePagination: React.FC<PaginationProps<any>> = ({ context, fixedResults
         <>
           <PaginationText>Rows per page:</PaginationText>
           <DropdownPagination
+            dropdownDirection={dropdownDirection}
             disabled={isLoading}
             dropdownButtonContent={
               <PaginationDropdownButton>

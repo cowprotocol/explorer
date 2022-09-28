@@ -16,6 +16,7 @@ import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Identicon from 'components/common/Identicon'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
+import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled(StyledUserDetailsTable)`
@@ -42,6 +43,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
           td {
             padding: 0;
             margin: 0;
+            margin-top: 1rem;
             .mobile-header {
               margin: 0;
             }
@@ -197,16 +199,15 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
       </td>
       <td>
         <HeaderTitle>Trades</HeaderTitle>
-        <HeaderValue>{numberOfTrades}</HeaderValue>
+        <HeaderValue>{numberFormatter(numberOfTrades)}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Total volume</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip textInTooltip={`$${Number(solvedAmountUsd).toFixed(2) || 0}`}>
-            {Number(solvedAmountUsd)
-              ? formatPrice({ price: new BigNumber(solvedAmountUsd), decimals: 2, thousands: true })
-              : 0}
-            &nbsp; USD
+          <TextWithTooltip
+            textInTooltip={formatPrice({ price: new BigNumber(solvedAmountUsd), decimals: 2, thousands: true })}
+          >
+            ${Number(solvedAmountUsd) ? numberFormatter(solvedAmountUsd) : 0}
           </TextWithTooltip>
         </HeaderValue>
       </td>
@@ -251,6 +252,11 @@ const SolverTable: React.FC<Props> = (props) => {
     } else {
       tableContent = (
         <>
+          <tr className="header-row">
+            <td>
+              <HeaderTitle className="mobile-header">Sorted by Total volume: from highest to lowest</HeaderTitle>
+            </td>
+          </tr>
           {items.map((item, i) => (
             <RowSolver key={`${item.id}-${i}`} index={i + tableState.pageOffset} solver={item} />
           ))}
@@ -267,9 +273,9 @@ const SolverTable: React.FC<Props> = (props) => {
         <tr>
           <th>Name</th>
           <th>Trades</th>
-          <th>Total Volume&darr;</th>
-          <th>Total Settlements</th>
-          <th>Solver Address</th>
+          <th>Total volume&darr;</th>
+          <th>Total settlements</th>
+          <th>Solver address</th>
         </tr>
       }
       body={solverItems(solvers)}

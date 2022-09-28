@@ -8,6 +8,7 @@ import { ActiveSolversTableWithData } from 'apps/explorer/components/ActiveSolve
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { CardRow } from 'components/common/CardRow'
 import TablePagination, { PaginationWrapper } from '../common/TablePagination'
+import { DropdownDirection } from '../common/Dropdown'
 import { TableState } from './useTable'
 import { media } from 'theme/styles/media'
 import CowLoading from 'components/common/CowLoading'
@@ -65,7 +66,7 @@ export const ActiveSolversTableWidget: React.FC<Props> = ({ query, tableState, s
     <TableWrapper>
       <ConnectionStatus />
       <ActiveSolversTableWithData />
-      <TablePagination context={ActiveSolversTableContext} />
+      <TablePagination dropdownDirection={DropdownDirection.upwards} context={ActiveSolversTableContext} />
     </TableWrapper>
   )
 }
