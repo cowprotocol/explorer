@@ -213,7 +213,7 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
       </td>
       <td>
         <HeaderTitle>Total settlements</HeaderTitle>
-        <HeaderValue>{numberOfSettlements}</HeaderValue>
+        <HeaderValue>{numberFormatter(numberOfSettlements)}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Solver address</HeaderTitle>
