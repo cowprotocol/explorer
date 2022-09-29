@@ -34,7 +34,7 @@ export const OptionsContainer = styled.div<{ width: number }>`
 export const Option = styled.div`
   display: flex;
   flex: 1;
-  font-weight: 600;
+  font-weight: 800;
   font-size: 13px;
   line-height: 18px;
   align-items: center;
