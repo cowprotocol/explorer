@@ -6,8 +6,8 @@ export type SolverInfo = {
 
 export type SolversInfo = SolverInfo[]
 
-const SOLVER_SOURCE_PER_NETWORK = {
   1: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/models/cow_protocol/ethereum/cow_protocol_ethereum_solvers.sql',
+const SOLVER_SOURCE_PER_NETWORK: Record<number, string> = {
   100: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/deprecated-dune-v1-abstractions/xdai/gnosis_protocol_v2/view_solvers.sql',
 }
 
