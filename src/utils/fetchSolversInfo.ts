@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser'
+
 export type SolverInfo = {
   address: string
   name: string
@@ -6,8 +8,8 @@ export type SolverInfo = {
 
 export type SolversInfo = SolverInfo[]
 
-  1: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/models/cow_protocol/ethereum/cow_protocol_ethereum_solvers.sql',
 const SOLVER_SOURCE_PER_NETWORK: Record<number, string> = {
+  1: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/models/cow_protocol/ethereum/cow_protocol_ethereum_solvers.sql',
   100: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/deprecated-dune-v1-abstractions/xdai/gnosis_protocol_v2/view_solvers.sql',
 }
 
@@ -23,6 +25,8 @@ const REGEX = /\('(0x[0-9a-fA-F]{40})',\s*'(\w+)',\s*'([\w\s]+)'\)/g
 
 const SOLVERS_INFO_CACHE: Record<number, SolversInfo> = {}
 
+const SENTRY_TAGS = { errorType: 'solverInfo' }
+
 export async function fetchSolversInfo(network: number): Promise<SolversInfo> {
   const url = SOLVER_SOURCE_PER_NETWORK[network]
 
@@ -37,13 +41,32 @@ export async function fetchSolversInfo(network: number): Promise<SolversInfo> {
 
   try {
     const response = await fetch(url)
-    const result = _parseSolverInfo(await response.text())
+
+    const result = response.ok ? _parseSolverInfo(await response.text()) : []
+
+    if (!result?.length) {
+      console.error('[fetchSolverInfo] No results parsed')
+      Sentry.captureException(
+        `Parsing of solver info for network ${network} returned no results. Source file '${url}' might have changed`,
+        {
+          tags: SENTRY_TAGS,
+          contexts: { params: { network, url } },
+        },
+      )
+    }
 
     SOLVERS_INFO_CACHE[network] = result
 
     return result
-  } catch (e) {
-    console.error(`Failed to fetch solvers info from '${url}'`)
+  } catch (error) {
+    console.error(`[fetchSolverInfo] Failed to fetch solvers info from '${url}'`)
+
+    Sentry.captureException(`Fetching of solver info for network ${network} failed. Error: ${error.message}`, {
+      tags: SENTRY_TAGS,
+      contexts: { params: { network, url } },
+      extra: { error },
+    })
+
     return []
   }
 }
