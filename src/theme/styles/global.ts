@@ -71,7 +71,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   textarea,
   button {
     font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;
-    font-display: fallback;
   }
   @supports (font-variation-settings: normal) {
     input,
@@ -86,6 +85,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     /* StyleLint fights you for the sans-serif as it requires a fallback and can't detect it from the theme prop */
     font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;
     font-feature-settings: 'ss01' on, 'ss02' on;
+    font-display: fallback;
 
     @supports (font-variation-settings: normal) {
       font-family: ${({ theme }): string => theme.fontVariable}, sans-serif;
