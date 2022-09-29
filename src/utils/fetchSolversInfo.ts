@@ -11,6 +11,7 @@ export type SolversInfo = SolverInfo[]
 const SOLVER_SOURCE_PER_NETWORK: Record<number, string> = {
   1: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/models/cow_protocol/ethereum/cow_protocol_ethereum_solvers.sql',
   100: 'https://raw.githubusercontent.com/duneanalytics/spellbook/main/deprecated-dune-v1-abstractions/xdai/gnosis_protocol_v2/view_solvers.sql',
+  5: 'https://this-doesnt-exist.intentionally',
 }
 
 /**
