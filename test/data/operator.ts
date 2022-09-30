@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js'
+import { OrderKind } from '@cowprotocol/contracts'
 
 import { Order, RawOrder, RawTrade, Trade } from 'api/operator'
 
 import { ZERO_BIG_NUMBER } from 'const'
 
 import { USDT, WETH } from './erc20s'
-import { OrderKind } from '@cowprotocol/contracts'
 
 export const RAW_ORDER = {
   creationDate: '2021-01-20T23:15:07.892538607Z',
@@ -71,7 +71,7 @@ export const RAW_TRADE: RawTrade = {
 export const RICH_TRADE: Trade = {
   ...RAW_TRADE,
   orderId: RAW_TRADE.orderUid,
-  kind: 'sell',
+  kind: OrderKind.SELL,
   executionTime: new Date('2021-01-20T23:15:07.892538607Z'),
   buyAmount: new BigNumber(RAW_TRADE.buyAmount),
   executedBuyAmount: new BigNumber('50000000000000000'),
