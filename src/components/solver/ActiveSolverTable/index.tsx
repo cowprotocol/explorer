@@ -199,7 +199,11 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
       </td>
       <td>
         <HeaderTitle>Trades</HeaderTitle>
-        <HeaderValue>{numberFormatter(numberOfTrades)}</HeaderValue>
+        <HeaderValue>
+          <TextWithTooltip textInTooltip={numberOfTrades.toLocaleString()}>
+            {numberFormatter(numberOfTrades)}
+          </TextWithTooltip>
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Total volume</HeaderTitle>
@@ -213,7 +217,11 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
       </td>
       <td>
         <HeaderTitle>Total settlements</HeaderTitle>
-        <HeaderValue>{numberFormatter(numberOfSettlements)}</HeaderValue>
+        <HeaderValue>
+          <TextWithTooltip textInTooltip={numberOfSettlements.toLocaleString()}>
+            {numberFormatter(numberOfSettlements)}
+          </TextWithTooltip>
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Solver address</HeaderTitle>

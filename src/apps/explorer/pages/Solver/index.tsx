@@ -38,7 +38,7 @@ const tabItems = (
   return [
     {
       id: TabView.ACTIVE_SOLVERS,
-      tab: <span>Active Solvers</span>,
+      tab: <span>Active solvers</span>,
       content: (
         <ActiveSolversTableWidget
           query={query}
