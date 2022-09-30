@@ -41,7 +41,7 @@ const mapStoredRpc = (rpc?: WCOptions['rpc']): IRPCMap | undefined => {
 
   const rpcMap = {}
   if (mainnet) rpcMap[Network.MAINNET] = mainnet
-  if (rinkeby) rpcMap[Network.RINKEBY] = rinkeby
+  if (rinkeby) rpcMap[4] = rinkeby
   if (xDAI) rpcMap[Network.GNOSIS_CHAIN] = xDAI
 
   return rpcMap

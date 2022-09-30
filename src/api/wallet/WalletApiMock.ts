@@ -4,7 +4,7 @@ import assert from 'assert'
 import { toWei } from '@gnosis.pm/dex-js'
 
 import { logDebug, wait } from 'utils'
-import { USER_1, USER_2 } from '../../../test/data'
+import { USER_1 } from '../../../test/data'
 import { WalletApi, WalletInfo, ProviderInfo } from './WalletApi'
 
 type OnChangeWalletInfo = (walletInfo: WalletInfo) => void
@@ -29,7 +29,7 @@ export class WalletApiMock implements WalletApi {
   public constructor() {
     this._connected = process.env.AUTOCONNECT === 'true'
     this._user = USER_1
-    this._networkId = Network.RINKEBY
+    this._networkId = Network.GOERLI
     this._balance = toWei(new BN(2.75), 'ether')
     this._listeners = []
   }
@@ -106,16 +106,6 @@ export class WalletApiMock implements WalletApi {
 
   /* ****************      Test functions      **************** */
   // Functions created just for simulate some cases
-
-  public changeUser(): void {
-    this._user = this._user === USER_1 ? USER_2 : USER_1
-    this._notifyListeners()
-  }
-
-  public changeNetwork(): void {
-    this._networkId = this._networkId === Network.RINKEBY ? Network.MAINNET : Network.RINKEBY
-    this._notifyListeners()
-  }
 
   public async getWalletInfo(): Promise<WalletInfo> {
     return {

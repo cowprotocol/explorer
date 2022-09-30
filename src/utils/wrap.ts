@@ -1,4 +1,4 @@
-import { WETH_ADDRESS_MAINNET, WETH_ADDRESS_RINKEBY, WXDAI_ADDRESS_XDAI } from 'const'
+import { WETH_ADDRESS_GOERLI, WETH_ADDRESS_MAINNET, WXDAI_ADDRESS_XDAI } from 'const'
 import { Network } from 'types'
 
 export interface NativeTokenInfo {
@@ -10,8 +10,8 @@ export function getIsWrappable(networkId: number, address: string): boolean {
   switch (networkId) {
     case Network.MAINNET:
       return address === WETH_ADDRESS_MAINNET
-    case Network.RINKEBY:
-      return address === WETH_ADDRESS_RINKEBY
+    case Network.GOERLI:
+      return address === WETH_ADDRESS_GOERLI
     case Network.GNOSIS_CHAIN:
       return address === WXDAI_ADDRESS_XDAI
     default:
