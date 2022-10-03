@@ -2,25 +2,13 @@ import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 
+import { OrderKind } from '@cowprotocol/contracts'
 import { OrderMetaData, TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { Network } from 'types'
 
 export type OrderID = string
 export type TxHash = string
-
-export interface OrderPostError {
-  errorType: 'MissingOrderData' | 'InvalidSignature' | 'DuplicateOrder' | 'InsufficientFunds'
-  description: string
-}
-
-export interface FeeInformation {
-  expirationDate: string
-  minimalFee: string
-  feeRatio: number
-}
-
-export type OrderKind = 'sell' | 'buy'
 
 export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expired' | 'signing'
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'

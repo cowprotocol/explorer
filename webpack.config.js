@@ -26,11 +26,9 @@ const EXPLORER_APP = {
     EXPLORER_APP_DOMAIN_REGEX_BARN: '^barn\\.explorer\\.cow\\.fi|^barn\\.gnosis-protocol\\.io',
 
     OPERATOR_URL_STAGING_MAINNET: 'https://barn.api.cow.fi/mainnet/api',
-    OPERATOR_URL_STAGING_RINKEBY: 'https://barn.api.cow.fi/rinkeby/api',
     OPERATOR_URL_STAGING_GOERLI: 'https://barn.api.cow.fi/goerli/api',
     OPERATOR_URL_STAGING_XDAI: 'https://barn.api.cow.fi/xdai/api',
     OPERATOR_URL_PROD_MAINNET: 'https://api.cow.fi/mainnet/api',
-    OPERATOR_URL_PROD_RINKEBY: 'https://api.cow.fi/rinkeby/api',
     OPERATOR_URL_PROD_GOERLI: 'https://api.cow.fi/goerli/api',
     OPERATOR_URL_PROD_XDAI: 'https://api.cow.fi/xdai/api',
 

@@ -8,7 +8,6 @@ export {
   BATCH_TIME,
   MAX_BATCH_ID,
   FEE_PERCENTAGE,
-  DEFAULT_DECIMALS as OLD_DEFAULT_DECIMALS,
   DEFAULT_PRECISION,
   ZERO,
   ONE,
@@ -172,7 +171,7 @@ export const LIQUIDITY_TOKEN_LIST = new Set(LIQUIDITY_TOKEN_LIST_VALUES.split(',
 export const INPUT_PRECISION_SIZE = 6
 
 export const WETH_ADDRESS_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-export const WETH_ADDRESS_RINKEBY = '0xc778417E063141139Fce010982780140Aa0cD5Ab'
+export const WETH_ADDRESS_GOERLI = '0xB4FBF271143F4FBf7B91A5ded31805e42b2208d6'
 export const WXDAI_ADDRESS_XDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
 export const WETH_ADDRESS_XDAI = '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
@@ -222,7 +221,6 @@ export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTo
   },
   {
     [Network.MAINNET]: {},
-    [Network.RINKEBY]: {},
     [Network.GNOSIS_CHAIN]: {},
     [Network.GOERLI]: {},
   },
@@ -246,7 +244,6 @@ export const XDAI: TokenErc20 = {
 
 export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
   '1': ETH,
-  '4': ETH,
   '5': ETH,
   '100': XDAI,
 }

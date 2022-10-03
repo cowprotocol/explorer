@@ -22,7 +22,6 @@ export const OptionsContainer = styled.div<{ width: number }>`
   z-index: 1;
   margin: 0 auto;
   width: ${(props: { width: number }): string => `${184 + props.width}px`};
-  height: 170px;
   left: 15px;
   top: 54px;
   background: ${({ theme }): string => theme.bg1};
@@ -60,9 +59,6 @@ export const Option = styled.div`
     &.görli {
       background: ${(): string => goerliColor};
     }
-    &.rinkeby {
-      background: ${({ theme }): string => theme.yellow4};
-    }
     &.gnosischain {
       background: ${(): string => gnosisChainColor};
     }
@@ -85,11 +81,6 @@ export const NetworkLabel = styled.span`
 
   &.görli {
     background: ${(): string => goerliColor};
-    color: ${({ theme }): string => theme.black};
-  }
-
-  &.rinkeby {
-    background: ${({ theme }): string => theme.yellow4};
     color: ${({ theme }): string => theme.black};
   }
 

@@ -30,11 +30,6 @@ export const networkOptions: NetworkOptions[] = [
     url: 'gc',
   },
   {
-    id: Network.RINKEBY,
-    name: 'Rinkeby',
-    url: 'rinkeby',
-  },
-  {
     id: Network.GOERLI,
     name: 'Görli',
     url: 'goerli',

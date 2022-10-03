@@ -2,28 +2,29 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 
-import { Trade, RawOrder } from 'api/operator'
+import { RawOrder, Trade } from 'api/operator'
 
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import {
-  getOrderLimitPrice,
-  getOrderExecutedPrice,
   formatCalculatedPriceToDisplay,
   formatExecutedPriceToDisplay,
   formattedAmount,
+  getOrderExecutedPrice,
+  getOrderLimitPrice,
 } from 'utils'
 import { getShortOrderId } from 'utils/operator'
 import { HelpTooltip } from 'components/Tooltip'
 import StyledUserDetailsTable, {
-  StyledUserDetailsTableProps,
   EmptyItemWrapper,
+  StyledUserDetailsTableProps,
 } from '../../common/StyledUserDetailsTable'
 import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { Surplus } from './Surplus'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { OrderKind } from '@cowprotocol/contracts'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead > tr,
@@ -116,7 +117,7 @@ const RowOrder: React.FC<RowProps> = ({ trade, isPriceInverted }) => {
         />
       </td>
       <td>
-        <TradeOrderType kind={kind || 'sell'} />
+        <TradeOrderType kind={kind || OrderKind.SELL} />
       </td>
       <td>
         {formattedAmount(sellToken, sellAmount)} {sellToken?.symbol}

@@ -1,13 +1,14 @@
 import React from 'react'
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
-import { Story, Meta } from '@storybook/react/types-6-0'
+import { Meta, Story } from '@storybook/react/types-6-0'
 import TradesTable, { Props as TradesUserTableProps } from '.'
 import { sub } from 'date-fns'
 import BigNumber from 'bignumber.js'
-import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/decorators'
+import { GlobalStyles, NetworkDecorator, Router, ThemeToggler } from 'storybook/decorators'
 
 import { Trade } from 'api/operator'
 import { RICH_TRADE, TUSD, WETH } from '../../../../test/data'
+import { OrderKind } from '@cowprotocol/contracts'
 
 export default {
   title: 'trade/TradesTable',
@@ -17,7 +18,7 @@ export default {
 
 const tradeBuy: Trade = {
   ...RICH_TRADE,
-  kind: 'buy',
+  kind: OrderKind.BUY,
   orderId: 'bdef89ac',
   buyToken: WETH,
   sellToken: TUSD,

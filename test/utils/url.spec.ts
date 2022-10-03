@@ -10,15 +10,15 @@ describe('replace URL path according to network', () => {
   })
 
   test('path is replaced to xdai', () => {
-    const currentPath = '/rinkeby/address/0xb6bad41ae76a11d10f7b0e664c5007b908bc77c9'
-    expect(replaceURL(currentPath, 'xdai', Network.RINKEBY)).toBe(
+    const currentPath = '/goerli/address/0xb6bad41ae76a11d10f7b0e664c5007b908bc77c9'
+    expect(replaceURL(currentPath, 'xdai', Network.GOERLI)).toBe(
       '/xdai/address/0xb6bad41ae76a11d10f7b0e664c5007b908bc77c9',
     )
   })
 
   test('url is replaced to mainnet', () => {
-    const currentPath = '/rinkeby/address/0xb6bad41ae76a11d10f7b0e664c5007b908bc77c9'
-    expect(replaceURL(currentPath, '', Network.RINKEBY)).toBe('/address/0xb6bad41ae76a11d10f7b0e664c5007b908bc77c9')
+    const currentPath = '/goerli/address/0xb6bad41ae76a11d10f7b0e664c5007b908bc77c9'
+    expect(replaceURL(currentPath, '', Network.GOERLI)).toBe('/address/0xb6bad41ae76a11d10f7b0e664c5007b908bc77c9')
   })
 })
 

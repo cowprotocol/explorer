@@ -10,7 +10,6 @@ import {
   ADDRESS_GNO_XDAI,
   ADDRESS_GNO,
   ADDRESS_GNOSIS_PROTOCOL,
-  ADDRESS_GNOSIS_PROTOCOL_RINKEBY,
   TX_EXAMPLE,
   TX_XDAI,
 } from 'storybook/data'
@@ -43,15 +42,6 @@ NoNetwork.args = {
 export const Mainnet = Template.bind({})
 Mainnet.args = {
   ...defaultParams,
-}
-
-export const Rinkeby = Template.bind({})
-Rinkeby.args = {
-  ...defaultParams,
-  networkId: Network.RINKEBY,
-  type: 'contract',
-  label: 'Gnosis Protocol (Rinkeby)',
-  identifier: ADDRESS_GNOSIS_PROTOCOL_RINKEBY,
 }
 
 export const Labeled = Template.bind({})
