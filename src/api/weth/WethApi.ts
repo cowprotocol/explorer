@@ -1,7 +1,7 @@
 import Web3 from 'web3'
 
 import { Network, WithTxOptionalParams, Receipt } from 'types'
-import { WETH_ADDRESS_MAINNET, WETH_ADDRESS_RINKEBY, WXDAI_ADDRESS_XDAI } from 'const'
+import { WETH_ADDRESS_GOERLI, WETH_ADDRESS_MAINNET, WXDAI_ADDRESS_XDAI } from 'const'
 import { wethAbi } from '@gnosis.pm/dex-js'
 import { logDebug } from 'utils'
 
@@ -29,8 +29,8 @@ function getWethAddressByNetwork(networkId: number): string {
   switch (networkId) {
     case Network.MAINNET:
       return WETH_ADDRESS_MAINNET
-    case Network.RINKEBY:
-      return WETH_ADDRESS_RINKEBY
+    case Network.GOERLI:
+      return WETH_ADDRESS_GOERLI
     case Network.GNOSIS_CHAIN:
       // Is not wxDAI is not WETH, but it has the same approve/withdraw methods
       // it's just convenient to not rename the API and keep calling it WethApi although it wraps also xDAI

@@ -31,17 +31,18 @@ function explorerToApiEnv(explorerEnv?: Envs): ApiEnv {
   }
 }
 
+// TODO: should come from the SDK by now, find out where this is used
 function getOperatorUrl(): Partial<Record<Network, string>> {
   if (isProd || isStaging) {
     return {
       [Network.MAINNET]: process.env.OPERATOR_URL_PROD_MAINNET,
-      [Network.RINKEBY]: process.env.OPERATOR_URL_PROD_RINKEBY,
+      [Network.GOERLI]: process.env.OPERATOR_URL_PROD_GOERLI,
       [Network.GNOSIS_CHAIN]: process.env.OPERATOR_URL_PROD_XDAI,
     }
   } else {
     return {
       [Network.MAINNET]: process.env.OPERATOR_URL_STAGING_MAINNET,
-      [Network.RINKEBY]: process.env.OPERATOR_URL_STAGING_RINKEBY,
+      [Network.GOERLI]: process.env.OPERATOR_URL_STAGING_GOERLI,
       [Network.GNOSIS_CHAIN]: process.env.OPERATOR_URL_STAGING_XDAI,
     }
   }

@@ -65,7 +65,6 @@ export interface TokenOverride {
 
 export interface DisabledTokens {
   [Network.MAINNET]: TokenOverride[]
-  [Network.RINKEBY]: TokenOverride[]
   [Network.GNOSIS_CHAIN]: TokenOverride[]
 }
 

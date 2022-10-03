@@ -18,7 +18,7 @@ let instanceReal: TokenList
 
 beforeEach(() => {
   instanceMock = new TokenListApiMock(testTokenList)
-  instanceReal = new TokenListApiImpl({ networkIds: [Network.MAINNET, Network.RINKEBY], initialTokenList })
+  instanceReal = new TokenListApiImpl({ networkIds: [Network.MAINNET], initialTokenList })
 })
 
 const NEW_TOKEN = {

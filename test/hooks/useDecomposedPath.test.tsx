@@ -20,7 +20,7 @@ function wrapperMemoryRouter(props: Props): JSX.Element {
 describe('useDecomposedPath', () => {
   it('get prefix network and suffix of pathname on react-router', () => {
     // given
-    const networkPrefix = '/rinkeby'
+    const networkPrefix = '/gc'
     const pathSuffix = '/address/123'
     const mockLocation = networkPrefix + pathSuffix
 
@@ -29,7 +29,7 @@ describe('useDecomposedPath', () => {
       wrapper: ({ children }) => wrapperMemoryRouter({ children, mockLocation }),
     })
 
-    expect(result.current[0]).toBe(networkPrefix.substr(1)) // rinkeby
+    expect(result.current[0]).toBe(networkPrefix.substr(1)) // gchain
     expect(result.current[1]).toBe(pathSuffix.substr(1)) // addrres...
   })
 
