@@ -30,7 +30,7 @@ const DEFAULT_TABLE_INFO: { data: unknown[]; rawData: unknown[]; isLoading: bool
     rawData: [],
     isLoading: false,
     length: 0,
-    error: undefined,
+  error: undefined,
   }
 
 const DEFAULT_TAB = TabView[1]
