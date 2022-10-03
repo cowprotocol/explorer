@@ -6,6 +6,7 @@ import { formatPrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { format, fromUnixTime, startOfToday } from 'date-fns'
 
 import { Token } from 'hooks/useGetTokens'
+import { TableState } from 'hooks/useTable'
 import { useNetworkId } from 'state/network'
 
 import StyledUserDetailsTable, {
@@ -18,7 +19,6 @@ import { getColorBySign } from 'components/common/Card/card.utils'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
-import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
 const Wrapper = styled(StyledUserDetailsTable)`

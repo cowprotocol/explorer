@@ -1,4 +1,4 @@
-import { getPageIndex } from 'apps/explorer/components/OrdersTableWidget/useTable'
+import { getPageIndex } from 'hooks/useTable'
 
 describe('Calculate pageIndex from offsets through pageSize', () => {
   test('should return 1 when offset is smaller than the page size', () => {
