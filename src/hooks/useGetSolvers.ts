@@ -60,7 +60,7 @@ const addExtraInfo = async (
   const solversInfo = await fetchSolversInfo(network)
   return await Promise.all(
     solvers.map(async (solver) => {
-      const sInfo = solversInfo.find((s) => s.address === solver.address)
+      const sInfo = solversInfo.find((s) => s.address.toLowerCase() === solver.address.toLowerCase())
       const { settlements } = await COW_SDK.cowSubgraphApi.runQuery<{ settlements: Settlement[] }>(
         GET_SETTLEMENTS_QUERY,
         { solver: solver.id },
