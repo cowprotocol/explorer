@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Order } from 'api/operator'
 import { Network, UiError } from 'types'
-import { TableState, TableStateSetters } from 'apps/explorer/components/OrdersTableWidget/useTable'
+import { TableState, TableStateSetters } from 'hooks/useTable'
 
 export type BlockchainNetwork = Network | undefined
 

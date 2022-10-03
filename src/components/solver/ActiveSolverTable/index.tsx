@@ -5,6 +5,7 @@ import { formatPrice } from '@gnosis.pm/dex-js'
 import { useNetworkId } from 'state/network'
 import { abbreviateString } from 'utils'
 import { Solver } from 'hooks/useGetSolvers'
+import { TableState } from 'hooks/useTable'
 
 import StyledUserDetailsTable, {
   StyledUserDetailsTableProps,
@@ -15,7 +16,6 @@ import { media } from 'theme/styles/media'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Identicon from 'components/common/Identicon'
-import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
