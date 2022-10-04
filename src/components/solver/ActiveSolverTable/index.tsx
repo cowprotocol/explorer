@@ -179,7 +179,7 @@ interface RowProps {
 }
 
 const RowSolver: React.FC<RowProps> = ({ solver }) => {
-  const { id, name, address, numberOfTrades, numberOfSettlements, solvedAmountUsd } = solver
+  const { id, name, address, numberOfTrades, solvedAmountUsd } = solver
   const network = useNetworkId()
 
   if (!network) {
@@ -218,9 +218,10 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
       <td>
         <HeaderTitle>Total settlements</HeaderTitle>
         <HeaderValue>
-          <TextWithTooltip textInTooltip={numberOfSettlements.toLocaleString()}>
+          -
+          {/*  <TextWithTooltip textInTooltip={numberOfSettlements.toLocaleString()}>
             {numberFormatter(numberOfSettlements)}
-          </TextWithTooltip>
+          </TextWithTooltip> */}
         </HeaderValue>
       </td>
       <td>

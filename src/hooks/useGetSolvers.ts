@@ -58,21 +58,14 @@ const addExtraInfo = async (
   network: SupportedChainId,
 ): Promise<Solver[]> => {
   const solversInfo = await fetchSolversInfo(network)
-  return await Promise.all(
-    solvers.map(async (solver) => {
-      const sInfo = solversInfo.find((s) => s.address.toLowerCase() === solver.address.toLowerCase())
-      const { settlements } = await COW_SDK.cowSubgraphApi.runQuery<{ settlements: Settlement[] }>(
-        GET_SETTLEMENTS_QUERY,
-        { solver: solver.id },
-        { chainId: network },
-      )
-      return {
-        ...solver,
-        numberOfSettlements: settlements.length,
-        ...sInfo,
-      }
-    }),
-  )
+  return solvers.map((solver) => {
+    const sInfo = solversInfo.find((s) => s.address.toLowerCase() === solver.address.toLowerCase())
+    return {
+      ...solver,
+      ...sInfo,
+      numberOfSettlements: 0,
+    }
+  })
 }
 
 export type Solver = {
