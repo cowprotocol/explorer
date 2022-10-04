@@ -118,9 +118,6 @@ const Solver: React.FC = () => {
     </WrapperExtraComponents>
   )
 
-  tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tableValues.length
-  tableState['totalResults'] = tableValues.length
-
   useEffect(() => {
     if (query.length) {
       setPageOffset(0)
