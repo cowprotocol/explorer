@@ -48,7 +48,6 @@ export const useGetSolvers = (
     if (!networkId || !shouldRefetch) {
       return
     }
-
     fetchSolvers(networkId)
   }, [fetchSolvers, networkId, shouldRefetch])
 

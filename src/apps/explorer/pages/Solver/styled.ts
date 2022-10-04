@@ -58,7 +58,8 @@ export const Wrapper = styled(WrapperTemplate)`
     }
   }
   .solvers-tab {
-    &--active_solvers {
+    &--active_solvers,
+    &--settlements {
       .tab-content {
         padding: 0;
       }

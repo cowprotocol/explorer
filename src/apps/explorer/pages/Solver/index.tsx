@@ -3,12 +3,15 @@ import { useHistory } from 'react-router-dom'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useQuery } from 'hooks/useQuery'
 import { Solver as SolverType } from 'hooks/useGetSolvers'
+import { Settlement as SettlementType } from 'hooks/useGetSettlements'
 import { TableState, useTable } from 'hooks/useTable'
 import { useNetworkId } from 'state/network'
 import { ActiveSolversTableContext } from 'apps/explorer/components/ActiveSolversTableWidget/context/ActiveSolversTableContext'
+import { SettlementsTableContext } from 'apps/explorer/components/SettlementsTableWidget/context/SettlementsTableContext'
 import { TableSearch } from 'components/common/TableSearch/TableSearch'
 import TablePagination from 'apps/explorer/components/common/TablePagination'
 import ActiveSolversTableWidget from 'apps/explorer/components/ActiveSolversTableWidget'
+import SettlementsTableWidget from 'apps/explorer/components/SettlementsTableWidget'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 
 import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
@@ -21,6 +24,14 @@ export enum TabView {
   SETTLEMENTS = 2,
 }
 
+const DEFAULT_TABLE_INFO: { data: unknown[]; rawData: unknown[]; isLoading: boolean; length: number; error?: UiError } =
+  {
+    data: [],
+    rawData: [],
+    isLoading: false,
+    length: 0,
+    error: undefined,
+  }
 const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
@@ -31,7 +42,7 @@ function useQueryViewParams(): { tab: string } {
 const tabItems = (
   networkId: SupportedChainId | undefined,
   query: string,
-  setTableValues: (data: { data: unknown[]; length: number; isLoading: boolean; error?: UiError }) => void,
+  setTableValues: (data: unknown) => void,
   data: unknown[],
   tableState: TableState,
 ): TabItemInterface[] => {
@@ -52,7 +63,15 @@ const tabItems = (
     {
       id: TabView.SETTLEMENTS,
       tab: <span>Settlements</span>,
-      content: <></>,
+      content: (
+        <SettlementsTableWidget
+          query={query}
+          data={data as SettlementType[]}
+          tableState={tableState}
+          networkId={networkId}
+          setTableValues={setTableValues}
+        />
+      ),
     },
   ]
 }
@@ -70,21 +89,16 @@ const Solver: React.FC = () => {
     handleNextPage,
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
-  const [tableValues, setTableValues] = useState<{
-    data: Array<unknown>
-    length: number
-    isLoading: boolean
-    error?: UiError
-  }>({
-    data: [],
-    isLoading: false,
-    length: 0,
-    error: undefined,
+  const [tableValues, setTableValues] = useState({
+    [TabView.ACTIVE_SOLVERS]: DEFAULT_TABLE_INFO,
+    [TabView.SETTLEMENTS]: DEFAULT_TABLE_INFO,
   })
   const [query, setQuery] = useState<string>('')
   const networkId = useNetworkId() || undefined
-  tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tableValues.length
-  tableState['totalResults'] = tableValues.length
+  tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < tableValues[tabViewSelected].length
+  tableState['totalResults'] = tableValues[tabViewSelected].length
+
+  const TableContext = tabViewSelected === TabView.ACTIVE_SOLVERS ? ActiveSolversTableContext : SettlementsTableContext
 
   useEffect(() => {
     if (query.length) {
@@ -95,12 +109,12 @@ const Solver: React.FC = () => {
   useEffect(() => {
     setQuery('')
     setPageOffset(0)
-  }, [networkId, setPageOffset, setQuery])
+  }, [networkId, setPageOffset, setQuery, tabViewSelected])
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
       <TableSearch placeholder="Search by solver, address or name" query={query} setQuery={setQuery} />
-      <TablePagination context={ActiveSolversTableContext} />
+      <TablePagination context={TableContext} />
     </WrapperExtraComponents>
   )
 
@@ -118,11 +132,11 @@ const Solver: React.FC = () => {
     <Wrapper>
       <Title>Solvers</Title>
       <Content>
-        <ActiveSolversTableContext.Provider
+        <TableContext.Provider
           value={{
-            data: tableValues.data as SolverType[],
-            error: tableValues.error,
-            isLoading: tableValues.isLoading,
+            data: tableValues[tabViewSelected].data as any[],
+            error: tableValues[tabViewSelected].error,
+            isLoading: tableValues[tabViewSelected].isLoading,
             networkId,
             tableState,
             setPageSize,
@@ -133,12 +147,12 @@ const Solver: React.FC = () => {
         >
           <StyledExplorerTabs
             className={`solvers-tab--${TabView[tabViewSelected].toLowerCase()}`}
-            tabItems={tabItems(networkId, query, setTableValues, tableValues.data, tableState)}
+            tabItems={tabItems(networkId, query, setTableValues, tableValues[tabViewSelected].rawData, tableState)}
             defaultTab={tabViewSelected}
             onChange={(key: number): void => onChangeTab(key)}
             extra={ExtraComponentNode}
           />
-        </ActiveSolversTableContext.Provider>
+        </TableContext.Provider>
       </Content>
     </Wrapper>
   )

@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { ActiveSolversTableContext, BlockchainNetwork } from './context/ActiveSolversTableContext'
+import { SettlementsTableContext, BlockchainNetwork } from './context/SettlementsTableContext'
 import { useNetworkId } from 'state/network'
 import { useFlexSearch } from 'hooks/useFlexSearch'
-import { Solver, useGetSolvers } from 'hooks/useGetSolvers'
+import { Settlement, useGetSettlements } from 'hooks/useGetSettlements'
 import { TableState } from 'hooks/useTable'
-import { ActiveSolversTableWithData } from 'apps/explorer/components/ActiveSolversTableWidget/ActiveSolversTableWithData'
+import { SettlementsTableWithData } from 'apps/explorer/components/SettlementsTableWidget/SettlementsTableWithData'
 import { TabView } from 'apps/explorer/pages/Solver'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { CardRow } from 'components/common/CardRow'
@@ -36,28 +36,37 @@ interface Props {
   networkId: BlockchainNetwork
   query: string
   tableState: TableState
-  data: Solver[]
+  data: Settlement[]
   setTableValues: (data: unknown) => void
 }
 
-export const ActiveSolversTableWidget: React.FC<Props> = ({ query, tableState, setTableValues, data }) => {
+export const SettlementsTableWidget: React.FC<Props> = ({ query, tableState, setTableValues, data }) => {
   const networkId = useNetworkId() || undefined
-  const { solvers, isLoading, error } = useGetSolvers(networkId, data)
-  const filteredSolvers = useFlexSearch(query, solvers, ['name', 'address'])
+  const { settlements, isLoading, error } = useGetSettlements(networkId, data)
+  const filteredSettlements = useFlexSearch(query, settlements, ['name', 'txHash'])
 
   useEffect(() => {
-    const response = query ? (filteredSolvers as Solver[]) : solvers
+    const response = query ? (filteredSettlements as Settlement[]) : settlements
     setTableValues((prevState: unknown[]) => ({
       ...prevState,
-      [TabView.ACTIVE_SOLVERS]: {
+      [TabView.SETTLEMENTS]: {
         data: response.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize),
-        rawData: solvers,
-        length: query ? filteredSolvers.length : solvers.length,
+        rawData: settlements,
+        length: query ? filteredSettlements.length : settlements.length,
         isLoading,
         error,
       },
     }))
-  }, [error, filteredSolvers, isLoading, query, setTableValues, solvers, tableState.pageOffset, tableState.pageSize])
+  }, [
+    error,
+    filteredSettlements,
+    isLoading,
+    query,
+    setTableValues,
+    settlements,
+    tableState.pageOffset,
+    tableState.pageSize,
+  ])
 
   if (isLoading) {
     return (
@@ -70,10 +79,10 @@ export const ActiveSolversTableWidget: React.FC<Props> = ({ query, tableState, s
   return (
     <TableWrapper>
       <ConnectionStatus />
-      <ActiveSolversTableWithData />
-      <TablePagination dropdownDirection={DropdownDirection.upwards} context={ActiveSolversTableContext} />
+      <SettlementsTableWithData />
+      <TablePagination dropdownDirection={DropdownDirection.upwards} context={SettlementsTableContext} />
     </TableWrapper>
   )
 }
 
-export default ActiveSolversTableWidget
+export default SettlementsTableWidget

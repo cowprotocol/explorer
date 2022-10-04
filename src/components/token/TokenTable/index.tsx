@@ -87,7 +87,6 @@ const Wrapper = styled(StyledUserDetailsTable)`
   ${media.mobile} {
     > thead > tr {
       display: none;
-
       > th:first-child {
         padding: 0 1rem;
       }
@@ -103,7 +102,6 @@ const Wrapper = styled(StyledUserDetailsTable)`
         background: none;
         backdrop-filter: none;
       }
-
       td:first-child {
         padding: 0 1rem;
       }
