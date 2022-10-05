@@ -16,6 +16,7 @@ import { media } from 'theme/styles/media'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { TokensVisualizer } from 'components/common/TokensVisualizer'
 import Identicon from 'components/common/Identicon'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
@@ -233,7 +234,9 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
       </td>
       <td>
         <HeaderTitle>Tokens</HeaderTitle>
-        <HeaderValue>{tokens.length}</HeaderValue>
+        <HeaderValue>
+          <TokensVisualizer tokens={tokens} network={network} />
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>ETH cost</HeaderTitle>

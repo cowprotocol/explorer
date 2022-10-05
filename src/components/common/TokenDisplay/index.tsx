@@ -8,7 +8,7 @@ import { Network } from 'types'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import TokenImg from 'components/common/TokenImg'
 
-export type Props = { erc20: TokenErc20; network: Network; showAbbreviated?: boolean }
+export type Props = { erc20: TokenErc20; network: Network; showAbbreviated?: boolean; hideLabel?: boolean }
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,7 +28,7 @@ const StyledImg = styled(TokenImg)`
 `
 
 export function TokenDisplay(props: Props): JSX.Element {
-  const { erc20, network, showAbbreviated } = props
+  const { erc20, network, showAbbreviated, hideLabel = false } = props
 
   // Name and symbol are optional on ERC20 spec. Fallback to address when no name,
   // and show no symbol when that's not set
@@ -40,7 +40,7 @@ export function TokenDisplay(props: Props): JSX.Element {
   return (
     <Wrapper>
       <StyledImg address={imageAddress} />
-      {isNativeToken(erc20.address) ? (
+      {hideLabel ? null : isNativeToken(erc20.address) ? (
         // There's nowhere to link when it's a native token, so, only display the symbol
         <NativeWrapper>{erc20.symbol}</NativeWrapper>
       ) : (

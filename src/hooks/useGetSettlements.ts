@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { gql } from '@apollo/client'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Network, UiError } from 'types'
 import { COW_SDK } from 'const'
@@ -54,7 +55,7 @@ const addExtraInfo = async (settlements: Settlement[], network: SupportedChainId
     const sInfo = solversInfo.find(
       (s: { address: string }) => s.address.toLowerCase() === settlement.solver.address.toLowerCase(),
     )
-    const tokens: Token[] = []
+    const tokens: TokenErc20[] = []
     const addresses: string[] = []
     let totalVolumeUsd = 0
     let ethCost = 0
@@ -89,7 +90,7 @@ export type Settlement = {
     address: string
   }
   trades: Trade[]
-  tokens: Token[]
+  tokens: TokenErc20[]
   totalVolumeUsd: number
   ethCost: number
 }
@@ -97,14 +98,9 @@ export type Settlement = {
 type Trade = {
   buyAmountUsd: string
   sellAmountUsd: string
-  buyToken: Token
-  sellToken: Token
+  buyToken: TokenErc20
+  sellToken: TokenErc20
   feeAmount: number
-}
-
-type Token = {
-  symbol: string
-  address: string
 }
 
 export const GET_SETTLEMENTS_QUERY = gql`
@@ -123,6 +119,7 @@ export const GET_SETTLEMENTS_QUERY = gql`
         sellToken {
           address
           symbol
+          decimals
         }
         buyToken {
           address

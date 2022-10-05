@@ -38,6 +38,7 @@ export interface Colors {
   red3?: Color
   red4: Color
   grey: Color
+  grey1: Color
   greyShade: Color
   greyOpacity: Color
   green: Color
@@ -81,6 +82,7 @@ export const BASE_COLOURS = {
 export const LIGHT_COLOURS = {
   //base
   grey: '#657795',
+  grey1: '#3D3D4D',
   greyShade: 'rgb(141 141 169 / 70%)',
   greyOpacity: 'rgb(141 141 169 / 10%)',
   green: '#1E9B75',
@@ -119,6 +121,7 @@ export const LIGHT_COLOURS = {
 export const DARK_COLOURS = {
   // base
   grey: '#8D8DA9',
+  grey1: '#3D3D4D',
   greyShade: 'rgb(141 141 169 / 70%)',
   greyOpacity: 'rgb(141 141 169 / 10%)',
   green: '#00D897',
