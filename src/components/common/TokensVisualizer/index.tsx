@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 
+import { media } from 'theme/styles/media'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 
 const MAX_AMOUNT = 4
@@ -12,7 +13,10 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(10px, max-content));
   & > div:not(.token-number) {
-    width: 4vw;
+    width: 4rem;
+    ${media.mobile} {
+      width: auto;
+    }
   }
   img {
     margin: 0;

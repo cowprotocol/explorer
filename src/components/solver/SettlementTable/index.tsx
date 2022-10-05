@@ -240,7 +240,7 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
       </td>
       <td>
         <HeaderTitle>ETH cost</HeaderTitle>
-        <HeaderValue>1</HeaderValue>
+        <HeaderValue>-</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Total volume</HeaderTitle>
