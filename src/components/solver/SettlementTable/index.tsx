@@ -59,7 +59,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 1.5fr 1.5fr 0.9fr 0.8fr 0.8fr 0.8fr 1.5fr;
+    grid-template-columns: 3fr 2fr 1fr 1fr 1fr 1fr 1.5fr;
   }
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {

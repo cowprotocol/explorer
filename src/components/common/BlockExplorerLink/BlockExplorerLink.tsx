@@ -25,6 +25,10 @@ export interface Props {
    * label to replace textContent generated from identifier
    */
   label?: string | ReactElement | void
+  /**
+   * children Jsx.Element
+   */
+  children?: JSX.Element
 
   /**
    * Use the URL as a label
@@ -105,7 +109,16 @@ function getExplorerUrl(networkId: number, type: BlockExplorerLinkType, identifi
  * Expects all data as input. Does not use any hooks internally.
  */
 export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
-  const { type, identifier, label: labelProp, useUrlAsLabel = false, className, networkId, showLogo = false } = props
+  const {
+    type,
+    identifier,
+    label: labelProp,
+    useUrlAsLabel = false,
+    className,
+    networkId,
+    children,
+    showLogo = false,
+  } = props
 
   if (!networkId || !identifier) {
     return null
@@ -116,8 +129,12 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
 
   return (
     <ExternalLink href={url} target="_blank" rel="noopener noreferrer" className={className}>
-      <span>{label}</span>
-      {showLogo && <LogoWrapper title="Open it on Etherscan" src={LOGO_MAP.etherscan} />}
+      {children || (
+        <>
+          <span>{label}</span>
+          {showLogo && <LogoWrapper title="Open it on Etherscan" src={LOGO_MAP.etherscan} />}
+        </>
+      )}
     </ExternalLink>
   )
 }

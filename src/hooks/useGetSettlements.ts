@@ -66,7 +66,7 @@ const addExtraInfo = async (settlements: Settlement[], network: SupportedChainId
         tokens.push(trade.buyToken)
         addresses.push(trade.buyToken.address)
       }
-      if (!addresses.includes(trade.buyToken.address)) {
+      if (!addresses.includes(trade.sellToken.address)) {
         tokens.push(trade.sellToken)
         addresses.push(trade.sellToken.address)
       }
@@ -105,7 +105,7 @@ type Trade = {
 
 export const GET_SETTLEMENTS_QUERY = gql`
   query GetSettlements {
-    settlements(orderBy: firstTradeTimestamp, orderDirection: desc) {
+    settlements(first: 1000, orderBy: firstTradeTimestamp, orderDirection: desc) {
       id
       firstTradeTimestamp
       txHash
