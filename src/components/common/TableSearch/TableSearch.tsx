@@ -12,7 +12,7 @@ interface SearchProps {
   placeholder?: string
 }
 
-const SearchWrapped = styled(Wrapper)`
+export const SearchWrapped = styled(Wrapper)`
   max-width: 400px;
   margin-left: 1.6rem;
 

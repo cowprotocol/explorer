@@ -4,10 +4,10 @@ import styled from 'styled-components'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination from 'apps/explorer/components/common/TablePagination'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
-import { useTable } from './useTable'
 import { OrdersTableWithData } from './OrdersTableWithData'
 import { OrdersTableContext, BlockchainNetwork } from './context/OrdersTableContext'
 import { useGetAccountOrders } from 'hooks/useGetOrders'
+import { useTable } from 'hooks/useTable'
 import Spinner from 'components/common/Spinner'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
@@ -57,6 +57,7 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     state: tableState,
     setPageSize,
     handleNextPage,
+    setPageOffset,
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: 20 } })
   const {
@@ -77,6 +78,7 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
         isLoading,
         tableState,
         setPageSize,
+        setPageOffset,
         handleNextPage,
         handlePreviousPage,
       }}

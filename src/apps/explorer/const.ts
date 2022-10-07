@@ -32,6 +32,7 @@ export const TOKEN_SYMBOL_UNKNOWN = 'UNKNOWN'
 // Routes and Links
 export enum Routes {
   HOME = '/',
+  SOLVERS = '/solvers',
   APPDATA = '/appdata',
 }
 

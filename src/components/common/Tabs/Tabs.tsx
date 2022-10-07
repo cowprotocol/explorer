@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import styled from 'styled-components'
+import { media } from 'theme/styles/media'
 
 // Components
 import TabItem from 'components/common/Tabs/TabItem'
@@ -54,6 +55,23 @@ const Wrapper = styled.div`
     padding: 0;
     justify-content: space-between;
     width: 100%;
+  }
+  ${media.mediumUp} {
+    .extra-mobile {
+      display: none;
+    }
+  }
+  .tablist {
+    .extra-desktop {
+      display: flex;
+      flex: 1;
+    }
+    ${media.mobile} {
+      justify-content: start;
+      .extra-desktop {
+        display: none;
+      }
+    }
   }
 `
 
@@ -118,8 +136,10 @@ const Tabs: React.FC<Props> = (props) => {
         {tabItems.map(({ tab, id }) => (
           <TabItem key={id} id={id} tab={tab} onTabClick={onTabClick} isActive={activeTab === id} tabTheme={tabTheme} />
         ))}
-        {extraPosition === 'top' && <ExtraContent extra={tabBarExtraContent} />}
+        <div className="extra-desktop">{extraPosition === 'top' && <ExtraContent extra={tabBarExtraContent} />}</div>
       </TabList>
+      <div className="extra-mobile">{extraPosition === 'top' && <ExtraContent extra={tabBarExtraContent} />}</div>
+
       <TabContent tabItems={tabItems} activeTab={activeTab} />
       {extraPosition === 'bottom' && <ExtraContent extra={tabBarExtraContent} />}
     </Wrapper>
