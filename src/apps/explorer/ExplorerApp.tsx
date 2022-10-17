@@ -57,7 +57,7 @@ const AppDataDetails = React.lazy(
 const Solver = React.lazy(
   () =>
     import(
-      /* webpackChunkName: "UserDetails_chunk"*/
+      /* webpackChunkName: "Solver_chunk"*/
       './pages/Solver'
     ),
 )

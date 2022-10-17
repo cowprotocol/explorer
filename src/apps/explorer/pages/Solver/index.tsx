@@ -32,6 +32,7 @@ const DEFAULT_TABLE_INFO: { data: unknown[]; rawData: unknown[]; isLoading: bool
     length: 0,
     error: undefined,
   }
+
 const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
@@ -49,7 +50,7 @@ const tabItems = (
   return [
     {
       id: TabView.ACTIVE_SOLVERS,
-      tab: <span>Active Solvers</span>,
+      tab: <span>Active solvers</span>,
       content: (
         <ActiveSolversTableWidget
           query={query}
@@ -72,6 +73,7 @@ const tabItems = (
           setTableValues={setTableValues}
         />
       ),
+
     },
   ]
 }
@@ -99,7 +101,6 @@ const Solver: React.FC = () => {
   tableState['totalResults'] = tableValues[tabViewSelected].length
 
   const TableContext = tabViewSelected === TabView.ACTIVE_SOLVERS ? ActiveSolversTableContext : SettlementsTableContext
-
   useEffect(() => {
     if (query.length) {
       setPageOffset(0)
@@ -110,6 +111,7 @@ const Solver: React.FC = () => {
     setQuery('')
     setPageOffset(0)
   }, [networkId, setPageOffset, setQuery, tabViewSelected])
+
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
