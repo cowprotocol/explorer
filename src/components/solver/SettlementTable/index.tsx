@@ -14,6 +14,7 @@ import StyledUserDetailsTable, {
 
 import { media } from 'theme/styles/media'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TokensVisualizer } from 'components/common/TokensVisualizer'
@@ -214,12 +215,9 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
           <RowWithCopyButton
             textToCopy={txHash}
             contentsToDisplay={
-              <BlockExplorerLink
-                type="address"
-                networkId={network}
-                identifier={txHash}
-                label={abbreviateString(txHash, 6, 4)}
-              />
+              <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
+                {abbreviateString(txHash, 6, 4)}
+              </LinkWithPrefixNetwork>
             }
           />
         </HeaderValue>

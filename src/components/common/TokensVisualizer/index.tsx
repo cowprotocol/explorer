@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
+import { getNativeTokenName, isNativeToken } from 'utils'
 
 import { media } from 'theme/styles/media'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
@@ -25,6 +26,7 @@ const Wrapper = styled.div<{ amount: number }>`
     margin: 0;
     width: 3rem;
     height: 3rem;
+    background: ${({ theme }): string => theme.bg2};
   }
 `
 const TokenNumber = styled.div`
@@ -39,20 +41,30 @@ const TokenNumber = styled.div`
 
 export function TokensVisualizer(props: Props): JSX.Element {
   const { tokens, network, amountDisplayed = MAX_AMOUNT } = props
-  const tokensLeft = tokens.slice(amountDisplayed, tokens.length).length
+  const mappedTokens = tokens.map((t) => {
+    const isNative = isNativeToken(t.address)
+    if (isNative) {
+      const { nativeToken } = getNativeTokenName(network)
+      return { ...t, symbol: nativeToken }
+    }
+    return t
+  })
+  const tokensLeft = mappedTokens.slice(amountDisplayed, tokens.length)
   return (
-    <Wrapper amount={tokens.slice(0, amountDisplayed).length}>
-      {tokens.slice(0, amountDisplayed).map((token) => (
+    <Wrapper amount={mappedTokens.slice(0, amountDisplayed).length}>
+      {mappedTokens.slice(0, amountDisplayed).map((token) => (
         <TextWithTooltip key={token.address} textInTooltip={token.symbol || 'Unknown'}>
           <BlockExplorerLink type="address" networkId={network} identifier={token.address}>
             <TokenDisplay erc20={token} network={network} hideLabel />
           </BlockExplorerLink>
         </TextWithTooltip>
       ))}
-      {tokensLeft > 0 && (
-        <TokenNumber className="token-number">
-          <span>+{tokensLeft}</span>
-        </TokenNumber>
+      {tokensLeft.length > 0 && (
+        <TextWithTooltip textInTooltip={tokensLeft.map((t) => t.symbol).join(',')}>
+          <TokenNumber className="token-number">
+            <span>+{tokensLeft.length}</span>
+          </TokenNumber>
+        </TextWithTooltip>
       )}
     </Wrapper>
   )

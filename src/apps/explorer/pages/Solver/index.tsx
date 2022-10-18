@@ -73,7 +73,6 @@ const tabItems = (
           setTableValues={setTableValues}
         />
       ),
-
     },
   ]
 }
@@ -111,7 +110,6 @@ const Solver: React.FC = () => {
     setQuery('')
     setPageOffset(0)
   }, [networkId, setPageOffset, setQuery, tabViewSelected])
-
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>

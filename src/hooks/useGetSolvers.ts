@@ -4,7 +4,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Network, UiError } from 'types'
 import { COW_SDK } from 'const'
 import { ACTIVE_SOLVERS } from 'apps/explorer/pages/Solver/data'
-import { fetchSolversInfo } from 'utils/fetchSolversInfo'
 
 export const useGetSolvers = (
   networkId: SupportedChainId = SupportedChainId.MAINNET,
