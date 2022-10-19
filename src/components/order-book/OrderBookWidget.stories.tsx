@@ -23,7 +23,6 @@ const defaultParams: OrderBookProps = {
 // with price-estimation endpoints
 const availableNetworks = {
   Mainnet: networkMap.MAINNET,
-  Rinkeby: networkMap.RINKEBY,
 }
 
 export default {

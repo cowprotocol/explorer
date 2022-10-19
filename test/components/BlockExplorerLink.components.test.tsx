@@ -75,11 +75,6 @@ describe('<BlockExplorerLink type="tx"/>', () => {
     expect(wrapper.prop('href')).toMatch(`https://etherscan.io/tx/${TX_HASH}`)
   })
 
-  it('renders link to rinkeby', () => {
-    networkId = Network.RINKEBY
-    const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} />)
-    expect(wrapper.prop('href')).toMatch(`https://rinkeby.etherscan.io/tx/${TX_HASH}`)
-  })
   it('renders link to xDai', () => {
     networkId = Network.GNOSIS_CHAIN
     const wrapper = render(<BlockExplorerLink type="tx" identifier={TX_HASH} />)

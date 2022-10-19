@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 `
 interface TextTooltipProps {
   children: React.ReactNode
-  textInTooltip: string
+  textInTooltip: string | React.ReactNode
   tooltipPlacement?: Placement
 }
 

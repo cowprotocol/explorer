@@ -22,7 +22,7 @@ export const DIMENSION_NAMES = {
   [AnalyticsDimension.BROWSER_TYPE]: 'dimension2',
 }
 
-export const NETWORK_ID_SEARCH_LIST = [Network.MAINNET, Network.GNOSIS_CHAIN, Network.RINKEBY, Network.GOERLI]
+export const NETWORK_ID_SEARCH_LIST = [Network.MAINNET, Network.GNOSIS_CHAIN, Network.GOERLI]
 
 // Estimation heigh of the header + footer space
 export const HEIGHT_HEADER_FOOTER = 257
@@ -46,3 +46,5 @@ export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/Gnosis-Protocol
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
 export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
 export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245'
+
+export const APP_TITLE = 'CoW Protocol Explorer'
