@@ -4,6 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Network, UiError } from 'types'
 import { COW_SDK } from 'const'
 import { ACTIVE_SOLVERS } from 'apps/explorer/pages/Solver/data'
+import { fetchSolversInfo } from 'utils/fetchSolversInfo'
 
 export const useGetSolvers = (
   networkId: SupportedChainId = SupportedChainId.MAINNET,
@@ -58,6 +59,7 @@ const addExtraInfo = async (
   solvers: Pick<Solver, 'id' | 'address'>[],
   network: SupportedChainId,
 ): Promise<Solver[]> => {
+  const solversInfo = await fetchSolversInfo(network)
   return await Promise.all(
     solvers.map(async (solver) => {
       const { settlements } = await COW_SDK.cowSubgraphApi.runQuery<{ settlements: Settlement[] }>(
@@ -65,8 +67,10 @@ const addExtraInfo = async (
         { solver: solver.id },
         { chainId: network },
       )
+      const sInfo = solversInfo.find((s) => s.address.toLowerCase() === solver.address.toLowerCase())
       return {
         ...solver,
+        ...sInfo,
         numberOfSettlements: settlements.length,
         ...ACTIVE_SOLVERS[solver.address],
       }
