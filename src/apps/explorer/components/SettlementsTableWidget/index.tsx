@@ -43,7 +43,7 @@ interface Props {
 export const SettlementsTableWidget: React.FC<Props> = ({ query, tableState, setTableValues, data }) => {
   const networkId = useNetworkId() || undefined
   const { settlements, isLoading, error } = useGetSettlements(networkId, data)
-  const filteredSettlements = useFlexSearch(query, settlements, ['name', 'txHash'])
+  const filteredSettlements = useFlexSearch(query, settlements, ['name', 'txHash', 'address'])
 
   useEffect(() => {
     const response = query ? (filteredSettlements as Settlement[]) : settlements

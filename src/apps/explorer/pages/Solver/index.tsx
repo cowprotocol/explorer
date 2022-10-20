@@ -35,6 +35,11 @@ const DEFAULT_TABLE_INFO: { data: unknown[]; rawData: unknown[]; isLoading: bool
 
 const DEFAULT_TAB = TabView[1]
 
+const SEARCH_PLACEHOLDERS = {
+  [TabView.ACTIVE_SOLVERS]: 'Search by solver name or address',
+  [TabView.SETTLEMENTS]: 'Search by solver or tx hash',
+}
+
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
   return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
@@ -113,7 +118,7 @@ const Solver: React.FC = () => {
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
-      <TableSearch placeholder="Search by solver, address or name" query={query} setQuery={setQuery} />
+      <TableSearch placeholder={SEARCH_PLACEHOLDERS[tabViewSelected]} query={query} setQuery={setQuery} />
       <TablePagination context={TableContext} />
     </WrapperExtraComponents>
   )

@@ -4,6 +4,7 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 import { getNativeTokenName, isNativeToken } from 'utils'
 
+import { useTokenList } from 'hooks/useTokenList'
 import { media } from 'theme/styles/media'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
@@ -26,7 +27,8 @@ const Wrapper = styled.div<{ amount: number }>`
     margin: 0;
     width: 3rem;
     height: 3rem;
-    background: ${({ theme }): string => theme.bg2};
+    box-shadow: ${({ theme }): string => theme.boxShadow};
+    border: 1px solid ${({ theme }): string => theme.bg2};
   }
 `
 const TokenNumber = styled.div`
@@ -41,6 +43,7 @@ const TokenNumber = styled.div`
 
 export function TokensVisualizer(props: Props): JSX.Element {
   const { tokens, network, amountDisplayed = MAX_AMOUNT } = props
+  const { tokens: tokenList } = useTokenList({ networkId: network })
   const mappedTokens = tokens.map((t) => {
     const isNative = isNativeToken(t.address)
     if (isNative) {
@@ -49,11 +52,17 @@ export function TokensVisualizer(props: Props): JSX.Element {
     }
     return t
   })
+
+  const getToken = (address: string): string => {
+    const token = tokenList.find((t) => t.address === address)
+    return token?.symbol || 'Unknown'
+  }
+
   const tokensLeft = mappedTokens.slice(amountDisplayed, tokens.length)
   return (
     <Wrapper amount={mappedTokens.slice(0, amountDisplayed).length}>
       {mappedTokens.slice(0, amountDisplayed).map((token) => (
-        <TextWithTooltip key={token.address} textInTooltip={token.symbol || 'Unknown'}>
+        <TextWithTooltip key={token.address} textInTooltip={token.symbol || getToken(token.address)}>
           <BlockExplorerLink type="address" networkId={network} identifier={token.address}>
             <TokenDisplay erc20={token} network={network} hideLabel />
           </BlockExplorerLink>
