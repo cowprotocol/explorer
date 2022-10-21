@@ -54,7 +54,7 @@ export function TokensVisualizer(props: Props): JSX.Element {
   })
 
   const getToken = (address: string): string => {
-    const token = tokenList.find((t) => t.address === address)
+    const token = tokenList.find((t) => t.address.toLowerCase() === address.toLowerCase())
     return token?.symbol || 'Unknown'
   }
 

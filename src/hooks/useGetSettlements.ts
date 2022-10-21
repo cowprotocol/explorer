@@ -74,6 +74,7 @@ const addExtraInfo = async (settlements: Settlement[], network: SupportedChainId
     return {
       ...settlement,
       ...sInfo,
+      address: sInfo?.address.toLowerCase(),
       tokens,
       ethCost,
       totalVolumeUsd,
