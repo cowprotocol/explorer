@@ -13,7 +13,6 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
@@ -205,7 +204,9 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
         <HeaderValue>
           <IdenticonWrapper>
             <Identicon address={address} size="md" />
-            <BlockExplorerLink type="address" networkId={network} identifier={address} label={name} />
+            <LinkWithPrefixNetwork to={`/solvers/${address}`} rel="noopener noreferrer" target="_self">
+              {name}
+            </LinkWithPrefixNetwork>
           </IdenticonWrapper>
         </HeaderValue>
       </td>

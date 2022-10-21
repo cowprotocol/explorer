@@ -28,8 +28,8 @@ const MOBILE_TEXT_SIZE = 1.65 // rem
 const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
-  span {
-    margin: 0;
+  span:first-child {
+    margin: 0 0 0 0.5rem;
   }
 `
 
