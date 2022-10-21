@@ -57,10 +57,10 @@ const SolverDetailsTableWidget: React.FC<Props> = ({ settlements, isLoading, err
       }}
     >
       <ConnectionStatus />
-      {error && <Notification type={error.type} message={error.message} />}
       <Wrapper>
         <TableHeader>
           <h2>Settlements</h2>
+          {error && <Notification type={error.type} message={error.message} />}
           <TablePagination context={SettlementsTableContext} />
         </TableHeader>
         {isLoading ? (

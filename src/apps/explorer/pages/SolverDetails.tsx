@@ -33,6 +33,10 @@ const HeaderContainer = styled.div`
   }
 `
 
+const AddressContainer = styled(TitleAddress)`
+  margin: 0 0 0 1rem;
+`
+
 const TableContainer = styled.div`
   display: flex;
   align-items: center;
@@ -40,7 +44,7 @@ const TableContainer = styled.div`
 `
 const SolverName = styled.p`
   font-size: 1.6rem;
-  margin: 0 2rem 0 1rem;
+  margin: 0 0 0 1rem;
 `
 
 const SolverDetails: React.FC = () => {
@@ -48,7 +52,7 @@ const SolverDetails: React.FC = () => {
   const networkId = useNetworkId() || undefined
   const solversInfo = useSolversInfo(networkId)
   const { settlements, isLoading, error } = useGetSettlements(networkId, [], solverAddress)
-  const solverName = solversInfo?.find((solver) => solver.address === solverAddress)?.name
+  const solverName = solversInfo?.find((solver) => solver.address.toLowerCase() === solverAddress.toLowerCase())?.name
   const totalVolumeUSD = settlements.reduce((acc, settlement) => acc + settlement.totalVolumeUsd, 0)
   const isDesktop = useMediaBreakpoint(['xl', 'lg'])
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
@@ -67,7 +71,7 @@ const SolverDetails: React.FC = () => {
         <HeaderContainer>
           <Identicon address={solverAddress} size="md" />
           {solverName && <SolverName>{solverName}</SolverName>}
-          <TitleAddress
+          <AddressContainer
             textToCopy={solverAddress}
             contentsToDisplay={
               <BlockExplorerLink
@@ -87,7 +91,7 @@ const SolverDetails: React.FC = () => {
             variant="double"
             label1="Trades"
             icon1={<HelpTooltip tooltip={settlements[0]?.solver.numberOfTrades.toLocaleString()} />}
-            value1={numberFormatter(settlements[0]?.solver.numberOfTrades)}
+            value1={numberFormatter(settlements[0]?.solver.numberOfTrades || 0)}
             loading={isLoading}
             valueSize={valueTextSize}
           />

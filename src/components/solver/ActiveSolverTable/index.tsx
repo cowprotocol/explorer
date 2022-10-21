@@ -195,7 +195,7 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
           <IdenticonWrapper>
             <Identicon address={address} size="md" />
             <LinkWithPrefixNetwork to={`/solvers/${address}`} rel="noopener noreferrer" target="_self">
-              {name}
+              {name || abbreviateString(address, 4, 6)}
             </LinkWithPrefixNetwork>
           </IdenticonWrapper>
         </HeaderValue>
