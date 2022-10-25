@@ -37,7 +37,7 @@ const DEFAULT_TAB = TabView[1]
 
 const SEARCH_PLACEHOLDERS = {
   [TabView.ACTIVE_SOLVERS]: 'Search by solver name or address',
-  [TabView.SETTLEMENTS]: 'Search by solver or tx hash',
+  [TabView.SETTLEMENTS]: 'Search by tx hash, solver name or address',
 }
 
 function useQueryViewParams(): { tab: string } {
