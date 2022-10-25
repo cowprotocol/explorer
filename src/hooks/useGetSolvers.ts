@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Network, UiError } from 'types'
 import { COW_SDK } from 'const'
+import { ACTIVE_SOLVERS } from 'apps/explorer/pages/Solver/data'
 import { fetchSolversInfo } from 'utils/fetchSolversInfo'
 
 export const useGetSolvers = (
@@ -19,9 +20,11 @@ export const useGetSolvers = (
       setIsLoading(true)
       setSolvers([])
       try {
-        const response = await COW_SDK.cowSubgraphApi.runQuery<{
-          users: Pick<Solver, 'id' | 'address' | 'numberOfTrades' | 'solvedAmountUsd'>[]
-        }>(GET_SOLVERS_QUERY, undefined, { chainId: network })
+        const response = await COW_SDK.cowSubgraphApi.runQuery<{ users: Pick<Solver, 'id' | 'address'>[] }>(
+          GET_SOLVERS_QUERY,
+          undefined,
+          { chainId: network },
+        )
         if (response) {
           const solversWithInfo = await addExtraInfo(response.users, networkId)
           const totalVolumeUsd = solversWithInfo.reduce((prev, current) => prev + Number(current.solvedAmountUsd), 0)
@@ -46,7 +49,6 @@ export const useGetSolvers = (
     if (!networkId || !shouldRefetch) {
       return
     }
-
     fetchSolvers(networkId)
   }, [fetchSolvers, networkId, shouldRefetch])
 
@@ -54,25 +56,33 @@ export const useGetSolvers = (
 }
 
 const addExtraInfo = async (
-  solvers: Pick<Solver, 'id' | 'address' | 'numberOfTrades' | 'solvedAmountUsd'>[],
+  solvers: Pick<Solver, 'id' | 'address'>[],
   network: SupportedChainId,
 ): Promise<Solver[]> => {
   const solversInfo = await fetchSolversInfo(network)
-  return solvers.map((solver) => {
-    const sInfo = solversInfo.find((s) => s.address.toLowerCase() === solver.address.toLowerCase())
-    return {
-      ...solver,
-      ...sInfo,
-      numberOfSettlements: 0,
-    }
-  })
+  return await Promise.all(
+    solvers.map(async (solver) => {
+      const { settlements } = await COW_SDK.cowSubgraphApi.runQuery<{ settlements: Settlement[] }>(
+        GET_SETTLEMENTS_QUERY,
+        { solver: solver.id },
+        { chainId: network },
+      )
+      const sInfo = solversInfo.find((s) => s.address.toLowerCase() === solver.address.toLowerCase())
+      return {
+        ...solver,
+        ...sInfo,
+        numberOfSettlements: settlements.length,
+        ...ACTIVE_SOLVERS[solver.address],
+      }
+    }),
+  )
 }
 
 export type Solver = {
   id: string
   address: string
-  name?: string
-  environment?: string
+  name: string
+  environment: string
   numberOfTrades: number
   numberOfSettlements: number
   solvedAmountUsd: number

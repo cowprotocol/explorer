@@ -11,7 +11,6 @@ import { TabList } from 'components/common/Tabs/Tabs'
 export const StyledExplorerTabs = styled(ExplorerTabs)`
   border: 0;
   ${TabList} > button {
-    padding: 1rem 1.5rem;
     ${media.mobile} {
       font-size: 1.5rem;
       margin: 0;
@@ -59,7 +58,8 @@ export const Wrapper = styled(WrapperTemplate)`
     }
   }
   .solvers-tab {
-    &--active_solvers {
+    &--active_solvers,
+    &--settlements {
       .tab-content {
         padding: 0;
       }
