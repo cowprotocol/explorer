@@ -25,7 +25,7 @@ export const useGetSettlements = (
           settlements: Settlement[]
         }>(
           solverAddress ? GET_SETTLEMENTS_BY_SOLVER_QUERY : GET_SETTLEMENTS_QUERY,
-          solverAddress ? { solver: solverAddress } : undefined,
+          solverAddress ? { solver: solverAddress.toLowerCase() } : undefined,
           { chainId: network },
         )
         if (response) {

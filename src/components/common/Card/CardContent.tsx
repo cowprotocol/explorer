@@ -120,7 +120,7 @@ export const CardContent: React.FC<CardContentProps> = ({
       captionColor={captionColor}
       hintColor={hintColor}
     >
-      <div>
+      <div className="card-container">
         <p>
           {icon1 && <React.Fragment>{icon1} &nbsp;</React.Fragment>}
           <span style={{ textAlign: 'center' }}>{label1}</span>

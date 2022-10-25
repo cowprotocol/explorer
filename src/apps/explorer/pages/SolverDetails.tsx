@@ -8,6 +8,7 @@ import { abbreviateString, formatPrice } from 'utils'
 import { useGetSettlements } from 'hooks/useGetSettlements'
 import { useSolversInfo } from 'hooks/useSolversInfo'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
+import { media } from 'theme/styles/media'
 
 import RedirectToSearch from 'components/RedirectToSearch'
 import { Card, CardContent } from 'components/common/Card'
@@ -30,6 +31,22 @@ const HeaderContainer = styled.div`
   align-items: center;
   span:first-child {
     margin: 0 0 0 0.5rem;
+  }
+`
+
+const StyledCard = styled(Card)`
+  ${media.mediumDown} {
+    .card-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 60px;
+    }
+  }
+  @media (max-width: 600px) {
+    .card-container {
+      height: auto;
+    }
   }
 `
 
@@ -86,7 +103,7 @@ const SolverDetails: React.FC = () => {
         </HeaderContainer>
       </FlexContainerVar>
       <CardRow>
-        <Card xs={6} sm={3} md={3} lg={3}>
+        <StyledCard xs={6} sm={3} md={3} lg={3}>
           <CardContent
             variant="double"
             label1="Trades"
@@ -95,8 +112,8 @@ const SolverDetails: React.FC = () => {
             loading={isLoading}
             valueSize={valueTextSize}
           />
-        </Card>
-        <Card xs={6} sm={3} md={3} lg={3}>
+        </StyledCard>
+        <StyledCard xs={6} sm={3} md={3} lg={3}>
           <CardContent
             variant="double"
             icon1={
@@ -109,8 +126,8 @@ const SolverDetails: React.FC = () => {
             loading={isLoading}
             valueSize={valueTextSize}
           />
-        </Card>
-        <Card xs={6} sm={3} md={3} lg={3}>
+        </StyledCard>
+        <StyledCard xs={6} sm={3} md={3} lg={3}>
           <CardContent
             variant="double"
             label1="Total settlements"
@@ -119,8 +136,8 @@ const SolverDetails: React.FC = () => {
             loading={isLoading}
             valueSize={valueTextSize}
           />
-        </Card>
-        <Card xs={6} sm={3} md={3} lg={3}>
+        </StyledCard>
+        <StyledCard xs={6} sm={3} md={3} lg={3}>
           <CardContent
             variant="double"
             label1="Active since"
@@ -129,7 +146,7 @@ const SolverDetails: React.FC = () => {
             loading={isLoading}
             valueSize={valueTextSize}
           />
-        </Card>
+        </StyledCard>
       </CardRow>
       <TableContainer>
         <SolverDetailsTableWidget settlements={settlements} isLoading={isLoading} error={error} networkId={networkId} />
