@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Index, SearchOptions } from 'flexsearch'
+import { useDebounce } from './useDebounce'
 
 const SEARCH_INDEX = new Index({
   tokenize: 'forward',
@@ -17,6 +18,7 @@ export const useFlexSearch = (
 ): Item[] => {
   const [index, setIndex] = useState(SEARCH_INDEX)
   const [filteredResults, setFilteredResults] = useState<Item[]>(data)
+  const { value: debouncedQuery } = useDebounce(query, 200)
 
   useEffect(() => {
     data.forEach((el: Item) => {
@@ -32,12 +34,12 @@ export const useFlexSearch = (
   }, [data])
 
   useEffect(() => {
-    if (!query) return
+    if (!debouncedQuery) return
 
-    const result = index.search(query, searchOptions)
+    const result = index.search(debouncedQuery, searchOptions)
     const filteredResults = data.filter((el: Item) => result.includes(el.id))
     setFilteredResults(filteredResults)
-  }, [query, index, searchOptions, data])
+  }, [debouncedQuery, index, searchOptions, data])
 
   return filteredResults
 }

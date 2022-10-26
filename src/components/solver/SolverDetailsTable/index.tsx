@@ -58,7 +58,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 10fr 6fr 7fr 7fr 7fr 7fr;
+    grid-template-columns: 10fr 6fr 7fr 7fr 7fr 9fr;
   }
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {
@@ -184,9 +184,16 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
   return (
     <tr key={id}>
       <td>
-        <HeaderTitle>Timestamp</HeaderTitle>
+        <HeaderTitle>Tx hash</HeaderTitle>
         <HeaderValue>
-          <DateDisplay date={new Date(firstTradeTimestamp * 1000)} showIcon={true} />
+          <RowWithCopyButton
+            textToCopy={txHash}
+            contentsToDisplay={
+              <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
+                {abbreviateString(txHash, 6, 4)}
+              </LinkWithPrefixNetwork>
+            }
+          />
         </HeaderValue>
       </td>
       <td>
@@ -218,16 +225,9 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Tx hash</HeaderTitle>
+        <HeaderTitle>Timestamp</HeaderTitle>
         <HeaderValue>
-          <RowWithCopyButton
-            textToCopy={txHash}
-            contentsToDisplay={
-              <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
-                {abbreviateString(txHash, 6, 4)}
-              </LinkWithPrefixNetwork>
-            }
-          />
+          <DateDisplay date={new Date(firstTradeTimestamp * 1000)} showIcon={true} />
         </HeaderValue>
       </td>
     </tr>
@@ -270,12 +270,12 @@ const SolverDetailsTable: React.FC<Props> = (props) => {
       showBorderTable={showBorderTable}
       header={
         <tr>
-          <th>Timestamp&darr;</th>
+          <th>Tx hash</th>
           <th>Trades</th>
           <th>Tokens</th>
           <th>ETH cost</th>
           <th>Total volume</th>
-          <th>Tx hash</th>
+          <th>Timestamp&darr;</th>
         </tr>
       }
       body={settlementItems(settlements)}

@@ -1,10 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import BigNumber from 'bignumber.js'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
 import { isAddress } from 'web3-utils'
-import { abbreviateString, formatPrice } from 'utils'
+import { abbreviateString } from 'utils'
 import { useGetSettlements } from 'hooks/useGetSettlements'
 import { useSolversInfo } from 'hooks/useSolversInfo'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
@@ -53,6 +52,10 @@ const StyledCard = styled(Card)`
 const AddressContainer = styled(TitleAddress)`
   margin: 0 0 0 1rem;
 `
+const SolverInfoContainer = styled.div`
+  display: flex;
+  align-items: baseline;
+`
 
 const TableContainer = styled.div`
   display: flex;
@@ -87,27 +90,29 @@ const SolverDetails: React.FC = () => {
       <FlexContainerVar>
         <HeaderContainer>
           <Identicon address={solverAddress} size="md" />
-          {solverName && <SolverName>{solverName}</SolverName>}
-          <AddressContainer
-            textToCopy={solverAddress}
-            contentsToDisplay={
-              <BlockExplorerLink
-                showLogo
-                type="address"
-                networkId={networkId}
-                identifier={solverAddress}
-                label={abbreviateString(solverAddress, 6, 4)}
-              />
-            }
-          />
+          <SolverInfoContainer>
+            {solverName && <SolverName>{solverName}</SolverName>}
+            <AddressContainer
+              textToCopy={solverAddress}
+              contentsToDisplay={
+                <BlockExplorerLink
+                  showLogo
+                  type="address"
+                  networkId={networkId}
+                  identifier={solverAddress}
+                  label={abbreviateString(solverAddress, 6, 4)}
+                />
+              }
+            />
+          </SolverInfoContainer>
         </HeaderContainer>
       </FlexContainerVar>
       <CardRow>
         <StyledCard xs={6} sm={3} md={3} lg={3}>
           <CardContent
             variant="double"
-            label1="Trades"
-            icon1={<HelpTooltip tooltip={settlements[0]?.solver.numberOfTrades.toLocaleString()} />}
+            label1="Total trades"
+            icon1={<HelpTooltip tooltip="Total trades settled by this solver" />}
             value1={numberFormatter(settlements[0]?.solver.numberOfTrades || 0)}
             loading={isLoading}
             valueSize={valueTextSize}
@@ -116,11 +121,7 @@ const SolverDetails: React.FC = () => {
         <StyledCard xs={6} sm={3} md={3} lg={3}>
           <CardContent
             variant="double"
-            icon1={
-              <HelpTooltip
-                tooltip={`$${formatPrice({ price: new BigNumber(totalVolumeUSD), decimals: 2, thousands: true })}`}
-              />
-            }
+            icon1={<HelpTooltip tooltip="Total volume settled by this solver" />}
             label1="Total volume"
             value1={`$${Number(totalVolumeUSD) ? numberFormatter(totalVolumeUSD) : 0}`}
             loading={isLoading}
@@ -131,7 +132,7 @@ const SolverDetails: React.FC = () => {
           <CardContent
             variant="double"
             label1="Total settlements"
-            icon1={<HelpTooltip tooltip={settlements.length.toLocaleString()} />}
+            icon1={<HelpTooltip tooltip="Total settlements by this solver" />}
             value1={numberFormatter(settlements.length)}
             loading={isLoading}
             valueSize={valueTextSize}
@@ -141,7 +142,7 @@ const SolverDetails: React.FC = () => {
           <CardContent
             variant="double"
             label1="Active since"
-            icon1={<HelpTooltip tooltip={new Date().toISOString()} />}
+            icon1={<HelpTooltip tooltip="When the solver became active as was able to submit solutions" />}
             value1={<DateDisplay date={new Date()} showIcon={true} />}
             loading={isLoading}
             valueSize={valueTextSize}
