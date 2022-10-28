@@ -7,7 +7,7 @@ import { Network } from 'types'
 import { NETWORK_ID_SEARCH_LIST } from 'apps/explorer/const'
 import { BlockchainNetwork } from './context/OrdersTableContext'
 import { Order, getAccountOrders } from 'api/operator'
-import Spinner from 'components/common/Spinner'
+import CowLoading from 'components/common/CowLoading'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { MEDIA } from 'const'
 import { PREFIX_BY_NETWORK_ID } from 'state/network'
@@ -55,13 +55,13 @@ interface OrdersInNetwork {
   network: number
 }
 
-interface ResultSeachInAnotherNetwork {
+interface ResultSearchInAnotherNetwork {
   isLoading: boolean
   ordersInNetworks: OrdersInNetwork[]
   setLoadingState: (value: boolean) => void
 }
 
-type EmptyMessageProps = ResultSeachInAnotherNetwork & {
+type EmptyMessageProps = ResultSearchInAnotherNetwork & {
   networkId: BlockchainNetwork
   ownerAddress: string
 }
@@ -86,7 +86,7 @@ export const EmptyOrdersMessage = ({
   const areOtherNetworks = ordersInNetworks.length > 0
 
   if (!networkId || isLoading) {
-    return <Spinner size="2x" />
+    return <CowLoading />
   }
 
   return (
@@ -132,18 +132,14 @@ export const useSearchInAnotherNetwork = (
   networkId: BlockchainNetwork,
   ownerAddress: string,
   orders: Order[] | undefined,
-): ResultSeachInAnotherNetwork => {
+): ResultSearchInAnotherNetwork => {
   const [ordersInNetworks, setOrdersInNetworks] = useState<OrdersInNetwork[]>([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const isOrdersLengthZero = !orders || orders.length === 0
-
-  useEffect(() => {
-    setIsLoading(false)
-    setOrdersInNetworks([])
-  }, [isOrdersLengthZero])
 
   const fetchAnotherNetworks = useCallback(
     async (_networkId: Network) => {
+      setIsLoading(true)
       const promises = NETWORK_ID_SEARCH_LIST.filter((net) => net !== _networkId).map((network) =>
         getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
           .then((response) => {
@@ -160,6 +156,7 @@ export const useSearchInAnotherNetwork = (
         (e) => e.status === 'fulfilled' && e.value?.network,
       )
       setOrdersInNetworks(networksHaveOrders.map((e: PromiseFulfilledResult<OrdersInNetwork>) => e.value))
+      setIsLoading(false)
     },
     [ownerAddress],
   )
