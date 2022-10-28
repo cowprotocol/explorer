@@ -21,7 +21,7 @@ import Icon from 'components/Icon'
 import TradeOrderType from 'components/common/TradeOrderType'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
-import CowLoading from 'components/common/CowLoading'
+import Spinner from 'components/common/Spinner'
 import { OrderSurplusDisplayStyledByRow } from './OrderSurplusTooltipStyledByRow'
 
 const Wrapper = styled(StyledUserDetailsTable)`
@@ -167,7 +167,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   }
 
   const renderSpinnerWhenNoValue = (textValue: string): JSX.Element | void => {
-    if (textValue === '-') return <CowLoading />
+    if (textValue === '-') return <Spinner spin size="1x" />
   }
 
   return (
