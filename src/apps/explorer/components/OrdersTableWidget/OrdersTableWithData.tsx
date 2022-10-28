@@ -19,6 +19,7 @@ export const OrdersTableWithData: React.FC = () => {
     isLoading: searchInAnotherNetworkState,
     ordersInNetworks,
     setLoadingState,
+    errorMsg: error,
   } = useSearchInAnotherNetwork(networkId, ownerAddress, orders)
 
   useEffect(() => {
@@ -54,6 +55,7 @@ export const OrdersTableWithData: React.FC = () => {
           ordersInNetworks={ordersInNetworks}
           ownerAddress={ownerAddress}
           setLoadingState={setLoadingState}
+          errorMsg={error}
         />
       }
     />
