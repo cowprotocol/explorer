@@ -175,7 +175,7 @@ export function useTxOrderExplorerLink(
             networkId: network,
             identifier: txHash,
             showLogo: true,
-            label: network === Network.GNOSIS_CHAIN ? 'Blockscout' : 'Etherscan',
+            label: network === Network.GNOSIS_CHAIN ? 'Gnosisscan' : 'Etherscan',
           })
         }
       })
