@@ -22,7 +22,7 @@ import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { sendEvent } from 'components/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 
 const Table = styled(SimpleTable)`
@@ -348,7 +348,13 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 <HelpTooltip tooltip={tooltip.filled} /> Filled
               </td>
               <td>
-                <FilledProgress order={order} />
+                <Wrapper>
+                  <FilledProgress order={order} />
+                  <LinkButton to={`/orders/${txHash}/?tab=fills`}>
+                    <FontAwesomeIcon icon={faFill} />
+                    View fills
+                  </LinkButton>
+                </Wrapper>
               </td>
             </tr>
             <tr>
@@ -358,18 +364,14 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
             </tr>
           </>
-          {/*TODO: uncomment when fills tab is implemented */}
-          {/*)}*/}
-          {!isFeeHidden && (
-            <tr>
-              <td>
-                <HelpTooltip tooltip={tooltip.fees} /> Fees
-              </td>
-              <td>
-                <GasFeeDisplay order={order} />
-              </td>
-            </tr>
-          )}
+          <tr>
+            <td>
+              <HelpTooltip tooltip={tooltip.fees} /> Fees
+            </td>
+            <td>
+              <GasFeeDisplay order={order} />
+            </td>
+          </tr>
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.appData} /> AppData
