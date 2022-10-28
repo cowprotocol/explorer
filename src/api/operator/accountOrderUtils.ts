@@ -20,7 +20,10 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const cachedPageOrders = state.merged.get(currentPage)
 
   if (cachedPageOrders) {
-    return { orders: [...cachedPageOrders], hasNextPage: Boolean(state.merged.get(currentPage + 1)) }
+    return {
+      orders: [...cachedPageOrders],
+      hasNextPage: Boolean(state.merged.get(currentPage + 1)) || state.unmerged.length > 0,
+    }
   }
 
   const [prodOrders, barnOrders] = await Promise.all([
