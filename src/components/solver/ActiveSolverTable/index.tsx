@@ -13,12 +13,11 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import Identicon from 'components/common/Identicon'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
+import { DateDisplay } from 'components/common/DateDisplay'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -180,7 +179,8 @@ interface RowProps {
 }
 
 const RowSolver: React.FC<RowProps> = ({ solver }) => {
-  const { id, name, address, numberOfTrades, numberOfSettlements, solvedAmountUsd } = solver
+  const { id, name, address, numberOfTrades, numberOfSettlements, solvedAmountUsd, lastIsSolverUpdateTimestamp } =
+    solver
   const network = useNetworkId()
 
   if (!network) {
@@ -219,20 +219,8 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
         <HeaderValue>{numberOfSettlements}</HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Solver address</HeaderTitle>
-        <HeaderValue>
-          <RowWithCopyButton
-            textToCopy={address}
-            contentsToDisplay={
-              <BlockExplorerLink
-                type="address"
-                networkId={network}
-                identifier={address}
-                label={abbreviateString(address, 6, 4)}
-              />
-            }
-          />
-        </HeaderValue>
+        <HeaderTitle>Active since</HeaderTitle>
+        <HeaderValue>{<DateDisplay date={new Date(lastIsSolverUpdateTimestamp * 1000)} showIcon={true} />}</HeaderValue>
       </td>
     </tr>
   )
@@ -278,7 +266,7 @@ const SolverTable: React.FC<Props> = (props) => {
           <th>Trades</th>
           <th>Total volume&darr;</th>
           <th>Total settlements</th>
-          <th>Solver address</th>
+          <th>Active since</th>
         </tr>
       }
       body={solverItems(solvers)}

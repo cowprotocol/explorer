@@ -94,12 +94,11 @@ export type Settlement = {
   txHash: string
   solver: {
     address: string
-    numberOfTrades: number
   }
   trades: Trade[]
   tokens: TokenErc20[]
   totalVolumeUsd: number
-  ethCost: number
+  txCostNative: string
 }
 
 type Trade = {
@@ -114,9 +113,9 @@ const settlementsData = `
   id
   firstTradeTimestamp
   txHash
+  txCostNative
   solver {
     address
-    numberOfTrades
   }
   trades {
     sellAmountUsd

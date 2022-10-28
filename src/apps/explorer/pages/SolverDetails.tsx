@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useParams } from 'react-router'
 import { Helmet } from 'react-helmet'
@@ -21,6 +21,10 @@ import SolverDetailsTableWidget from 'apps/explorer/components/SolverDetailsTabl
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { APP_TITLE } from 'apps/explorer/const'
 import { useNetworkId } from 'state/network'
+import { gql } from '@apollo/client'
+import { COW_SDK } from 'const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiError } from 'types'
 
 const DESKTOP_TEXT_SIZE = 1.8 // rem
 const MOBILE_TEXT_SIZE = 1.65 // rem
@@ -71,9 +75,9 @@ const SolverDetails: React.FC = () => {
   const { solverAddress } = useParams<{ solverAddress: string }>()
   const networkId = useNetworkId() || undefined
   const solversInfo = useSolversInfo(networkId)
+  const solver = useGetSolver(solverAddress, networkId)
   const { settlements, isLoading, error } = useGetSettlements(networkId, [], solverAddress)
   const solverName = solversInfo?.find((solver) => solver.address.toLowerCase() === solverAddress.toLowerCase())?.name
-  const totalVolumeUSD = settlements.reduce((acc, settlement) => acc + settlement.totalVolumeUsd, 0)
   const isDesktop = useMediaBreakpoint(['xl', 'lg'])
   const valueTextSize = isDesktop ? DESKTOP_TEXT_SIZE : MOBILE_TEXT_SIZE
 
@@ -113,7 +117,7 @@ const SolverDetails: React.FC = () => {
             variant="double"
             label1="Total trades"
             icon1={<HelpTooltip tooltip="Total trades settled by this solver" />}
-            value1={numberFormatter(settlements[0]?.solver.numberOfTrades || 0)}
+            value1={numberFormatter(solver.solver?.numberOfTrades ?? 0)}
             loading={isLoading}
             valueSize={valueTextSize}
           />
@@ -123,7 +127,7 @@ const SolverDetails: React.FC = () => {
             variant="double"
             icon1={<HelpTooltip tooltip="Total volume settled by this solver" />}
             label1="Total volume"
-            value1={`$${Number(totalVolumeUSD) ? numberFormatter(totalVolumeUSD) : 0}`}
+            value1={`$${numberFormatter(solver.solver?.solvedAmountUsd ?? 0)}`}
             loading={isLoading}
             valueSize={valueTextSize}
           />
@@ -133,20 +137,35 @@ const SolverDetails: React.FC = () => {
             variant="double"
             label1="Total settlements"
             icon1={<HelpTooltip tooltip="Total settlements by this solver" />}
-            value1={numberFormatter(settlements.length)}
+            value1={numberFormatter(solver.solver?.numberOfSettlements ?? 0)}
             loading={isLoading}
             valueSize={valueTextSize}
           />
         </StyledCard>
         <StyledCard xs={6} sm={3} md={3} lg={3}>
-          <CardContent
-            variant="double"
-            label1="Active since"
-            icon1={<HelpTooltip tooltip="When the solver became active as was able to submit solutions" />}
-            value1={<DateDisplay date={new Date()} showIcon={true} />}
-            loading={isLoading}
-            valueSize={valueTextSize}
-          />
+          {solver.solver?.isSolver ? (
+            <CardContent
+              variant="double"
+              label1="Active since"
+              icon1={<HelpTooltip tooltip="When the solver became active as was able to submit solutions" />}
+              value1={
+                <DateDisplay date={new Date(solver.solver?.lastIsSolverUpdateTimestamp * 1000)} showIcon={true} />
+              }
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          ) : solver.solver ? (
+            <CardContent
+              variant="double"
+              label1="Inactive since"
+              icon1={<HelpTooltip tooltip="When the solver became inactive and stopped submitting solutions" />}
+              value1={
+                <DateDisplay date={new Date(solver.solver?.lastIsSolverUpdateTimestamp * 1000)} showIcon={true} />
+              }
+              loading={isLoading}
+              valueSize={valueTextSize}
+            />
+          ) : null}
         </StyledCard>
       </CardRow>
       <TableContainer>
@@ -154,6 +173,70 @@ const SolverDetails: React.FC = () => {
       </TableContainer>
     </Wrapper>
   )
+}
+
+const GET_SOLVER_QUERY = gql`
+  query GetSolver($solverAddress: String!) {
+    user(id: $solverAddress) {
+      address
+      numberOfTrades
+      solvedAmountUsd
+      numberOfSettlements
+      lastIsSolverUpdateTimestamp
+      isSolver
+    }
+  }
+`
+
+type Solver = {
+  address: string
+  numberOfTrades: number
+  numberOfSettlements: number
+  solvedAmountUsd: number
+  lastIsSolverUpdateTimestamp: number
+  isSolver: boolean
+}
+
+type GetSolverResult = {
+  solver?: Solver
+  error?: UiError
+  isLoading: boolean
+}
+
+const useGetSolver = (solverAddress: string, networkId?: SupportedChainId): GetSolverResult => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<UiError>()
+  const [solver, setSolver] = useState<Solver>()
+
+  const fetchSolver = useCallback(
+    async (solverAddress: string): Promise<void> => {
+      setIsLoading(true)
+      setSolver(undefined)
+      try {
+        const response = await COW_SDK.cowSubgraphApi.runQuery<{ user: Solver }>(
+          GET_SOLVER_QUERY,
+          { solverAddress: solverAddress.toLowerCase() },
+          { chainId: networkId },
+        )
+        if (response) {
+          setSolver(response.user)
+        }
+      } catch (e) {
+        const msg = `Failed to fetch solver ${solverAddress}`
+        console.error(msg, e)
+        setError({ message: msg, type: 'error' })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [networkId],
+  )
+
+  useEffect(() => {
+    fetchSolver(solverAddress)
+  }, [fetchSolver, solverAddress])
+
+  return { solver, error, isLoading }
 }
 
 export default SolverDetails

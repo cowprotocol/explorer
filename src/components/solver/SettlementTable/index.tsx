@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import BigNumber from 'bignumber.js'
 import { formatPrice } from '@gnosis.pm/dex-js'
 import { useNetworkId } from 'state/network'
-import { abbreviateString } from 'utils'
+import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 import { Settlement } from 'hooks/useGetSettlements'
 import { TableState } from 'hooks/useTable'
+import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 
 import StyledUserDetailsTable, {
   StyledUserDetailsTableProps,
@@ -189,6 +190,7 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
     trades = [],
     tokens = [],
     totalVolumeUsd,
+    txCostNative,
     firstTradeTimestamp,
   } = settlement
   const network = useNetworkId()
@@ -238,8 +240,15 @@ const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>ETH cost</HeaderTitle>
-        <HeaderValue>-</HeaderValue>
+        <HeaderTitle>Tx cost</HeaderTitle>
+        <HeaderValue>
+          {formattingAmountPrecision(
+            new BigNumber(txCostNative),
+            NATIVE_TOKEN_PER_NETWORK[network],
+            FormatAmountPrecision.middlePrecision,
+          )}{' '}
+          {NATIVE_TOKEN_PER_NETWORK[network].symbol}
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Total volume</HeaderTitle>
@@ -301,7 +310,7 @@ const SettlementTable: React.FC<Props> = (props) => {
           <th>Tx hash</th>
           <th>Trades</th>
           <th>Tokens</th>
-          <th>ETH cost</th>
+          <th>Tx cost</th>
           <th>Total volume</th>
           <th>Timestamp&darr;</th>
         </tr>

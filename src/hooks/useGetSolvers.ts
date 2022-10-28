@@ -62,16 +62,10 @@ const addExtraInfo = async (
   const solversInfo = await fetchSolversInfo(network)
   return await Promise.all(
     solvers.map(async (solver) => {
-      const { settlements } = await COW_SDK.cowSubgraphApi.runQuery<{ settlements: Settlement[] }>(
-        GET_SETTLEMENTS_QUERY,
-        { solver: solver.id },
-        { chainId: network },
-      )
       const sInfo = solversInfo.find((s) => s.address.toLowerCase() === solver.address.toLowerCase())
       return {
         ...solver,
         ...sInfo,
-        numberOfSettlements: settlements.length,
         ...ACTIVE_SOLVERS[solver.address],
       }
     }),
@@ -86,6 +80,7 @@ export type Solver = {
   numberOfTrades: number
   numberOfSettlements: number
   solvedAmountUsd: number
+  lastIsSolverUpdateTimestamp: number
 }
 
 export type Settlement = {
@@ -94,19 +89,13 @@ export type Settlement = {
 
 export const GET_SOLVERS_QUERY = gql`
   query GetSolvers {
-    users(first: 100, where: { isSolver: true }) {
+    users(first: 1000, where: { isSolver: true }) {
       id
       address
       numberOfTrades
       solvedAmountUsd
-    }
-  }
-`
-
-export const GET_SETTLEMENTS_QUERY = gql`
-  query GetSettlements($solver: String) {
-    settlements(where: { solver: $solver }) {
-      id
+      numberOfSettlements
+      lastIsSolverUpdateTimestamp
     }
   }
 `
