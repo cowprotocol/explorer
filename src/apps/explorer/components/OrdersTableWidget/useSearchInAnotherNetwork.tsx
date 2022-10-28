@@ -158,7 +158,7 @@ export const useSearchInAnotherNetwork = (
           })
           .catch((e) => {
             // Msg for when there are no orders on any network and a request has failed
-            setError('An erros has occurred while requesting the data.')
+            setError('An error has occurred while requesting the data.')
             console.error(`Failed to fetch order in ${Network[network]}`, e)
           }),
       )
