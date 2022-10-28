@@ -59,11 +59,13 @@ interface ResultSearchInAnotherNetwork {
   isLoading: boolean
   ordersInNetworks: OrdersInNetwork[]
   setLoadingState: (value: boolean) => void
+  errorMsg: string | null
 }
 
 type EmptyMessageProps = ResultSearchInAnotherNetwork & {
   networkId: BlockchainNetwork
   ownerAddress: string
+  errorMsg: string | null
 }
 
 const _findNetworkName = (networkId: number): string => {
@@ -82,6 +84,7 @@ export const EmptyOrdersMessage = ({
   ordersInNetworks,
   ownerAddress,
   setLoadingState,
+  errorMsg: hasErrorMsg,
 }: EmptyMessageProps): JSX.Element => {
   const areOtherNetworks = ordersInNetworks.length > 0
 
@@ -92,7 +95,11 @@ export const EmptyOrdersMessage = ({
   return (
     <Wrapper>
       {!areOtherNetworks ? (
-        <p>No orders found.</p>
+        hasErrorMsg ? (
+          <p>{hasErrorMsg}</p>
+        ) : (
+          <p>No orders found.</p>
+        )
       ) : (
         <>
           <p>
@@ -136,10 +143,12 @@ export const useSearchInAnotherNetwork = (
   const [ordersInNetworks, setOrdersInNetworks] = useState<OrdersInNetwork[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const isOrdersLengthZero = !orders || orders.length === 0
+  const [error, setError] = useState<string | null>(null)
 
   const fetchAnotherNetworks = useCallback(
     async (_networkId: Network) => {
       setIsLoading(true)
+      setError(null)
       const promises = NETWORK_ID_SEARCH_LIST.filter((net) => net !== _networkId).map((network) =>
         getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
           .then((response) => {
@@ -148,6 +157,8 @@ export const useSearchInAnotherNetwork = (
             return { network }
           })
           .catch((e) => {
+            // Msg for when there are no orders on any network and a request has failed
+            setError('An erros has occurred while requesting the data.')
             console.error(`Failed to fetch order in ${Network[network]}`, e)
           }),
       )
@@ -167,5 +178,5 @@ export const useSearchInAnotherNetwork = (
     fetchAnotherNetworks(networkId)
   }, [fetchAnotherNetworks, isOrdersLengthZero, networkId])
 
-  return { isLoading, ordersInNetworks, setLoadingState: setIsLoading }
+  return { isLoading, ordersInNetworks, setLoadingState: setIsLoading, errorMsg: error }
 }
