@@ -147,7 +147,7 @@ export const useSearchInAnotherNetwork = (
       const promises = NETWORK_ID_SEARCH_LIST.filter((net) => net !== _networkId).map((network) =>
         getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
           .then((response) => {
-            if (!response.length) return
+            if (!response.orders.length) return
 
             return { network }
           })

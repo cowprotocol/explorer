@@ -11,28 +11,33 @@ import { GetAccountOrdersParams, RawOrder } from './types'
  *  - offset: int
  *  - limit: int
  */
-export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
+export async function getAccountOrders(params: GetAccountOrdersParams): Promise<GetAccountOrdersResponse> {
   const { networkId, owner, offset = 0, limit = 20 } = params
   const state = getState({ networkId, owner, limit })
+  const limitPlusOne = limit + 1
 
   const currentPage = Math.round(offset / limit)
   const cachedPageOrders = state.merged.get(currentPage)
 
   if (cachedPageOrders) {
-    return [...cachedPageOrders]
+    return { orders: [...cachedPageOrders], hasNextPage: Boolean(state.merged.get(currentPage + 1)) }
   }
 
   const [prodOrders, barnOrders] = await Promise.all([
-    state.prodHasNext ? COW_SDK.cowApi.getOrders({ owner, offset, limit }, { chainId: networkId, env: 'prod' }) : [],
-    state.barnHasNext ? COW_SDK.cowApi.getOrders({ owner, offset, limit }, { chainId: networkId, env: 'staging' }) : [],
+    state.prodHasNext
+      ? COW_SDK.cowApi.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'prod' })
+      : [],
+    state.barnHasNext
+      ? COW_SDK.cowApi.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging' })
+      : [],
   ])
 
-  state.prodHasNext = prodOrders.length === limit
+  state.prodHasNext = prodOrders.length === limitPlusOne
   if (state.prodHasNext) {
     state.prodPage += 1
   }
 
-  state.barnHasNext = barnOrders.length === limit
+  state.barnHasNext = barnOrders.length === limitPlusOne
   if (state.barnHasNext) {
     state.barnPage += 1
   }
@@ -50,10 +55,15 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
     state.unmerged = []
   }
 
-  return [...currentPageOrders]
+  return { orders: [...currentPageOrders], hasNextPage: state.unmerged.length > 0 }
 }
 
 const userOrdersCache = new Map<string, CacheState>()
+
+export type GetAccountOrdersResponse = {
+  orders: RawOrder[]
+  hasNextPage: boolean
+}
 
 type CacheKey = {
   networkId: SupportedChainId
