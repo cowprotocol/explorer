@@ -160,6 +160,52 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   }
 `
 
+const MainWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
+const TableHeading = styled.div`
+  background: ${({ theme }): string => theme.tableRowBorder};
+  min-height: 11rem;
+  padding: 1.6rem;
+  display: flex;
+  ${media.mobile} {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .tittle {
+    text-transform: uppercase;
+    font-size: 1.1rem;
+  }
+  .fillNumber {
+    font-size: 3.2rem;
+    margin: 1rem 0;
+    color: ${({ theme }): string => theme.green};
+    ${media.mobile} {
+      font-size: 2.8rem;
+    }
+  }
+
+  .priceNumber {
+    font-size: 2.2rem;
+    margin: 1rem 0;
+    ${media.mobile} {
+      font-size: 1.8rem;
+    }
+  }
+`
+
+const TableHeadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 20rem;
+  ${media.mobile} {
+    flex-direction: column;
+  }
+`
+
 export type Props = StyledUserDetailsTableProps & {
   trades: Trade[] | undefined
   tableState: TableState
@@ -274,21 +320,34 @@ const FillsTable: React.FC<Props> = (props) => {
   }
 
   return (
-    <Wrapper
-      showBorderTable={showBorderTable}
-      header={
-        <tr>
-          <th>Tx hash</th>
-          <th>Surplus</th>
-          <th>Buy amount</th>
-          <th>Sell amount</th>
-          <th>Execution price</th>
-          <th>Execution time</th>
-          <th></th>
-        </tr>
-      }
-      body={tradeItems(trades)}
-    />
+    <MainWrapper>
+      <TableHeading>
+        {/* <FilledProgress order={order} /> */}
+        <TableHeadingContent>
+          <p className="tittle">Filled</p>
+          <p className="fillNumber">100%</p>
+        </TableHeadingContent>
+        <TableHeadingContent>
+          <p className="tittle">Limit Price</p>
+          <p className="priceNumber">2,905 DAI per ETH</p>
+        </TableHeadingContent>
+      </TableHeading>
+      <Wrapper
+        showBorderTable={showBorderTable}
+        header={
+          <tr>
+            <th>Tx hash</th>
+            <th>Surplus</th>
+            <th>Buy amount</th>
+            <th>Sell amount</th>
+            <th>Execution price</th>
+            <th>Execution time</th>
+            <th></th>
+          </tr>
+        }
+        body={tradeItems(trades)}
+      />
+    </MainWrapper>
   )
 }
 
