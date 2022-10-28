@@ -26,9 +26,6 @@ import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 
 const Table = styled(SimpleTable)`
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
-  border-radius: 0.4rem;
-
   > tbody > tr {
     grid-template-columns: 27rem auto;
     padding: 1.4rem 0 1.4rem 1.1rem;
@@ -130,7 +127,7 @@ export const Wrapper = styled.div`
   }
 `
 
-const LinkButton = styled(LinkWithPrefixNetwork)`
+export const LinkButton = styled(LinkWithPrefixNetwork)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -327,8 +324,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
               />
             </td>
           </tr>
-          {/*TODO: uncomment when fills tab is implemented */}
-          {/*{!partiallyFillable && (*/}
           <>
             <tr>
               <td>

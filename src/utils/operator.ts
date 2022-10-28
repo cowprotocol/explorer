@@ -377,6 +377,6 @@ export function transformTrade(rawTrade: TradeMetaData & { executionTime?: strin
     sellAmountBeforeFees: new BigNumber(sellAmountBeforeFees),
     buyTokenAddress: buyToken,
     sellTokenAddress: sellToken,
-    executionTime: new Date(executionTime),
+    executionTime: new Date(executionTime) || null,
   }
 }
