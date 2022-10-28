@@ -2,34 +2,15 @@ import { GetTradesParams } from '@cowprotocol/cow-sdk'
 import { Network } from 'types'
 import { COW_SDK } from 'const'
 import { buildSearchString } from 'utils/url'
-import { environmentName, Envs, isProd, isStaging } from 'utils/env'
+import { isProd, isStaging } from 'utils/env'
 
-import {
-  GetOrderParams,
-  GetAccountOrdersParams,
-  GetOrdersParams,
-  RawOrder,
-  RawTrade,
-  GetTxOrdersParams,
-  WithNetworkId,
-} from './types'
+import { GetOrderParams, GetOrdersParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
 import { fetchQuery } from 'api/baseApi'
+
+export { getAccountOrders } from './accountOrderUtils'
 
 // TODO: export this through the sdk
 export type ApiEnv = 'prod' | 'staging'
-
-function explorerToApiEnv(explorerEnv?: Envs): ApiEnv {
-  switch (explorerEnv) {
-    case 'production':
-    case 'staging':
-      return 'prod'
-    case 'development':
-    case 'barn':
-      return 'staging'
-    default:
-      return 'prod'
-  }
-}
 
 // TODO: should come from the SDK by now, find out where this is used
 function getOperatorUrl(): Partial<Record<Network, string>> {
@@ -115,21 +96,6 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
   const queryString = '/orders/' + searchString
 
   return _fetchQuery(networkId, queryString)
-}
-
-/**
- * Gets a list of orders of one user paginated
- *
- * Optional filters:
- *  - owner: address
- *  - offset: int
- *  - limit: int
- */
-export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
-  const { networkId, owner, offset, limit } = params
-  // since we are not merging responses yet, we fix the sdk env to the current one
-  const env = explorerToApiEnv(environmentName)
-  return COW_SDK.cowApi.getOrders({ owner, offset, limit }, { chainId: networkId, env })
 }
 
 /**
