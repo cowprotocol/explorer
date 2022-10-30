@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import { formatPrice } from '@gnosis.pm/dex-js'
 import { useNetworkId } from 'state/network'
 import { abbreviateString } from 'utils'
-import { Solver } from 'hooks/useGetSolvers'
+import { Settlement } from 'hooks/useGetSettlements'
 import { TableState } from 'hooks/useTable'
 
 import StyledUserDetailsTable, {
@@ -13,10 +13,10 @@ import StyledUserDetailsTable, {
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
-import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import Identicon from 'components/common/Identicon'
+import { DateDisplay } from 'components/common/DateDisplay'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { TokensVisualizer } from 'components/common/TokensVisualizer'
 import { numberFormatter } from 'apps/explorer/components/SummaryCardsWidget/utils'
 import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
 
@@ -58,7 +58,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 25rem 12rem minmax(7rem, 25rem) repeat(2, minmax(10rem, 1.5fr));
+    grid-template-columns: 10fr 6fr 7fr 7fr 7fr 9fr;
   }
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {
@@ -162,25 +162,19 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
     text-align: end;
   }
 `
-const IdenticonWrapper = styled.div`
-  display: flex;
-  flex: 1;
-  align-items: center;
-  gap: 1rem;
-`
 
 export type Props = StyledUserDetailsTableProps & {
-  solvers: Solver[] | undefined
+  settlements: Settlement[] | undefined
   tableState: TableState
 }
 
 interface RowProps {
   index: number
-  solver: Solver
+  settlement: Settlement
 }
 
-const RowSolver: React.FC<RowProps> = ({ solver }) => {
-  const { id, name, address, numberOfTrades, numberOfSettlements, solvedAmountUsd } = solver
+const RowSettlement: React.FC<RowProps> = ({ settlement }) => {
+  const { id, txHash, trades = [], tokens = [], totalVolumeUsd, firstTradeTimestamp } = settlement
   const network = useNetworkId()
 
   if (!network) {
@@ -190,57 +184,59 @@ const RowSolver: React.FC<RowProps> = ({ solver }) => {
   return (
     <tr key={id}>
       <td>
-        <HeaderTitle>Name</HeaderTitle>
+        <HeaderTitle>Tx hash</HeaderTitle>
         <HeaderValue>
-          <IdenticonWrapper>
-            <Identicon address={address} size="md" />
-            <LinkWithPrefixNetwork to={`/solvers/${address}`} rel="noopener noreferrer" target="_self">
-              {name || abbreviateString(address, 4, 6)}
-            </LinkWithPrefixNetwork>
-          </IdenticonWrapper>
+          <RowWithCopyButton
+            textToCopy={txHash}
+            contentsToDisplay={
+              <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
+                {abbreviateString(txHash, 6, 4)}
+              </LinkWithPrefixNetwork>
+            }
+          />
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Trades</HeaderTitle>
-        <HeaderValue>{numberFormatter(numberOfTrades)}</HeaderValue>
+        <HeaderValue>
+          <TextWithTooltip textInTooltip={trades.length.toLocaleString()}>
+            {numberFormatter(trades.length)}
+          </TextWithTooltip>
+        </HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Tokens</HeaderTitle>
+        <HeaderValue>
+          <TokensVisualizer tokens={tokens} network={network} />
+        </HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>ETH cost</HeaderTitle>
+        <HeaderValue>-</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Total volume</HeaderTitle>
         <HeaderValue>
           <TextWithTooltip
-            textInTooltip={formatPrice({ price: new BigNumber(solvedAmountUsd), decimals: 2, thousands: true })}
+            textInTooltip={formatPrice({ price: new BigNumber(totalVolumeUsd), decimals: 2, thousands: true })}
           >
-            ${Number(solvedAmountUsd) ? numberFormatter(solvedAmountUsd) : 0}
+            ${Number(totalVolumeUsd) ? numberFormatter(totalVolumeUsd) : 0}
           </TextWithTooltip>
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Total settlements</HeaderTitle>
-        <HeaderValue>{numberOfSettlements}</HeaderValue>
-      </td>
-      <td>
-        <HeaderTitle>Solver address</HeaderTitle>
+        <HeaderTitle>Timestamp</HeaderTitle>
         <HeaderValue>
-          <RowWithCopyButton
-            textToCopy={address}
-            contentsToDisplay={
-              <BlockExplorerLink
-                type="address"
-                networkId={network}
-                identifier={address}
-                label={abbreviateString(address, 6, 4)}
-              />
-            }
-          />
+          <DateDisplay date={new Date(firstTradeTimestamp * 1000)} showIcon={true} />
         </HeaderValue>
       </td>
     </tr>
   )
 }
 
-const SolverTable: React.FC<Props> = (props) => {
-  const { solvers, tableState, showBorderTable = false } = props
-  const solverItems = (items: Solver[] | undefined): JSX.Element => {
+const SolverDetailsTable: React.FC<Props> = (props) => {
+  const { settlements, tableState, showBorderTable = false } = props
+  const settlementItems = (items: Settlement[] | undefined): JSX.Element => {
     let tableContent
     if (!items || items.length === 0) {
       tableContent = (
@@ -257,11 +253,11 @@ const SolverTable: React.FC<Props> = (props) => {
         <>
           <tr className="header-row">
             <td>
-              <HeaderTitle className="mobile-header">Sorted by Total volume: from highest to lowest</HeaderTitle>
+              <HeaderTitle className="mobile-header">Sorted by Timestamp: from newest to oldest</HeaderTitle>
             </td>
           </tr>
           {items.map((item, i) => (
-            <RowSolver key={`${item.id}-${i}`} index={i + tableState.pageOffset} solver={item} />
+            <RowSettlement key={`${item.id}-${i}`} index={i + tableState.pageOffset} settlement={item} />
           ))}
         </>
       )
@@ -274,16 +270,17 @@ const SolverTable: React.FC<Props> = (props) => {
       showBorderTable={showBorderTable}
       header={
         <tr>
-          <th>Name</th>
+          <th>Tx hash</th>
           <th>Trades</th>
-          <th>Total volume&darr;</th>
-          <th>Total settlements</th>
-          <th>Solver address</th>
+          <th>Tokens</th>
+          <th>ETH cost</th>
+          <th>Total volume</th>
+          <th>Timestamp&darr;</th>
         </tr>
       }
-      body={solverItems(solvers)}
+      body={settlementItems(settlements)}
     />
   )
 }
 
-export default SolverTable
+export default SolverDetailsTable

@@ -120,12 +120,12 @@ export const CardContent: React.FC<CardContentProps> = ({
       captionColor={captionColor}
       hintColor={hintColor}
     >
-      <div>
+      <div className="card-container">
         <p>
           {icon1 && <React.Fragment>{icon1} &nbsp;</React.Fragment>}
-          {label1}
+          <span style={{ textAlign: 'center' }}>{label1}</span>
         </p>
-        <div>
+        <div style={{ textAlign: 'center' }}>
           {loading ? <ShimmerBar /> : <h3>{value1}</h3>}
           {!loading && caption1 && (
             <span>
@@ -136,7 +136,7 @@ export const CardContent: React.FC<CardContentProps> = ({
         </div>
       </div>
       {!loading && label2 && (
-        <div>
+        <div style={{ textAlign: 'center' }}>
           <p>
             {label2}
             {icon2 && <React.Fragment>{icon2} &nbsp;</React.Fragment>}

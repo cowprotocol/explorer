@@ -123,6 +123,17 @@ const Solver: React.FC = () => {
     </WrapperExtraComponents>
   )
 
+  useEffect(() => {
+    if (query.length) {
+      setPageOffset(0)
+    }
+  }, [query, setPageOffset])
+
+  useEffect(() => {
+    setQuery('')
+    setPageOffset(0)
+  }, [networkId, setPageOffset, setQuery, tabViewSelected])
+
   const onChangeTab = useCallback((tabId: number) => {
     const newTabViewName = TabView[tabId]
     if (!newTabViewName) return

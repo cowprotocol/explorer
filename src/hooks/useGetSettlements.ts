@@ -9,6 +9,7 @@ import { fetchSolversInfo } from 'utils/fetchSolversInfo'
 export const useGetSettlements = (
   networkId: SupportedChainId = SupportedChainId.MAINNET,
   initData: Settlement[],
+  solverAddress?: string,
 ): GetSolverResult => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<UiError>()
@@ -22,7 +23,11 @@ export const useGetSettlements = (
       try {
         const response = await COW_SDK.cowSubgraphApi.runQuery<{
           settlements: Settlement[]
-        }>(GET_SETTLEMENTS_QUERY, undefined, { chainId: network })
+        }>(
+          solverAddress ? GET_SETTLEMENTS_BY_SOLVER_QUERY : GET_SETTLEMENTS_QUERY,
+          solverAddress ? { solver: solverAddress.toLowerCase() } : undefined,
+          { chainId: network },
+        )
         if (response) {
           const settlementsWithInfo = await addExtraInfo(response.settlements, networkId)
           setSettlements(settlementsWithInfo)
@@ -35,7 +40,7 @@ export const useGetSettlements = (
         setIsLoading(false)
       }
     },
-    [networkId],
+    [networkId, solverAddress],
   )
 
   useEffect(() => {
@@ -89,6 +94,7 @@ export type Settlement = {
   txHash: string
   solver: {
     address: string
+    numberOfTrades: number
   }
   trades: Trade[]
   tokens: TokenErc20[]
@@ -104,29 +110,41 @@ type Trade = {
   feeAmount: number
 }
 
+const settlementsData = ` 
+  id
+  firstTradeTimestamp
+  txHash
+  solver {
+    address
+    numberOfTrades
+  }
+  trades {
+    sellAmountUsd
+    buyAmountUsd
+    feeAmount
+    sellToken {
+      address
+      symbol
+      decimals
+    }
+    buyToken {
+      address
+      symbol
+    }
+  }`
+
 export const GET_SETTLEMENTS_QUERY = gql`
   query GetSettlements {
     settlements(first: 1000, orderBy: firstTradeTimestamp, orderDirection: desc) {
-      id
-      firstTradeTimestamp
-      txHash
-      solver {
-        address
-      }
-      trades {
-        sellAmountUsd
-        buyAmountUsd
-        feeAmount
-        sellToken {
-          address
-          symbol
-          decimals
-        }
-        buyToken {
-          address
-          symbol
-        }
-      }
+      ${settlementsData}
+    }
+  }
+`
+
+export const GET_SETTLEMENTS_BY_SOLVER_QUERY = gql`
+  query GetSettlements($solver: String) {
+    settlements(first: 1000, orderBy: firstTradeTimestamp, orderDirection: desc, where: { solver: $solver }) {
+      ${settlementsData}
     }
   }
 `

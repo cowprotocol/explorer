@@ -38,7 +38,7 @@ export function DateDisplay({ date, showIcon, tooltipPlacement = 'top' }: DateDi
   // pp: Long localized time: 12:00:00 AM
   // For reference: https://date-fns.org/v2.17.0/docs/format
   const fullLocaleBased = format(date, 'P pp zzzz')
-  const previewDate = format(date, 'd MMMM yyyy - h:mm a')
+  const previewDate = format(date, 'd MMMM yyyy - HH:mm')
   return (
     <span className="wrap-datedisplay">
       <Tooltip {...tooltipProps}>
