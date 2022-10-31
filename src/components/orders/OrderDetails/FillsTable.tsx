@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
-import { Trade } from 'api/operator'
+import { Order, Trade } from 'api/operator'
 import { abbreviateString, formatSmartMaxPrecision } from 'utils'
 import { useMultipleErc20 } from 'hooks/useErc20'
 
@@ -18,6 +18,7 @@ import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { LinkButton } from '../DetailsTable'
+import { FilledProgress } from '../FilledProgress'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -165,49 +166,9 @@ const MainWrapper = styled.div`
   flex-direction: column;
 `
 
-const TableHeading = styled.div`
-  background: ${({ theme }): string => theme.tableRowBorder};
-  min-height: 11rem;
-  padding: 1.6rem;
-  display: flex;
-  ${media.mobile} {
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .tittle {
-    text-transform: uppercase;
-    font-size: 1.1rem;
-  }
-  .fillNumber {
-    font-size: 3.2rem;
-    margin: 1rem 0;
-    color: ${({ theme }): string => theme.green};
-    ${media.mobile} {
-      font-size: 2.8rem;
-    }
-  }
-
-  .priceNumber {
-    font-size: 2.2rem;
-    margin: 1rem 0;
-    ${media.mobile} {
-      font-size: 1.8rem;
-    }
-  }
-`
-
-const TableHeadingContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 20rem;
-  ${media.mobile} {
-    flex-direction: column;
-  }
-`
-
 export type Props = StyledUserDetailsTableProps & {
   trades: Trade[] | undefined
+  order: Order | null
   tableState: TableState
 }
 
@@ -294,7 +255,7 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
 }
 
 const FillsTable: React.FC<Props> = (props) => {
-  const { trades, tableState, showBorderTable = false } = props
+  const { trades, order, tableState, showBorderTable = false } = props
   const tradeItems = (items: Trade[] | undefined): JSX.Element => {
     let tableContent
     if (!items || items.length === 0) {
@@ -321,17 +282,7 @@ const FillsTable: React.FC<Props> = (props) => {
 
   return (
     <MainWrapper>
-      <TableHeading>
-        {/* <FilledProgress order={order} /> */}
-        <TableHeadingContent>
-          <p className="tittle">Filled</p>
-          <p className="fillNumber">100%</p>
-        </TableHeadingContent>
-        <TableHeadingContent>
-          <p className="tittle">Limit Price</p>
-          <p className="priceNumber">2,905 DAI per ETH</p>
-        </TableHeadingContent>
-      </TableHeading>
+      {order && <FilledProgress fullView order={order} />}
       <Wrapper
         showBorderTable={showBorderTable}
         header={

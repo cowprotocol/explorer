@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { media } from 'theme/styles/media'
 
 import { Order } from 'api/operator'
@@ -21,8 +23,6 @@ import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { sendEvent } from 'components/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 
 const Table = styled(SimpleTable)`
@@ -165,10 +165,11 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
 export type Props = {
   order: Order
   areTradesLoading: boolean
+  viewFills: () => void
 }
 
 export function DetailsTable(props: Props): JSX.Element | null {
-  const { order, areTradesLoading } = props
+  const { order, areTradesLoading, viewFills } = props
   const {
     uid,
     shortId,
@@ -350,7 +351,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <td>
                 <Wrapper>
                   <FilledProgress order={order} />
-                  <LinkButton to={`/orders/${txHash}/?tab=fills`}>
+                  <LinkButton onClickOptional={(): void => viewFills()} to={`/orders/${uid}/?tab=fills`}>
                     <FontAwesomeIcon icon={faFill} />
                     View fills
                   </LinkButton>

@@ -8,9 +8,11 @@ import { Order } from 'api/operator'
 import { formatSmartMaxPrecision, safeTokenName } from 'utils'
 
 import { ProgressBar } from 'components/common/ProgressBar'
+import { OrderPriceDisplay } from '../OrderPriceDisplay'
 
 export type Props = {
   order: Order
+  fullView?: boolean
 }
 
 const Wrapper = styled.div`
@@ -32,8 +34,67 @@ const Wrapper = styled.div`
   }
 `
 
+const TableHeading = styled.div`
+  background: ${({ theme }): string => theme.tableRowBorder};
+  min-height: 11rem;
+  padding: 1.6rem;
+  display: flex;
+  gap: 2rem;
+  ${media.mobile} {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .title {
+    text-transform: uppercase;
+    font-size: 1.1rem;
+  }
+  .fillNumber {
+    font-size: 3.2rem;
+    margin: 1.5rem 0 1rem 0;
+    color: ${({ theme }): string => theme.green};
+    ${media.mobile} {
+      font-size: 2.8rem;
+    }
+  }
+
+  .priceNumber {
+    font-size: 2.2rem;
+    margin: 1rem 0;
+    ${media.mobile} {
+      font-size: 1.8rem;
+    }
+    span {
+      line-height: 1;
+    }
+  }
+`
+
+const TableHeadingContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 25rem;
+  ${media.mobile} {
+    flex-direction: column;
+  }
+  .progress-line {
+    width: 100%;
+  }
+  &.limit-price {
+    width: 38rem;
+  }
+`
+const FilledContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1rem;
+`
+
 export function FilledProgress(props: Props): JSX.Element {
   const {
+    fullView = false,
     order: {
       executedFeeAmount,
       filledAmount,
@@ -60,7 +121,7 @@ export function FilledProgress(props: Props): JSX.Element {
   let swappedToken
   let swappedAddress
   let swappedAmount
-  let action
+  let action: string | null | undefined
 
   let filledAmountWithFee, swappedAmountWithFee
   if (kind === 'sell') {
@@ -103,10 +164,9 @@ export function FilledProgress(props: Props): JSX.Element {
   const formattedSwappedAmount = formatSmartMaxPrecision(swappedAmountWithFee, swappedToken)
 
   const formattedPercentage = filledPercentage.times('100').decimalPlaces(2).toString()
-
-  return (
-    <Wrapper>
-      <ProgressBar percentage={formattedPercentage} />
+  const FormatedText = (): JSX.Element => (
+    <>
+      {' '}
       <span>
         <b>
           {/* Executed part (bought/sold tokens) */}
@@ -134,6 +194,39 @@ export function FilledProgress(props: Props): JSX.Element {
           </>
         )}
       </span>
+    </>
+  )
+  return !fullView ? (
+    <Wrapper>
+      <ProgressBar percentage={formattedPercentage} />
+      <FormatedText />
     </Wrapper>
+  ) : (
+    <TableHeading>
+      <TableHeadingContent>
+        <FilledContainer>
+          <div>
+            <p className="title">Filled</p>
+            <p className="fillNumber">{formattedPercentage}%</p>
+          </div>
+          <FormatedText />
+        </FilledContainer>
+        <ProgressBar showLabel={false} percentage={formattedPercentage} />
+      </TableHeadingContent>
+      <TableHeadingContent className="limit-price">
+        <p className="title">Limit Price</p>
+        <p className="priceNumber">
+          {buyToken && sellToken && (
+            <OrderPriceDisplay
+              buyAmount={buyAmount}
+              buyToken={buyToken}
+              sellAmount={sellAmount}
+              sellToken={sellToken}
+              showInvertButton
+            />
+          )}
+        </p>
+      </TableHeadingContent>
+    </TableHeading>
   )
 }

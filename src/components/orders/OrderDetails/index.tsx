@@ -65,7 +65,7 @@ export type Props = {
   errors: Errors
 }
 
-enum TabView {
+export enum TabView {
   OVERVIEW = 1,
   FILLS,
 }
@@ -81,7 +81,7 @@ const tabItems = (
   order: Order | null,
   areTradesLoading: boolean,
   isOrderLoading: boolean,
-  trades: Trade[],
+  onChangeTab: (tab: TabView) => void,
 ): TabItemInterface[] => {
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
@@ -89,9 +89,6 @@ const tabItems = (
 
   // Only set txHash for fillOrKill orders, if any
   // Partially fillable order will have a tab only for the trades
-  const txHash =
-    (order && !order.partiallyFillable && trades && trades.length === 1 ? trades[0].txHash : undefined) || undefined
-
   return [
     {
       id: TabView.OVERVIEW,
@@ -99,7 +96,11 @@ const tabItems = (
       content: (
         <>
           {order && areTokensLoaded && (
-            <DetailsTable order={{ ...order, txHash }} areTradesLoading={areTradesLoading} />
+            <DetailsTable
+              order={order}
+              viewFills={(): void => onChangeTab(TabView.FILLS)}
+              areTradesLoading={areTradesLoading}
+            />
           )}
           {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
           {isLoadingForTheFirstTime && (
@@ -113,7 +114,7 @@ const tabItems = (
     {
       id: TabView.FILLS,
       tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
-      content: <FillsTableWithData areTokensLoaded={!!areTokensLoaded} />,
+      content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
     },
   ]
 }
@@ -192,7 +193,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       >
         <StyledExplorerTabs
           className={`orderDetails-tab--${TabView[tabViewSelected].toLowerCase()}`}
-          tabItems={tabItems(order, areTradesLoading, isOrderLoading, trades)}
+          tabItems={tabItems(order, areTradesLoading, isOrderLoading, onChangeTab)}
           defaultTab={tabViewSelected}
           onChange={(key: number): void => onChangeTab(key)}
           extra={ExtraComponentNode}
