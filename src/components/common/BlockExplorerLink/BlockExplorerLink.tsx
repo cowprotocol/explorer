@@ -41,7 +41,9 @@ export interface Props {
 }
 
 function getEtherscanUrlPrefix(networkId: Network): string {
-  return !networkId || networkId === Network.MAINNET ? '' : (Network[networkId] || '').toLowerCase() + '.'
+  return !networkId || networkId === Network.MAINNET || networkId === Network.GNOSIS_CHAIN
+    ? ''
+    : (Network[networkId] || '').toLowerCase() + '.'
 }
 
 function getEtherscanUrlSuffix(type: BlockExplorerLinkType, identifier: string): string {
@@ -59,43 +61,14 @@ function getEtherscanUrlSuffix(type: BlockExplorerLinkType, identifier: string):
   }
 }
 
-function getBlockscoutUrlPrefix(networkId: number): string {
-  switch (networkId) {
-    case Network.GNOSIS_CHAIN:
-      return 'poa/xdai'
-
-    default:
-      return ''
-  }
-}
-
-function getBlockscoutUrlSuffix(type: BlockExplorerLinkType, identifier: string): string {
-  switch (type) {
-    case 'tx':
-      return `tx/${identifier}`
-    case 'event':
-      return `tx/${identifier}/logs`
-    case 'address':
-      return `address/${identifier}/transactions`
-    case 'contract':
-      return `address/${identifier}/contracts`
-    case 'token':
-      return `tokens/${identifier}/token-transfers`
-  }
-}
-
-function getBlockscoutUrl(networkId: number, type: BlockExplorerLinkType, identifier: string): string {
-  return `https://blockscout.com/${getBlockscoutUrlPrefix(networkId)}/${getBlockscoutUrlSuffix(type, identifier)}`
-}
-
-function getEtherscanUrl(networkId: number, type: BlockExplorerLinkType, identifier: string): string {
-  return `https://${getEtherscanUrlPrefix(networkId)}etherscan.io/${getEtherscanUrlSuffix(type, identifier)}`
+function getEtherscanUrl(host: string, networkId: number, type: BlockExplorerLinkType, identifier: string): string {
+  return `https://${getEtherscanUrlPrefix(networkId)}${host}/${getEtherscanUrlSuffix(type, identifier)}`
 }
 
 function getExplorerUrl(networkId: number, type: BlockExplorerLinkType, identifier: string): string {
   return networkId === Network.GNOSIS_CHAIN
-    ? getBlockscoutUrl(networkId, type, identifier)
-    : getEtherscanUrl(networkId, type, identifier)
+    ? getEtherscanUrl('gnosisscan.io', networkId, type, identifier)
+    : getEtherscanUrl('etherscan.io', networkId, type, identifier)
 }
 
 /**
@@ -117,7 +90,12 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
   return (
     <ExternalLink href={url} target="_blank" rel="noopener noreferrer" className={className}>
       <span>{label}</span>
-      {showLogo && <LogoWrapper title="Open it on Etherscan" src={LOGO_MAP.etherscan} />}
+      {showLogo && (
+        <LogoWrapper
+          title={`Open it on ${networkId === Network.GNOSIS_CHAIN ? 'Gnosisscan' : 'Etherscan'}`}
+          src={LOGO_MAP.etherscan}
+        />
+      )}
     </ExternalLink>
   )
 }
