@@ -175,7 +175,7 @@ export function useTxOrderExplorerLink(
             networkId: network,
             identifier: txHash,
             showLogo: true,
-            label: network === Network.GNOSIS_CHAIN ? 'Blockscout' : 'Etherscan',
+            label: network === Network.GNOSIS_CHAIN ? 'Gnosisscan' : 'Etherscan',
           })
         }
       })
@@ -203,18 +203,14 @@ export function useGetAccountOrders(
   const fetchOrders = useCallback(
     async (network: Network, owner: string): Promise<void> => {
       setIsLoading(true)
-      const limitPlusOne = limit + 1
 
       try {
-        const ordersFetched = await getAccountOrders({ networkId: network, owner, offset, limit: limitPlusOne })
-        if (ordersFetched.length === limitPlusOne) {
-          setIsThereNext(true)
-          ordersFetched.pop()
-        }
-        const newErc20Addresses = filterDuplicateErc20Addresses(ordersFetched)
+        const { orders, hasNextPage } = await getAccountOrders({ networkId: network, owner, offset, limit })
+        setIsThereNext(hasNextPage)
+        const newErc20Addresses = filterDuplicateErc20Addresses(orders)
         setErc20Addresses(newErc20Addresses)
 
-        setOrders(ordersFetched.map((order) => transformOrder(order)))
+        setOrders(orders.map((order) => transformOrder(order)))
         setMountNewOrders(true)
         setError(undefined)
       } catch (e) {
