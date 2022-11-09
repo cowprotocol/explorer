@@ -9,6 +9,7 @@ import {
 } from './types'
 
 import { RAW_ORDER, RAW_TRADE } from '../../../test/data'
+import { GetAccountOrdersResponse } from './accountOrderUtils'
 
 export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
   const { orderId } = params
@@ -29,14 +30,14 @@ export async function getOrders(params: GetOrdersParams): Promise<RawOrder[]> {
   return [order]
 }
 
-export async function getAccountOrders(params: GetAccountOrdersParams): Promise<RawOrder[]> {
+export async function getAccountOrders(params: GetAccountOrdersParams): Promise<GetAccountOrdersResponse> {
   const { owner, networkId } = params
 
   const order = await getOrder({ networkId, orderId: 'whatever' })
 
   order.owner = owner || order.owner
 
-  return [order]
+  return { orders: [order], hasNextPage: false }
 }
 
 export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]> {
