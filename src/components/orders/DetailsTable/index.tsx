@@ -84,14 +84,14 @@ const tooltip = {
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
   type: (
     <div>
-      There are three types of orders: market, limit and liquidity:
+      CoW Protocol supports three type of orders: market, limit and liquidity
       <ul>
-        <li>Market order is intended for trading at the current market price</li>
-        <li>Using a limit order, an arbitrary price can be specified</li>
-        <li>Liquidity order is a source of trusted liquidity providers</li>
+        <li>Market order is an order to buy or sell at the market&apos;s current best available price</li>
+        <li>Limit order is an order to buy or sell at an arbitrary price specified by the user</li>
+        <li>Liquidity order is an order that market makers can provide as a source of liquidity</li>
       </ul>
-      These orders can be either a Buy or Sell order. In addition, an order may be of type &quot;Fill or Kill&quot; (no
-      partial fills) or a regular order (partial fills allowed).
+      In addition, an order can be &quot;Fill, Kill or Partially Fillable&quot;. Currently only market orders are
+      allowed to be partially fillable, while the other orders are just fill or kill.
     </div>
   ),
   amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
