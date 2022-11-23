@@ -82,7 +82,18 @@ const tooltip = {
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
-  type: 'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
+  type: (
+    <div>
+      There are three types of orders: market, limit and liquidity:
+      <ul>
+        <li>Market order is intended for trading at the current market price</li>
+        <li>Using a limit order, an arbitrary price can be specified</li>
+        <li>Liquidity order is a source of trusted liquidity providers</li>
+      </ul>
+      These orders can be either a Buy or Sell order. In addition, an order may be of type &quot;Fill or Kill&quot; (no
+      partial fills) or a regular order (partial fills allowed).
+    </div>
+  ),
   amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
   priceLimit:
     'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deduced from the sell amount',
@@ -272,7 +283,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.type} /> Type
             </td>
             <td>
-              {capitalize(kind)} order {!partiallyFillable && '(Fill or Kill)'}
+              {capitalize(kind)} {order.class} order {!partiallyFillable && '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
