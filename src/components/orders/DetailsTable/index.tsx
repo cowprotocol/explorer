@@ -179,6 +179,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
       label,
     })
 
+  const isFeeHidden = order.class === 'limit' && status !== 'filled'
+
   return (
     <Table
       body={
@@ -336,14 +338,16 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </>
           {/*TODO: uncomment when fills tab is implemented */}
           {/*)}*/}
-          <tr>
-            <td>
-              <HelpTooltip tooltip={tooltip.fees} /> Fees
-            </td>
-            <td>
-              <GasFeeDisplay order={order} />
-            </td>
-          </tr>
+          {!isFeeHidden && (
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.fees} /> Fees
+              </td>
+              <td>
+                <GasFeeDisplay order={order} />
+              </td>
+            </tr>
+          )}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.appData} /> AppData
