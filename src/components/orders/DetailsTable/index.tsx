@@ -82,7 +82,19 @@ const tooltip = {
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
-  type: 'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
+  type: (
+    <div>
+      CoW Protocol supports three type of orders – market, limit and liquidity:
+      <ul>
+        <li>A market order is an order to buy or sell at the market&apos;s current best available price</li>
+        <li>A limit order is an order to buy or sell at an arbitrary price specified by the user</li>
+        <li>A liquidity order is an order that market makers can provide as a source of liquidity</li>
+      </ul>
+      In addition, an order can be &quot;fill or kill&quot; or &quot;partially fillable&quot;. Currently all order types
+      can be &quot;fill or kill&quot; – only market orders can be either &quot;fill or kill&quot; or &quot;partially
+      fillable&quot;.
+    </div>
+  ),
   amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
   priceLimit:
     'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deduced from the sell amount',
@@ -274,7 +286,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.type} /> Type
             </td>
             <td>
-              {capitalize(kind)} order {!partiallyFillable && '(Fill or Kill)'}
+              {capitalize(kind)} {order.class} order {!partiallyFillable && '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
