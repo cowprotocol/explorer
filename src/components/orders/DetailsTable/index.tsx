@@ -82,7 +82,34 @@ const tooltip = {
     'The date and time at which the order was submitted. The timezone is based on the browser locale settings.',
   expiration:
     'The date and time at which an order will expire and effectively be cancelled. Depending on the type of order, it may have partial fills upon expiration.',
-  type: 'An order can be either a Buy or Sell order. In addition, an order may be of type "Fill or Kill" (no partial fills) or a regular order (partial fills allowed).',
+  type: (
+    <div>
+      CoW Protocol supports three type of orders – market, limit and liquidity:
+      <ul>
+        <li>
+          <strong>Market order</strong>: Buy or sell at the current market&apos;s best available price
+        </li>
+        <li>
+          <strong>Limit order</strong>: Buy or sell at an arbitrary price specified by the user
+        </li>
+        <li>
+          <strong>Liquidity order</strong>: A special order type that market makers use to provide liquidity
+        </li>
+      </ul>
+      In addition, orders can either allow or not allow partial execution:
+      <ul>
+        <li>
+          <strong>Fill or kill</strong>: Either the order is fully filled, or not filled at all. Currently all market
+          orders and limit orders are fill or kill.
+        </li>
+        <li>
+          <strong>Partial execution</strong>: The order can be executed partially, as long as the limit price is
+          respected. (This could be relevant if a price were to become available for some but not all of an order.)
+          Support for partial orders is coming soon!
+        </li>
+      </ul>
+    </div>
+  ),
   amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
   priceLimit:
     'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deduced from the sell amount',
@@ -179,6 +206,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
       label,
     })
 
+  const isFeeHidden = order.class === 'limit' && status !== 'filled'
+
   return (
     <Table
       body={
@@ -272,7 +301,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.type} /> Type
             </td>
             <td>
-              {capitalize(kind)} order {!partiallyFillable && '(Fill or Kill)'}
+              {capitalize(kind)} {order.class} order {!partiallyFillable && '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
@@ -336,14 +365,16 @@ export function DetailsTable(props: Props): JSX.Element | null {
           </>
           {/*TODO: uncomment when fills tab is implemented */}
           {/*)}*/}
-          <tr>
-            <td>
-              <HelpTooltip tooltip={tooltip.fees} /> Fees
-            </td>
-            <td>
-              <GasFeeDisplay order={order} />
-            </td>
-          </tr>
+          {!isFeeHidden && (
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip.fees} /> Fees
+              </td>
+              <td>
+                <GasFeeDisplay order={order} />
+              </td>
+            </tr>
+          )}
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.appData} /> AppData

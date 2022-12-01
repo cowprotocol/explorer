@@ -20,7 +20,10 @@ export type RawOrder = OrderMetaData
  * Applies some transformations on the raw api data.
  * Some fields are kept as is.
  */
-export type Order = Pick<RawOrder, 'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature'> & {
+export type Order = Pick<
+  RawOrder,
+  'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature' | 'class'
+> & {
   receiver: string
   txHash?: string
   shortId: string
