@@ -199,7 +199,7 @@ interface CommonPriceParams {
 }
 
 export type GetRawOrderPriceParams = CommonPriceParams & {
-  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount'>
+  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee'>
 }
 
 export type GetOrderLimitPriceParams = CommonPriceParams & {

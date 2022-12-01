@@ -14,7 +14,7 @@ export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expi
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
 
 // Raw API response
-export type RawOrder = OrderMetaData & { executedSurplusFee: string } // TODO: Add to SDK!
+export type RawOrder = OrderMetaData
 /**
  * Enriched Order type.
  * Applies some transformations on the raw api data.
