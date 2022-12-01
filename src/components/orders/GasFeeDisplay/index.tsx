@@ -19,21 +19,22 @@ export type Props = { order: Order }
 
 export function GasFeeDisplay(props: Props): JSX.Element | null {
   const {
-    order: { feeAmount, executedFeeAmount, sellToken, sellTokenAddress, fullyFilled },
+    order: { feeAmount, executedFeeAmount, executedSurplusFee, sellToken, sellTokenAddress, fullyFilled },
   } = props
+  const totalFee = executedFeeAmount.plus(executedSurplusFee)
 
   // TODO: fetch amount in USD
   // const executedFeeUSD = '0.99'
   // const totalFeeUSD = '0.35'
 
   // When `sellToken` is not set, default to raw amounts
-  let formattedExecutedFee: string = executedFeeAmount.toString(10)
+  let formattedExecutedFee: string = totalFee.toString(10)
   let formattedTotalFee: string = feeAmount.toString(10)
   // When `sellToken` is not set, show token address
   let quoteSymbol: string = sellTokenAddress
 
   if (sellToken) {
-    formattedExecutedFee = formatSmartMaxPrecision(executedFeeAmount, sellToken)
+    formattedExecutedFee = formatSmartMaxPrecision(totalFee, sellToken)
     formattedTotalFee = formatSmartMaxPrecision(feeAmount, sellToken)
 
     quoteSymbol = safeTokenName(sellToken)

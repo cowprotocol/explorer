@@ -14,7 +14,7 @@ export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expi
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
 
 // Raw API response
-export type RawOrder = OrderMetaData
+export type RawOrder = OrderMetaData & { executedSurplusFee: string } // TODO: Add to SDK!
 /**
  * Enriched Order type.
  * Applies some transformations on the raw api data.
@@ -39,6 +39,7 @@ export type Order = Pick<
   executedSellAmount: BigNumber
   feeAmount: BigNumber
   executedFeeAmount: BigNumber
+  executedSurplusFee: BigNumber
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
@@ -65,6 +66,7 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   sellAmount: BigNumber
   executedSellAmount?: BigNumber
   executedFeeAmount?: BigNumber
+  executedSurplusFee?: BigNumber
   sellAmountBeforeFees: BigNumber
   buyToken?: TokenErc20 | null
   buyTokenAddress: string
