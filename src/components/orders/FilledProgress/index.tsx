@@ -63,8 +63,6 @@ export function FilledProgress(props: Props): JSX.Element {
   let swappedAmount
   let action
 
-  const totalFee = executedFeeAmount.plus(executedSurplusFee)
-
   let filledAmountWithFee, swappedAmountWithFee
   if (kind === 'sell') {
     action = 'sold'
@@ -78,7 +76,7 @@ export function FilledProgress(props: Props): JSX.Element {
     swappedAmount = executedBuyAmount
 
     // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
-    filledAmountWithFee = filledAmount.plus(totalFee)
+    filledAmountWithFee = filledAmount.plus(executedFeeAmount)
     swappedAmountWithFee = swappedAmount
   } else {
     action = 'bought'
@@ -93,7 +91,7 @@ export function FilledProgress(props: Props): JSX.Element {
 
     // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
     filledAmountWithFee = filledAmount
-    swappedAmountWithFee = swappedAmount.plus(totalFee)
+    swappedAmountWithFee = swappedAmount.plus(executedFeeAmount).plus(executedSurplusFee)
   }
 
   // In case the token object is empty, display the address

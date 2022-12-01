@@ -12,11 +12,10 @@ import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
-  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount, executedSurplusFee } =
-    order
+  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
   let amount, executedAmount
 
-  const totalFee = new BigNumber(executedFeeAmount).plus(new BigNumber(executedSurplusFee))
+  const totalFee = new BigNumber(executedFeeAmount)
   if (kind === 'buy') {
     amount = new BigNumber(buyAmount)
     executedAmount = new BigNumber(executedBuyAmount)
@@ -88,16 +87,14 @@ export function getOrderStatus(order: RawOrder): OrderStatus {
  * @param order The order
  */
 export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; percentage: BigNumber } {
-  const { kind, executedBuyAmount, buyAmount, executedSellAmount, sellAmount, executedFeeAmount, executedSurplusFee } =
-    order
+  const { kind, executedBuyAmount, buyAmount, executedSellAmount, sellAmount, executedFeeAmount } = order
   let executedAmount, totalAmount
-  const totalFee = new BigNumber(executedFeeAmount).plus(executedSurplusFee)
 
   if (kind === 'buy') {
     executedAmount = new BigNumber(executedBuyAmount)
     totalAmount = new BigNumber(buyAmount)
   } else {
-    executedAmount = new BigNumber(executedSellAmount).minus(totalFee)
+    executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
     totalAmount = new BigNumber(sellAmount)
   }
 
