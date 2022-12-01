@@ -86,13 +86,28 @@ const tooltip = {
     <div>
       CoW Protocol supports three type of orders – market, limit and liquidity:
       <ul>
-        <li>A market order is an order to buy or sell at the market&apos;s current best available price</li>
-        <li>A limit order is an order to buy or sell at an arbitrary price specified by the user</li>
-        <li>A liquidity order is an order that market makers can provide as a source of liquidity</li>
+        <li>
+          <strong>Market order</strong>: Buy or sell at the current market&apos;s best available price
+        </li>
+        <li>
+          <strong>Limit order</strong>: Buy or sell at an arbitrary price specified by the user
+        </li>
+        <li>
+          <strong>Liquidity order</strong>: A special order type that market makers use to provide liquidity
+        </li>
       </ul>
-      In addition, an order can be &quot;fill or kill&quot; or &quot;partially fillable&quot;. Currently all order types
-      can be &quot;fill or kill&quot; – only market orders can be either &quot;fill or kill&quot; or &quot;partially
-      fillable&quot;.
+      In addition, orders can either allow or not allow partial execution:
+      <ul>
+        <li>
+          <strong>Fill or kill</strong>: Either the order is fully filled, or not filled at all. Currently all market
+          orders and limit orders are fill or kill.
+        </li>
+        <li>
+          <strong>Partial execution</strong>: The order can be executed partially, as long as the limit price is
+          respected. (This could be relevant if a price were to become available for some but not all of an order.)
+          Support for partial orders is coming soon!
+        </li>
+      </ul>
     </div>
   ),
   amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
