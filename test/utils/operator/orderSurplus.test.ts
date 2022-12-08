@@ -56,6 +56,7 @@ describe('getOrderSurplus', () => {
           executedSellAmount: '109', // 10 is the fee, total sold is 99; surplus === 1
           feeAmount: '10',
           executedFeeAmount: '10',
+          totalFee: '10',
         }
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })
