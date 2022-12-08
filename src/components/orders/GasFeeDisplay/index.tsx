@@ -19,9 +19,8 @@ export type Props = { order: Order }
 
 export function GasFeeDisplay(props: Props): JSX.Element | null {
   const {
-    order: { feeAmount, executedFeeAmount, executedSurplusFee, sellToken, sellTokenAddress, fullyFilled },
+    order: { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee },
   } = props
-  const totalFee = executedFeeAmount.plus(executedSurplusFee)
 
   // TODO: fetch amount in USD
   // const executedFeeUSD = '0.99'

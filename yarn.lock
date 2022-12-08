@@ -1274,10 +1274,10 @@
   dependencies:
     ajv "^8.11.0"
 
-"@cowprotocol/app-data@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-0.0.1.tgz#777c29c6b09bdca27977396f77f6616907984fcb"
-  integrity sha512-xrefyKUt2r9aJo7pmIl5VZslcVHOxcedmGtyKZxVQCEn0VK4e30z3rli+NfeOTeafiFqUkNo0PDyOVkcHy8RCg==
+"@cowprotocol/app-data@^0.0.2-RC.1":
+  version "0.0.2-RC.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-0.0.2-RC.1.tgz#66f02f05e120b4b03b265fd609c07089f0db68c9"
+  integrity sha512-x+fRnQ62u9nF04vkeWoiiU97Ug6kPunn76uZeVF1TyVg7N8TAy97XJL7V5s9PKddbmT5TKECmVqQ0TVeeyCtDA==
   dependencies:
     ajv "^8.11.0"
 
@@ -1286,12 +1286,12 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.3.1.tgz#a812b27bdd0c046ab730eb24911ef7c641ed0df8"
   integrity sha512-p93xODog3XG5eSDU5od1ERvYf7YIyXd7USknKcsWnka5VN5mDDjqjCKTLw8EoZdrCIEpf6fGd8At2nv+MsvNqA==
 
-"@cowprotocol/cow-sdk@^1.0.1-RC.5":
-  version "1.0.1-RC.5"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-1.0.1-RC.5.tgz#6fc838263ed875974f1a83b3381469e253562a58"
-  integrity sha512-GnlJw2qKuAbRKYk0Bmd1AYucKeHgDjt5nsKu9Y9Roz1t5RaOqNlWmbq/Z3Wh1olu202DCLOuortM78RTcW3wBQ==
+"@cowprotocol/cow-sdk@^1.0.1-RC.8":
+  version "1.0.1-RC.8"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-1.0.1-RC.8.tgz#91fc8765554e3976dcbec2135c9cdfb041bfe34d"
+  integrity sha512-kNzIeuhTOiRI6mVbHiS4PtEMMeTzgIOzLsI0VLtDQpqY8bRXqyaahs8xJLEISnX36gpPM4LZ2p+d5y76ZznCPQ==
   dependencies:
-    "@cowprotocol/app-data" "^0.0.1"
+    "@cowprotocol/app-data" "^0.0.2-RC.1"
     "@cowprotocol/contracts" "^1.3.1"
     cross-fetch "^3.1.5"
     ethers "^5.5.3"

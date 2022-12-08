@@ -12,10 +12,9 @@ import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
-  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
+  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, totalFee } = order
   let amount, executedAmount
 
-  const totalFee = new BigNumber(executedFeeAmount)
   if (kind === 'buy') {
     amount = new BigNumber(buyAmount)
     executedAmount = new BigNumber(executedBuyAmount)
@@ -176,13 +175,16 @@ export function getOrderSurplus(order: RawOrder): Surplus {
  * @param order The order
  */
 export function getOrderExecutedAmounts(
-  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee'>,
+  order: Pick<
+    RawOrder,
+    'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee' | 'totalFee'
+  >,
 ): {
   executedBuyAmount: BigNumber
   executedSellAmount: BigNumber
 } {
-  const { executedBuyAmount, executedSellAmount, executedFeeAmount, executedSurplusFee } = order
-  const totalFee = new BigNumber(executedFeeAmount).plus(executedSurplusFee)
+  const { executedBuyAmount, executedSellAmount, totalFee } = order
+
   return {
     executedBuyAmount: new BigNumber(executedBuyAmount),
     executedSellAmount: new BigNumber(executedSellAmount).minus(totalFee),
@@ -196,7 +198,10 @@ interface CommonPriceParams {
 }
 
 export type GetRawOrderPriceParams = CommonPriceParams & {
-  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee'>
+  order: Pick<
+    RawOrder,
+    'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee' | 'totalFee'
+  >
 }
 
 export type GetOrderLimitPriceParams = CommonPriceParams & {
@@ -313,6 +318,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
     feeAmount,
     executedFeeAmount,
     executedSurplusFee,
+    totalFee,
     invalidated,
     ...rest
   } = rawOrder
@@ -343,7 +349,8 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedSellAmount,
     feeAmount: new BigNumber(feeAmount),
     executedFeeAmount: new BigNumber(executedFeeAmount),
-    executedSurplusFee: new BigNumber(executedSurplusFee),
+    executedSurplusFee: executedSurplusFee ? new BigNumber(executedSurplusFee) : null,
+    totalFee: new BigNumber(totalFee),
     cancelled: invalidated,
     status,
     partiallyFilled,

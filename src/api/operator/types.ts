@@ -39,7 +39,8 @@ export type Order = Pick<
   executedSellAmount: BigNumber
   feeAmount: BigNumber
   executedFeeAmount: BigNumber
-  executedSurplusFee: BigNumber
+  executedSurplusFee: BigNumber | null
+  totalFee: BigNumber
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
