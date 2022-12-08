@@ -12,7 +12,7 @@ import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
-  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, totalFee } = order
+  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
   let amount, executedAmount
 
   if (kind === 'buy') {
@@ -20,7 +20,7 @@ function isOrderFilled(order: RawOrder): boolean {
     executedAmount = new BigNumber(executedBuyAmount)
   } else {
     amount = new BigNumber(sellAmount)
-    executedAmount = new BigNumber(executedSellAmount).minus(totalFee)
+    executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
   }
 
   const minimumAmount = amount.multipliedBy(ONE_BIG_NUMBER.minus(FILLED_ORDER_EPSILON))
@@ -175,19 +175,16 @@ export function getOrderSurplus(order: RawOrder): Surplus {
  * @param order The order
  */
 export function getOrderExecutedAmounts(
-  order: Pick<
-    RawOrder,
-    'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee' | 'totalFee'
-  >,
+  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee'>,
 ): {
   executedBuyAmount: BigNumber
   executedSellAmount: BigNumber
 } {
-  const { executedBuyAmount, executedSellAmount, totalFee } = order
+  const { executedBuyAmount, executedSellAmount, executedFeeAmount } = order
 
   return {
     executedBuyAmount: new BigNumber(executedBuyAmount),
-    executedSellAmount: new BigNumber(executedSellAmount).minus(totalFee),
+    executedSellAmount: new BigNumber(executedSellAmount).minus(executedFeeAmount),
   }
 }
 
