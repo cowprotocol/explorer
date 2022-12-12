@@ -57,10 +57,15 @@ function getLimitPrice(trade: Trade, isPriceInverted: boolean): string {
 function getExecutedPrice(trade: Trade, isPriceInverted: boolean): string {
   if (!trade.buyToken || !trade.sellToken) return '-'
 
-  const order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount'> = {
+  const order: Pick<
+    RawOrder,
+    'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee' | 'totalFee'
+  > = {
     executedBuyAmount: trade.executedBuyAmount?.toString() || '',
     executedSellAmount: trade.executedSellAmount?.toString() || '',
     executedFeeAmount: trade.executedFeeAmount?.toString() || '',
+    executedSurplusFee: trade.executedSurplusFee?.toString() || '',
+    totalFee: '0', // TODO: TradesTable component is unused and is not ready for totalFee
   }
 
   const calculatedPrice = getOrderExecutedPrice({
