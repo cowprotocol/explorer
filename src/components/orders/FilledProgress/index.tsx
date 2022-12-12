@@ -36,7 +36,6 @@ export function FilledProgress(props: Props): JSX.Element {
   const {
     order: {
       executedFeeAmount,
-      executedSurplusFee,
       filledAmount,
       filledPercentage,
       fullyFilled,
@@ -91,7 +90,7 @@ export function FilledProgress(props: Props): JSX.Element {
 
     // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
     filledAmountWithFee = filledAmount
-    swappedAmountWithFee = swappedAmount.plus(executedFeeAmount).plus(executedSurplusFee || 0)
+    swappedAmountWithFee = swappedAmount.plus(executedFeeAmount)
   }
 
   // In case the token object is empty, display the address
