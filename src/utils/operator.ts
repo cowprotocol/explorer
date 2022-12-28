@@ -170,21 +170,19 @@ export function getOrderSurplus(order: RawOrder): Surplus {
 
 /**
  * Syntactic sugar to get the order's executed amounts as a BigNumber (in atoms)
- * Mostly because `executedSellAmount` is derived from 2 fields (at time or writing)
+ * Mostly because `executedSellAmount` (with fees deducted) is named `executedSellAmountBeforeFees`
  *
  * @param order The order
  */
-export function getOrderExecutedAmounts(
-  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee'>,
-): {
+export function getOrderExecutedAmounts(order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmountBeforeFees'>): {
   executedBuyAmount: BigNumber
   executedSellAmount: BigNumber
 } {
-  const { executedBuyAmount, executedSellAmount, executedFeeAmount } = order
+  const { executedBuyAmount, executedSellAmountBeforeFees } = order
 
   return {
     executedBuyAmount: new BigNumber(executedBuyAmount),
-    executedSellAmount: new BigNumber(executedSellAmount).minus(executedFeeAmount),
+    executedSellAmount: new BigNumber(executedSellAmountBeforeFees),
   }
 }
 
@@ -195,10 +193,7 @@ interface CommonPriceParams {
 }
 
 export type GetRawOrderPriceParams = CommonPriceParams & {
-  order: Pick<
-    RawOrder,
-    'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount' | 'executedSurplusFee' | 'totalFee'
-  >
+  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmountBeforeFees'>
 }
 
 export type GetOrderLimitPriceParams = CommonPriceParams & {
