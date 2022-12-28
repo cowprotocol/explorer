@@ -70,8 +70,7 @@ describe('Executed price', () => {
       ...RAW_ORDER,
       kind: OrderKind.BUY,
       executedBuyAmount: '100',
-      executedSellAmount: '1010',
-      totalFee: '10',
+      executedSellAmountBeforeFees: '1000',
     }
     describe('With fills', () => {
       _assertOrderPrice(order, getOrderExecutedPrice)
@@ -86,8 +85,7 @@ describe('Executed price', () => {
       ...RAW_ORDER,
       kind: OrderKind.SELL,
       executedBuyAmount: '100',
-      executedSellAmount: '1010',
-      totalFee: '10',
+      executedSellAmountBeforeFees: '1000',
     }
 
     describe('With fills', () => {
