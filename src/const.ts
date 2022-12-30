@@ -17,7 +17,6 @@ export {
   ALLOWANCE_FOR_ENABLED_TOKEN,
 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
-import { DisabledTokensMaps, TokenOverride, AddressToOverrideMap } from 'types/config'
 
 export const BATCH_TIME_IN_MS = BATCH_TIME * 1000
 export const DEFAULT_TIMEOUT = 5000
@@ -43,12 +42,6 @@ export const FILLED_ORDER_EPSILON = new BigNumber('0.0001') // == 0.01%
 
 export const BATCH_SUBMISSION_CLOSE_TIME = 4 // in minutes
 
-export const MINIMUM_ALLOWANCE_DECIMALS = 10
-
-// Max App Id: Read more here:
-//    https://github.com/gnosis/gp-v1-ui/wiki/App-Ids-for-Forks
-export const MAX_APP_ID = 255
-
 export const APP_NAME = 'CoW Protocol'
 
 export const ETHER_PNG =
@@ -56,28 +49,13 @@ export const ETHER_PNG =
 export const ETH_NULL_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
 export const UNLIMITED_ORDER_AMOUNT_BIGNUMBER = new BigNumber(UNLIMITED_ORDER_AMOUNT.toString())
-export const DEFAULT_ORDER_DURATION = 6 // every batch takes 5min, we want it to be valid for 30min, ∴ 30/5 == 6
-
-// Placing FROM orders with validFrom === currentBatchId can fail if there's a new batch before the tx is mined.
-// To address that, we are adding a small delay to guarantee it won't fail.
-// For more info, see the issue https://github.com/gnosis/gp-v1-ui/issues/459 and
-// the contract code https://github.com/gnosis/dex-contracts/blob/master/contracts/BatchExchange.sol#L557
-export const BATCHES_TO_WAIT = 3
-
-// How many orders should we query per call, when invoking https://github.com/gnosis/dex-contracts/blob/master/contracts/BatchExchange.sol#L479
-export const DEFAULT_ORDERS_PAGE_SIZE = 50
 
 // UI constants
 export const HIGHLIGHT_TIME = 5000
 
-export const TOAST_NOTIFICATION_DURATION = 10000 // in milliseconds
-
-export const PRICE_ESTIMATION_DEBOUNCE_TIME = 200
 export const DEFAULT_DECIMALS = 5
 // The prices on the contract will update at max once every batch, which is 5min long
 export const PRICES_CACHE_TIME = 60 // in seconds
-
-export const ORDERBOOK_DATA_FETCH_DEBOUNCE_TIME = 200
 
 export const MEDIA = {
   MOBILE_LARGE_PX: 500,
@@ -178,53 +156,9 @@ export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
 export const ORDER_BOOK_HOPS_MAX = 30
 
-export const REFRESH_WHEN_SECONDS_LEFT = 60 // 1min before batch done
-// for stable reference
-// to avoid updates on setState([])
-export const EMPTY_ARRAY = []
-
-export const SLIPPAGE_MAP = new Map([
-  ['0.1', false],
-  ['0.5', true],
-  ['1', false],
-])
-export const DEFAULT_SUGGESTED_SLIPPAGE = '0.5'
-// Delay disabling loading indicators, since in a normal workflow, when a transaction is mined, the spinner is stopped,
-// however, the new state, that flows top down once a bock is mined, can have a small delayed
-// This delay mitigates the strange effect of stopping the loading before the data is updated
-export const DISABLE_SPINNER_DELAY = 1000
-export const DEFAULT_ORDERS_SORTABLE_TOPIC = 'validUntil'
 /** ERROR CODES **/
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1474.md
 export const LIMIT_EXCEEDED_ERROR_CODE = -32005
-
-const { disabledTokens } = CONFIG
-
-const DEFAULT_DISABLED_TOKEN_DESCRIPTION = 'This token is disabled for trading and depositing.'
-
-export const DISABLED_TOKEN_MAPS = Object.keys(disabledTokens).reduce<DisabledTokensMaps>(
-  (acc, networkId) => {
-    const tokensList: TokenOverride[] | undefined = disabledTokens[networkId]
-    if (!tokensList) {
-      acc[networkId] = {}
-      return acc
-    }
-    const tokensMap = tokensList.reduce<AddressToOverrideMap>((acc, token) => {
-      if (!token.description) token.description = DEFAULT_DISABLED_TOKEN_DESCRIPTION
-      acc[token.address] = token
-      return acc
-    }, {})
-
-    acc[networkId] = tokensMap
-
-    return acc
-  },
-  {
-    [Network.MAINNET]: {},
-    [Network.GNOSIS_CHAIN]: {},
-    [Network.GOERLI]: {},
-  },
-)
 
 export const COW_SDK = new CowSdk(Network.MAINNET)
 

@@ -4,7 +4,6 @@ import { media } from 'theme/styles/media'
 import { getGpV2ContractAddress } from 'utils/contract'
 
 // Components
-import { BlockExplorerLink } from 'apps/gp-v1/components/common/BlockExplorerLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 // Hooks
 import { useNetworkId } from 'state/network'
@@ -12,6 +11,7 @@ import { useNetworkId } from 'state/network'
 // Config
 import { footerConfig } from '../Footer/config'
 import { Network } from 'types'
+import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 
 const FooterStyled = styled.footer`
   display: flex;
