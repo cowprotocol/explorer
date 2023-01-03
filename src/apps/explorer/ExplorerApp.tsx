@@ -134,8 +134,6 @@ const AppContent = (): JSX.Element => {
  * Render Explorer App
  */
 export const ExplorerApp: React.FC = () => {
-  // Deal with incorrect network
-
   return (
     <>
       <GlobalStyle />
