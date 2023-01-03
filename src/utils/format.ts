@@ -138,12 +138,6 @@ export function parseBigNumber(value: string): BigNumber | null {
   return bigNumber.isNaN() ? null : bigNumber
 }
 
-export const formatTimeToFromBatch = (
-  value: string | number,
-  returnType: 'TIME' | 'BATCH' = 'TIME',
-  batchLength = 5,
-): number => (returnType === 'TIME' ? Number(value) * batchLength : Number(value) / batchLength)
-
 // TODO: move to dex-js
 /**
  * Formats percentage values with 2 decimals of precision.
