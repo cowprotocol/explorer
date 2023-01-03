@@ -43,6 +43,7 @@ describe('getOrderSurplus', () => {
           kind: OrderKind.BUY,
           sellAmount: '100',
           executedSellAmount: '99',
+          executedSellAmountBeforeFees: '99',
           feeAmount: '0',
           executedFeeAmount: '0',
         }
@@ -54,8 +55,10 @@ describe('getOrderSurplus', () => {
           kind: OrderKind.BUY,
           sellAmount: '100',
           executedSellAmount: '109', // 10 is the fee, total sold is 99; surplus === 1
+          executedSellAmountBeforeFees: '99',
           feeAmount: '10',
           executedFeeAmount: '10',
+          totalFee: '10',
         }
         expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
       })

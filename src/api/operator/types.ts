@@ -39,6 +39,8 @@ export type Order = Pick<
   executedSellAmount: BigNumber
   feeAmount: BigNumber
   executedFeeAmount: BigNumber
+  executedSurplusFee: BigNumber | null
+  totalFee: BigNumber
   cancelled: boolean
   status: OrderStatus
   partiallyFilled: boolean
@@ -61,10 +63,8 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   orderId: string
   kind?: OrderKind
   buyAmount: BigNumber
-  executedBuyAmount?: BigNumber
   sellAmount: BigNumber
-  executedSellAmount?: BigNumber
-  executedFeeAmount?: BigNumber
+  executedSurplusFee?: BigNumber
   sellAmountBeforeFees: BigNumber
   buyToken?: TokenErc20 | null
   buyTokenAddress: string

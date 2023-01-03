@@ -12,14 +12,15 @@ import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
+  const { kind, executedBuyAmount, sellAmount, executedSellAmount, buyAmount, executedFeeAmount } = order
   let amount, executedAmount
 
-  if (order.kind === 'buy') {
-    amount = new BigNumber(order.buyAmount)
-    executedAmount = new BigNumber(order.executedBuyAmount)
+  if (kind === 'buy') {
+    amount = new BigNumber(buyAmount)
+    executedAmount = new BigNumber(executedBuyAmount)
   } else {
-    amount = new BigNumber(order.sellAmount)
-    executedAmount = new BigNumber(order.executedSellAmount).minus(order.executedFeeAmount)
+    amount = new BigNumber(sellAmount)
+    executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
   }
 
   const minimumAmount = amount.multipliedBy(ONE_BIG_NUMBER.minus(FILLED_ORDER_EPSILON))
@@ -85,14 +86,15 @@ export function getOrderStatus(order: RawOrder): OrderStatus {
  * @param order The order
  */
 export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; percentage: BigNumber } {
+  const { kind, executedBuyAmount, buyAmount, executedSellAmount, sellAmount, executedFeeAmount } = order
   let executedAmount, totalAmount
 
-  if (order.kind === 'buy') {
-    executedAmount = new BigNumber(order.executedBuyAmount)
-    totalAmount = new BigNumber(order.buyAmount)
+  if (kind === 'buy') {
+    executedAmount = new BigNumber(executedBuyAmount)
+    totalAmount = new BigNumber(buyAmount)
   } else {
-    executedAmount = new BigNumber(order.executedSellAmount).minus(order.executedFeeAmount)
-    totalAmount = new BigNumber(order.sellAmount)
+    executedAmount = new BigNumber(executedSellAmount).minus(executedFeeAmount)
+    totalAmount = new BigNumber(sellAmount)
   }
 
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
@@ -130,7 +132,7 @@ export function getSellSurplus(buyAmount: BigNumberIsh, executedBuyAmount: BigNu
  * Calculates BUY surplus based on sell amounts
  *
  * @param sellAmount sellAmount
- * @param executedSellAmountMinusFees executedSellAmount minus executedFeeAmount
+ * @param executedSellAmountMinusFees executedSellAmount minus total fees
  * @returns Buy surplus
  */
 export function getBuySurplus(sellAmount: BigNumberIsh, executedSellAmountMinusFees: BigNumberIsh): Surplus {
@@ -151,7 +153,7 @@ export function getBuySurplus(sellAmount: BigNumberIsh, executedSellAmountMinusF
 export function getOrderSurplus(order: RawOrder): Surplus {
   const { kind, buyAmount, sellAmount, partiallyFillable } = order
 
-  // `executedSellAmount` already has `executedFeeAmount` discounted
+  // `executedSellAmount` already has the fees discounted
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
 
   if (partiallyFillable) {
@@ -168,19 +170,19 @@ export function getOrderSurplus(order: RawOrder): Surplus {
 
 /**
  * Syntactic sugar to get the order's executed amounts as a BigNumber (in atoms)
- * Mostly because `executedSellAmount` is derived from 2 fields (at time or writing)
+ * Mostly because `executedSellAmount` (with fees deducted) is named `executedSellAmountBeforeFees`
  *
  * @param order The order
  */
-export function getOrderExecutedAmounts(
-  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount'>,
-): {
+export function getOrderExecutedAmounts(order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmountBeforeFees'>): {
   executedBuyAmount: BigNumber
   executedSellAmount: BigNumber
 } {
+  const { executedBuyAmount, executedSellAmountBeforeFees } = order
+
   return {
-    executedBuyAmount: new BigNumber(order.executedBuyAmount),
-    executedSellAmount: new BigNumber(order.executedSellAmount).minus(order.executedFeeAmount),
+    executedBuyAmount: new BigNumber(executedBuyAmount),
+    executedSellAmount: new BigNumber(executedSellAmountBeforeFees),
   }
 }
 
@@ -191,7 +193,7 @@ interface CommonPriceParams {
 }
 
 export type GetRawOrderPriceParams = CommonPriceParams & {
-  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmount' | 'executedFeeAmount'>
+  order: Pick<RawOrder, 'executedBuyAmount' | 'executedSellAmountBeforeFees'>
 }
 
 export type GetOrderLimitPriceParams = CommonPriceParams & {
@@ -307,6 +309,8 @@ export function transformOrder(rawOrder: RawOrder): Order {
     sellAmount,
     feeAmount,
     executedFeeAmount,
+    executedSurplusFee,
+    totalFee,
     invalidated,
     ...rest
   } = rawOrder
@@ -337,6 +341,8 @@ export function transformOrder(rawOrder: RawOrder): Order {
     executedSellAmount,
     feeAmount: new BigNumber(feeAmount),
     executedFeeAmount: new BigNumber(executedFeeAmount),
+    executedSurplusFee: executedSurplusFee ? new BigNumber(executedSurplusFee) : null,
+    totalFee: new BigNumber(totalFee),
     cancelled: invalidated,
     status,
     partiallyFilled,

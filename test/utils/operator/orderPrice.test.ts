@@ -38,6 +38,7 @@ function _assertOrderPriceWithoutFills(_order: RawOrder): void {
     executedBuyAmount: '0',
     executedSellAmount: '0',
     executedFeeAmount: '0',
+    totalFee: '0',
   }
   test('Regular', () => {
     expect(getOrderExecutedPrice({ order, buyTokenDecimals: 2, sellTokenDecimals: 2 })).toEqual(ZERO_BIG_NUMBER)
@@ -69,8 +70,7 @@ describe('Executed price', () => {
       ...RAW_ORDER,
       kind: OrderKind.BUY,
       executedBuyAmount: '100',
-      executedSellAmount: '1010',
-      executedFeeAmount: '10',
+      executedSellAmountBeforeFees: '1000',
     }
     describe('With fills', () => {
       _assertOrderPrice(order, getOrderExecutedPrice)
@@ -85,8 +85,7 @@ describe('Executed price', () => {
       ...RAW_ORDER,
       kind: OrderKind.SELL,
       executedBuyAmount: '100',
-      executedSellAmount: '1010',
-      executedFeeAmount: '10',
+      executedSellAmountBeforeFees: '1000',
     }
 
     describe('With fills', () => {
