@@ -14,7 +14,6 @@ const baseUrl = isProduction ? '' : '/'
 const CONFIG = loadConfig()
 
 const config = overrideEnvConfig(CONFIG)
-const TRADE_APP = { name: 'trade', title: 'CoW Protocol Exchange', filename: 'trade.html' }
 const EXPLORER_APP = {
   name: 'explorer',
   title: 'CoW Protocol Explorer',
@@ -36,13 +35,7 @@ const EXPLORER_APP = {
     REACT_APP_SENTRY_DSN: undefined,
   },
 }
-const SAFE_SWAP_APP = {
-  name: 'safe-swap',
-  title: 'Gnosis Safe - Swap app',
-  filename: 'safe.html',
-  publicPath: 'public',
-}
-const ALL_APPS = [TRADE_APP, EXPLORER_APP, SAFE_SWAP_APP]
+const ALL_APPS = [EXPLORER_APP]
 
 function getSelectedApps() {
   const appName = process.env.APP

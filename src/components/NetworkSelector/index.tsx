@@ -88,5 +88,3 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
     </SelectorContainer>
   )
 }
-
-export default NetworkSelector

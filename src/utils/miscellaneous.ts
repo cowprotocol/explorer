@@ -1,15 +1,12 @@
 import BN from 'bn.js'
 import BigNumber from 'bignumber.js'
 import Web3 from 'web3'
-import { TEN, ZERO } from '@gnosis.pm/dex-js'
 
 const toChecksumAddress = Web3.utils.toChecksumAddress
 
-import { Network, TokenDetails, Unpromise } from 'types'
+import { Network, Unpromise } from 'types'
 import { AssertionError } from 'assert'
-import { AuctionElement, Trade, Order } from 'api/exchange/ExchangeApi'
-import { batchIdToDate } from './time'
-import { ORDER_FILLED_FACTOR, MINIMUM_ALLOWANCE_DECIMALS, DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
+import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
 
 export function assertNonNull<T>(val: T, message: string): asserts val is NonNullable<T> {
   if (val === undefined || val === null) {
@@ -47,34 +44,6 @@ export const logDebug = (...args: any[]): void => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const debug = process.env.NODE_ENV === 'development' ? noop : (...args: any[]): void => console.log(...args)
 
-export function getToken<T extends TokenDetails, K extends keyof T>(
-  key: K,
-  value: string | number | undefined = '',
-  tokens: T[] | undefined | null,
-): T | undefined {
-  if (!tokens) {
-    return undefined
-  }
-
-  const token = tokens.find((token: T): boolean => {
-    const tokenKeyValue = token[key]
-    if (tokenKeyValue) {
-      switch (typeof tokenKeyValue) {
-        case 'string':
-          return tokenKeyValue.toUpperCase() === (value as string).toUpperCase()
-        case 'number':
-          return tokenKeyValue === value
-        default:
-          return false
-      }
-    } else {
-      return false
-    }
-  })
-
-  return token
-}
-
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise((resolve) => setTimeout(resolve, ms, result))
 
@@ -105,59 +74,6 @@ export function getImageAddress(address: string, network: Network): string {
   }
   return address
 }
-
-export function isTokenEnabled(allowance: BN, { decimals = 18 }: TokenDetails): boolean {
-  const allowanceValue = TEN.pow(new BN(decimals + MINIMUM_ALLOWANCE_DECIMALS))
-  return allowance.gte(allowanceValue)
-}
-
-function isAmountDifferenceGreaterThanNegligibleAmount(amount1: BN, amount2: BN): boolean {
-  // consider an oder filled when less than `negligibleAmount` is left
-  const negligibleAmount = amount1.divRound(ORDER_FILLED_FACTOR)
-  return !amount2.gte(negligibleAmount)
-}
-
-/**
- * When orders are `deleted` from the contract, they are still returned, but with all fields set to zero.
- * We will not display such orders.
- *
- * This function checks whether the order has been zeroed out.
- * @param order The order object to check
- */
-export function isOrderDeleted(order: Order): boolean {
-  return (
-    order.buyTokenId === 0 &&
-    order.sellTokenId === 0 &&
-    order.priceDenominator.eq(ZERO) &&
-    order.priceNumerator.eq(ZERO) &&
-    order.validFrom === 0 &&
-    order.validUntil === 0
-  )
-}
-
-export function isOrderFilled(order: AuctionElement): boolean {
-  return isAmountDifferenceGreaterThanNegligibleAmount(order.priceDenominator, order.remainingAmount)
-}
-
-export function isTradeFilled(trade: Trade): boolean {
-  return (
-    !!trade.remainingAmount && isAmountDifferenceGreaterThanNegligibleAmount(trade.sellAmount, trade.remainingAmount)
-  )
-}
-
-export function isTradeSettled(trade: Trade): boolean {
-  return trade.settlingTimestamp <= Date.now()
-}
-
-export function isTradeReverted(trade: Trade): boolean {
-  return !!trade.revertId
-}
-
-export const isOrderActive = (order: AuctionElement, now: Date): boolean =>
-  batchIdToDate(order.validUntil) >= now && !isOrderFilled(order)
-
-export const isPendingOrderActive = (order: AuctionElement, now: Date): boolean =>
-  batchIdToDate(order.validUntil) >= now || order.validUntil === 0
 
 export async function silentPromise<T>(promise: Promise<T>, customMessage?: string): Promise<T | undefined> {
   try {
