@@ -1,0 +1,21 @@
+.history
+node_modules
+.DS_Store
+.vscode
+stats.json
+dist
+*.log
+coverage
+.env
+# yalc
+.yalc
+yalc.lock
+# storybook
+storybook-static
+.jest-cache
+.eslint-cache
+.stylelint-cache
+tsconfig.tsbuildinfo
+playwright/build
+.idea/
+.vercel
