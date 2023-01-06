@@ -122,17 +122,6 @@ jobs:
           name: website
           path: dist
 
-
-  vercel-test:
-    # TODO: remove!
-    # Test deployment for this PR only, remove before merging!
-    name: Vercel dev
-    needs: [test]
-    uses: ./.github/workflows/vercel.yml
-    secrets: inherit
-    with:
-      env_name: dev
-
   vercel-dev:
     # Deploys to Vercel dev environment
     name: Vercel dev
