@@ -13,7 +13,7 @@ export interface WCOptions {
 }
 
 const defaultRPC = {
-  [Network.GNOSIS_CHAIN]: 'https://rpc.gnosischain.com/',
+  [Network.GNOSIS_CHAIN]: 'https://rpc.gnosis.gateway.fm/',
 }
 
 export const setCustomWCOptions = (options: WCOptions): boolean => {

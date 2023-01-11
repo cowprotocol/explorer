@@ -90,7 +90,7 @@ export function getProviderByNetwork(networkId: Network | null): string | undefi
     case Network.GOERLI:
       return infuraProvider(networkId)
     case Network.GNOSIS_CHAIN:
-      return 'https://rpc.gnosischain.com/'
+      return 'https://rpc.gnosis.gateway.fm/'
     default:
       return undefined
   }
