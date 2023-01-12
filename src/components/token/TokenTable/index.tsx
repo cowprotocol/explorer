@@ -170,12 +170,18 @@ const TokenWrapper = styled.div`
   display: flex;
   a {
     max-width: 10rem;
+
+    > span {
+      word-break: break-all;
+    }
   }
+
   img {
     margin-right: 1rem;
     width: 2.5rem;
     height: 2.5rem;
   }
+
   ${media.mobile} {
     a {
       max-width: none;
