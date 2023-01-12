@@ -170,10 +170,13 @@ const TokenWrapper = styled.div`
   display: flex;
   a {
     max-width: 10rem;
+  }
 
-    > span {
-      word-break: break-all;
-    }
+  // Used to break long addresses
+  a > span > i,
+  span > i {
+    word-break: break-all;
+    font-style: normal;
   }
 
   img {

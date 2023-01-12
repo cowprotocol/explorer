@@ -32,9 +32,19 @@ export function TokenDisplay(props: Props): JSX.Element {
 
   // Name and symbol are optional on ERC20 spec. Fallback to address when no name,
   // and show no symbol when that's not set
-  const tokenLabel = showAbbreviated
-    ? `${erc20.symbol || erc20.name || abbreviateString(erc20.address, 6, 4)}`
-    : `${erc20.name || erc20.address}${erc20.symbol ? ` (${erc20.symbol})` : ''}`
+  const tokenLabel = showAbbreviated ? (
+    `${erc20.symbol || erc20.name || abbreviateString(erc20.address, 6, 4)}` // Abbreviated
+  ) : erc20.name && erc20.symbol ? (
+    `${erc20.name} (${erc20.symbol})` // Name and symbol
+  ) : !erc20.name && erc20.symbol ? (
+    <>
+      <i>${erc20.address}</i> (${erc20.symbol})
+    </> // No name, but symbol exists
+  ) : !erc20.name && !erc20.symbol && erc20.address ? (
+    <i>${erc20.address}</i> // No name, no symbol, just address
+  ) : (
+    ''
+  )
   const imageAddress = getImageAddress(erc20.address, network)
 
   return (
