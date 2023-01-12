@@ -172,7 +172,7 @@ const TokenWrapper = styled.div`
     max-width: 10rem;
   }
 
-  // Used to break long addresses
+  /* Used to break long addresses */
   a > span > i,
   span > i {
     word-break: break-all;
