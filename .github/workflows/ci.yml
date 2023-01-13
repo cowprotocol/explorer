@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: CI
 
 # Run on every commit
 on:
@@ -8,11 +8,13 @@ on:
   push:
     branches: [main, develop]
     tags: [v*]
+  workflow_dispatch: # Manually trigger it via UI/CLI/API
 
 env:
-  APP_ID: 1
   REPO_NAME_SLUG: explorer
   PR_NUMBER: ${{ github.event.number }}
+  NODE_VERSION: lts/gallium
+  APP_ID: 1
   REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
   REACT_APP_SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
@@ -28,29 +30,29 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Set output of cache
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
 
       - name: Cache yarn cache
         uses: actions/cache@v2
         id: cache-yarn-cache
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-REMOVE_ME-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-REMOVE_ME-yarn-
+            ${{ runner.os }}-yarn-
 
       - name: Cache node_modules
         id: cache-node-modules
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -67,16 +69,16 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Coverage
         run: yarn test:coverage
@@ -98,16 +100,16 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Build Web Apps
         run: yarn build
@@ -119,6 +121,39 @@ jobs:
         with:
           name: website
           path: dist
+
+  vercel-dev:
+    # Deploys to Vercel dev environment
+    name: Vercel dev
+    needs: [test]
+    if: github.ref == 'refs/heads/develop'
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: dev
+
+  vercel-pre-prod:
+    # Deploys to Vercel staging and barn environments
+    name: Vercel pre-prod
+    needs: [test]
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    strategy:
+      matrix:
+        env_name: [barn, staging] # deploys both in parallel
+    with:
+      env_name: ${{ matrix.env_name }}
+
+  vercel-prod:
+    # Deploys to Vercel prod environment
+    name: Vercel prod
+    needs: [test]
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/vercel.yml
+    secrets: inherit
+    with:
+      env_name: prod
 
   storybook:
     name: Build storybook
@@ -132,16 +167,16 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Load dependencies
         id: cache-node-modules
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-REMOVE_ME-${{ matrix.node-version }}-nodemodules-
+            ${{ runner.os }}-${{ matrix.node-version }}-nodemodules-
 
       - name: Build Storybook
         run: yarn build-storybook -o dist-storybook;
@@ -183,8 +218,6 @@ jobs:
         with:
           message: |
             * **🔭 [Explorer](${{ env.REVIEW_FEATURE_URL }})**: Explorer test app
-            * **🔒 [Safe Swap App](${{ env.REVIEW_FEATURE_URL }}/safe.html)**: Trade test app (add to your safe apps)
-            * **📈 [Trade](${{ env.REVIEW_FEATURE_URL }}/trade.html)**: Trade test app
             * **📚 [Storybook](${{ env.REVIEW_FEATURE_URL }}/storybook/)**: Component stories
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           repo-token-user-login: 'github-actions[bot]'
@@ -202,7 +235,7 @@ jobs:
 
       - name: Get the version
         id: get_version
-        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3)
+        run: echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_OUTPUT
 
       - name: 'Production deployment: Upload release build files to be deployed'
         if: startsWith(github.ref, 'refs/tags/v')

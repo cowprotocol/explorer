@@ -18,3 +18,4 @@ storybook-static
 tsconfig.tsbuildinfo
 playwright/build
 .idea/
+.vercel

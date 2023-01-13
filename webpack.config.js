@@ -14,16 +14,16 @@ const baseUrl = isProduction ? '' : '/'
 const CONFIG = loadConfig()
 
 const config = overrideEnvConfig(CONFIG)
-const TRADE_APP = { name: 'trade', title: 'CoW Protocol Exchange', filename: 'trade.html' }
 const EXPLORER_APP = {
   name: 'explorer',
   title: 'CoW Protocol Explorer',
   filename: 'index.html',
   envVars: {
-    EXPLORER_APP_DOMAIN_REGEX_DEV: '^protocol-explorer\\.dev|^localhost:\\d{2,5}|^pr\\d+--explorer\\.review',
-    EXPLORER_APP_DOMAIN_REGEX_STAGING: '^protocol-explorer\\.staging',
-    EXPLORER_APP_DOMAIN_REGEX_PROD: '^explorer\\.cow\\.fi|^gnosis-protocol\\.io',
-    EXPLORER_APP_DOMAIN_REGEX_BARN: '^barn\\.explorer\\.cow\\.fi|^barn\\.gnosis-protocol\\.io',
+    EXPLORER_APP_DOMAIN_REGEX_DEV:
+      '^dev\\.explorer\\.cow\\.fi|^(explorer-dev-git-[\\w\\d-]+|explorer-\\w{9}-)cowswap\\.vercel\\.app|^explorer-dev\\.vercel\\.app|^localhost:\\d{2,5}|^pr\\d+--explorer\\.review',
+    EXPLORER_APP_DOMAIN_REGEX_STAGING: '^staging\\.explorer\\.cow\\.fi|^explorer-staging\\.vercel\\.app',
+    EXPLORER_APP_DOMAIN_REGEX_PROD: '^explorer\\.cow\\.fi|^explorer-prod\\.vercel\\.app',
+    EXPLORER_APP_DOMAIN_REGEX_BARN: '^barn\\.explorer\\.cow\\.fi|^explorer-barn\\.vercel\\.app',
 
     OPERATOR_URL_STAGING_MAINNET: 'https://barn.api.cow.fi/mainnet/api',
     OPERATOR_URL_STAGING_GOERLI: 'https://barn.api.cow.fi/goerli/api',
@@ -36,13 +36,7 @@ const EXPLORER_APP = {
     REACT_APP_SENTRY_DSN: undefined,
   },
 }
-const SAFE_SWAP_APP = {
-  name: 'safe-swap',
-  title: 'Gnosis Safe - Swap app',
-  filename: 'safe.html',
-  publicPath: 'public',
-}
-const ALL_APPS = [TRADE_APP, EXPLORER_APP, SAFE_SWAP_APP]
+const ALL_APPS = [EXPLORER_APP]
 
 function getSelectedApps() {
   const appName = process.env.APP

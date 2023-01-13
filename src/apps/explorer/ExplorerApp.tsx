@@ -3,7 +3,6 @@ import { BrowserRouter, HashRouter, Route, Switch, useRouteMatch, Redirect, useL
 import { hot } from 'react-hot-loader/root'
 
 import { withGlobalContext } from 'hooks/useGlobalState'
-import useNetworkCheck from 'hooks/useNetworkCheck'
 import Console from 'Console'
 import { rootReducer, INITIAL_STATE } from 'apps/explorer/state'
 
@@ -135,9 +134,6 @@ const AppContent = (): JSX.Element => {
  * Render Explorer App
  */
 export const ExplorerApp: React.FC = () => {
-  // Deal with incorrect network
-  useNetworkCheck()
-
   return (
     <>
       <GlobalStyle />

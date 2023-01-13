@@ -8,7 +8,6 @@ import {
   ADDRESS_ACCOUNT_XDAI,
   ADDRESS_GNOSIS_PROTOCOL_XDAI,
   ADDRESS_GNO_XDAI,
-  ADDRESS_GNO,
   ADDRESS_GNOSIS_PROTOCOL,
   TX_EXAMPLE,
   TX_XDAI,
@@ -63,7 +62,7 @@ Token.args = {
   ...defaultParams,
   type: 'token',
   label: 'GNO token',
-  identifier: ADDRESS_GNO,
+  identifier: ADDRESS_GNO_XDAI,
 }
 
 export const TxXdai = Template.bind({})

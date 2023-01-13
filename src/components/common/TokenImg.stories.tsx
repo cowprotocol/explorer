@@ -2,10 +2,10 @@ import React from 'react'
 // also exported from '@storybook/react' if you can deal with breaking changes in 6.1
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { TokenImg, Props } from './TokenImg'
-import { WETH_ADDRESS_MAINNET } from 'const'
+import { WETH_ADDRESS_MAINNET, WXDAI_ADDRESS_XDAI } from 'const'
 import { Frame } from './Frame'
 import styled from 'styled-components'
-import { ADDRESS_GNO, ADDRESS_WXDAI } from 'storybook/data'
+import { ADDRESS_GNO_XDAI } from 'storybook/data'
 
 export default {
   title: 'Common/TokenImg',
@@ -29,7 +29,7 @@ WethMainnet.args = {
 
 export const WrappedXdai = Template.bind({})
 WrappedXdai.args = {
-  address: ADDRESS_WXDAI,
+  address: WXDAI_ADDRESS_XDAI,
   faded: true,
 }
 
@@ -40,12 +40,12 @@ Unknown.args = {
 
 export const Gno = Template.bind({})
 Gno.args = {
-  address: ADDRESS_GNO,
+  address: ADDRESS_GNO_XDAI,
 }
 
 export const Faded = Template.bind({})
 Faded.args = {
-  address: ADDRESS_GNO,
+  address: ADDRESS_GNO_XDAI,
   faded: true,
 }
 
@@ -57,6 +57,6 @@ export const TokenImgRestyled = styled(TokenImg)`
 `
 export const Restyle: Story = () => (
   <>
-    <TokenImgRestyled address={ADDRESS_GNO} /> Reestyled GNO logo
+    <TokenImgRestyled address={ADDRESS_GNO_XDAI} /> Reestyled GNO logo
   </>
 )

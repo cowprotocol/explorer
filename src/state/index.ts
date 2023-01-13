@@ -6,8 +6,6 @@ import {
   sideEffect as ThemeSideEffect,
 } from './theme'
 
-export * from './tokenRow'
-
 export interface Actions<T, P> {
   type: T
   payload: P
