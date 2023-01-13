@@ -38,10 +38,10 @@ export function TokenDisplay(props: Props): JSX.Element {
     `${erc20.name} (${erc20.symbol})` // Name and symbol
   ) : !erc20.name && erc20.symbol ? (
     <>
-      <i>{erc20.address}</i> ({erc20.symbol})
+      <i>{abbreviateString(erc20.address, 6, 4)}</i> ({erc20.symbol})
     </> // No name, but symbol exists
   ) : !erc20.name && !erc20.symbol && erc20.address ? (
-    <i>{erc20.address}</i> // No name, no symbol, just address
+    <i>{abbreviateString(erc20.address, 6, 4)}</i> // No name, no symbol, just address
   ) : (
     ''
   )
