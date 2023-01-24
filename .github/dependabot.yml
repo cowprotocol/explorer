@@ -8,9 +8,7 @@ updates:
   open-pull-requests-limit: 10
   target-branch: develop
   reviewers:
-  - w3stside
-  - anxolin
-  - alfetopito
+  - cowprotocol/frontend
   labels:
   - DEPENDABOT
   versioning-strategy: lockfile-only
