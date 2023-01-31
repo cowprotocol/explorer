@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set VERCEL_PROJECT_ID env var
-        # It's set in each env's config on https://github.com/cowprotocol/cowswap/settings/environments
+        # It's set in each env's config on https://github.com/cowprotocol/explorer/settings/environments
         run: echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
 
       - name: Install Vercel CLI
