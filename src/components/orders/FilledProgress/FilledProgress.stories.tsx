@@ -12,7 +12,7 @@ import { ONE_BIG_NUMBER } from 'const'
 import { FilledProgress, Props } from '.'
 
 import { RICH_ORDER } from '../../../../test/data'
-import { OrderType } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 
 export default {
   title: 'Orders/FilledProgress',
@@ -45,7 +45,7 @@ FullyFilledSellOrder.args = {
   ...defaultArgs,
   order: {
     ...order,
-    kind: OrderType.SELL,
+    kind: OrderKind.SELL,
     filledAmount: order.sellAmount,
     filledPercentage: ONE_BIG_NUMBER,
     fullyFilled: true,
@@ -57,7 +57,7 @@ FullyFilledBuyOrder.args = {
   ...defaultArgs,
   order: {
     ...order,
-    kind: OrderType.BUY,
+    kind: OrderKind.BUY,
     filledAmount: order.buyAmount,
     filledPercentage: ONE_BIG_NUMBER,
     fullyFilled: true,
@@ -69,7 +69,7 @@ PartiallyFilledSellOrder.args = {
   ...defaultArgs,
   order: {
     ...order,
-    kind: OrderType.SELL,
+    kind: OrderKind.SELL,
     filledAmount: order.sellAmount.div(2),
     filledPercentage: new BigNumber('0.5'),
   },
@@ -80,7 +80,7 @@ PartiallyFilledBuyOrder.args = {
   ...defaultArgs,
   order: {
     ...order,
-    kind: OrderType.BUY,
+    kind: OrderKind.BUY,
     filledAmount: order.buyAmount.div(2),
     filledPercentage: new BigNumber('0.5'),
   },

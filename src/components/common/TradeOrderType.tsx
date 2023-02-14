@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { capitalize } from 'utils'
-import { OrderType } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 
 const TradeTypeWrapper = styled.div`
   span {
@@ -14,7 +14,7 @@ const TradeTypeWrapper = styled.div`
   }
 `
 export type TradeTypeProps = {
-  kind: OrderType
+  kind: OrderKind
 }
 
 const TradeOrderType = ({ kind }: TradeTypeProps): JSX.Element | null => {

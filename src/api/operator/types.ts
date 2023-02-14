@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
-import { EnrichedOrder, OrderType, Trade as TradeMetaData } from '@cowprotocol/cow-sdk/order-book'
+import { EnrichedOrder, OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk/order-book'
 
 export type TxHash = string
 
@@ -57,7 +57,7 @@ export type RawTrade = TradeMetaData
  */
 export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
   orderId: string
-  kind?: OrderType
+  kind?: OrderKind
   buyAmount: BigNumber
   sellAmount: BigNumber
   executedSurplusFee?: BigNumber
