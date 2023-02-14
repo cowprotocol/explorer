@@ -11,7 +11,7 @@ import { ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { RICH_ORDER } from '../../../../test/data'
 import { Order } from 'api/operator'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderType } from '@cowprotocol/cow-sdk/order-book'
 
 export default {
   title: 'orders/OrderSurplusDisplay',
@@ -27,7 +27,7 @@ const Template: Story<Props> = (args) => (
 
 const order: Order = {
   ...RICH_ORDER,
-  kind: OrderKind.BUY,
+  kind: OrderType.BUY,
   buyAmount: new BigNumber('1000000000000000000'), // 1WETH
   sellAmount: new BigNumber('5000000000'), //5000 USDT
   surplusAmount: new BigNumber('5000000000'),

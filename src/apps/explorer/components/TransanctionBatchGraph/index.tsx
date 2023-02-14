@@ -7,7 +7,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import BigNumber from 'bignumber.js'
-import { OrderKind } from '@cowprotocol/contracts'
 import {
   faRedo,
   faDiceOne,
@@ -35,6 +34,7 @@ import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { layouts, LayoutNames } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
+import { OrderType } from '@cowprotocol/cow-sdk/order-book'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -64,11 +64,11 @@ function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
   return type
 }
 
-function getKindEdge(transfer: Transfer & { kind?: OrderKind }): TypeEdgeOnTx {
+function getKindEdge(transfer: Transfer & { kind?: OrderType }): TypeEdgeOnTx {
   let kind = TypeEdgeOnTx.noKind
-  if (transfer.kind === OrderKind.SELL) {
+  if (transfer.kind === OrderType.SELL) {
     kind = TypeEdgeOnTx.sellEdge
-  } else if (transfer.kind === OrderKind.BUY) {
+  } else if (transfer.kind === OrderType.BUY) {
     kind = TypeEdgeOnTx.buyEdge
   }
 

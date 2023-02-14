@@ -36,7 +36,8 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   // Only set txHash for fillOrKill orders, if any
   // Partially fillable order will have a tab only for the trades
-  const txHash = order && !order.partiallyFillable && trades && trades.length === 1 ? trades[0].txHash : undefined
+  const txHash =
+    (order && !order.partiallyFillable && trades && trades.length === 1 ? trades[0].txHash : undefined) || undefined
 
   // Avoid redirecting until another network is searched again
   useEffect(() => {

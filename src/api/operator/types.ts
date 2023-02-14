@@ -1,20 +1,16 @@
 import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
-
-import { OrderKind } from '@cowprotocol/contracts'
-import { OrderMetaData, TradeMetaData } from '@cowprotocol/cow-sdk'
-
 import { Network } from 'types'
+import { EnrichedOrder, OrderType, Trade as TradeMetaData } from '@cowprotocol/cow-sdk/order-book'
 
-export type OrderID = string
 export type TxHash = string
 
 export type OrderStatus = 'open' | 'filled' | 'cancelled' | 'cancelling' | 'expired' | 'signing'
 export type RawOrderStatusFromAPI = 'presignaturePending' | 'open' | 'fullfilled' | 'cancelled' | 'expired'
 
 // Raw API response
-export type RawOrder = OrderMetaData
+export type RawOrder = EnrichedOrder
 /**
  * Enriched Order type.
  * Applies some transformations on the raw api data.
@@ -61,7 +57,7 @@ export type RawTrade = TradeMetaData
  */
 export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHash'> & {
   orderId: string
-  kind?: OrderKind
+  kind?: OrderType
   buyAmount: BigNumber
   sellAmount: BigNumber
   executedSurplusFee?: BigNumber

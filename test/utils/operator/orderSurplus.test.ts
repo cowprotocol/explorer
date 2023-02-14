@@ -7,7 +7,7 @@ import { RawOrder } from 'api/operator'
 import { getOrderSurplus } from 'utils'
 
 import { RAW_ORDER } from '../../data'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderType } from '@cowprotocol/cow-sdk/order-book'
 
 const ZERO_DOT_ZERO_ONE = new BigNumber('0.01')
 const TWENTY_PERCENT = new BigNumber('0.2')
@@ -18,7 +18,7 @@ describe('getOrderSurplus', () => {
       test('No surplus', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.BUY,
+          kind: OrderType.BUY,
           sellAmount: '100',
           executedSellAmount: '100',
           feeAmount: '0',
@@ -29,7 +29,7 @@ describe('getOrderSurplus', () => {
       test('No matches', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.BUY,
+          kind: OrderType.BUY,
           sellAmount: '100',
           executedSellAmount: '0',
           feeAmount: '0',
@@ -40,7 +40,7 @@ describe('getOrderSurplus', () => {
       test('With fees = 0', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.BUY,
+          kind: OrderType.BUY,
           sellAmount: '100',
           executedSellAmount: '99',
           executedSellAmountBeforeFees: '99',
@@ -52,7 +52,7 @@ describe('getOrderSurplus', () => {
       test('With fees > 0', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.BUY,
+          kind: OrderType.BUY,
           sellAmount: '100',
           executedSellAmount: '109', // 10 is the fee, total sold is 99; surplus === 1
           executedSellAmountBeforeFees: '99',
@@ -66,7 +66,7 @@ describe('getOrderSurplus', () => {
     test.skip('partiallyFillable', () => {
       const order: RawOrder = {
         ...RAW_ORDER,
-        kind: OrderKind.BUY,
+        kind: OrderType.BUY,
         sellAmount: '100',
         executedSellAmount: '50',
         buyAmount: '100',
@@ -81,7 +81,7 @@ describe('getOrderSurplus', () => {
       test('No surplus', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.SELL,
+          kind: OrderType.SELL,
           buyAmount: '100',
           executedBuyAmount: '100',
           feeAmount: '0',
@@ -92,7 +92,7 @@ describe('getOrderSurplus', () => {
       test('No matches', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.SELL,
+          kind: OrderType.SELL,
           buyAmount: '100',
           executedBuyAmount: '0',
           feeAmount: '0',
@@ -103,7 +103,7 @@ describe('getOrderSurplus', () => {
       test('With fees = 0', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.SELL,
+          kind: OrderType.SELL,
           buyAmount: '100',
           executedBuyAmount: '101',
           feeAmount: '0',
@@ -114,7 +114,7 @@ describe('getOrderSurplus', () => {
       test('With fees > 0', () => {
         const order = {
           ...RAW_ORDER,
-          kind: OrderKind.SELL,
+          kind: OrderType.SELL,
           buyAmount: '100',
           executedBuyAmount: '101',
           feeAmount: '10',
@@ -126,7 +126,7 @@ describe('getOrderSurplus', () => {
     test.skip('partiallyFillable', () => {
       const order = {
         ...RAW_ORDER,
-        kind: OrderKind.SELL,
+        kind: OrderType.SELL,
         buyAmount: '100',
         executedBuyAmount: '50',
         sellAmount: '100',
