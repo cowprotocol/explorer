@@ -34,7 +34,7 @@ import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { layouts, LayoutNames } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
-import { OrderType } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -64,11 +64,11 @@ function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
   return type
 }
 
-function getKindEdge(transfer: Transfer & { kind?: OrderType }): TypeEdgeOnTx {
+function getKindEdge(transfer: Transfer & { kind?: OrderKind }): TypeEdgeOnTx {
   let kind = TypeEdgeOnTx.noKind
-  if (transfer.kind === OrderType.SELL) {
+  if (transfer.kind === OrderKind.SELL) {
     kind = TypeEdgeOnTx.sellEdge
-  } else if (transfer.kind === OrderType.BUY) {
+  } else if (transfer.kind === OrderKind.BUY) {
     kind = TypeEdgeOnTx.buyEdge
   }
 

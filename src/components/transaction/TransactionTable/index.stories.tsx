@@ -7,7 +7,7 @@ import { GlobalStyles, ThemeToggler, Router, NetworkDecorator } from 'storybook/
 
 import { Order } from 'api/operator'
 import { RICH_ORDER, TUSD, WETH } from '../../../../test/data'
-import { OrderType } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
 
 export default {
   title: 'transaction/TransactionTable',
@@ -17,7 +17,7 @@ export default {
 
 const transactionExBuy: Order = {
   ...RICH_ORDER,
-  kind: OrderType.BUY,
+  kind: OrderKind.BUY,
   buyToken: WETH,
   sellToken: TUSD,
   buyAmount: new BigNumber('1500000000000000000'), // 1.5WETH
@@ -31,7 +31,7 @@ const transactionExBuy: Order = {
 
 const transactionExSell: Order = {
   ...RICH_ORDER,
-  kind: OrderType.SELL,
+  kind: OrderKind.SELL,
   buyToken: WETH,
   sellToken: TUSD,
   buyAmount: new BigNumber('1500000000000000000'), // 1.5WETH

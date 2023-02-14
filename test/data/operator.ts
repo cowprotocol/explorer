@@ -5,7 +5,7 @@ import { Order, RawOrder, RawTrade } from 'api/operator'
 import { ZERO_BIG_NUMBER } from 'const'
 
 import { USDT, WETH } from './erc20s'
-import { OrderClass, OrderStatus, OrderType, SigningScheme } from '@cowprotocol/cow-sdk/order-book'
+import { OrderClass, OrderStatus, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk/order-book'
 
 export const RAW_ORDER = {
   creationDate: '2021-01-20T23:15:07.892538607Z',
@@ -29,7 +29,7 @@ export const RAW_ORDER = {
   buyToken: USDT.address,
   validTo: 0,
   appData: '0',
-  kind: OrderType.SELL,
+  kind: OrderKind.SELL,
   signature:
     '0x04dca25f59e9ac744c4093530a38f1719c4e0b1ce8e4b68c8018b6b05fd4a6944e1dcf2a009df2d5932f7c034b4a24da0999f9309dd5108d51d54236b605ed991c',
   status: OrderStatus.OPEN,
