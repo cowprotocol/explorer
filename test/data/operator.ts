@@ -1,17 +1,21 @@
 import BigNumber from 'bignumber.js'
-import { OrderKind } from '@cowprotocol/contracts'
 
-import { Order, RawOrder, RawTrade, Trade } from 'api/operator'
+import { Order, RawOrder, RawTrade } from 'api/operator'
 
 import { ZERO_BIG_NUMBER } from 'const'
 
 import { USDT, WETH } from './erc20s'
+import { OrderClass, OrderStatus, OrderType, SigningScheme } from '@cowprotocol/cow-sdk/order-book'
 
 export const RAW_ORDER = {
   creationDate: '2021-01-20T23:15:07.892538607Z',
   owner: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
   receiver: '0x5b0abe214ab7875562adee331deff0fe1912fe42',
   uid: '0xadef89adea9e8d7f987e98f79a87efde5f7e65df65e76d5f67e5d76f5edf',
+  partiallyFillable: false,
+  invalidated: false,
+  signingScheme: SigningScheme.EIP712,
+  class: OrderClass.MARKET,
   buyAmount: '0',
   executedBuyAmount: '0',
   sellAmount: '0',
@@ -19,15 +23,16 @@ export const RAW_ORDER = {
   feeAmount: '0',
   executedFeeAmount: '0',
   executedSurplusFee: '0',
+  executedSellAmountBeforeFees: '0',
   totalFee: '0',
   sellToken: WETH.address,
   buyToken: USDT.address,
   validTo: 0,
-  appData: 0,
-  kind: OrderKind.SELL,
+  appData: '0',
+  kind: OrderType.SELL,
   signature:
     '0x04dca25f59e9ac744c4093530a38f1719c4e0b1ce8e4b68c8018b6b05fd4a6944e1dcf2a009df2d5932f7c034b4a24da0999f9309dd5108d51d54236b605ed991c',
-  status: 'open',
+  status: OrderStatus.OPEN,
 } as RawOrder
 
 export const RICH_ORDER: Order = {
@@ -70,21 +75,4 @@ export const RAW_TRADE: RawTrade = {
   buyToken: '0xc778417e063141139fce010982780140aa0cd5ab',
   sellToken: '0xd9ba894e0097f8cc2bbc9d24d308b98e36dc6d02',
   txHash: '0x2ebf2ba8c2a568af0b11d2498648d6fec01db11e81c6e4bc5dbba9237472dce9',
-}
-
-export const RICH_TRADE: Trade = {
-  ...RAW_TRADE,
-  orderId: RAW_TRADE.orderUid,
-  kind: OrderKind.SELL,
-  executionTime: new Date('2021-01-20T23:15:07.892538607Z'),
-  buyAmount: new BigNumber(RAW_TRADE.buyAmount),
-  sellAmount: new BigNumber(RAW_TRADE.sellAmount),
-  executedSurplusFee: ZERO_BIG_NUMBER,
-  sellAmountBeforeFees: new BigNumber(RAW_TRADE.sellAmountBeforeFees),
-  buyToken: WETH,
-  buyTokenAddress: RAW_TRADE.buyToken,
-  sellToken: USDT,
-  sellTokenAddress: RAW_TRADE.sellToken,
-  surplusPercentage: new BigNumber('3.34'),
-  surplusAmount: new BigNumber('1247.47'),
 }

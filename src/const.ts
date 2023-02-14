@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
@@ -16,7 +15,6 @@ export {
   ALLOWANCE_MAX_VALUE,
   ALLOWANCE_FOR_ENABLED_TOKEN,
 } from '@gnosis.pm/dex-js'
-import { Network } from 'types'
 
 export const BATCH_TIME_IN_MS = BATCH_TIME * 1000
 export const DEFAULT_TIMEOUT = 5000
@@ -159,8 +157,6 @@ export const ORDER_BOOK_HOPS_MAX = 30
 /** ERROR CODES **/
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1474.md
 export const LIMIT_EXCEEDED_ERROR_CODE = -32005
-
-export const COW_SDK = new CowSdk(Network.MAINNET)
 
 export const ETH: TokenErc20 = {
   name: 'ETH',

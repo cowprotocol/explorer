@@ -1,4 +1,4 @@
-import { TradeMetaData } from '@cowprotocol/cow-sdk'
+import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk/order-book'
 import { getTrades, Order, Trade } from 'api/operator'
 import { useCallback, useEffect, useState } from 'react'
 import { useNetworkId } from 'state/network'

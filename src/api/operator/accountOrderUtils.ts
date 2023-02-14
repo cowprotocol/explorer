@@ -1,7 +1,8 @@
-import { OrderMetaData, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { COW_SDK } from 'const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { GetAccountOrdersParams, RawOrder } from './types'
+import { orderBookSDK } from 'cowSdk'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk/order-book'
 
 /**
  * Gets a list of orders of one user paginated
@@ -27,12 +28,8 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   }
 
   const [prodOrders, barnOrders] = await Promise.all([
-    state.prodHasNext
-      ? COW_SDK.cowApi.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'prod' })
-      : [],
-    state.barnHasNext
-      ? COW_SDK.cowApi.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging' })
-      : [],
+    state.prodHasNext ? orderBookSDK(networkId).getOrders({ owner, offset, limit: limitPlusOne }) : [],
+    state.barnHasNext ? orderBookSDK(networkId, 'staging').getOrders({ owner, offset, limit: limitPlusOne }) : [],
   ])
 
   state.prodHasNext = prodOrders.length === limitPlusOne
@@ -75,8 +72,8 @@ type CacheKey = {
 }
 
 type CacheState = {
-  merged: Map<number, OrderMetaData[]>
-  unmerged: OrderMetaData[]
+  merged: Map<number, EnrichedOrder[]>
+  unmerged: EnrichedOrder[]
   prodPage: number
   prodHasNext: boolean
   barnPage: number
@@ -84,8 +81,8 @@ type CacheState = {
 }
 
 const emptyState = (): CacheState => ({
-  merged: new Map<number, OrderMetaData[]>(),
-  unmerged: [] as OrderMetaData[],
+  merged: new Map<number, EnrichedOrder[]>(),
+  unmerged: [] as EnrichedOrder[],
   prodPage: 0,
   prodHasNext: true,
   barnPage: 0,
