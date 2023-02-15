@@ -134,12 +134,12 @@ export async function getTrades(
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderId })
 
   // sdk not merging array responses yet
-  const orders = await Promise.all([
+  const trades = await Promise.all([
     orderBookSDK(networkId, 'prod').getTrades({ owner, orderId }),
     orderBookSDK(networkId, 'staging').getTrades({ owner, orderId }),
   ])
 
-  return [...orders[0], ...orders[1]]
+  return [...trades[0], ...trades[1]]
 }
 
 function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>
