@@ -1,6 +1,6 @@
 import { Network } from 'types'
 import { buildSearchString } from 'utils/url'
-import { environmentName, isProd, isStaging } from 'utils/env'
+import { isProd, isStaging } from 'utils/env'
 
 import { GetOrderParams, GetOrdersParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
 import { fetchQuery } from 'api/baseApi'
@@ -106,7 +106,13 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
-  return orderBookSDK(networkId, environmentName === 'production' ? 'prod' : 'staging').getTxOrders(txHash)
+  // sdk not merging array responses yet
+  const orders = await Promise.all([
+    orderBookSDK(networkId, 'prod').getTxOrders(txHash),
+    orderBookSDK(networkId, 'staging').getTxOrders(txHash),
+  ])
+
+  return [...orders[0], ...orders[1]]
 }
 
 /**
@@ -127,7 +133,13 @@ export async function getTrades(
   const { networkId, owner, orderId } = params
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderId })
 
-  return orderBookSDK(networkId, environmentName === 'production' ? 'prod' : 'staging').getTrades({ owner, orderId })
+  // sdk not merging array responses yet
+  const orders = await Promise.all([
+    orderBookSDK(networkId, 'prod').getTrades({ owner, orderId }),
+    orderBookSDK(networkId, 'staging').getTrades({ owner, orderId }),
+  ])
+
+  return [...orders[0], ...orders[1]]
 }
 
 function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>
