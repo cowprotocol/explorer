@@ -13,7 +13,7 @@ export function orderBookSDK(chainId: SupportedChainId, env: 'prod' | 'staging' 
   const cached = orderBookSDKCache[chainId][env]
 
   if (!cached) {
-    const sdk = new OrderBookApi(chainId)
+    const sdk = new OrderBookApi(chainId, env)
     orderBookSDKCache[chainId][env] = sdk
 
     return sdk
