@@ -87,12 +87,10 @@ export function useGetSummaryData(): TotalSummaryResponse | undefined {
 
   const fetchAndBuildSummary = useCallback(async () => {
     setSummary((summary) => ({ ...summary, isLoading: true }))
-    subgraphApiSDK(network)
-      .runQuery(summaryQuery, undefined)
-      .then((data: SummaryQuery) => {
-        const summary = buildSummary(data)
-        setSummary({ ...summary, isLoading: false })
-      })
+    subgraphApiSDK.runQuery(network, summaryQuery, undefined).then((data: SummaryQuery) => {
+      const summary = buildSummary(data)
+      setSummary({ ...summary, isLoading: false })
+    })
   }, [network])
 
   useEffect(() => {
