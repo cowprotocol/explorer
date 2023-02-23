@@ -55,7 +55,8 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
       const yesterdayTimestamp = startOfYesterday().setUTCHours(0) / 1000
       const lastWeekTimestamp = Number(lastDaysTimestamp(8)) // last 8 days
       try {
-        const response = await subgraphApiSDK(network).runQuery<{ tokenDailyTotals: TokenDailyTotalsResponse[] }>(
+        const response = await subgraphApiSDK.runQuery<{ tokenDailyTotals: TokenDailyTotalsResponse[] }>(
+          network,
           GET_TOKENS_QUERY,
           {
             todayTimestamp,
