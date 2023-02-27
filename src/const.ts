@@ -162,7 +162,9 @@ export const LIMIT_EXCEEDED_ERROR_CODE = -32005
 
 export const COW_SDK = new CowSdk(Network.MAINNET, {
   subgraphBaseUrls: {
+    [ChainId.MAINNET]: 'https://subgraph.satsuma-prod.com/94b7bd7c35c5/cow/cow/api',
     [ChainId.GOERLI]: 'https://subgraph.satsuma-prod.com/94b7bd7c35c5/cow/cow-goerli/api',
+    [ChainId.GNOSIS_CHAIN]: 'https://subgraph.satsuma-prod.com/94b7bd7c35c5/cow/cow-gc/api',
   },
 })
 
