@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk } from '@cowprotocol/cow-sdk'
+import { CowSdk, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
@@ -162,7 +162,7 @@ export const LIMIT_EXCEEDED_ERROR_CODE = -32005
 
 export const COW_SDK = new CowSdk(Network.MAINNET, {
   subgraphBaseUrls: {
-    '5': 'https://subgraph.satsuma-prod.com/94b7bd7c35c5/cow/cow-goerli/api',
+    [ChainId.GOERLI]: 'https://subgraph.satsuma-prod.com/94b7bd7c35c5/cow/cow-goerli/api',
   },
 })
 
