@@ -160,7 +160,11 @@ export const ORDER_BOOK_HOPS_MAX = 30
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1474.md
 export const LIMIT_EXCEEDED_ERROR_CODE = -32005
 
-export const COW_SDK = new CowSdk(Network.MAINNET)
+export const COW_SDK = new CowSdk(Network.MAINNET, {
+  subgraphBaseUrls: {
+    '5': 'https://subgraph.satsuma-prod.com/94b7bd7c35c5/cow/cow-goerli/api',
+  },
+})
 
 export const ETH: TokenErc20 = {
   name: 'ETH',
