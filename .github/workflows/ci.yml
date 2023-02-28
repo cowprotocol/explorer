@@ -81,6 +81,7 @@ jobs:
     secrets: inherit
     with:
       env_name: dev
+      node_version: ${{ env.NODE_VERSION }}
 
   vercel-pre-prod:
     # Deploys to Vercel staging and barn environments
@@ -94,6 +95,7 @@ jobs:
         env_name: [barn, staging] # deploys both in parallel
     with:
       env_name: ${{ matrix.env_name }}
+      node_version: ${{ env.NODE_VERSION }}
 
   vercel-prod:
     # Deploys to Vercel prod environment
@@ -104,3 +106,4 @@ jobs:
     secrets: inherit
     with:
       env_name: prod
+      node_version: ${{ env.NODE_VERSION }}

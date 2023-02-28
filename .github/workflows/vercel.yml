@@ -7,6 +7,9 @@ on:
         description: 'Environment to deploy to. Options are: dev, staging, barn and prod'
         required: true
         type: string
+      node_version:
+        required: true
+        type: string
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -20,6 +23,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node_version }}
+          cache: yarn
 
       - name: Set VERCEL_PROJECT_ID env var
         # It's set in each env's config on https://github.com/cowprotocol/explorer/settings/environments
