@@ -7,9 +7,6 @@ on:
         description: 'Environment to deploy to. Options are: dev, staging, barn and prod'
         required: true
         type: string
-      node_version:
-        required: true
-        type: string
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
