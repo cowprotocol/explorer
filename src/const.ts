@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { CowSdk } from '@cowprotocol/cow-sdk'
+import { CowSdk, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
 export {
   UNLIMITED_ORDER_AMOUNT,
@@ -160,7 +160,30 @@ export const ORDER_BOOK_HOPS_MAX = 30
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1474.md
 export const LIMIT_EXCEEDED_ERROR_CODE = -32005
 
-export const COW_SDK = new CowSdk(Network.MAINNET)
+function getSubgraphUrls(): Partial<Record<ChainId, string>> {
+  const subgraphBaseUrls: Partial<Record<ChainId, string>> = {}
+  const [mainnetUrl, gcUrl, goerliUrl] = [
+    process.env.REACT_APP_SUBGRAPH_URL_MAINNET || undefined,
+    process.env.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN || undefined,
+    process.env.REACT_APP_SUBGRAPH_URL_GOERLI || undefined,
+  ]
+
+  if (mainnetUrl) {
+    subgraphBaseUrls[ChainId.MAINNET] = mainnetUrl
+  }
+  if (gcUrl) {
+    subgraphBaseUrls[ChainId.GNOSIS_CHAIN] = gcUrl
+  }
+  if (goerliUrl) {
+    subgraphBaseUrls[ChainId.GOERLI] = goerliUrl
+  }
+
+  return subgraphBaseUrls
+}
+
+export const COW_SDK = new CowSdk(Network.MAINNET, {
+  subgraphBaseUrls: getSubgraphUrls(),
+})
 
 export const ETH: TokenErc20 = {
   name: 'ETH',
