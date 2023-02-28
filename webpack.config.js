@@ -34,6 +34,10 @@ const EXPLORER_APP = {
 
     GOOGLE_ANALYTICS_ID: undefined,
     REACT_APP_SENTRY_DSN: undefined,
+
+    REACT_APP_SUBGRAPH_URL_MAINNET: undefined,
+    REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN: undefined,
+    REACT_APP_SUBGRAPH_URL_GOERLI: undefined,
   },
 }
 const ALL_APPS = [EXPLORER_APP]
