@@ -10,6 +10,7 @@ on:
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  NODE_VERSION: lts/gallium
 
 jobs:
   build_and_deploy:
@@ -19,10 +20,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Set up node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
 
       - name: Set VERCEL_PROJECT_ID env var
-        # It's set in each env's config on https://github.com/cowprotocol/cowswap/settings/environments
+        # It's set in each env's config on https://github.com/cowprotocol/explorer/settings/environments
         run: echo "VERCEL_PROJECT_ID=${{ secrets.VERCEL_PROJECT_ID }}" >> $GITHUB_ENV
 
       - name: Install Vercel CLI
