@@ -108,10 +108,11 @@ export const OrderAddressNotFound: React.FC = (): JSX.Element => {
       <Content>
         {searchString ? (
           <>
-            <p>Sorry, no matches found for:</p>
-            <p>
+            <p>Sorry, no matches found.</p>
+            {/* Disabled temporarily, until we can implement a way to validate search strings. */}
+            {/*<p>
               <strong>&quot;{searchString}&quot;</strong>
-            </p>
+            </p>*/}
           </>
         ) : (
           <p>The search cannot be empty</p>
