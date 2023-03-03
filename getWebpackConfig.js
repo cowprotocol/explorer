@@ -277,7 +277,6 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
         'react-dom': '@hot-loader/react-dom',
         'bn.js': path.resolve(__dirname, 'node_modules/bn.js'),
         'react-inspector': path.resolve(__dirname, 'node_modules/react-inspector'),
-        '@cowprotocol/cow-sdk': path.resolve(__dirname, 'node_modules/@cowprotocol/cow-sdk/dist'),
       },
       modules: [path.resolve(__dirname, 'custom'), path.resolve(__dirname, 'src'), 'node_modules'],
       extensions: ['.ts', '.tsx', '.js'],

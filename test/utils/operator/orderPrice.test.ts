@@ -3,7 +3,7 @@ import { ONE_BIG_NUMBER, ONE_HUNDRED_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER
 import { RawOrder } from 'api/operator'
 import { getOrderExecutedPrice, getOrderLimitPrice, GetRawOrderPriceParams, GetOrderLimitPriceParams } from 'utils'
 import { RAW_ORDER } from '../../data'
-import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 const ZERO_DOT_ONE = new BigNumber('0.1')
 

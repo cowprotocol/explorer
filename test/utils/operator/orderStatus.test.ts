@@ -5,7 +5,7 @@ import { getOrderStatus } from 'utils'
 
 import { RAW_ORDER } from '../../data'
 import { mockTimes, DATE } from '../../testHelpers'
-import { OrderStatus, OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderStatus, OrderKind } from '@cowprotocol/cow-sdk'
 
 function _getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000)
