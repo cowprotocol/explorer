@@ -7,7 +7,7 @@ import { RawOrder } from 'api/operator'
 import { getOrderSurplus } from 'utils'
 
 import { RAW_ORDER } from '../../data'
-import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 const ZERO_DOT_ZERO_ONE = new BigNumber('0.01')
 const TWENTY_PERCENT = new BigNumber('0.2')

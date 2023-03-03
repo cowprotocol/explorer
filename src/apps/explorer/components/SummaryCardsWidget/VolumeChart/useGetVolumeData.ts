@@ -38,7 +38,7 @@ export function useGetVolumeData(volumeTimePeriod = VolumePeriod.DAILY): VolumeD
 }
 
 async function getLastHoursData(network: Network): Promise<RawVolumeItem[]> {
-  const data = await subgraphApiSDK.getLastHoursVolume(network, 48)
+  const data = await subgraphApiSDK.getLastHoursVolume(48, { chainId: network })
 
   return (data?.hourlyTotals as RawVolumeItem[]) || []
 }
@@ -52,7 +52,7 @@ async function getLastDaysData(
     [VolumePeriod.MONTHLY]: 30 * 2,
     [VolumePeriod.YEARLY]: 365 * 2,
   }
-  const data = await subgraphApiSDK.getLastDaysVolume(network, days[period])
+  const data = await subgraphApiSDK.getLastDaysVolume(days[period], { chainId: network })
 
   return (data?.dailyTotals as RawVolumeItem[]) || []
 }

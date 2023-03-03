@@ -2,7 +2,7 @@
 import BigNumber from 'bignumber.js'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk/order-book'
+import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 

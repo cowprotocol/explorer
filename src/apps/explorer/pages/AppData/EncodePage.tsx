@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
-import { IpfsHashInfo } from '@cowprotocol/cow-sdk/metadata'
+import { IpfsHashInfo } from '@cowprotocol/cow-sdk'
 import { DEFAULT_IPFS_READ_URI } from 'const'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'

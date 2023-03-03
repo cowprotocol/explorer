@@ -87,7 +87,7 @@ export function useGetSummaryData(): TotalSummaryResponse | undefined {
 
   const fetchAndBuildSummary = useCallback(async () => {
     setSummary((summary) => ({ ...summary, isLoading: true }))
-    subgraphApiSDK.runQuery(network, summaryQuery, undefined).then((data: SummaryQuery) => {
+    subgraphApiSDK.runQuery(summaryQuery, undefined, { chainId: network }).then((data: SummaryQuery) => {
       const summary = buildSummary(data)
       setSummary({ ...summary, isLoading: false })
     })

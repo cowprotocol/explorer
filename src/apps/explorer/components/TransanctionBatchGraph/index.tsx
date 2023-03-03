@@ -34,7 +34,7 @@ import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { layouts, LayoutNames } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
-import { OrderKind } from '@cowprotocol/cow-sdk/order-book'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)

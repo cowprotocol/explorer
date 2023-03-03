@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react'
 import AppDataWrapper from 'components/common/AppDataWrapper'
-import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk/metadata'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { Notification } from 'components/Notification'
 import Spinner from 'components/common/Spinner'

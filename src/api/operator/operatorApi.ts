@@ -5,7 +5,7 @@ import { isProd, isStaging } from 'utils/env'
 import { GetOrderParams, GetOrdersParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
 import { fetchQuery } from 'api/baseApi'
 import { prodOrderBookSDK, stagingOrderBookSDK } from 'cowSdk'
-import { Address, ApiError, UID } from '@cowprotocol/cow-sdk/order-book'
+import { Address, UID } from '@cowprotocol/cow-sdk'
 
 export { getAccountOrders } from './accountOrderUtils'
 
@@ -64,13 +64,7 @@ function _get(networkId: Network, url: string): Promise<Response> {
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
 
-  return prodOrderBookSDK.getOrder(networkId, orderId).catch((error) => {
-    if (error instanceof ApiError && error.status === 404) {
-      return stagingOrderBookSDK.getOrder(networkId, orderId)
-    }
-
-    return Promise.reject(error)
-  })
+  return prodOrderBookSDK.getOrderMultiEnv(orderId, { chainId: networkId })
 }
 
 /**
@@ -114,8 +108,8 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   // sdk not merging array responses yet
   const orders = await Promise.all([
-    prodOrderBookSDK.getTxOrders(networkId, txHash),
-    stagingOrderBookSDK.getTxOrders(networkId, txHash),
+    prodOrderBookSDK.getTxOrders(txHash, { chainId: networkId }),
+    stagingOrderBookSDK.getTxOrders(txHash, { chainId: networkId }),
   ])
 
   return [...orders[0], ...orders[1]]
@@ -141,8 +135,8 @@ export async function getTrades(
 
   // sdk not merging array responses yet
   const trades = await Promise.all([
-    prodOrderBookSDK.getTrades(networkId, { owner, orderId }),
-    stagingOrderBookSDK.getTrades(networkId, { owner, orderId }),
+    prodOrderBookSDK.getTrades({ owner, orderId }, { chainId: networkId }),
+    stagingOrderBookSDK.getTrades({ owner, orderId }, { chainId: networkId }),
   ])
 
   return [...trades[0], ...trades[1]]
