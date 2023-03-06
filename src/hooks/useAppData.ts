@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
+import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
 import { useNetworkId } from 'state/network'
 import { metadataApiSDK } from 'cowSdk'
 
