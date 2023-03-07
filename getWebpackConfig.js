@@ -150,8 +150,6 @@ function _getPlugins({ apps, config, envVars, stats, defineVars, publicPaths, is
 }
 
 function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {}, baseUrl = '/' } = {}) {
-  console.log('GET WEBPACK CONFIG')
-
   const { name: appTitle, templatePath, logoPath } = config
   const isProduction = process.env.NODE_ENV === 'production'
 
@@ -209,7 +207,7 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
           options: {
             plugins: ['@babel/plugin-proposal-optional-chaining'],
           },
-          include: /@cowprotocol\//,
+          include: /node_modules\/@cowprotocol/,
         },
         {
           test: /\.jsx?$/,
