@@ -1,11 +1,11 @@
-import { OrderKind } from '@cowprotocol/contracts'
-import { RawOrder, RawOrderStatusFromAPI } from 'api/operator'
+import { RawOrder } from 'api/operator'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 import { getOrderStatus } from 'utils'
 
 import { RAW_ORDER } from '../../data'
 import { mockTimes, DATE } from '../../testHelpers'
+import { OrderStatus, OrderKind } from '@cowprotocol/cow-sdk'
 
 function _getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000)
@@ -269,7 +269,7 @@ describe('Open status', () => {
 describe('Presignature pending status', () => {
   describe('Buy order', () => {
     test('signature is pending', () => {
-      const statusFetched: RawOrderStatusFromAPI = 'presignaturePending'
+      const statusFetched = OrderStatus.PRESIGNATURE_PENDING
 
       const order: RawOrder = {
         ...RAW_ORDER,
@@ -282,7 +282,7 @@ describe('Presignature pending status', () => {
       expect(getOrderStatus(order)).toEqual('signing')
     })
     test('signature is not pending', () => {
-      const statusFetched: RawOrderStatusFromAPI = 'open'
+      const statusFetched = OrderStatus.OPEN
 
       const order: RawOrder = {
         ...RAW_ORDER,
@@ -297,7 +297,7 @@ describe('Presignature pending status', () => {
   })
   describe('Sell order', () => {
     test('signature is pending', () => {
-      const statusFetched: RawOrderStatusFromAPI = 'presignaturePending'
+      const statusFetched = OrderStatus.PRESIGNATURE_PENDING
 
       const order: RawOrder = {
         ...RAW_ORDER,

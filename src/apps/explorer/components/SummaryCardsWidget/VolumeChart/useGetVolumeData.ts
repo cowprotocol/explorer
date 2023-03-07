@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { HistogramData, UTCTimestamp } from 'lightweight-charts'
-import { COW_SDK } from 'const'
 import { useNetworkId } from 'state/network'
 import { Network } from 'types'
 import { VolumePeriod } from './VolumeChartWidget'
 import { VolumeDataResponse } from './VolumeChart'
+import { subgraphApiSDK } from 'cowSdk'
 
 type RawVolumeItem = {
   timestamp: number
@@ -38,7 +38,7 @@ export function useGetVolumeData(volumeTimePeriod = VolumePeriod.DAILY): VolumeD
 }
 
 async function getLastHoursData(network: Network): Promise<RawVolumeItem[]> {
-  const data = await COW_SDK.cowSubgraphApi.getLastHoursVolume(48, { chainId: network })
+  const data = await subgraphApiSDK.getLastHoursVolume(48, { chainId: network })
 
   return (data?.hourlyTotals as RawVolumeItem[]) || []
 }
@@ -52,7 +52,7 @@ async function getLastDaysData(
     [VolumePeriod.MONTHLY]: 30 * 2,
     [VolumePeriod.YEARLY]: 365 * 2,
   }
-  const data = await COW_SDK.cowSubgraphApi.getLastDaysVolume(days[period], { chainId: network })
+  const data = await subgraphApiSDK.getLastDaysVolume(days[period], { chainId: network })
 
   return (data?.dailyTotals as RawVolumeItem[]) || []
 }

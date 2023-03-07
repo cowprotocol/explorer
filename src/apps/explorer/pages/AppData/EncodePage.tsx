@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
-import { IpfsHashInfo } from '@cowprotocol/cow-sdk'
-import { COW_SDK, DEFAULT_IPFS_READ_URI } from 'const'
+import { IpfsHashInfo } from '@cowprotocol/app-data'
+import { DEFAULT_IPFS_READ_URI } from 'const'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import Spinner from 'components/common/Spinner'
 import AppDataWrapper from 'components/common/AppDataWrapper'
@@ -22,6 +22,7 @@ import {
 } from './config'
 import { TabData, TabView } from '.'
 import { IpfsWrapper } from './styled'
+import { metadataApiSDK } from 'cowSdk'
 
 type EncodeProps = {
   tabData: TabData
@@ -134,7 +135,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
   const onSubmit = useCallback(async ({ formData }: FormProps): Promise<void> => {
     setIsLoading(true)
     try {
-      const hashInfo = await COW_SDK.metadataApi.calculateAppDataHash(handleFormatData(formData))
+      const hashInfo = await metadataApiSDK.calculateAppDataHash(handleFormatData(formData))
       setIpfsHashInfo(hashInfo)
     } catch (e) {
       setError(e.message)
@@ -156,8 +157,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
       if (!ipfsHashInfo) return
       setIsLoading(true)
       try {
-        await COW_SDK.updateContext({ ipfs: formData })
-        await COW_SDK.metadataApi.uploadMetadataDocToIpfs(handleFormatData(appDataForm))
+        await metadataApiSDK.uploadMetadataDocToIpfs(handleFormatData(appDataForm), formData)
         setIsDocUploaded(true)
       } catch (e) {
         if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
