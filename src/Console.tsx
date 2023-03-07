@@ -13,6 +13,7 @@ const ConsoleWrapper = styled.div`
   overflow: auto;
   z-index: 9999;
 `
+
 const ButtonGroup = styled.div`
   position: fixed;
   bottom: 1.2rem;
