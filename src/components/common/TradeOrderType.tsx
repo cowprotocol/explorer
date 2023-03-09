@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { OrderKind } from '@cowprotocol/contracts'
-
 import { capitalize } from 'utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 const TradeTypeWrapper = styled.div`
   span {

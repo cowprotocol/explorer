@@ -52,7 +52,17 @@ module.exports = {
         // enable rules override sparingly
         // only if storybook can't transpile something
         // rules: custom.module.rules,
-        rules: rulesWithMarkdownAndImages,
+        rules: [
+          ...rulesWithMarkdownAndImages,
+          {
+            test: /\.m?jsx?$/,
+            loader: 'babel-loader',
+            options: {
+              plugins: ['@babel/plugin-proposal-optional-chaining'],
+            },
+            include: /node_modules\/@cowprotocol/,
+          },
+        ],
       },
       resolve: {
         ...config.resolve,

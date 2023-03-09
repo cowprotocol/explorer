@@ -1,11 +1,11 @@
-import { GetTradesParams } from '@cowprotocol/cow-sdk'
 import { Network } from 'types'
-import { COW_SDK } from 'const'
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
 import { GetOrderParams, GetOrdersParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
 import { fetchQuery } from 'api/baseApi'
+import { prodOrderBookSDK, stagingOrderBookSDK } from 'cowSdk'
+import { Address, UID } from '@cowprotocol/cow-sdk'
 
 export { getAccountOrders } from './accountOrderUtils'
 
@@ -64,7 +64,7 @@ function _get(networkId: Network, url: string): Promise<Response> {
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
 
-  return COW_SDK.cowApi.getOrder(orderId, { chainId: networkId })
+  return prodOrderBookSDK.getOrderMultiEnv(orderId, { chainId: networkId })
 }
 
 /**
@@ -108,8 +108,8 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   // sdk not merging array responses yet
   const orders = await Promise.all([
-    COW_SDK.cowApi.getTxOrders(txHash, { chainId: networkId, env: 'prod' }),
-    COW_SDK.cowApi.getTxOrders(txHash, { chainId: networkId, env: 'staging' }),
+    prodOrderBookSDK.getTxOrders(txHash, { chainId: networkId }),
+    stagingOrderBookSDK.getTxOrders(txHash, { chainId: networkId }),
   ])
 
   return [...orders[0], ...orders[1]]
@@ -124,16 +124,19 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  *
  * Both filters cannot be used at the same time
  */
-export async function getTrades(params: GetTradesParams & WithNetworkId): Promise<RawTrade[]> {
+export async function getTrades(
+  params: {
+    owner?: Address
+    orderId?: UID
+  } & WithNetworkId,
+): Promise<RawTrade[]> {
   const { networkId, owner, orderId } = params
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderId })
 
   // sdk not merging array responses yet
   const trades = await Promise.all([
-    // @ts-expect-error to avoid duplication we just pass both parameters
-    COW_SDK.cowApi.getTrades({ owner, orderId }, { chainId: networkId, env: 'prod' }),
-    // @ts-expect-error to avoid duplication we just pass both parameters
-    COW_SDK.cowApi.getTrades({ owner, orderId }, { chainId: networkId, env: 'staging' }),
+    prodOrderBookSDK.getTrades({ owner, orderId }, { chainId: networkId }),
+    stagingOrderBookSDK.getTrades({ owner, orderId }, { chainId: networkId }),
   ])
 
   return [...trades[0], ...trades[1]]

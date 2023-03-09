@@ -2,10 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { gql } from '@apollo/client'
 import { subDays, subHours, startOfToday, startOfYesterday } from 'date-fns'
 import { Network, UiError } from 'types'
-import { COW_SDK, NATIVE_TOKEN_PER_NETWORK } from 'const'
+import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { UTCTimestamp } from 'lightweight-charts'
 import { getPercentageDifference, isNativeToken } from 'utils'
+import { subgraphApiSDK } from 'cowSdk'
 
 export function useGetTokens(networkId: Network | undefined): GetTokensResult {
   const [isLoading, setIsLoading] = useState(false)
@@ -54,7 +55,7 @@ export function useGetTokens(networkId: Network | undefined): GetTokensResult {
       const yesterdayTimestamp = startOfYesterday().setUTCHours(0) / 1000
       const lastWeekTimestamp = Number(lastDaysTimestamp(8)) // last 8 days
       try {
-        const response = await COW_SDK.cowSubgraphApi.runQuery<{ tokenDailyTotals: TokenDailyTotalsResponse[] }>(
+        const response = await subgraphApiSDK.runQuery<{ tokenDailyTotals: TokenDailyTotalsResponse[] }>(
           GET_TOKENS_QUERY,
           {
             todayTimestamp,
