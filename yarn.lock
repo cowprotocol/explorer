@@ -7042,9 +7042,9 @@ console-control-strings@^1.0.0, console-control-strings@^1.1.0, console-control-
   integrity sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=
 
 console-feed@^3.0.1:
-  version "3.4.3"
-  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.4.3.tgz#bc36ad59ad26af4b5d18c600e371f436cf445d8b"
-  integrity sha512-nMDJiw3NLxt7zk+IJVSy3id1s7DJXWl316oliWQV5KaUZ7NLk80Vu4Jy8WUKpJdnzckg91/DwAUPOaaGEbLcdQ==
+  version "3.4.5"
+  resolved "https://registry.yarnpkg.com/console-feed/-/console-feed-3.4.5.tgz#e4b592e4eafd3974ca659f425aad2b786e8d8b68"
+  integrity sha512-UMOnPBdgNJOdO37ztX+4lW7igp+jlnIiJ5jQleqgbPOGthVbzqGNNmjyPyItl1VFJR/zBF/2535PeLqA4QAcZQ==
   dependencies:
     "@emotion/core" "^10.0.10"
     "@emotion/styled" "^10.0.12"
