@@ -52,6 +52,10 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
   const formRef = React.useRef<Form<FormProps>>(null)
   const ipfsFormRef = React.useRef<Form<FormProps>>(null)
 
+  const isDisabled = !appDataForm.metadata?.orderClass?.orderClass || disabledAppData
+
+  console.log('debug encode', encode)
+
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
       const latestSchema = await getSchema()
@@ -214,7 +218,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
           schema={schema}
           uiSchema={uiSchema}
         >
-          <button className="btn btn-info" disabled={disabledAppData} type="submit">
+          <button className="btn btn-info" disabled={isDisabled} type="submit">
             GENERATE APPDATA DOC
           </button>
         </Form>

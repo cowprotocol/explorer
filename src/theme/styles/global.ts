@@ -69,13 +69,15 @@ export const StaticGlobalStyle = createGlobalStyle`
 export const ThemedGlobalStyle = createGlobalStyle`
   input,
   textarea,
-  button {
+  button,
+  select {
     font-family: ${({ theme }): string => theme.fontDefault}, sans-serif;
   }
   @supports (font-variation-settings: normal) {
     input,
     textarea,
-    button {
+    button,
+    select {
       font-family: ${({ theme }): string => theme.fontVariable}, sans-serif;
     }
   }
