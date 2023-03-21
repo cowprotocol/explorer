@@ -54,8 +54,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
 
   const isDisabled = !appDataForm.metadata?.orderClass?.orderClass || disabledAppData
 
-  console.log('debug encode', encode)
-
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
       const latestSchema = await getSchema()
