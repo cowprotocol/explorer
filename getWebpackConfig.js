@@ -202,6 +202,14 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
           ],
         },
         {
+          test: /\.m?jsx?$/,
+          loader: 'babel-loader',
+          options: {
+            plugins: ['@babel/plugin-proposal-optional-chaining'],
+          },
+          include: /node_modules\/@cowprotocol/,
+        },
+        {
           test: /\.jsx?$/,
           exclude: /node_modules/,
           use: {

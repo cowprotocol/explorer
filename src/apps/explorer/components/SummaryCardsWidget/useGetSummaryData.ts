@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
-import { COW_SDK } from 'const'
 import { useCallback, useEffect, useState } from 'react'
 import { useNetworkId } from 'state/network'
 import { Network } from 'types'
+import { subgraphApiSDK } from 'cowSdk'
 
 export interface BatchInfo {
   lastBatchDate: Date
@@ -87,7 +87,7 @@ export function useGetSummaryData(): TotalSummaryResponse | undefined {
 
   const fetchAndBuildSummary = useCallback(async () => {
     setSummary((summary) => ({ ...summary, isLoading: true }))
-    COW_SDK.cowSubgraphApi.runQuery(summaryQuery, undefined, { chainId: network }).then((data: SummaryQuery) => {
+    subgraphApiSDK.runQuery(summaryQuery, undefined, { chainId: network }).then((data: SummaryQuery) => {
       const summary = buildSummary(data)
       setSummary({ ...summary, isLoading: false })
     })

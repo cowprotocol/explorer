@@ -24,7 +24,7 @@ export const INVALID_IPFS_CREDENTIALS = [
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
-  const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)).default as JSONSchema7
+  const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
   deleteAllPropertiesByName(latestSchema, 'examples')
   deleteAllPropertiesByName(latestSchema, '$id')
   return formatSchema(latestSchema)
