@@ -34,6 +34,9 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const ordersPromiseBarn = state.barnHasNext
     ? orderBookSDK
         .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging' })
+        .then(() => {
+          throw new Error('💣 BOOOM!')
+        })
         .catch((error) => {
           console.error('[getAccountOrders] Error getting orders for account ', owner, error)
           return []

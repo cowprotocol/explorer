@@ -107,10 +107,15 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
   const orderPromises = orderBookSDK.getTxOrders(txHash, { chainId: networkId })
-  const orderPromisesBarn = orderBookSDK.getTxOrders(txHash, { chainId: networkId, env: 'staging' }).catch((error) => {
-    console.error('[getTxOrders] Error getting the orders for Barn', error)
-    return []
-  })
+  const orderPromisesBarn = orderBookSDK
+    .getTxOrders(txHash, { chainId: networkId, env: 'staging' })
+    .then(() => {
+      throw new Error('💣 BOOOM!')
+    })
+    .catch((error) => {
+      console.error('[getTxOrders] Error getting the orders for Barn', error)
+      return []
+    })
 
   // sdk not merging array responses yet
   const orders = await Promise.all([orderPromises, orderPromisesBarn])
@@ -139,6 +144,9 @@ export async function getTrades(
   const tradesPromise = orderBookSDK.getTrades({ owner, orderId }, { chainId: networkId })
   const tradesPromiseBarn = orderBookSDK
     .getTrades({ owner, orderId }, { chainId: networkId, env: 'staging' })
+    .then(() => {
+      throw new Error('💣 BOOOM!')
+    })
     .catch((error) => {
       console.error('[getTrades] Error getting the trades for Barn', params, error)
       return []
