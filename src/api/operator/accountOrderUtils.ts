@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { GetAccountOrdersParams, RawOrder } from './types'
-import { prodOrderBookSDK, stagingOrderBookSDK } from 'cowSdk'
+import { orderBookSDK } from 'cowSdk'
 import { EnrichedOrder } from '@cowprotocol/cow-sdk'
 
 /**
@@ -27,12 +27,20 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
     }
   }
 
-  const [prodOrders, barnOrders] = await Promise.all([
-    state.prodHasNext ? prodOrderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId }) : [],
-    state.barnHasNext
-      ? stagingOrderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId })
-      : [],
-  ])
+  const ordersPromise = state.prodHasNext
+    ? orderBookSDK.getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId })
+    : []
+
+  const ordersPromiseBarn = state.barnHasNext
+    ? orderBookSDK
+        .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging' })
+        .catch((error) => {
+          console.error('[getAccountOrders] Error getting orders for account ', owner, error)
+          return []
+        })
+    : []
+
+  const [prodOrders, barnOrders] = await Promise.all([ordersPromise, ordersPromiseBarn])
 
   state.prodHasNext = prodOrders.length === limitPlusOne
   if (state.prodHasNext) {

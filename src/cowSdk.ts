@@ -18,7 +18,6 @@ function getSubgraphUrls(): Record<SupportedChainId, string> {
   }
 }
 
-export const prodOrderBookSDK = new OrderBookApi({ env: 'prod' })
-export const stagingOrderBookSDK = new OrderBookApi({ env: 'staging' })
+export const orderBookSDK = new OrderBookApi({ env: 'prod' })
 export const subgraphApiSDK = new SubgraphApi(undefined, getSubgraphUrls())
 export const metadataApiSDK = new MetadataApi()
