@@ -4,7 +4,7 @@ import { isProd, isStaging } from 'utils/env'
 
 import { GetOrderParams, GetOrdersParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
 import { fetchQuery } from 'api/baseApi'
-import { prodOrderBookSDK, stagingOrderBookSDK } from 'cowSdk'
+import { orderBookSDK } from 'cowSdk'
 import { Address, UID } from '@cowprotocol/cow-sdk'
 
 export { getAccountOrders } from './accountOrderUtils'
@@ -64,7 +64,7 @@ function _get(networkId: Network, url: string): Promise<Response> {
 export async function getOrder(params: GetOrderParams): Promise<RawOrder | null> {
   const { networkId, orderId } = params
 
-  return prodOrderBookSDK.getOrderMultiEnv(orderId, { chainId: networkId })
+  return orderBookSDK.getOrderMultiEnv(orderId, { chainId: networkId })
 }
 
 /**
@@ -106,11 +106,14 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
 
   console.log(`[getTxOrders] Fetching tx orders on network ${networkId}`)
 
+  const orderPromises = orderBookSDK.getTxOrders(txHash, { chainId: networkId })
+  const orderPromisesBarn = orderBookSDK.getTxOrders(txHash, { chainId: networkId, env: 'staging' }).catch((error) => {
+    console.error('[getTxOrders] Error getting the orders for Barn', error)
+    return []
+  })
+
   // sdk not merging array responses yet
-  const orders = await Promise.all([
-    prodOrderBookSDK.getTxOrders(txHash, { chainId: networkId }),
-    stagingOrderBookSDK.getTxOrders(txHash, { chainId: networkId }),
-  ])
+  const orders = await Promise.all([orderPromises, orderPromisesBarn])
 
   return [...orders[0], ...orders[1]]
 }
@@ -133,11 +136,16 @@ export async function getTrades(
   const { networkId, owner, orderId } = params
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderId })
 
+  const tradesPromise = orderBookSDK.getTrades({ owner, orderId }, { chainId: networkId })
+  const tradesPromiseBarn = orderBookSDK
+    .getTrades({ owner, orderId }, { chainId: networkId, env: 'staging' })
+    .catch((error) => {
+      console.error('[getTrades] Error getting the trades for Barn', params, error)
+      return []
+    })
+
   // sdk not merging array responses yet
-  const trades = await Promise.all([
-    prodOrderBookSDK.getTrades({ owner, orderId }, { chainId: networkId }),
-    stagingOrderBookSDK.getTrades({ owner, orderId }, { chainId: networkId }),
-  ])
+  const trades = await Promise.all([tradesPromise, tradesPromiseBarn])
 
   return [...trades[0], ...trades[1]]
 }
