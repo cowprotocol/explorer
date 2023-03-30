@@ -204,8 +204,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
       label,
     })
 
-  const isFeeHidden = order.class === 'limit' && status !== 'filled'
-
   return (
     <Table
       body={

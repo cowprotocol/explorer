@@ -196,7 +196,7 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
   const sellFormattedAmount =
     sellToken && sellToken.decimals >= 0 ? formatSmartMaxPrecision(sellAmount, sellToken) : sellAmount.toString(10)
 
-  if (!network) {
+  if (!network || !txHash) {
     return null
   }
 
