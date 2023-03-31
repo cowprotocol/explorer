@@ -56,17 +56,6 @@ describe('getOrderSurplus', () => {
       })
     })
     describe('partiallyFillable', () => {
-      // const order: RawOrder = {
-      //   ...RAW_ORDER,
-      //   partiallyFillable: true,
-      //   kind: OrderKind.BUY,
-      //   sellAmount: '100',
-      //   executedSellAmountBeforeFees: '50',
-      //   buyAmount: '100',
-      //   executedBuyAmount: '40',
-      // }
-      // expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
-
       const ORDER = {
         ...RAW_ORDER,
         partiallyFillable: true,
