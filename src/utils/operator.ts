@@ -145,11 +145,11 @@ function _getPartialFillSellSurplus(order: RawOrder): Surplus | null {
   // BUY is QUOTE
   const price = buyAmountBigNumber.dividedBy(sellAmountBigNumber)
 
-  // What you would get at limit price, in sell token atoms
+  // What you would get at limit price, in buy token atoms
   const minimumBuyAmount = executedSellAmountBigNumber.multipliedBy(price)
 
   // Surplus is the difference between what you got minus what you would get if executed at limit price
-  // Surplus amount, in sell token atoms
+  // Surplus amount, in buy token atoms
   const amount = executedBuyAmountBigNumber.minus(minimumBuyAmount)
 
   // The percentage is based on the amount you would receive, if executed at limit price
