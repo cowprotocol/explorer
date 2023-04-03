@@ -1,10 +1,6 @@
 import { formatPercentage } from '../../../src/utils/format'
 import BigNumber from 'bignumber.js'
 
-function bn(number: string): BigNumber {
-  return new BigNumber(number)
-}
-
 const CASES = [
   { given: '0', result: '0%' },
   { given: '0.000000000001', result: '<0.01%' },
@@ -27,7 +23,7 @@ const CASES = [
 describe('formatPercentage', () => {
   CASES.forEach(({ given, result }) => {
     it(`Given ${given}, when formats percentage, then expect ${result}`, async () => {
-      const percentage = formatPercentage(bn(given))
+      const percentage = formatPercentage(new BigNumber(given))
       expect(percentage).toEqual(result)
     })
   })
