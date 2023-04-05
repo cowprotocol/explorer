@@ -24,6 +24,7 @@ import Icon from 'components/Icon'
 import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -63,7 +64,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4fr 2fr 3fr 3fr 3fr 4fr 4fr;
+    grid-template-columns: 4fr 2fr 3fr 3fr 3.5fr 3fr 4fr;
   }
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {
@@ -182,6 +183,11 @@ const StyledLinkButton = styled(LinkButton)`
   }
 `
 
+const StyledShimmerBar = styled(ShimmerBar)`
+  min-height: 20px;
+  min-width: 100px;
+`
+
 export type Props = StyledUserDetailsTableProps & {
   trades: Trade[] | undefined
   order: Order | null
@@ -224,8 +230,6 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInversed }) => {
   const buyToken = tokens[buyTokenAddress]
   const sellToken = tokens[sellTokenAddress]
 
-  const executionTimeFormatted =
-    executionTime instanceof Date && !isNaN(Date.parse(executionTime.toString())) ? executionTime : new Date()
   const executionPrice = calculateExecutionPrice(isPriceInversed, sellAmount, buyAmount, sellToken, buyToken)
   const executionToken = isPriceInversed ? buyToken : sellToken
 
@@ -272,7 +276,7 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInversed }) => {
       </td>
       <td>
         <HeaderTitle>Execution time</HeaderTitle>
-        <HeaderValue>{<DateDisplay date={executionTimeFormatted} showIcon={true} />}</HeaderValue>
+        <HeaderValue>{executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}</HeaderValue>
       </td>
       <td>
         <HeaderTitle></HeaderTitle>

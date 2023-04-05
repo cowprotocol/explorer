@@ -66,7 +66,7 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   buyTokenAddress: string
   sellToken?: TokenErc20 | null
   sellTokenAddress: string
-  executionTime: Date
+  executionTime: Date | null
   surplusAmount?: BigNumber
   surplusPercentage?: BigNumber
 }
