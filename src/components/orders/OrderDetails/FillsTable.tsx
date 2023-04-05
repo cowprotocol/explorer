@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
 import { Order, Trade } from 'api/operator'
-import { abbreviateString, formatSmartMaxPrecision } from 'utils'
+import { abbreviateString } from 'utils'
 import { useMultipleErc20 } from 'hooks/useErc20'
 
 import StyledUserDetailsTable, {
@@ -19,6 +19,7 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { LinkButton } from '../DetailsTable'
 import { FilledProgress } from '../FilledProgress'
+import { TokenAmount } from 'components/token/TokenAmount'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -58,7 +59,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4fr 2fr 2fr 3fr 3fr 4fr 4fr;
+    grid-template-columns: 4fr 2fr 3fr 3fr 3fr 4fr 4fr;
   }
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {
@@ -164,6 +165,17 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
 const MainWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+`
+
+const StyledLinkButton = styled(LinkButton)`
+  margin-left: 0;
+
+  ${media.mediumDown} {
+    min-width: auto;
+    font-size: 12px;
+    padding: 4px 8px;
+  }
 `
 
 export type Props = StyledUserDetailsTableProps & {
@@ -188,13 +200,6 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
   const sellToken = tokens[sellTokenAddress]
   const executionTimeFormatted =
     executionTime instanceof Date && !isNaN(Date.parse(executionTime.toString())) ? executionTime : new Date()
-
-  const buyFormattedAmount =
-    buyToken && buyToken.decimals >= 0
-      ? formatSmartMaxPrecision(buyAmount, tokens[buyTokenAddress])
-      : sellAmount.toString(10)
-  const sellFormattedAmount =
-    sellToken && sellToken.decimals >= 0 ? formatSmartMaxPrecision(sellAmount, sellToken) : sellAmount.toString(10)
 
   if (!network || !txHash) {
     return null
@@ -222,19 +227,20 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
-          {buyFormattedAmount} {buyToken?.symbol}
+          <TokenAmount amount={buyAmount} token={buyToken}/>
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Sell amount</HeaderTitle>
         <HeaderValue>
-          {sellFormattedAmount} {sellToken?.symbol}
+          <TokenAmount amount={sellAmount} token={sellToken}/>
         </HeaderValue>
       </td>
       <td>
+          {/*TODO: I'm not sure that it's a proper value of execution price*/}
         <HeaderTitle>Execution price</HeaderTitle>
         <HeaderValue>
-          {sellFormattedAmount} {sellToken?.symbol}
+          <TokenAmount amount={sellAmount} token={sellToken}/>
         </HeaderValue>
       </td>
       <td>
@@ -244,10 +250,10 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
       <td>
         <HeaderTitle></HeaderTitle>
         <HeaderValue>
-          <LinkButton to={`/tx/${txHash}/?tab=graph`}>
+          <StyledLinkButton to={`/tx/${txHash}/?tab=graph`}>
             <FontAwesomeIcon icon={faProjectDiagram} />
             View batch graph
-          </LinkButton>
+          </StyledLinkButton>
         </HeaderValue>
       </td>
     </tr>
@@ -257,9 +263,8 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
 const FillsTable: React.FC<Props> = (props) => {
   const { trades, order, tableState, showBorderTable = false } = props
   const tradeItems = (items: Trade[] | undefined): JSX.Element => {
-    let tableContent
     if (!items || items.length === 0) {
-      tableContent = (
+      return (
         <tr className="row-empty">
           <td className="row-td-empty">
             <EmptyItemWrapper>
@@ -269,7 +274,7 @@ const FillsTable: React.FC<Props> = (props) => {
         </tr>
       )
     } else {
-      tableContent = (
+        return (
         <>
           {items.map((item, i) => (
             <RowFill key={item.txHash} index={i + tableState.pageOffset} trade={item} />
@@ -277,7 +282,6 @@ const FillsTable: React.FC<Props> = (props) => {
         </>
       )
     }
-    return tableContent
   }
 
   return (

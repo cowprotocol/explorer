@@ -1,16 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-
 import { media } from 'theme/styles/media'
-
 import { Order } from 'api/operator'
-
-import { FormatAmountPrecision, formatSmartMaxPrecision, formattingAmountPrecision, safeTokenName } from 'utils'
-
+import { safeTokenName } from 'utils'
 import { ProgressBar } from 'components/common/ProgressBar'
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
-import BigNumber from "bignumber.js";
-import { TokenErc20 } from "@gnosis.pm/dex-js";
+import { TokenAmount } from 'components/token/TokenAmount'
 
 export type Props = {
   order: Order
@@ -98,14 +93,6 @@ const OrderAssetsInfoWrapper = styled.span`
   font-size: 12px;
   line-height: normal;
 `
-
-// TODO: unify with TokenAmount in @cowprotocol/cowswap
-function TokenAmount({amount, token, symbol}: {amount: BigNumber, symbol: string, token?: TokenErc20 | null}) {
-  const fullAmount = formatSmartMaxPrecision(amount, token)
-  const displayedAmount = formattingAmountPrecision(amount, token, FormatAmountPrecision.highPrecision)
-
-  return <span title={fullAmount + ' ' + symbol}>{displayedAmount} {symbol}</span>
-}
 
 export function FilledProgress(props: Props): JSX.Element {
   const {
