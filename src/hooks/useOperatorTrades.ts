@@ -89,7 +89,9 @@ export function useOrderTrades(order: Order | null): Result {
     const { buyToken, sellToken } = order
 
     const trades = rawTrades.map((trade) => {
-      return { ...transformTrade(trade, tradesTimestamps[trade.txHash]), buyToken, sellToken }
+      const timestamp = trade.txHash ? tradesTimestamps[trade.txHash] : undefined
+
+      return { ...transformTrade(trade, timestamp), buyToken, sellToken }
     })
 
     setTrades(trades)
