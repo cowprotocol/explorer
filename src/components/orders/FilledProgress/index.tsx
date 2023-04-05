@@ -29,6 +29,12 @@ const Wrapper = styled.div`
   > span > b {
     font-weight: ${({ theme }): string => theme.fontMedium};
   }
+
+  > div {
+    ${media.mobile} {
+      max-width: 150px;
+    }
+  }
 `
 
 const TableHeading = styled.div`
