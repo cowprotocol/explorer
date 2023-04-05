@@ -11,7 +11,9 @@ type Result = {
   isLoading: boolean
 }
 
-async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<{[txHash: string]: number}> {
+type TradesTimestamps = { [txHash: string]: number }
+
+async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
   const requests = rawTrades.map(({ txHash, blockNumber }) => {
     return web3.eth.getBlock(blockNumber).then(res => ({
       txHash,
@@ -24,7 +26,7 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<{[txHash: s
   return data.reduce((acc, val) => {
     acc[val.txHash] = val.timestamp
     return acc
-  }, {})
+  }, {} as TradesTimestamps)
 }
 
 /**
@@ -35,7 +37,7 @@ export function useOrderTrades(order: Order | null): Result {
   const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])
   const [rawTrades, setRawTrades] = useState<RawTrade[]>([])
-  const [tradesTimestamps, setTradesTimestamps] = useState<{[txHash: string]: number}>({})
+  const [tradesTimestamps, setTradesTimestamps] = useState<TradesTimestamps>({})
 
   // Here we assume that we are already in the right network
   // contrary to useOrder hook, where it searches all networks for a given orderId
