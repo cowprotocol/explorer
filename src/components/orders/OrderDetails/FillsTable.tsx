@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
 import { Order, Trade } from 'api/operator'
 import { abbreviateString } from 'utils'
@@ -20,6 +20,10 @@ import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { LinkButton } from '../DetailsTable'
 import { FilledProgress } from '../FilledProgress'
 import { TokenAmount } from 'components/token/TokenAmount'
+import Icon from 'components/Icon'
+import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import { TEN_BIG_NUMBER } from 'const'
+import BigNumber from 'bignumber.js'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -187,9 +191,30 @@ export type Props = StyledUserDetailsTableProps & {
 interface RowProps {
   index: number
   trade: Trade
+  isPriceInversed: boolean
 }
 
-const RowFill: React.FC<RowProps> = ({ trade }) => {
+function calculateExecutionPrice(
+  isPriceInversed: boolean,
+  sellAmount: BigNumber,
+  buyAmount: BigNumber,
+  sellToken?: TokenErc20 | null,
+  buyToken?: TokenErc20 | null
+): BigNumber | null {
+  if (!sellToken || !buyToken) return null
+
+  const sellData = { amount: sellAmount, decimals: sellToken.decimals }
+  const buyData = { amount: buyAmount, decimals: buyToken.decimals }
+
+  return calculatePrice({
+    numerator: isPriceInversed ? buyData : sellData,
+    denominator: isPriceInversed ? sellData : buyData,
+  }).multipliedBy(
+    TEN_BIG_NUMBER.exponentiatedBy((isPriceInversed ? buyToken : sellToken).decimals)
+  )
+}
+
+const RowFill: React.FC<RowProps> = ({ trade, isPriceInversed }) => {
   const network = useNetworkId() || undefined
   const { txHash, sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, executionTime } = trade
   const { value: tokens } = useMultipleErc20({
@@ -198,8 +223,11 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
   })
   const buyToken = tokens[buyTokenAddress]
   const sellToken = tokens[sellTokenAddress]
+
   const executionTimeFormatted =
     executionTime instanceof Date && !isNaN(Date.parse(executionTime.toString())) ? executionTime : new Date()
+  const executionPrice = calculateExecutionPrice(isPriceInversed, sellAmount, buyAmount, sellToken, buyToken)
+  const executionToken = isPriceInversed ? buyToken : sellToken
 
   if (!network || !txHash) {
     return null
@@ -237,10 +265,9 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
         </HeaderValue>
       </td>
       <td>
-          {/*TODO: I'm not sure that it's a proper value of execution price*/}
         <HeaderTitle>Execution price</HeaderTitle>
         <HeaderValue>
-          <TokenAmount amount={sellAmount} token={sellToken}/>
+            {executionPrice && <TokenAmount amount={executionPrice} token={executionToken}/>}
         </HeaderValue>
       </td>
       <td>
@@ -262,7 +289,7 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
 
 const FillsTable: React.FC<Props> = (props) => {
   const { trades, order, tableState, showBorderTable = false } = props
-  const tradeItems = (items: Trade[] | undefined): JSX.Element => {
+  const tradeItems = (items: Trade[] | undefined, isPriceInversed: boolean): JSX.Element => {
     if (!items || items.length === 0) {
       return (
         <tr className="row-empty">
@@ -277,12 +304,13 @@ const FillsTable: React.FC<Props> = (props) => {
         return (
         <>
           {items.map((item, i) => (
-            <RowFill key={item.txHash} index={i + tableState.pageOffset} trade={item} />
+            <RowFill key={item.txHash} index={i + tableState.pageOffset} trade={item} isPriceInversed={isPriceInversed} />
           ))}
         </>
       )
     }
   }
+  const [isPriceInversed, setIsPriceInversed] = useState(false)
 
   return (
     <MainWrapper>
@@ -295,12 +323,12 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Surplus</th>
             <th>Buy amount</th>
             <th>Sell amount</th>
-            <th>Execution price</th>
+            <th>Execution price <Icon icon={faExchangeAlt} onClick={() => setIsPriceInversed(value => !value)} /></th>
             <th>Execution time</th>
             <th></th>
           </tr>
         }
-        body={tradeItems(trades)}
+        body={tradeItems(trades, isPriceInversed)}
       />
     </MainWrapper>
   )
