@@ -114,45 +114,19 @@ export function FilledProgress(props: Props): JSX.Element {
   } = props
 
   const touched = filledPercentage.gt(0)
+  const isSell = kind === 'sell'
 
-  let mainToken
-  let mainAddress
-  let mainAmount
-  let swappedToken
-  let swappedAddress
-  let swappedAmount
-  let action: string | null | undefined
-
-  let filledAmountWithFee, swappedAmountWithFee
-  if (kind === 'sell') {
-    action = 'sold'
-
-    mainToken = sellToken
-    mainAddress = sellTokenAddress
-    mainAmount = sellAmount.plus(feeAmount)
-
-    swappedToken = buyToken
-    swappedAddress = buyTokenAddress
-    swappedAmount = executedBuyAmount
-
-    // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
-    filledAmountWithFee = filledAmount.plus(executedFeeAmount)
-    swappedAmountWithFee = swappedAmount
-  } else {
-    action = 'bought'
-
-    mainToken = buyToken
-    mainAddress = buyTokenAddress
-    mainAmount = buyAmount
-
-    swappedToken = sellToken
-    swappedAddress = sellTokenAddress
-    swappedAmount = executedSellAmount
-
-    // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
-    filledAmountWithFee = filledAmount
-    swappedAmountWithFee = swappedAmount.plus(executedFeeAmount)
-  }
+  const mainToken = isSell ? sellToken : buyToken
+  const mainAddress = isSell ? sellTokenAddress : buyTokenAddress
+  const mainAmount = isSell ? sellAmount.plus(feeAmount) : buyAmount
+  const swappedToken = isSell ? buyToken : sellToken
+  const swappedAddress = isSell ? buyTokenAddress : sellTokenAddress
+  const swappedAmount = isSell ? executedBuyAmount : executedSellAmount
+  const action = isSell ? 'sold' : 'bought'
+  // Sell orders, add the fee in to the sellAmount (mainAmount, in this case)
+  // Buy orders need to add the fee, to the sellToken too (swappedAmount in this case)
+  const filledAmountWithFee = isSell ? filledAmount.plus(executedFeeAmount) : filledAmount
+  const swappedAmountWithFee = isSell ? swappedAmount : swappedAmount.plus(executedFeeAmount)
 
   // In case the token object is empty, display the address
   const mainSymbol = mainToken ? safeTokenName(mainToken) : mainAddress
