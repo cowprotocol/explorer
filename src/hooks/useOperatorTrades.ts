@@ -24,7 +24,8 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
   const data = await Promise.all(requests)
 
   return data.reduce((acc, val) => {
-    acc[val.txHash] = val.timestamp
+    if (val.txHash) acc[val.txHash] = val.timestamp
+
     return acc
   }, {} as TradesTimestamps)
 }
