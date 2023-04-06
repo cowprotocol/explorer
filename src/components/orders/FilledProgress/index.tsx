@@ -43,18 +43,22 @@ const TableHeading = styled.div`
   padding: 1.6rem;
   display: flex;
   gap: 2rem;
+
   ${media.mobile} {
     flex-direction: column;
     gap: 1rem;
   }
+
   .title {
     text-transform: uppercase;
     font-size: 1.1rem;
   }
+
   .fillNumber {
     font-size: 3.2rem;
     margin: 1.5rem 0 1rem 0;
     color: ${({ theme }): string => theme.green};
+
     ${media.mobile} {
       font-size: 2.8rem;
     }
@@ -63,9 +67,11 @@ const TableHeading = styled.div`
   .priceNumber {
     font-size: 2.2rem;
     margin: 1rem 0;
+
     ${media.mobile} {
       font-size: 1.8rem;
     }
+
     span {
       line-height: 1;
     }
@@ -77,12 +83,15 @@ const TableHeadingContent = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 27rem;
+
   ${media.mobile} {
     flex-direction: column;
   }
+
   .progress-line {
     width: 100%;
   }
+
   &.limit-price {
     width: 38rem;
   }
@@ -147,14 +156,14 @@ export function FilledProgress(props: Props): JSX.Element {
       <OrderAssetsInfoWrapper>
         <b>
           {/* Executed part (bought/sold tokens) */}
-          <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol}/>
+          <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol} />
         </b>{' '}
         {!fullyFilled && (
           // Show the total amount to buy/sell. Only for orders that are not 100% executed
           <>
             of{' '}
             <b>
-              <TokenAmount amount={mainAmount} token={mainToken} symbol={mainSymbol}/>
+              <TokenAmount amount={mainAmount} token={mainToken} symbol={mainSymbol} />
             </b>{' '}
           </>
         )}
@@ -166,7 +175,7 @@ export function FilledProgress(props: Props): JSX.Element {
           <>
             for a total of{' '}
             <b>
-              <TokenAmount amount={swappedAmountWithFee} token={swappedToken} symbol={swappedSymbol}/>
+              <TokenAmount amount={swappedAmountWithFee} token={swappedToken} symbol={swappedSymbol} />
             </b>
           </>
         )}
