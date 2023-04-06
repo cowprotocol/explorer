@@ -43,10 +43,9 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
  * Fetches trades for given order
  */
 export function useOrderTrades(order: Order | null): Result {
-  const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])
-  const [rawTrades, setRawTrades] = useState<RawTrade[]>([])
+  const [rawTrades, setRawTrades] = useState<RawTrade[] | null>(null)
   const [tradesTimestamps, setTradesTimestamps] = useState<TradesTimestamps>({})
 
   // Here we assume that we are already in the right network
@@ -56,8 +55,6 @@ export function useOrderTrades(order: Order | null): Result {
   const fetchTrades = useCallback(
     async (controller: AbortController, _networkId: Network): Promise<void> => {
       if (!order) return
-
-      setIsLoading(true)
 
       const { uid: orderId } = order
 
@@ -72,9 +69,8 @@ export function useOrderTrades(order: Order | null): Result {
         const msg = `Failed to fetch trades`
         console.error(msg, e)
 
+        setRawTrades([])
         setError({ message: msg, type: 'error' })
-      } finally {
-        setIsLoading(false)
       }
     },
     [order],
@@ -82,6 +78,8 @@ export function useOrderTrades(order: Order | null): Result {
 
   // Fetch blocks timestamps for trades
   useEffect(() => {
+    if (!rawTrades) return
+
     fetchTradesTimestamps(rawTrades)
       .then(setTradesTimestamps)
       .catch((error) => {
@@ -93,7 +91,7 @@ export function useOrderTrades(order: Order | null): Result {
 
   // Transform trades adding tokens and timestamps
   useEffect(() => {
-    if (!order) return
+    if (!order || !rawTrades) return
 
     const { buyToken, sellToken } = order
 
@@ -124,5 +122,5 @@ export function useOrderTrades(order: Order | null): Result {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchTrades, networkId, order?.uid, executedSellAmount, executedBuyAmount])
 
-  return { trades, error, isLoading }
+  return { trades, error, isLoading: rawTrades === null }
 }
