@@ -4,6 +4,9 @@
   "description": "",
   "main": "src/index.js",
   "sideEffects": false,
+  "engines": {
+    "node": "16"
+  },
   "scripts": {
     "start": "npm run start:explorer",
     "start:explorer": "APP=explorer npm run start:apps",
