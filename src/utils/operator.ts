@@ -351,23 +351,14 @@ export function transformOrder(rawOrder: RawOrder): Order {
     filledPercentage,
     surplusAmount,
     surplusPercentage,
-  }
+  } as Order
 }
 
 /**
  * Transforms a RawTrade into a Trade object
  */
-export function transformTrade(rawTrade: TradeMetaData & { executionTime?: string }): Trade {
-  const {
-    orderUid,
-    buyAmount,
-    sellAmount,
-    sellAmountBeforeFees,
-    buyToken,
-    sellToken,
-    executionTime = '',
-    ...rest
-  } = rawTrade
+export function transformTrade(rawTrade: TradeMetaData, executionTimestamp?: number): Trade {
+  const { orderUid, buyAmount, sellAmount, sellAmountBeforeFees, buyToken, sellToken, ...rest } = rawTrade
 
   return {
     ...rest,
@@ -377,6 +368,6 @@ export function transformTrade(rawTrade: TradeMetaData & { executionTime?: strin
     sellAmountBeforeFees: new BigNumber(sellAmountBeforeFees),
     buyTokenAddress: buyToken,
     sellTokenAddress: sellToken,
-    executionTime: new Date(executionTime) || null,
+    executionTime: executionTimestamp ? new Date(executionTimestamp * 1000) : null,
   }
 }

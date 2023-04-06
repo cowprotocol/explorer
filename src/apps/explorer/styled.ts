@@ -63,6 +63,7 @@ export const MainWrapper = styled.div`
     flex-direction: column;
     flex-grow: 1;
     justify-content: space-between;
+    width: 100%;
   }
   footer {
     flex-direction: row;

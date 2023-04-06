@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
 import { Order, Trade } from 'api/operator'
-import { abbreviateString, formatSmartMaxPrecision } from 'utils'
+import { abbreviateString } from 'utils'
 import { useMultipleErc20 } from 'hooks/useErc20'
 
 import StyledUserDetailsTable, {
@@ -19,6 +19,12 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { LinkButton } from '../DetailsTable'
 import { FilledProgress } from '../FilledProgress'
+import { TokenAmount } from 'components/token/TokenAmount'
+import Icon from 'components/Icon'
+import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
+import { TEN_BIG_NUMBER } from 'const'
+import BigNumber from 'bignumber.js'
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -26,13 +32,17 @@ const Wrapper = styled(StyledUserDetailsTable)`
       padding: 0 2rem;
     }
   }
+
   > tbody {
     min-height: 37rem;
     border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
+
     > tr {
       min-height: 7.4rem;
+
       &.header-row {
         display: none;
+
         ${media.mobile} {
           display: flex;
           background: transparent;
@@ -41,10 +51,12 @@ const Wrapper = styled(StyledUserDetailsTable)`
           margin: 0;
           box-shadow: none;
           min-height: 2rem;
+
           td {
             padding: 0;
             margin: 0;
             margin-top: 1rem;
+
             .mobile-header {
               margin: 0;
             }
@@ -52,35 +64,43 @@ const Wrapper = styled(StyledUserDetailsTable)`
         }
       }
     }
+
     > tr > td:first-child {
       padding: 0 2rem;
     }
   }
+
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4fr 2fr 2fr 3fr 3fr 4fr 4fr;
+    grid-template-columns: 4fr 2fr 3fr 3fr 3.5fr 3fr 4fr;
   }
+
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {
     justify-content: center;
   }
+
   tr > td {
     span.span-inside-tooltip {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+
       img {
         padding: 0;
       }
     }
   }
+
   ${media.mobile} {
     > thead > tr {
       display: none;
+
       > th:first-child {
         padding: 0 1rem;
       }
     }
+
     > tbody > tr {
       grid-template-columns: none;
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
@@ -88,14 +108,17 @@ const Wrapper = styled(StyledUserDetailsTable)`
       border-radius: 6px;
       margin-top: 10px;
       padding: 12px;
+
       &:hover {
         background: none;
         backdrop-filter: none;
       }
+
       td:first-child {
         padding: 0 1rem;
       }
     }
+
     tr > td {
       display: flex;
       flex: 1;
@@ -104,14 +127,17 @@ const Wrapper = styled(StyledUserDetailsTable)`
       margin: 0;
       margin-bottom: 18px;
       min-height: 32px;
+
       span.span-inside-tooltip {
         align-items: flex-end;
         flex-direction: column;
+
         img {
           margin-left: 0;
         }
       }
     }
+
     > tbody > tr > td,
     > thead > tr > th {
       :nth-child(4),
@@ -122,32 +148,39 @@ const Wrapper = styled(StyledUserDetailsTable)`
         justify-content: space-between;
       }
     }
+
     .header-value {
       flex-wrap: wrap;
       text-align: end;
     }
+
     .span-copybtn-wrap {
       display: flex;
       flex-wrap: nowrap;
+
       span {
         display: flex;
         align-items: center;
       }
+
       .copy-text {
         display: none;
       }
     }
   }
+
   overflow: auto;
 `
 
 const HeaderTitle = styled.span`
   display: none;
+
   ${media.mobile} {
     font-weight: 600;
     align-items: center;
     display: flex;
     margin-right: 3rem;
+
     svg {
       margin-left: 5px;
     }
@@ -155,6 +188,7 @@ const HeaderTitle = styled.span`
 `
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
+
   ${media.mobile} {
     flex-wrap: wrap;
     text-align: end;
@@ -164,6 +198,22 @@ const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
 const MainWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
+`
+
+const StyledLinkButton = styled(LinkButton)`
+  margin-left: 0;
+
+  ${media.mediumDown} {
+    min-width: auto;
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+`
+
+const StyledShimmerBar = styled(ShimmerBar)`
+  min-height: 20px;
+  min-width: 100px;
 `
 
 export type Props = StyledUserDetailsTableProps & {
@@ -175,9 +225,29 @@ export type Props = StyledUserDetailsTableProps & {
 interface RowProps {
   index: number
   trade: Trade
+  isPriceInverted: boolean
+  invertButton: JSX.Element
 }
 
-const RowFill: React.FC<RowProps> = ({ trade }) => {
+function calculateExecutionPrice(
+  isPriceInverted: boolean,
+  sellAmount: BigNumber,
+  buyAmount: BigNumber,
+  sellToken?: TokenErc20 | null,
+  buyToken?: TokenErc20 | null,
+): BigNumber | null {
+  if (!sellToken || !buyToken) return null
+
+  const sellData = { amount: sellAmount, decimals: sellToken.decimals }
+  const buyData = { amount: buyAmount, decimals: buyToken.decimals }
+
+  return calculatePrice({
+    numerator: isPriceInverted ? buyData : sellData,
+    denominator: isPriceInverted ? sellData : buyData,
+  }).multipliedBy(TEN_BIG_NUMBER.exponentiatedBy((isPriceInverted ? buyToken : sellToken).decimals))
+}
+
+const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) => {
   const network = useNetworkId() || undefined
   const { txHash, sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, executionTime } = trade
   const { value: tokens } = useMultipleErc20({
@@ -186,15 +256,9 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
   })
   const buyToken = tokens[buyTokenAddress]
   const sellToken = tokens[sellTokenAddress]
-  const executionTimeFormatted =
-    executionTime instanceof Date && !isNaN(Date.parse(executionTime.toString())) ? executionTime : new Date()
 
-  const buyFormattedAmount =
-    buyToken && buyToken.decimals >= 0
-      ? formatSmartMaxPrecision(buyAmount, tokens[buyTokenAddress])
-      : sellAmount.toString(10)
-  const sellFormattedAmount =
-    sellToken && sellToken.decimals >= 0 ? formatSmartMaxPrecision(sellAmount, sellToken) : sellAmount.toString(10)
+  const executionPrice = calculateExecutionPrice(isPriceInverted, sellAmount, buyAmount, sellToken, buyToken)
+  const executionToken = isPriceInverted ? buyToken : sellToken
 
   if (!network || !txHash) {
     return null
@@ -222,32 +286,32 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
-          {buyFormattedAmount} {buyToken?.symbol}
+          <TokenAmount amount={buyAmount} token={buyToken} />
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Sell amount</HeaderTitle>
         <HeaderValue>
-          {sellFormattedAmount} {sellToken?.symbol}
+          <TokenAmount amount={sellAmount} token={sellToken} />
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Execution price</HeaderTitle>
-        <HeaderValue>
-          {sellFormattedAmount} {sellToken?.symbol}
-        </HeaderValue>
+        <HeaderTitle>Execution price {invertButton}</HeaderTitle>
+        <HeaderValue>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Execution time</HeaderTitle>
-        <HeaderValue>{<DateDisplay date={executionTimeFormatted} showIcon={true} />}</HeaderValue>
+        <HeaderValue>
+          {executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle></HeaderTitle>
         <HeaderValue>
-          <LinkButton to={`/tx/${txHash}/?tab=graph`}>
+          <StyledLinkButton to={`/tx/${txHash}/?tab=graph`}>
             <FontAwesomeIcon icon={faProjectDiagram} />
             View batch graph
-          </LinkButton>
+          </StyledLinkButton>
         </HeaderValue>
       </td>
     </tr>
@@ -256,10 +320,17 @@ const RowFill: React.FC<RowProps> = ({ trade }) => {
 
 const FillsTable: React.FC<Props> = (props) => {
   const { trades, order, tableState, showBorderTable = false } = props
+  const [isPriceInverted, setIsPriceInverted] = useState(false)
+
+  const onInvert = useCallback(() => {
+    setIsPriceInverted((value) => !value)
+  }, [])
+
+  const invertButton = <Icon icon={faExchangeAlt} onClick={onInvert} />
+
   const tradeItems = (items: Trade[] | undefined): JSX.Element => {
-    let tableContent
     if (!items || items.length === 0) {
-      tableContent = (
+      return (
         <tr className="row-empty">
           <td className="row-td-empty">
             <EmptyItemWrapper>
@@ -269,15 +340,20 @@ const FillsTable: React.FC<Props> = (props) => {
         </tr>
       )
     } else {
-      tableContent = (
+      return (
         <>
           {items.map((item, i) => (
-            <RowFill key={item.txHash} index={i + tableState.pageOffset} trade={item} />
+            <RowFill
+              key={item.txHash}
+              index={i + tableState.pageOffset}
+              trade={item}
+              invertButton={invertButton}
+              isPriceInverted={isPriceInverted}
+            />
           ))}
         </>
       )
     }
-    return tableContent
   }
 
   return (
@@ -291,7 +367,7 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Surplus</th>
             <th>Buy amount</th>
             <th>Sell amount</th>
-            <th>Execution price</th>
+            <th>Execution price {invertButton}</th>
             <th>Execution time</th>
             <th></th>
           </tr>
