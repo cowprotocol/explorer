@@ -191,7 +191,8 @@ export type Props = StyledUserDetailsTableProps & {
 interface RowProps {
   index: number
   trade: Trade
-  isPriceInversed: boolean
+  isPriceInverted: boolean
+  invertButton: JSX.Element
 }
 
 function calculateExecutionPrice(
@@ -214,7 +215,7 @@ function calculateExecutionPrice(
   )
 }
 
-const RowFill: React.FC<RowProps> = ({ trade, isPriceInversed }) => {
+const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) => {
   const network = useNetworkId() || undefined
   const { txHash, sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, executionTime } = trade
   const { value: tokens } = useMultipleErc20({
@@ -226,8 +227,8 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInversed }) => {
 
   const executionTimeFormatted =
     executionTime instanceof Date && !isNaN(Date.parse(executionTime.toString())) ? executionTime : new Date()
-  const executionPrice = calculateExecutionPrice(isPriceInversed, sellAmount, buyAmount, sellToken, buyToken)
-  const executionToken = isPriceInversed ? buyToken : sellToken
+  const executionPrice = calculateExecutionPrice(isPriceInverted, sellAmount, buyAmount, sellToken, buyToken)
+  const executionToken = isPriceInverted ? buyToken : sellToken
 
   if (!network || !txHash) {
     return null
@@ -265,7 +266,7 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInversed }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Execution price</HeaderTitle>
+        <HeaderTitle>Execution price {invertButton}</HeaderTitle>
         <HeaderValue>
             {executionPrice && <TokenAmount amount={executionPrice} token={executionToken}/>}
         </HeaderValue>
@@ -289,7 +290,11 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInversed }) => {
 
 const FillsTable: React.FC<Props> = (props) => {
   const { trades, order, tableState, showBorderTable = false } = props
-  const tradeItems = (items: Trade[] | undefined, isPriceInversed: boolean): JSX.Element => {
+  const [isPriceInverted, setIsPriceInverted] = useState(false)
+
+  const invertButton = <Icon icon={faExchangeAlt} onClick={() => setIsPriceInverted(value => !value)} />
+
+  const tradeItems = (items: Trade[] | undefined): JSX.Element => {
     if (!items || items.length === 0) {
       return (
         <tr className="row-empty">
@@ -304,13 +309,17 @@ const FillsTable: React.FC<Props> = (props) => {
         return (
         <>
           {items.map((item, i) => (
-            <RowFill key={item.txHash} index={i + tableState.pageOffset} trade={item} isPriceInversed={isPriceInversed} />
+            <RowFill
+              key={item.txHash}
+              index={i + tableState.pageOffset}
+              trade={item}
+              invertButton={invertButton}
+              isPriceInverted={isPriceInverted} />
           ))}
         </>
       )
     }
   }
-  const [isPriceInversed, setIsPriceInversed] = useState(false)
 
   return (
     <MainWrapper>
@@ -323,12 +332,12 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Surplus</th>
             <th>Buy amount</th>
             <th>Sell amount</th>
-            <th>Execution price <Icon icon={faExchangeAlt} onClick={() => setIsPriceInversed(value => !value)} /></th>
+            <th>Execution price {invertButton}</th>
             <th>Execution time</th>
             <th></th>
           </tr>
         }
-        body={tradeItems(trades, isPriceInversed)}
+        body={tradeItems(trades)}
       />
     </MainWrapper>
   )
