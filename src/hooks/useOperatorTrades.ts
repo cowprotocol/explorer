@@ -84,8 +84,6 @@ export function useOrderTrades(order: Order | null): Result {
 
   // Fetch blocks timestamps for trades
   useEffect(() => {
-    setTradesTimestamps({})
-
     fetchTradesTimestamps(rawTrades).then(setTradesTimestamps).catch(error => {
       console.error('Trades timestamps fetching error: ', error)
 
