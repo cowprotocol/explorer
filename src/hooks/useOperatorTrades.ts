@@ -13,23 +13,21 @@ type Result = {
 
 type TradesTimestamps = { [txHash: string]: number }
 
-const tradesTimestampsCache: { [blockNumber: number]: number } = {}
+const tradesTimestampsCache: { [blockNumber: number]: Promise<number> } = {}
 
 async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
   const requests = rawTrades.map(({ txHash, blockNumber }) => {
     const cachedValue = tradesTimestampsCache[blockNumber]
 
     if (cachedValue) {
-      return { txHash, timestamp: cachedValue }
+      return cachedValue.then((timestamp) => ({ txHash, timestamp }))
     }
 
-    return web3.eth.getBlock(blockNumber).then(res => {
-      const timestamp = +res.timestamp
+    const request = web3.eth.getBlock(blockNumber).then(({ timestamp }) => +timestamp)
 
-      tradesTimestampsCache[blockNumber] = timestamp
+    tradesTimestampsCache[blockNumber] = request
 
-      return { txHash, timestamp }
-    })
+    return request.then((timestamp) => ({ txHash, timestamp }))
   })
 
   const data = await Promise.all(requests)
@@ -64,7 +62,7 @@ export function useOrderTrades(order: Order | null): Result {
       const { uid: orderId } = order
 
       try {
-        const trades = await getTrades({ networkId: _networkId, orderId  })
+        const trades = await getTrades({ networkId: _networkId, orderId })
 
         if (controller.signal.aborted) return
 
@@ -84,11 +82,13 @@ export function useOrderTrades(order: Order | null): Result {
 
   // Fetch blocks timestamps for trades
   useEffect(() => {
-    fetchTradesTimestamps(rawTrades).then(setTradesTimestamps).catch(error => {
-      console.error('Trades timestamps fetching error: ', error)
+    fetchTradesTimestamps(rawTrades)
+      .then(setTradesTimestamps)
+      .catch((error) => {
+        console.error('Trades timestamps fetching error: ', error)
 
-      setTradesTimestamps({})
-    })
+        setTradesTimestamps({})
+      })
   }, [rawTrades])
 
   // Transform trades adding tokens and timestamps

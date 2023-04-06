@@ -358,15 +358,7 @@ export function transformOrder(rawOrder: RawOrder): Order {
  * Transforms a RawTrade into a Trade object
  */
 export function transformTrade(rawTrade: TradeMetaData, executionTimestamp?: number): Trade {
-  const {
-    orderUid,
-    buyAmount,
-    sellAmount,
-    sellAmountBeforeFees,
-    buyToken,
-    sellToken,
-    ...rest
-  } = rawTrade
+  const { orderUid, buyAmount, sellAmount, sellAmountBeforeFees, buyToken, sellToken, ...rest } = rawTrade
 
   return {
     ...rest,
