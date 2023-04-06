@@ -13,12 +13,23 @@ type Result = {
 
 type TradesTimestamps = { [txHash: string]: number }
 
+const tradesTimestampsCache: { [blockNumber: number]: number } = {}
+
 async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
   const requests = rawTrades.map(({ txHash, blockNumber }) => {
-    return web3.eth.getBlock(blockNumber).then(res => ({
-      txHash,
-      timestamp: +res.timestamp
-    }))
+    const cachedValue = tradesTimestampsCache[blockNumber]
+
+    if (cachedValue) {
+      return { txHash, timestamp: cachedValue }
+    }
+
+    return web3.eth.getBlock(blockNumber).then(res => {
+      const timestamp = +res.timestamp
+
+      tradesTimestampsCache[blockNumber] = timestamp
+
+      return { txHash, timestamp }
+    })
   })
 
   const data = await Promise.all(requests)
