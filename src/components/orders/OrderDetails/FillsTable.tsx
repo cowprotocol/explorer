@@ -202,7 +202,7 @@ interface RowProps {
 }
 
 function calculateExecutionPrice(
-  isPriceInversed: boolean,
+  isPriceInverted: boolean,
   sellAmount: BigNumber,
   buyAmount: BigNumber,
   sellToken?: TokenErc20 | null,
@@ -214,10 +214,10 @@ function calculateExecutionPrice(
   const buyData = { amount: buyAmount, decimals: buyToken.decimals }
 
   return calculatePrice({
-    numerator: isPriceInversed ? buyData : sellData,
-    denominator: isPriceInversed ? sellData : buyData,
+    numerator: isPriceInverted ? buyData : sellData,
+    denominator: isPriceInverted ? sellData : buyData,
   }).multipliedBy(
-    TEN_BIG_NUMBER.exponentiatedBy((isPriceInversed ? buyToken : sellToken).decimals)
+    TEN_BIG_NUMBER.exponentiatedBy((isPriceInverted ? buyToken : sellToken).decimals)
   )
 }
 
