@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExchangeAlt, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
@@ -24,6 +24,7 @@ import Icon from 'components/Icon'
 import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
+import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -31,13 +32,17 @@ const Wrapper = styled(StyledUserDetailsTable)`
       padding: 0 2rem;
     }
   }
+
   > tbody {
     min-height: 37rem;
     border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
+
     > tr {
       min-height: 7.4rem;
+
       &.header-row {
         display: none;
+
         ${media.mobile} {
           display: flex;
           background: transparent;
@@ -46,10 +51,12 @@ const Wrapper = styled(StyledUserDetailsTable)`
           margin: 0;
           box-shadow: none;
           min-height: 2rem;
+
           td {
             padding: 0;
             margin: 0;
             margin-top: 1rem;
+
             .mobile-header {
               margin: 0;
             }
@@ -57,35 +64,43 @@ const Wrapper = styled(StyledUserDetailsTable)`
         }
       }
     }
+
     > tr > td:first-child {
       padding: 0 2rem;
     }
   }
+
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4fr 2fr 3fr 3fr 3fr 4fr 4fr;
+    grid-template-columns: 4fr 2fr 3fr 3fr 3.5fr 3fr 4fr;
   }
+
   > tbody > tr > td:nth-child(8),
   > thead > tr > th:nth-child(8) {
     justify-content: center;
   }
+
   tr > td {
     span.span-inside-tooltip {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+
       img {
         padding: 0;
       }
     }
   }
+
   ${media.mobile} {
     > thead > tr {
       display: none;
+
       > th:first-child {
         padding: 0 1rem;
       }
     }
+
     > tbody > tr {
       grid-template-columns: none;
       border: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
@@ -93,14 +108,17 @@ const Wrapper = styled(StyledUserDetailsTable)`
       border-radius: 6px;
       margin-top: 10px;
       padding: 12px;
+
       &:hover {
         background: none;
         backdrop-filter: none;
       }
+
       td:first-child {
         padding: 0 1rem;
       }
     }
+
     tr > td {
       display: flex;
       flex: 1;
@@ -109,14 +127,17 @@ const Wrapper = styled(StyledUserDetailsTable)`
       margin: 0;
       margin-bottom: 18px;
       min-height: 32px;
+
       span.span-inside-tooltip {
         align-items: flex-end;
         flex-direction: column;
+
         img {
           margin-left: 0;
         }
       }
     }
+
     > tbody > tr > td,
     > thead > tr > th {
       :nth-child(4),
@@ -127,32 +148,39 @@ const Wrapper = styled(StyledUserDetailsTable)`
         justify-content: space-between;
       }
     }
+
     .header-value {
       flex-wrap: wrap;
       text-align: end;
     }
+
     .span-copybtn-wrap {
       display: flex;
       flex-wrap: nowrap;
+
       span {
         display: flex;
         align-items: center;
       }
+
       .copy-text {
         display: none;
       }
     }
   }
+
   overflow: auto;
 `
 
 const HeaderTitle = styled.span`
   display: none;
+
   ${media.mobile} {
     font-weight: 600;
     align-items: center;
     display: flex;
     margin-right: 3rem;
+
     svg {
       margin-left: 5px;
     }
@@ -160,6 +188,7 @@ const HeaderTitle = styled.span`
 `
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
+
   ${media.mobile} {
     flex-wrap: wrap;
     text-align: end;
@@ -182,6 +211,11 @@ const StyledLinkButton = styled(LinkButton)`
   }
 `
 
+const StyledShimmerBar = styled(ShimmerBar)`
+  min-height: 20px;
+  min-width: 100px;
+`
+
 export type Props = StyledUserDetailsTableProps & {
   trades: Trade[] | undefined
   order: Order | null
@@ -200,7 +234,7 @@ function calculateExecutionPrice(
   sellAmount: BigNumber,
   buyAmount: BigNumber,
   sellToken?: TokenErc20 | null,
-  buyToken?: TokenErc20 | null
+  buyToken?: TokenErc20 | null,
 ): BigNumber | null {
   if (!sellToken || !buyToken) return null
 
@@ -210,9 +244,7 @@ function calculateExecutionPrice(
   return calculatePrice({
     numerator: isPriceInverted ? buyData : sellData,
     denominator: isPriceInverted ? sellData : buyData,
-  }).multipliedBy(
-    TEN_BIG_NUMBER.exponentiatedBy((isPriceInverted ? buyToken : sellToken).decimals)
-  )
+  }).multipliedBy(TEN_BIG_NUMBER.exponentiatedBy((isPriceInverted ? buyToken : sellToken).decimals))
 }
 
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) => {
@@ -225,8 +257,6 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
   const buyToken = tokens[buyTokenAddress]
   const sellToken = tokens[sellTokenAddress]
 
-  const executionTimeFormatted =
-    executionTime instanceof Date && !isNaN(Date.parse(executionTime.toString())) ? executionTime : new Date()
   const executionPrice = calculateExecutionPrice(isPriceInverted, sellAmount, buyAmount, sellToken, buyToken)
   const executionToken = isPriceInverted ? buyToken : sellToken
 
@@ -256,24 +286,24 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
-          <TokenAmount amount={buyAmount} token={buyToken}/>
+          <TokenAmount amount={buyAmount} token={buyToken} />
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Sell amount</HeaderTitle>
         <HeaderValue>
-          <TokenAmount amount={sellAmount} token={sellToken}/>
+          <TokenAmount amount={sellAmount} token={sellToken} />
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Execution price {invertButton}</HeaderTitle>
-        <HeaderValue>
-            {executionPrice && <TokenAmount amount={executionPrice} token={executionToken}/>}
-        </HeaderValue>
+        <HeaderValue>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Execution time</HeaderTitle>
-        <HeaderValue>{<DateDisplay date={executionTimeFormatted} showIcon={true} />}</HeaderValue>
+        <HeaderValue>
+          {executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle></HeaderTitle>
@@ -292,7 +322,11 @@ const FillsTable: React.FC<Props> = (props) => {
   const { trades, order, tableState, showBorderTable = false } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)
 
-  const invertButton = <Icon icon={faExchangeAlt} onClick={() => setIsPriceInverted(value => !value)} />
+  const onInvert = useCallback(() => {
+    setIsPriceInverted((value) => !value)
+  }, [])
+
+  const invertButton = <Icon icon={faExchangeAlt} onClick={onInvert} />
 
   const tradeItems = (items: Trade[] | undefined): JSX.Element => {
     if (!items || items.length === 0) {
@@ -306,7 +340,7 @@ const FillsTable: React.FC<Props> = (props) => {
         </tr>
       )
     } else {
-        return (
+      return (
         <>
           {items.map((item, i) => (
             <RowFill
@@ -314,7 +348,8 @@ const FillsTable: React.FC<Props> = (props) => {
               index={i + tableState.pageOffset}
               trade={item}
               invertButton={invertButton}
-              isPriceInverted={isPriceInverted} />
+              isPriceInverted={isPriceInverted}
+            />
           ))}
         </>
       )

@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext } from 'react'
 
-import { DEFAULT_TIMEOUT } from 'const'
 import { Order } from 'api/operator'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { FillsTableContext } from './context/FillsTableContext'
@@ -13,30 +12,10 @@ export const FillsTableWithData: React.FC<{ areTokensLoaded: boolean; order: Ord
   areTokensLoaded,
   order,
 }) => {
-  const { trades, isLoading, tableState } = useContext(FillsTableContext)
+  const { trades, tableState } = useContext(FillsTableContext)
   const isFirstRender = useFirstRender()
-  const [isFirstLoading, setIsFirstLoading] = useState(true)
 
-  useEffect(() => {
-    setIsFirstLoading(true)
-  }, [isLoading])
-
-  useEffect(() => {
-    let timeOutMs = 0
-    if (!trades) {
-      timeOutMs = DEFAULT_TIMEOUT
-    }
-
-    const timeOutId: NodeJS.Timeout = setTimeout(() => {
-      setIsFirstLoading(false)
-    }, timeOutMs)
-
-    return (): void => {
-      clearTimeout(timeOutId)
-    }
-  }, [trades, trades?.length])
-
-  return isFirstRender || isFirstLoading || !areTokensLoaded ? (
+  return isFirstRender || !areTokensLoaded ? (
     <EmptyItemWrapper>
       <CowLoading />
     </EmptyItemWrapper>
