@@ -111,7 +111,7 @@ const tabItems = (
     ),
   }
 
-  if (!order?.partiallyFillable) {
+  if (!order?.partiallyFillable || order.txHash) {
     return [detailsTab]
   }
 
