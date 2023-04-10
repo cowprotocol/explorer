@@ -243,7 +243,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               />
             </td>
           </tr>
-          {!partiallyFillable && (
+          {(!partiallyFillable || txHash) && (
             <tr>
               <td>
                 <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
