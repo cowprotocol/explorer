@@ -298,7 +298,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.type} /> Type
             </td>
             <td>
-              {capitalize(kind)} {order.class} order {!partiallyFillable && '(Fill or Kill)'}
+              {capitalize(kind)} {order.class} order {partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
