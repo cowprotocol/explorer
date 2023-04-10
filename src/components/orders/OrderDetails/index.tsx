@@ -78,22 +78,17 @@ function useQueryViewParams(): { tab: string } {
 }
 
 const tabItems = (
-  order: Order | null,
+  _order: Order | null,
   trades: Trade[],
   areTradesLoading: boolean,
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
 ): TabItemInterface[] => {
+  const order = getOrderWithTxHash(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
 
-  if (trades.length && order && !order.partiallyFillable) {
-    order.txHash = trades[0].txHash as string
-  }
-
-  // Only set txHash for fillOrKill orders, if any
-  // Partially fillable order will have a tab only for the trades
   return [
     {
       id: TabView.OVERVIEW,
@@ -122,6 +117,18 @@ const tabItems = (
       content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
     },
   ]
+}
+
+/**
+ * Get the order with txHash set if it has a single trade
+ *
+ * That is the case for closed orders, fill or kill or partial fill that has a single trade
+ */
+function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
+  if (order && trades.length === 1 && order.status !== 'open') {
+    return { ...order, txHash: trades[0].txHash || undefined }
+  }
+  return order
 }
 
 const RESULTS_PER_PAGE = 10
