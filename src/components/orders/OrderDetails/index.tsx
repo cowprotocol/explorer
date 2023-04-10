@@ -111,7 +111,7 @@ const tabItems = (
     ),
   }
 
-  if (!order?.partiallyFillable || order.txHash) {
+  if (!order?.partiallyFillable || order.txHash || !trades.length) {
     return [detailsTab]
   }
 
