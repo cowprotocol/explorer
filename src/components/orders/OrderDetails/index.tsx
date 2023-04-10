@@ -89,34 +89,39 @@ const tabItems = (
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
 
-  return [
-    {
-      id: TabView.OVERVIEW,
-      tab: <span>Overview</span>,
-      content: (
-        <>
-          {order && areTokensLoaded && (
-            <DetailsTable
-              order={order}
-              viewFills={(): void => onChangeTab(TabView.FILLS)}
-              areTradesLoading={areTradesLoading}
-            />
-          )}
-          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-          {isLoadingForTheFirstTime && (
-            <EmptyItemWrapper>
-              <CowLoading />
-            </EmptyItemWrapper>
-          )}
-        </>
-      ),
-    },
-    {
-      id: TabView.FILLS,
-      tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
-      content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
-    },
-  ]
+  const detailsTab = {
+    id: TabView.OVERVIEW,
+    tab: <span>Overview</span>,
+    content: (
+      <>
+        {order && areTokensLoaded && (
+          <DetailsTable
+            order={order}
+            viewFills={(): void => onChangeTab(TabView.FILLS)}
+            areTradesLoading={areTradesLoading}
+          />
+        )}
+        {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+        {isLoadingForTheFirstTime && (
+          <EmptyItemWrapper>
+            <CowLoading />
+          </EmptyItemWrapper>
+        )}
+      </>
+    ),
+  }
+
+  if (!order?.partiallyFillable) {
+    return [detailsTab]
+  }
+
+  const fillsTab = {
+    id: TabView.FILLS,
+    tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
+    content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
+  }
+
+  return [detailsTab, fillsTab]
 }
 
 /**
