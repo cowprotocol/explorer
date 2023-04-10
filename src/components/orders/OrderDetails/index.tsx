@@ -79,6 +79,7 @@ function useQueryViewParams(): { tab: string } {
 
 const tabItems = (
   order: Order | null,
+  trades: Trade[],
   areTradesLoading: boolean,
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
@@ -86,6 +87,10 @@ const tabItems = (
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
+
+  if (trades.length && order && !order.partiallyFillable) {
+    order.txHash = trades[0].txHash as string
+  }
 
   // Only set txHash for fillOrKill orders, if any
   // Partially fillable order will have a tab only for the trades
@@ -193,7 +198,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       >
         <StyledExplorerTabs
           className={`orderDetails-tab--${TabView[tabViewSelected].toLowerCase()}`}
-          tabItems={tabItems(order, areTradesLoading, isOrderLoading, onChangeTab)}
+          tabItems={tabItems(order, trades, areTradesLoading, isOrderLoading, onChangeTab)}
           defaultTab={tabViewSelected}
           onChange={(key: number): void => onChangeTab(key)}
           extra={ExtraComponentNode}
