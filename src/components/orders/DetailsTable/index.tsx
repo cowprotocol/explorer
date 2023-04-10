@@ -349,10 +349,12 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <td>
                 <Wrapper>
                   <FilledProgress order={order} />
-                  <LinkButton onClickOptional={(): void => viewFills()} to={`/orders/${uid}/?tab=fills`}>
-                    <FontAwesomeIcon icon={faFill} />
-                    View fills
-                  </LinkButton>
+                  {partiallyFillable && !txHash && (
+                    <LinkButton onClickOptional={(): void => viewFills()} to={`/orders/${uid}/?tab=fills`}>
+                      <FontAwesomeIcon icon={faFill} />
+                      View fills
+                    </LinkButton>
+                  )}
                 </Wrapper>
               </td>
             </tr>
