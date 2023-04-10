@@ -164,12 +164,13 @@ export const LinkButton = styled(LinkWithPrefixNetwork)`
 
 export type Props = {
   order: Order
+  showFillsButton: boolean | undefined
   areTradesLoading: boolean
   viewFills: () => void
 }
 
 export function DetailsTable(props: Props): JSX.Element | null {
-  const { order, areTradesLoading, viewFills } = props
+  const { order, areTradesLoading, showFillsButton, viewFills } = props
   const {
     uid,
     shortId,
@@ -349,8 +350,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <td>
                 <Wrapper>
                   <FilledProgress order={order} />
-                  {partiallyFillable && !txHash && (
-                    <LinkButton onClickOptional={(): void => viewFills()} to={`/orders/${uid}/?tab=fills`}>
+                  {showFillsButton && (
+                    <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?tab=fills`}>
                       <FontAwesomeIcon icon={faFill} />
                       View fills
                     </LinkButton>
