@@ -58,7 +58,10 @@ export function OrderPriceDisplay(props: Props): JSX.Element {
 
   return (
     <Wrapper>
-      {formattedPrice} {quoteSymbol} for {baseSymbol}
+      <span>
+        {formattedPrice} {quoteSymbol}&nbsp;
+      </span>{' '}
+      for {baseSymbol}
       {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
     </Wrapper>
   )

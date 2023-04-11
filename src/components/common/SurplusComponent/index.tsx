@@ -4,11 +4,11 @@ import { formatPercentage, Surplus } from 'utils'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
 
-const Percentage = styled.span`
+export const Percentage = styled.span`
   color: ${({ theme }): string => theme.green};
 `
 
-const Amount = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
+export const Amount = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
   display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
   ${({ strechHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
     strechHiddenSection &&
