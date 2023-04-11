@@ -88,7 +88,7 @@ const tabItems = (
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
-  const showFills = order?.partiallyFillable && !order.txHash
+  const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
   const detailsTab = {
     id: TabView.OVERVIEW,
