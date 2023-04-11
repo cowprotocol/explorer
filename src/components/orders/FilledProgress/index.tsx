@@ -6,6 +6,7 @@ import { safeTokenName } from 'utils'
 import { ProgressBar } from 'components/common/ProgressBar'
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
 import { TokenAmount } from 'components/token/TokenAmount'
+import { SurplusComponent } from 'components/common/SurplusComponent'
 
 export type Props = {
   order: Order
@@ -92,6 +93,10 @@ const TableHeadingContent = styled.div`
     width: 100%;
   }
 
+  &.surplus {
+    width: 20rem;
+  }
+
   &.limit-price {
     width: 38rem;
   }
@@ -107,6 +112,19 @@ const FilledContainer = styled.div`
 const OrderAssetsInfoWrapper = styled.span`
   font-size: 12px;
   line-height: normal;
+`
+
+const StyledSurplusComponent = styled(SurplusComponent)`
+  font-size: 2.2rem;
+  margin: 0.1rem 0;
+
+  ${media.mobile} {
+    font-size: 1.8rem;
+  }
+
+  span {
+    line-height: 1.1;
+  }
 `
 
 export function FilledProgress(props: Props): JSX.Element {
@@ -127,6 +145,8 @@ export function FilledProgress(props: Props): JSX.Element {
       sellToken,
       buyTokenAddress,
       sellTokenAddress,
+      surplusAmount,
+      surplusPercentage,
     },
   } = props
 
@@ -150,6 +170,10 @@ export function FilledProgress(props: Props): JSX.Element {
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
   const formattedPercentage = filledPercentage.times('100').decimalPlaces(2).toString()
+
+  const surplus = { amount: surplusAmount, percentage: surplusPercentage }
+  const surplusToken = (isSell ? buyToken : sellToken) || null
+
   const OrderAssetsInfo = (): JSX.Element => (
     <>
       {' '}
@@ -198,6 +222,10 @@ export function FilledProgress(props: Props): JSX.Element {
           <OrderAssetsInfo />
         </FilledContainer>
         <ProgressBar showLabel={false} percentage={formattedPercentage} />
+      </TableHeadingContent>
+      <TableHeadingContent className="surplus">
+        <p className="title">Total Surplus</p>
+        <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
       </TableHeadingContent>
       <TableHeadingContent className="limit-price">
         <p className="title">Limit Price</p>
