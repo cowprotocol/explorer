@@ -134,9 +134,7 @@ export function FilledProgress(props: Props): JSX.Element {
       executedFeeAmount,
       filledAmount,
       filledPercentage,
-      fullyFilled,
       kind,
-      feeAmount,
       sellAmount,
       buyAmount,
       executedBuyAmount,
@@ -155,7 +153,6 @@ export function FilledProgress(props: Props): JSX.Element {
 
   const mainToken = (isSell ? sellToken : buyToken) || null
   const mainAddress = isSell ? sellTokenAddress : buyTokenAddress
-  const mainAmount = isSell ? sellAmount.plus(feeAmount) : buyAmount
   const swappedToken = (isSell ? buyToken : sellToken) || null
   const swappedAddress = isSell ? buyTokenAddress : sellTokenAddress
   const swappedAmount = isSell ? executedBuyAmount : executedSellAmount
@@ -182,15 +179,6 @@ export function FilledProgress(props: Props): JSX.Element {
           {/* Executed part (bought/sold tokens) */}
           <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol} />
         </b>{' '}
-        {!fullyFilled && (
-          // Show the total amount to buy/sell. Only for orders that are not 100% executed
-          <>
-            of{' '}
-            <b>
-              <TokenAmount amount={mainAmount} token={mainToken} symbol={mainSymbol} />
-            </b>{' '}
-          </>
-        )}
         {action}{' '}
         {touched && (
           // Executed part of the trade:
