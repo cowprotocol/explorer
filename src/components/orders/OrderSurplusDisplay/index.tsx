@@ -9,6 +9,7 @@ import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icon
 import BigNumber from 'bignumber.js'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { SurplusComponent } from 'components/common/SurplusComponent'
+import { TokenAmount } from 'components/token/TokenAmount'
 
 const Wrapper = styled(SurplusComponent)`
   display: flex;
@@ -95,12 +96,12 @@ export function OrderSurplusTooltipDisplay({
 
   return (
     <BaseIconTooltipOnHover
-      tooltip={surplus.amount}
+      tooltip={<TokenAmount amount={surplus.amount} token={surplus.surplusToken} />}
       targetContent={
-        <span>
+        <>
           <IconWrapper icon={faIcon} color={theme.green} />
           <SurplusComponent surplus={surplus} token={surplus.surplusToken} showHidden={showHiddenSection} />
-        </span>
+        </>
       }
     />
   )
