@@ -281,12 +281,6 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Surplus</HeaderTitle>
-        <HeaderValue>
-          {surplus ? <SurplusComponent surplus={surplus} token={surplusToken} showHidden /> : '-'}
-        </HeaderValue>
-      </td>
-      <td>
         <HeaderTitle>Sell amount</HeaderTitle>
         <HeaderValue>
           <TokenAmount amount={sellAmount} token={sellToken} />
@@ -296,6 +290,12 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         <HeaderTitle>Buy amount</HeaderTitle>
         <HeaderValue>
           <TokenAmount amount={buyAmount} token={buyToken} />
+        </HeaderValue>
+      </td>
+      <td>
+        <HeaderTitle>Surplus</HeaderTitle>
+        <HeaderValue>
+          {surplus ? <SurplusComponent surplus={surplus} token={surplusToken} showHidden /> : '-'}
         </HeaderValue>
       </td>
       <td>
@@ -358,9 +358,9 @@ const FillsTable: React.FC<Props> = (props) => {
         header={
           <tr>
             <th>Tx hash</th>
-            <th>Surplus</th>
             <th>Sell amount</th>
             <th>Buy amount</th>
+            <th>Surplus</th>
             <th>Execution price {invertButton}</th>
             <th>Execution time</th>
           </tr>
