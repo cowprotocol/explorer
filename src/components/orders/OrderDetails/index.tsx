@@ -78,17 +78,17 @@ function useQueryViewParams(): { tab: string } {
 }
 
 const tabItems = (
-  order: Order | null,
+  _order: Order | null,
+  trades: Trade[],
   areTradesLoading: boolean,
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
 ): TabItemInterface[] => {
+  const order = getOrderWithTxHash(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
 
-  // Only set txHash for fillOrKill orders, if any
-  // Partially fillable order will have a tab only for the trades
   return [
     {
       id: TabView.OVERVIEW,
@@ -117,6 +117,18 @@ const tabItems = (
       content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
     },
   ]
+}
+
+/**
+ * Get the order with txHash set if it has a single trade
+ *
+ * That is the case for closed orders, fill or kill or partial fill that has a single trade
+ */
+function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
+  if (order && trades.length === 1 && order.status !== 'open') {
+    return { ...order, txHash: trades[0].txHash || undefined }
+  }
+  return order
 }
 
 const RESULTS_PER_PAGE = 10
@@ -193,7 +205,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       >
         <StyledExplorerTabs
           className={`orderDetails-tab--${TabView[tabViewSelected].toLowerCase()}`}
-          tabItems={tabItems(order, areTradesLoading, isOrderLoading, onChangeTab)}
+          tabItems={tabItems(order, trades, areTradesLoading, isOrderLoading, onChangeTab)}
           defaultTab={tabViewSelected}
           onChange={(key: number): void => onChangeTab(key)}
           extra={ExtraComponentNode}
