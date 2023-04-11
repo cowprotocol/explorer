@@ -88,7 +88,7 @@ const tabItems = (
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
-  const showFillsButton = order?.partiallyFillable && !order.txHash && trades.length > 1
+  const showFills = order?.partiallyFillable && !order.txHash
 
   const detailsTab = {
     id: TabView.OVERVIEW,
@@ -98,7 +98,7 @@ const tabItems = (
         {order && areTokensLoaded && (
           <DetailsTable
             order={order}
-            showFillsButton={showFillsButton}
+            showFillsButton={showFills}
             viewFills={(): void => onChangeTab(TabView.FILLS)}
             areTradesLoading={areTradesLoading}
           />
@@ -113,7 +113,7 @@ const tabItems = (
     ),
   }
 
-  if (!order?.partiallyFillable || order.txHash || !trades.length) {
+  if (!showFills) {
     return [detailsTab]
   }
 
@@ -129,10 +129,10 @@ const tabItems = (
 /**
  * Get the order with txHash set if it has a single trade
  *
- * That is the case for closed orders, fill or kill or partial fill that has a single trade
+ * That is the case for any filled fill or kill or a partial fill that has a single trade
  */
 function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
-  if (order && trades.length === 1 && order.status !== 'open') {
+  if (order && trades.length === 1) {
     return { ...order, txHash: trades[0].txHash || undefined }
   }
   return order
