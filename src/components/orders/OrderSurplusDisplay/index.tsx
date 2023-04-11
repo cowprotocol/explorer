@@ -3,20 +3,15 @@ import styled, { css, useTheme, FlattenSimpleInterpolation } from 'styled-compon
 
 import { Order } from 'api/operator'
 
-import {
-  formatSmart,
-  formatSmartMaxPrecision,
-  safeTokenName,
-  formattingAmountPrecision,
-  FormatAmountPrecision,
-} from 'utils'
-
-import { LOW_PRECISION_DECIMALS, PERCENTAGE_PRECISION } from 'apps/explorer/const'
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
+import BigNumber from 'bignumber.js'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+import { SurplusComponent } from 'components/common/SurplusComponent'
+import { TokenAmount } from 'components/token/TokenAmount'
 
-const Wrapper = styled.div`
+const Wrapper = styled(SurplusComponent)`
   display: flex;
   & > * {
     margin-right: 0.25rem;
@@ -27,19 +22,15 @@ const Wrapper = styled.div`
   }
 `
 
-const Surplus = styled.span`
-  color: ${({ theme }): string => theme.green};
-`
-
 // const UsdAmount = styled.span`
 //   color: ${({ theme }): string => theme.textPrimary1};
 //   opacity: 0.5;
 // `
 
 export type Props = { order: Order; amountSmartFormatting?: boolean } & React.HTMLAttributes<HTMLDivElement>
-type SurplusText = { amount: string; percentage: string; formattedSmartAmount: string }
+type OrderSurplus = { amount: BigNumber; percentage: BigNumber; surplusToken: TokenErc20 }
 
-function useGetSurplus(order: Order): SurplusText | null {
+function useGetSurplus(order: Order): OrderSurplus | null {
   const { kind, buyToken, sellToken, surplusAmount, surplusPercentage } = order
 
   const surplusToken = kind === 'buy' ? sellToken : buyToken
@@ -51,30 +42,7 @@ function useGetSurplus(order: Order): SurplusText | null {
     return null
   }
 
-  const formattedSurplusPercentage = formatSmart({
-    amount: surplusPercentage.toString(10),
-    precision: PERCENTAGE_PRECISION,
-    decimals: LOW_PRECISION_DECIMALS,
-  })
-  const formattedSurplusAmountMaxPrecision = formatSmartMaxPrecision(surplusAmount, surplusToken)
-  const formattedSurplusAmount = formattingAmountPrecision(
-    surplusAmount,
-    surplusToken,
-    FormatAmountPrecision.highPrecision,
-  )
-
-  const tokenSymbol = safeTokenName(surplusToken)
-  // const formattedUsdAmount = formatSmart({
-  //   amount: usdAmount,
-  //   precision: NO_ADJUSTMENT_NEEDED_PRECISION,
-  //   decimals: LOW_PRECISION_DECIMALS,
-  // })
-
-  return {
-    amount: `${formattedSurplusAmountMaxPrecision} ${tokenSymbol}`,
-    formattedSmartAmount: `${formattedSurplusAmount} ${tokenSymbol}`,
-    percentage: `+${formattedSurplusPercentage}%`,
-  }
+  return { amount: surplusAmount, percentage: surplusPercentage, surplusToken }
 }
 
 export function OrderSurplusDisplay(props: Props): JSX.Element | null {
@@ -82,13 +50,7 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
 
   if (!surplus) return null
 
-  return (
-    <Wrapper className={props.className}>
-      <Surplus>{surplus.percentage}</Surplus>
-      <span>{props.amountSmartFormatting ? surplus.formattedSmartAmount : surplus.amount}</span>
-      {/* <UsdAmount>(~${formattedUsdAmount})</UsdAmount> */}
-    </Wrapper>
-  )
+  return <Wrapper surplus={surplus} token={surplus.surplusToken} showHidden />
 }
 
 const IconWrapper = styled(FontAwesomeIcon)`
@@ -107,14 +69,13 @@ const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSect
     strechHiddenSection &&
     css`
       width: 3.4rem;
-      display: 'inline-block';
+      display: inline-block;
       justify-content: end;
     `}
 `
 
 export function OrderSurplusTooltipDisplay({
   order,
-  amountSmartFormatting,
   showHiddenSection = false,
   defaultWhenNoSurplus,
   strechWhenNoSurplus = false,
@@ -135,15 +96,12 @@ export function OrderSurplusTooltipDisplay({
 
   return (
     <BaseIconTooltipOnHover
-      tooltip={surplus.amount}
+      tooltip={<TokenAmount amount={surplus.amount} token={surplus.surplusToken} />}
       targetContent={
-        <span>
+        <>
           <IconWrapper icon={faIcon} color={theme.green} />
-          <Surplus>{surplus.percentage}</Surplus>
-          <HiddenSection showHiddenSection={showHiddenSection}>
-            {amountSmartFormatting ? surplus.formattedSmartAmount : surplus.amount}
-          </HiddenSection>
-        </span>
+          <SurplusComponent surplus={surplus} token={surplus.surplusToken} showHidden={showHiddenSection} />
+        </>
       }
     />
   )

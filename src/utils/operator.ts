@@ -2,13 +2,13 @@
 import BigNumber from 'bignumber.js'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
-import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
+import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
@@ -100,7 +100,7 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
 }
 
-type Surplus = {
+export type Surplus = {
   amount: BigNumber
   percentage: BigNumber
 }
@@ -134,8 +134,15 @@ function _getFillOrKillSellSurplus(order: RawOrder): Surplus | null {
   return { amount, percentage }
 }
 
-function _getPartialFillSellSurplus(order: RawOrder): Surplus | null {
-  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = order
+type PartialFillSurplusParams = {
+  buyAmount: string | BigNumber
+  sellAmount: string | BigNumber
+  executedSellAmountBeforeFees: string
+  executedBuyAmount: string
+}
+
+function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus | null {
+  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
 
   const sellAmountBigNumber = new BigNumber(sellAmount)
   const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
@@ -187,8 +194,8 @@ function _getFillOrKillBuySurplus(order: RawOrder): Surplus | null {
   return { amount, percentage }
 }
 
-function _getPartialFillBuySurplus(order: RawOrder): Surplus | null {
-  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = order
+function _getPartialFillBuySurplus(params: PartialFillSurplusParams): Surplus | null {
+  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
 
   const sellAmountBigNumber = new BigNumber(sellAmount)
   const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
@@ -411,17 +418,34 @@ export function transformOrder(rawOrder: RawOrder): Order {
 /**
  * Transforms a RawTrade into a Trade object
  */
-export function transformTrade(rawTrade: TradeMetaData, executionTimestamp?: number): Trade {
+export function transformTrade(rawTrade: TradeMetaData, order: Order, executionTimestamp?: number): Trade {
   const { orderUid, buyAmount, sellAmount, sellAmountBeforeFees, buyToken, sellToken, ...rest } = rawTrade
+  const { amount, percentage } = getTradeSurplus(rawTrade, order)
 
   return {
     ...rest,
     orderId: orderUid,
+    kind: order.kind,
     buyAmount: new BigNumber(buyAmount),
     sellAmount: new BigNumber(sellAmount),
     sellAmountBeforeFees: new BigNumber(sellAmountBeforeFees),
     buyTokenAddress: buyToken,
     sellTokenAddress: sellToken,
+    surplusAmount: amount,
+    surplusPercentage: percentage,
     executionTime: executionTimestamp ? new Date(executionTimestamp * 1000) : null,
   }
+}
+
+export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
+  const params: PartialFillSurplusParams = {
+    sellAmount: order.sellAmount,
+    buyAmount: order.buyAmount,
+    executedSellAmountBeforeFees: rawTrade.sellAmountBeforeFees,
+    executedBuyAmount: rawTrade.buyAmount,
+  }
+
+  const surplus = order.kind === OrderKind.SELL ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
+
+  return surplus || ZERO_SURPLUS
 }

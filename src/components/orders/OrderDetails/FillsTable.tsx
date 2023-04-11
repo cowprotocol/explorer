@@ -8,8 +8,8 @@ import { abbreviateString } from 'utils'
 import { useMultipleErc20 } from 'hooks/useErc20'
 
 import StyledUserDetailsTable, {
-  StyledUserDetailsTableProps,
   EmptyItemWrapper,
+  StyledUserDetailsTableProps,
 } from '../../common/StyledUserDetailsTable'
 
 import { media } from 'theme/styles/media'
@@ -25,6 +25,8 @@ import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
 import ShimmerBar from 'apps/explorer/components/common/ShimmerBar'
+import { SurplusComponent } from 'components/common/SurplusComponent'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 
 const Wrapper = styled(StyledUserDetailsTable)`
   > thead {
@@ -249,7 +251,16 @@ function calculateExecutionPrice(
 
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) => {
   const network = useNetworkId() || undefined
-  const { txHash, sellAmount, buyAmount, sellTokenAddress, buyTokenAddress, executionTime } = trade
+  const {
+    txHash,
+    sellAmount,
+    buyAmount,
+    sellTokenAddress,
+    buyTokenAddress,
+    executionTime,
+    surplusAmount,
+    surplusPercentage,
+  } = trade
   const { value: tokens } = useMultipleErc20({
     networkId: network,
     addresses: [sellTokenAddress, buyTokenAddress],
@@ -263,6 +274,8 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
   if (!network || !txHash) {
     return null
   }
+  const surplus = surplusAmount && surplusPercentage ? { amount: surplusAmount, percentage: surplusPercentage } : null
+  const surplusToken = trade.kind === OrderKind.BUY ? sellToken : buyToken
 
   return (
     <tr key={txHash}>
@@ -281,7 +294,9 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
       </td>
       <td>
         <HeaderTitle>Surplus</HeaderTitle>
-        <HeaderValue>-</HeaderValue>
+        <HeaderValue>
+          {surplus ? <SurplusComponent surplus={surplus} token={surplusToken} showHidden /> : '-'}
+        </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Buy amount</HeaderTitle>
