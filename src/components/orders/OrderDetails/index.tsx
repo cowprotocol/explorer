@@ -88,44 +88,51 @@ const tabItems = (
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
+  const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
-  return [
-    {
-      id: TabView.OVERVIEW,
-      tab: <span>Overview</span>,
-      content: (
-        <>
-          {order && areTokensLoaded && (
-            <DetailsTable
-              order={order}
-              viewFills={(): void => onChangeTab(TabView.FILLS)}
-              areTradesLoading={areTradesLoading}
-            />
-          )}
-          {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-          {isLoadingForTheFirstTime && (
-            <EmptyItemWrapper>
-              <CowLoading />
-            </EmptyItemWrapper>
-          )}
-        </>
-      ),
-    },
-    {
-      id: TabView.FILLS,
-      tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
-      content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
-    },
-  ]
+  const detailsTab = {
+    id: TabView.OVERVIEW,
+    tab: <span>Overview</span>,
+    content: (
+      <>
+        {order && areTokensLoaded && (
+          <DetailsTable
+            order={order}
+            showFillsButton={showFills}
+            viewFills={(): void => onChangeTab(TabView.FILLS)}
+            areTradesLoading={areTradesLoading}
+          />
+        )}
+        {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+        {isLoadingForTheFirstTime && (
+          <EmptyItemWrapper>
+            <CowLoading />
+          </EmptyItemWrapper>
+        )}
+      </>
+    ),
+  }
+
+  if (!showFills) {
+    return [detailsTab]
+  }
+
+  const fillsTab = {
+    id: TabView.FILLS,
+    tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
+    content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
+  }
+
+  return [detailsTab, fillsTab]
 }
 
 /**
  * Get the order with txHash set if it has a single trade
  *
- * That is the case for closed orders, fill or kill or partial fill that has a single trade
+ * That is the case for any filled fill or kill or a partial fill that has a single trade
  */
 function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
-  if (order && trades.length === 1 && order.status !== 'open') {
+  if (order && trades.length === 1) {
     return { ...order, txHash: trades[0].txHash || undefined }
   }
   return order
