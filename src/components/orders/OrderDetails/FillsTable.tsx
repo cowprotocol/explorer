@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExchangeAlt, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
 import { Order, Trade } from 'api/operator'
 import { abbreviateString } from 'utils'
@@ -17,7 +16,6 @@ import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
-import { LinkButton } from '../DetailsTable'
 import { FilledProgress } from '../FilledProgress'
 import { TokenAmount } from 'components/token/TokenAmount'
 import Icon from 'components/Icon'
@@ -74,7 +72,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
 
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4fr 2fr 3fr 3fr 3.5fr 3fr 4fr;
+    grid-template-columns: 3fr 3fr 3fr 3fr 3.5fr 3fr;
   }
 
   > tbody > tr > td:nth-child(8),
@@ -203,16 +201,6 @@ const MainWrapper = styled.div`
   width: 100%;
 `
 
-const StyledLinkButton = styled(LinkButton)`
-  margin-left: 0;
-
-  ${media.mediumDown} {
-    min-width: auto;
-    font-size: 12px;
-    padding: 4px 8px;
-  }
-`
-
 const StyledShimmerBar = styled(ShimmerBar)`
   min-height: 20px;
   min-width: 100px;
@@ -320,15 +308,6 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
           {executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}
         </HeaderValue>
       </td>
-      <td>
-        <HeaderTitle></HeaderTitle>
-        <HeaderValue>
-          <StyledLinkButton to={`/tx/${txHash}/?tab=graph`}>
-            <FontAwesomeIcon icon={faProjectDiagram} />
-            View batch graph
-          </StyledLinkButton>
-        </HeaderValue>
-      </td>
     </tr>
   )
 }
@@ -384,7 +363,6 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Buy amount</th>
             <th>Execution price {invertButton}</th>
             <th>Execution time</th>
-            <th></th>
           </tr>
         }
         body={tradeItems(trades)}
