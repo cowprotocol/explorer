@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
 import { Order, Trade } from 'api/operator'
@@ -19,6 +19,7 @@ import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { FilledProgress } from '../FilledProgress'
 import { TokenAmount } from 'components/token/TokenAmount'
 import Icon from 'components/Icon'
+import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
@@ -238,6 +239,7 @@ function calculateExecutionPrice(
 }
 
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) => {
+  const theme = useTheme()
   const network = useNetworkId() || undefined
   const {
     txHash,
@@ -295,7 +297,11 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
       <td>
         <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
-          {surplus ? <SurplusComponent surplus={surplus} token={surplusToken} showHidden /> : '-'}
+          {surplus ? (
+            <SurplusComponent icon={faIcon} iconColor={theme.green} surplus={surplus} token={surplusToken} showHidden />
+          ) : (
+            '-'
+          )}
         </HeaderValue>
       </td>
       <td>
