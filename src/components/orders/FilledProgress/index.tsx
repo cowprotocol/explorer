@@ -11,6 +11,7 @@ import { SurplusComponent, Percentage, Amount } from 'components/common/SurplusC
 export type Props = {
   order: Order
   fullView?: boolean
+  lineBreak?: boolean
 }
 
 const StyledSurplusComponent = styled(SurplusComponent)`
@@ -144,17 +145,18 @@ const FilledContainer = styled.div`
   }
 `
 
-const OrderAssetsInfoWrapper = styled.span`
+const OrderAssetsInfoWrapper = styled.span<{ lineBreak?: boolean }>`
   font-size: 1.2rem;
   line-height: normal;
 
   b:first-child {
-    display: block;
+    display: ${({ lineBreak }): string => (lineBreak ? 'block' : 'inline')};
   }
 `
 
 export function FilledProgress(props: Props): JSX.Element {
   const {
+    lineBreak = false,
     fullView = false,
     order: {
       executedFeeAmount,
@@ -200,7 +202,7 @@ export function FilledProgress(props: Props): JSX.Element {
   const OrderAssetsInfo = (): JSX.Element => (
     <>
       {' '}
-      <OrderAssetsInfoWrapper>
+      <OrderAssetsInfoWrapper lineBreak={lineBreak}>
         <b>
           {/* Executed part (bought/sold tokens) */}
           <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol} />

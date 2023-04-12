@@ -352,7 +352,7 @@ const FillsTable: React.FC<Props> = (props) => {
 
   return (
     <MainWrapper>
-      {order && <FilledProgress fullView order={order} />}
+      {order && <FilledProgress lineBreak fullView order={order} />}
       <Wrapper
         showBorderTable={showBorderTable}
         header={
