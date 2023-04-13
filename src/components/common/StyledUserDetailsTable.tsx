@@ -38,9 +38,14 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
     border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
   }
 
+  thead tr th > span {
+    white-space: pre;
+  }
+
   thead {
     position: inherit;
   }
+
   thead tr {
     width: 100%;
   }

@@ -186,6 +186,9 @@ const HeaderTitle = styled.span`
 `
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
 
   ${media.mobile} {
     flex-wrap: wrap;
@@ -302,7 +305,9 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Execution price {invertButton}</HeaderTitle>
+        <HeaderTitle>
+          <span>Execution price</span> {invertButton}
+        </HeaderTitle>
         <HeaderValue>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</HeaderValue>
       </td>
       <td>
@@ -364,7 +369,9 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Sell amount</th>
             <th>Buy amount</th>
             <th>Surplus</th>
-            <th>Execution price {invertButton}</th>
+            <th>
+              <span>Execution price</span> {invertButton}
+            </th>
             <th>Execution time</th>
           </tr>
         }

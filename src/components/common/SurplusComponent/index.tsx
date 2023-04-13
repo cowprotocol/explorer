@@ -50,12 +50,12 @@ export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
   const { percentage, amount } = surplus
 
   return (
-    <div className={className}>
+    <span className={className}>
       {icon && <IconWrapper icon={icon} color={iconColor} />}
       <Percentage>{formatPercentage(percentage)}</Percentage>
       <Amount showHiddenSection={!!showHidden}>
         <TokenAmount amount={amount} token={token} />
       </Amount>
-    </div>
+    </span>
   )
 }
