@@ -28,8 +28,6 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
   }
   > tbody {
-    min-height: 37rem;
-    border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
     > tr {
       min-height: 7.4rem;
       &.header-row {

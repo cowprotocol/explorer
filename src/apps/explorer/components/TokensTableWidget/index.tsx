@@ -62,7 +62,7 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
 
   .tab-extra-content {
     justify-content: center;
-    padding: 2.4rem 0;
+    padding: 1.4rem 0;
   }
 `
 
