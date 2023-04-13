@@ -41,7 +41,7 @@ export function ProgressBar(props: Props): JSX.Element {
 
   return (
     <Wrapper {...props}>
-      <div>
+      <div className="progress-line">
         <span></span>
       </div>
       {showLabel && <b>{percentage}%</b>}

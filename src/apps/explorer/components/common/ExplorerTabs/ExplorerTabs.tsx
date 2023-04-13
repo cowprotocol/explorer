@@ -35,9 +35,6 @@ const StyledTabs = styled.div`
 
   .tab-content {
     padding: 20px 16px;
-    ${media.mediumDown} {
-      padding: 0;
-    }
   }
 
   .tab-extra-content {

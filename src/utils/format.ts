@@ -138,7 +138,6 @@ export function parseBigNumber(value: string): BigNumber | null {
   return bigNumber.isNaN() ? null : bigNumber
 }
 
-// TODO: move to dex-js
 /**
  * Formats percentage values with 2 decimals of precision.
  * Adds `%` at the end
@@ -149,15 +148,15 @@ export function parseBigNumber(value: string): BigNumber | null {
  */
 export function formatPercentage(percentage: BigNumber): string {
   const displayPercentage = percentage.times(ONE_HUNDRED_BIG_NUMBER)
-  let result = ''
-  if (!displayPercentage.gte('0.01')) {
-    result = '<0.01'
-  } else if (displayPercentage.gt('99.99')) {
-    result = '>99.99'
-  } else {
-    result = displayPercentage.decimalPlaces(2, BigNumber.ROUND_FLOOR).toString(10)
+
+  if (displayPercentage.gt('0') && displayPercentage.lt('0.01')) {
+    return '<0.01%'
   }
-  return result + '%'
+
+  if (displayPercentage.gt('99.99') && displayPercentage.lt('100')) {
+    return '>99.99%'
+  }
+  return displayPercentage.decimalPlaces(2, BigNumber.ROUND_FLOOR).toString(10) + '%'
 }
 
 /**
