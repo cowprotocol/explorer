@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import styled from 'styled-components'
+import styled, { useTheme } from 'styled-components'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
 import { Order, Trade } from 'api/operator'
@@ -19,6 +19,7 @@ import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
 import { FilledProgress } from '../FilledProgress'
 import { TokenAmount } from 'components/token/TokenAmount'
 import Icon from 'components/Icon'
+import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
@@ -34,9 +35,6 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
 
   > tbody {
-    min-height: 37rem;
-    border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-
     > tr {
       min-height: 7.4rem;
 
@@ -188,6 +186,9 @@ const HeaderTitle = styled.span`
 `
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
 
   ${media.mobile} {
     flex-wrap: wrap;
@@ -238,6 +239,7 @@ function calculateExecutionPrice(
 }
 
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) => {
+  const theme = useTheme()
   const network = useNetworkId() || undefined
   const {
     txHash,
@@ -295,11 +297,17 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
       <td>
         <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
-          {surplus ? <SurplusComponent surplus={surplus} token={surplusToken} showHidden /> : '-'}
+          {surplus ? (
+            <SurplusComponent icon={faIcon} iconColor={theme.green} surplus={surplus} token={surplusToken} showHidden />
+          ) : (
+            '-'
+          )}
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Execution price {invertButton}</HeaderTitle>
+        <HeaderTitle>
+          <span>Execution price</span> {invertButton}
+        </HeaderTitle>
         <HeaderValue>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</HeaderValue>
       </td>
       <td>
@@ -352,7 +360,7 @@ const FillsTable: React.FC<Props> = (props) => {
 
   return (
     <MainWrapper>
-      {order && <FilledProgress fullView order={order} />}
+      {order && <FilledProgress lineBreak fullView order={order} />}
       <Wrapper
         showBorderTable={showBorderTable}
         header={
@@ -361,7 +369,9 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Sell amount</th>
             <th>Buy amount</th>
             <th>Surplus</th>
-            <th>Execution price {invertButton}</th>
+            <th>
+              <span>Execution price</span> {invertButton}
+            </th>
             <th>Execution time</th>
           </tr>
         }
