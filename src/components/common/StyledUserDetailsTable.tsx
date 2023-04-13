@@ -31,17 +31,21 @@ const StyledUserDetailsTable = styled(SimpleTable)<StyledUserDetailsTableProps>`
   thead tr th {
     color: ${({ theme }): string => theme.textPrimary1};
     font-style: normal;
-    font-weight: 800;
+    font-weight: ${({ theme }): string => theme.fontBold};
     font-size: 13px;
     line-height: 16px;
     height: 50px;
     border-bottom: ${({ theme }): string => `1px solid ${theme.borderPrimary}`};
-    gap: 6px;
+  }
+
+  thead tr th > span {
+    white-space: pre;
   }
 
   thead {
     position: inherit;
   }
+
   thead tr {
     width: 100%;
   }

@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react'
-import styled from 'styled-components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faExchangeAlt, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import styled, { useTheme } from 'styled-components'
+import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
 import { Order, Trade } from 'api/operator'
 import { abbreviateString } from 'utils'
@@ -17,10 +16,10 @@ import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TableState } from 'apps/explorer/components/TokensTableWidget/useTable'
-import { LinkButton } from '../DetailsTable'
 import { FilledProgress } from '../FilledProgress'
 import { TokenAmount } from 'components/token/TokenAmount'
 import Icon from 'components/Icon'
+import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 import { calculatePrice, TokenErc20 } from '@gnosis.pm/dex-js'
 import { TEN_BIG_NUMBER } from 'const'
 import BigNumber from 'bignumber.js'
@@ -36,9 +35,6 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
 
   > tbody {
-    min-height: 37rem;
-    border-bottom: 0.1rem solid ${({ theme }): string => theme.tableRowBorder};
-
     > tr {
       min-height: 7.4rem;
 
@@ -74,7 +70,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
 
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 4fr 2fr 3fr 3fr 3.5fr 3fr 4fr;
+    grid-template-columns: 3fr 3fr 3fr 3fr 3.5fr 3fr;
   }
 
   > tbody > tr > td:nth-child(8),
@@ -190,6 +186,9 @@ const HeaderTitle = styled.span`
 `
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
 
   ${media.mobile} {
     flex-wrap: wrap;
@@ -201,16 +200,6 @@ const MainWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-`
-
-const StyledLinkButton = styled(LinkButton)`
-  margin-left: 0;
-
-  ${media.mediumDown} {
-    min-width: auto;
-    font-size: 12px;
-    padding: 4px 8px;
-  }
 `
 
 const StyledShimmerBar = styled(ShimmerBar)`
@@ -250,6 +239,7 @@ function calculateExecutionPrice(
 }
 
 const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) => {
+  const theme = useTheme()
   const network = useNetworkId() || undefined
   const {
     txHash,
@@ -293,9 +283,9 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Surplus</HeaderTitle>
+        <HeaderTitle>Sell amount</HeaderTitle>
         <HeaderValue>
-          {surplus ? <SurplusComponent surplus={surplus} token={surplusToken} showHidden /> : '-'}
+          <TokenAmount amount={sellAmount} token={sellToken} />
         </HeaderValue>
       </td>
       <td>
@@ -305,28 +295,25 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Sell amount</HeaderTitle>
+        <HeaderTitle>Surplus</HeaderTitle>
         <HeaderValue>
-          <TokenAmount amount={sellAmount} token={sellToken} />
+          {surplus ? (
+            <SurplusComponent icon={faIcon} iconColor={theme.green} surplus={surplus} token={surplusToken} showHidden />
+          ) : (
+            '-'
+          )}
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Execution price {invertButton}</HeaderTitle>
+        <HeaderTitle>
+          <span>Execution price</span> {invertButton}
+        </HeaderTitle>
         <HeaderValue>{executionPrice && <TokenAmount amount={executionPrice} token={executionToken} />}</HeaderValue>
       </td>
       <td>
         <HeaderTitle>Execution time</HeaderTitle>
         <HeaderValue>
           {executionTime ? <DateDisplay date={executionTime} showIcon={true} /> : <StyledShimmerBar />}
-        </HeaderValue>
-      </td>
-      <td>
-        <HeaderTitle></HeaderTitle>
-        <HeaderValue>
-          <StyledLinkButton to={`/tx/${txHash}/?tab=graph`}>
-            <FontAwesomeIcon icon={faProjectDiagram} />
-            View batch graph
-          </StyledLinkButton>
         </HeaderValue>
       </td>
     </tr>
@@ -373,18 +360,19 @@ const FillsTable: React.FC<Props> = (props) => {
 
   return (
     <MainWrapper>
-      {order && <FilledProgress fullView order={order} />}
+      {order && <FilledProgress lineBreak fullView order={order} />}
       <Wrapper
         showBorderTable={showBorderTable}
         header={
           <tr>
             <th>Tx hash</th>
-            <th>Surplus</th>
-            <th>Buy amount</th>
             <th>Sell amount</th>
-            <th>Execution price {invertButton}</th>
+            <th>Buy amount</th>
+            <th>Surplus</th>
+            <th>
+              <span>Execution price</span> {invertButton}
+            </th>
             <th>Execution time</th>
-            <th></th>
           </tr>
         }
         body={tradeItems(trades)}

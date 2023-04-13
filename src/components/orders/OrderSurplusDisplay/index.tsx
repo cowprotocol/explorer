@@ -4,7 +4,6 @@ import styled, { css, useTheme, FlattenSimpleInterpolation } from 'styled-compon
 import { Order } from 'api/operator'
 
 import { BaseIconTooltipOnHover } from 'components/Tooltip'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 import BigNumber from 'bignumber.js'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -53,16 +52,6 @@ export function OrderSurplusDisplay(props: Props): JSX.Element | null {
   return <Wrapper surplus={surplus} token={surplus.surplusToken} showHidden />
 }
 
-const IconWrapper = styled(FontAwesomeIcon)`
-  padding: 0.6rem;
-  margin: -0.6rem 0 -0.6rem -0.6rem;
-  box-sizing: content-box;
-
-  :hover {
-    cursor: pointer;
-  }
-`
-
 const HiddenSection = styled.span<{ showHiddenSection: boolean; strechHiddenSection?: boolean }>`
   display: ${({ showHiddenSection }): string => (showHiddenSection ? 'flex' : 'none')};
   ${({ strechHiddenSection }): FlattenSimpleInterpolation | false | undefined =>
@@ -98,10 +87,13 @@ export function OrderSurplusTooltipDisplay({
     <BaseIconTooltipOnHover
       tooltip={<TokenAmount amount={surplus.amount} token={surplus.surplusToken} />}
       targetContent={
-        <>
-          <IconWrapper icon={faIcon} color={theme.green} />
-          <SurplusComponent surplus={surplus} token={surplus.surplusToken} showHidden={showHiddenSection} />
-        </>
+        <SurplusComponent
+          surplus={surplus}
+          token={surplus.surplusToken}
+          showHidden={showHiddenSection}
+          icon={faIcon}
+          iconColor={theme.green}
+        />
       }
     />
   )

@@ -6,11 +6,19 @@ import { safeTokenName } from 'utils'
 import { ProgressBar } from 'components/common/ProgressBar'
 import { OrderPriceDisplay } from '../OrderPriceDisplay'
 import { TokenAmount } from 'components/token/TokenAmount'
+import { SurplusComponent, Percentage, Amount } from 'components/common/SurplusComponent'
 
 export type Props = {
   order: Order
   fullView?: boolean
+  lineBreak?: boolean
 }
+
+const StyledSurplusComponent = styled(SurplusComponent)`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 1rem;
+`
 
 const Wrapper = styled.div`
   display: flex;
@@ -38,25 +46,34 @@ const Wrapper = styled.div`
 `
 
 const TableHeading = styled.div`
-  background: ${({ theme }): string => theme.tableRowBorder};
-  min-height: 11rem;
-  padding: 1.6rem;
-  display: flex;
-  gap: 2rem;
+  padding: 0 0 1rem;
+  display: grid;
+  grid-template-columns: minmax(min-content, auto) auto auto;
+  justify-content: flex-start;
+  gap: 1.6rem;
 
   ${media.mobile} {
-    flex-direction: column;
-    gap: 1rem;
+    display: flex;
+    flex-flow: column wrap;
   }
 
   .title {
     text-transform: uppercase;
+    font-weight: normal;
     font-size: 1.1rem;
+    letter-spacing: 0.1rem;
+    color: ${({ theme }): string => theme.grey};
+    margin: 0;
+    line-height: 1;
   }
 
-  .fillNumber {
+  .percentage,
+  ${Percentage} {
     font-size: 3.2rem;
-    margin: 1.5rem 0 1rem 0;
+    margin: 0;
+    line-height: 1;
+    letter-spacing: -0.2rem;
+    font-weight: ${({ theme }): string => theme.fontMedium};
     color: ${({ theme }): string => theme.green};
 
     ${media.mobile} {
@@ -64,25 +81,45 @@ const TableHeading = styled.div`
     }
   }
 
+  ${Amount} {
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1;
+
+    > span {
+      white-space: nowrap;
+    }
+  }
+
   .priceNumber {
-    font-size: 2.2rem;
-    margin: 1rem 0;
+    font-size: 2.3rem;
+    margin: 0;
 
     ${media.mobile} {
       font-size: 1.8rem;
     }
 
-    span {
-      line-height: 1;
+    > span {
+      line-height: 1.2;
+      flex-flow: row wrap;
+      color: ${({ theme }): string => theme.grey};
+    }
+
+    > span > span:first-child {
+      color: ${({ theme }): string => theme.textPrimary1};
     }
   }
 `
 
 const TableHeadingContent = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 27rem;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1.4rem;
+  border-radius: 0.6rem;
+  background: ${({ theme }): string => theme.tableRowBorder};
+  padding: 2rem 1.8rem;
 
   ${media.mobile} {
     flex-direction: column;
@@ -90,35 +127,42 @@ const TableHeadingContent = styled.div`
 
   .progress-line {
     width: 100%;
-  }
-
-  &.limit-price {
-    width: 38rem;
+    height: 0.4rem;
   }
 `
+
 const FilledContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: end;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  flex-flow: column wrap;
+  gap: 1.4rem;
+  margin: 0;
+
+  > div {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    gap: 1.6rem;
+  }
 `
 
-const OrderAssetsInfoWrapper = styled.span`
-  font-size: 12px;
+const OrderAssetsInfoWrapper = styled.span<{ lineBreak?: boolean }>`
+  font-size: 1.2rem;
   line-height: normal;
+
+  b:first-child {
+    display: ${({ lineBreak }): string => (lineBreak ? 'block' : 'inline')};
+  }
 `
 
 export function FilledProgress(props: Props): JSX.Element {
   const {
+    lineBreak = false,
     fullView = false,
     order: {
       executedFeeAmount,
       filledAmount,
       filledPercentage,
-      fullyFilled,
       kind,
-      feeAmount,
       sellAmount,
       buyAmount,
       executedBuyAmount,
@@ -127,6 +171,8 @@ export function FilledProgress(props: Props): JSX.Element {
       sellToken,
       buyTokenAddress,
       sellTokenAddress,
+      surplusAmount,
+      surplusPercentage,
     },
   } = props
 
@@ -135,7 +181,6 @@ export function FilledProgress(props: Props): JSX.Element {
 
   const mainToken = (isSell ? sellToken : buyToken) || null
   const mainAddress = isSell ? sellTokenAddress : buyTokenAddress
-  const mainAmount = isSell ? sellAmount.plus(feeAmount) : buyAmount
   const swappedToken = (isSell ? buyToken : sellToken) || null
   const swappedAddress = isSell ? buyTokenAddress : sellTokenAddress
   const swappedAmount = isSell ? executedBuyAmount : executedSellAmount
@@ -150,23 +195,18 @@ export function FilledProgress(props: Props): JSX.Element {
   const swappedSymbol = swappedToken ? safeTokenName(swappedToken) : swappedAddress
   // In case the token object is empty, display the raw amount (`decimals || 0` part)
   const formattedPercentage = filledPercentage.times('100').decimalPlaces(2).toString()
+
+  const surplus = { amount: surplusAmount, percentage: surplusPercentage }
+  const surplusToken = (isSell ? buyToken : sellToken) || null
+
   const OrderAssetsInfo = (): JSX.Element => (
     <>
       {' '}
-      <OrderAssetsInfoWrapper>
+      <OrderAssetsInfoWrapper lineBreak={lineBreak}>
         <b>
           {/* Executed part (bought/sold tokens) */}
           <TokenAmount amount={filledAmountWithFee} token={mainToken} symbol={mainSymbol} />
         </b>{' '}
-        {!fullyFilled && (
-          // Show the total amount to buy/sell. Only for orders that are not 100% executed
-          <>
-            of{' '}
-            <b>
-              <TokenAmount amount={mainAmount} token={mainToken} symbol={mainSymbol} />
-            </b>{' '}
-          </>
-        )}
         {action}{' '}
         {touched && (
           // Executed part of the trade:
@@ -191,13 +231,17 @@ export function FilledProgress(props: Props): JSX.Element {
     <TableHeading>
       <TableHeadingContent>
         <FilledContainer>
+          <p className="title">Filled</p>
           <div>
-            <p className="title">Filled</p>
-            <p className="fillNumber">{formattedPercentage}%</p>
+            <p className="percentage">{formattedPercentage}%</p>
+            <OrderAssetsInfo />
           </div>
-          <OrderAssetsInfo />
+          <ProgressBar showLabel={false} percentage={formattedPercentage} />
         </FilledContainer>
-        <ProgressBar showLabel={false} percentage={formattedPercentage} />
+      </TableHeadingContent>
+      <TableHeadingContent className="surplus">
+        <p className="title">Total Surplus</p>
+        <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
       </TableHeadingContent>
       <TableHeadingContent className="limit-price">
         <p className="title">Limit Price</p>
