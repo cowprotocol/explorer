@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/explorer",
-  "version": "2.19.1",
+  "version": "2.20.0",
   "description": "",
   "main": "src/index.js",
   "sideEffects": false,
