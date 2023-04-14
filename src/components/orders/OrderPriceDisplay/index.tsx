@@ -15,6 +15,21 @@ import {
 const Wrapper = styled.span`
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+
+  > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  > span:first-child {
+    margin: 0 0.5rem 0 0;
+  }
+
+  > span:last-child {
+    white-space: nowrap;
+  }
 `
 
 export type Props = {
@@ -58,8 +73,13 @@ export function OrderPriceDisplay(props: Props): JSX.Element {
 
   return (
     <Wrapper>
-      {formattedPrice} {quoteSymbol} for {baseSymbol}
-      {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
+      <span>
+        {formattedPrice} {quoteSymbol}
+      </span>
+      <span>
+        for {baseSymbol}
+        {showInvertButton && <Icon icon={faExchangeAlt} onClick={invert} />}
+      </span>
     </Wrapper>
   )
 }

@@ -2,13 +2,13 @@
 import BigNumber from 'bignumber.js'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
-import { Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { FILLED_ORDER_EPSILON, ONE_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { Order, OrderStatus, RawOrder, Trade } from 'api/operator/types'
 
-import { formattingAmountPrecision, formatSmartMaxPrecision } from 'utils'
+import { formatSmartMaxPrecision, formattingAmountPrecision } from 'utils'
 import { PENDING_ORDERS_BUFFER } from 'apps/explorer/const'
 
 function isOrderFilled(order: RawOrder): boolean {
@@ -100,30 +100,67 @@ export function getOrderFilledAmount(order: RawOrder): { amount: BigNumber; perc
   return { amount: executedAmount, percentage: executedAmount.div(totalAmount) }
 }
 
-type Surplus = {
+export type Surplus = {
   amount: BigNumber
   percentage: BigNumber
 }
 
-type BigNumberIsh = string | BigNumber
-
 /**
  * Calculates SELL surplus based on buy amounts
  *
- * @param buyAmount buyAmount
- * @param executedBuyAmount executedBuyAmount
  * @returns Sell surplus
  */
-export function getSellSurplus(buyAmount: BigNumberIsh, executedBuyAmount: BigNumberIsh): Surplus {
-  const buyAmountBigNumber = new BigNumber(buyAmount)
-  const executedAmountBigNumber = new BigNumber(executedBuyAmount)
-  // SELL order has the sell amount fixed, so it'll buy AT LEAST `buyAmount`
-  // Surplus is in the form of additional buy amount
-  // The difference between `executedBuyAmount - buyAmount` is the surplus.
-  const amount = executedAmountBigNumber.gt(buyAmountBigNumber)
-    ? executedAmountBigNumber.minus(buyAmountBigNumber)
-    : ZERO_BIG_NUMBER
+export function getSellSurplus(order: RawOrder): Surplus {
+  const { partiallyFillable } = order
+
+  const surplus = partiallyFillable ? _getPartialFillSellSurplus(order) : _getFillOrKillSellSurplus(order)
+
+  return surplus || ZERO_SURPLUS
+}
+
+function _getFillOrKillSellSurplus(order: RawOrder): Surplus | null {
+  const { buyAmount, executedBuyAmount } = order
+
+  const buyAmountBigNumber = new BigNumber(buyAmount.toString())
+  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+
+  // Difference between what you got minus what you wanted to get is the surplus
+  const difference = executedBuyAmountBigNumber.minus(buyAmountBigNumber)
+
+  const amount = difference.gt(ZERO_BIG_NUMBER) ? difference : ZERO_BIG_NUMBER
+
   const percentage = amount.dividedBy(buyAmountBigNumber)
+
+  return { amount, percentage }
+}
+
+type PartialFillSurplusParams = {
+  buyAmount: string | BigNumber
+  sellAmount: string | BigNumber
+  executedSellAmountBeforeFees: string
+  executedBuyAmount: string
+}
+
+function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus | null {
+  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
+
+  const sellAmountBigNumber = new BigNumber(sellAmount)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumber(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+
+  // BUY is QUOTE
+  const price = buyAmountBigNumber.dividedBy(sellAmountBigNumber)
+
+  // What you would get at limit price, in buy token atoms
+  const minimumBuyAmount = executedSellAmountBigNumber.multipliedBy(price)
+
+  // Surplus is the difference between what you got minus what you would get if executed at limit price
+  // Surplus amount, in buy token atoms
+  const amount = executedBuyAmountBigNumber.minus(minimumBuyAmount)
+
+  // The percentage is based on the amount you would receive, if executed at limit price
+  const percentage = amount.dividedBy(minimumBuyAmount)
 
   return { amount, percentage }
 }
@@ -131,40 +168,68 @@ export function getSellSurplus(buyAmount: BigNumberIsh, executedBuyAmount: BigNu
 /**
  * Calculates BUY surplus based on sell amounts
  *
- * @param sellAmount sellAmount
- * @param executedSellAmountMinusFees executedSellAmount minus total fees
  * @returns Buy surplus
  */
-export function getBuySurplus(sellAmount: BigNumberIsh, executedSellAmountMinusFees: BigNumberIsh): Surplus {
+export function getBuySurplus(order: RawOrder): Surplus {
+  const { partiallyFillable } = order
+
+  const surplus = partiallyFillable ? _getPartialFillBuySurplus(order) : _getFillOrKillBuySurplus(order)
+
+  return surplus || ZERO_SURPLUS
+}
+
+function _getFillOrKillBuySurplus(order: RawOrder): Surplus | null {
+  const { sellAmount, executedSellAmountBeforeFees } = order
+
   const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedAmountBigNumber = new BigNumber(executedSellAmountMinusFees)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+
   // BUY order has the buy amount fixed, so it'll sell AT MOST `sellAmount`
   // Surplus will come in the form of a "discount", selling less than `sellAmount`
   // The difference between `sellAmount - executedSellAmount` is the surplus.
-  const amount =
-    executedAmountBigNumber.gt(ZERO_BIG_NUMBER) && sellAmountBigNumber.gt(executedAmountBigNumber)
-      ? sellAmountBigNumber.minus(executedAmountBigNumber)
-      : ZERO_BIG_NUMBER
+  const amount = sellAmountBigNumber.minus(executedSellAmountBigNumber)
+
   const percentage = amount.dividedBy(sellAmountBigNumber)
 
   return { amount, percentage }
 }
 
+function _getPartialFillBuySurplus(params: PartialFillSurplusParams): Surplus | null {
+  const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
+
+  const sellAmountBigNumber = new BigNumber(sellAmount)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumber(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+
+  // SELL is QUOTE
+  const price = sellAmountBigNumber.dividedBy(buyAmountBigNumber)
+
+  const maximumSellAmount = executedBuyAmountBigNumber.multipliedBy(price)
+
+  const amount = maximumSellAmount.minus(executedSellAmountBigNumber)
+
+  const percentage = amount.dividedBy(maximumSellAmount)
+
+  return { amount, percentage }
+}
+
+export const ZERO_SURPLUS: Surplus = { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
+
 export function getOrderSurplus(order: RawOrder): Surplus {
-  const { kind, buyAmount, sellAmount, partiallyFillable } = order
+  const { kind } = order
 
   // `executedSellAmount` already has the fees discounted
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
 
-  if (partiallyFillable) {
-    // TODO: calculate how much was matched based on the type and check whether there was any surplus
-    return { amount: ZERO_BIG_NUMBER, percentage: ZERO_BIG_NUMBER }
+  if (executedBuyAmount.isZero() || executedSellAmount.isZero()) {
+    return ZERO_SURPLUS
   }
 
   if (kind === 'buy') {
-    return getBuySurplus(sellAmount, executedSellAmount)
+    return getBuySurplus(order)
   } else {
-    return getSellSurplus(buyAmount, executedBuyAmount)
+    return getSellSurplus(order)
   }
 }
 
@@ -323,13 +388,9 @@ export function transformOrder(rawOrder: RawOrder): Order {
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(rawOrder)
   const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(rawOrder)
 
-  // TODO: fill in tx hash for fill or kill orders when available from the api
-  const txHash = '0x489d8fd1efd43394c7c2b26216f36f1ab49b8d67623047e0fcb60efa2a2c420b'
-
   return {
     ...rest,
     receiver,
-    txHash,
     shortId,
     creationDate: new Date(creationDate),
     expirationDate: new Date(validTo * 1000),
@@ -351,32 +412,40 @@ export function transformOrder(rawOrder: RawOrder): Order {
     filledPercentage,
     surplusAmount,
     surplusPercentage,
-  }
+  } as Order
 }
 
 /**
  * Transforms a RawTrade into a Trade object
  */
-export function transformTrade(rawTrade: TradeMetaData & { executionTime?: string }): Trade {
-  const {
-    orderUid,
-    buyAmount,
-    sellAmount,
-    sellAmountBeforeFees,
-    buyToken,
-    sellToken,
-    executionTime = '',
-    ...rest
-  } = rawTrade
+export function transformTrade(rawTrade: TradeMetaData, order: Order, executionTimestamp?: number): Trade {
+  const { orderUid, buyAmount, sellAmount, sellAmountBeforeFees, buyToken, sellToken, ...rest } = rawTrade
+  const { amount, percentage } = getTradeSurplus(rawTrade, order)
 
   return {
     ...rest,
     orderId: orderUid,
+    kind: order.kind,
     buyAmount: new BigNumber(buyAmount),
     sellAmount: new BigNumber(sellAmount),
     sellAmountBeforeFees: new BigNumber(sellAmountBeforeFees),
     buyTokenAddress: buyToken,
     sellTokenAddress: sellToken,
-    executionTime: new Date(executionTime),
+    surplusAmount: amount,
+    surplusPercentage: percentage,
+    executionTime: executionTimestamp ? new Date(executionTimestamp * 1000) : null,
   }
+}
+
+export function getTradeSurplus(rawTrade: TradeMetaData, order: Order): Surplus {
+  const params: PartialFillSurplusParams = {
+    sellAmount: order.sellAmount,
+    buyAmount: order.buyAmount,
+    executedSellAmountBeforeFees: rawTrade.sellAmountBeforeFees,
+    executedBuyAmount: rawTrade.buyAmount,
+  }
+
+  const surplus = order.kind === OrderKind.SELL ? _getPartialFillSellSurplus(params) : _getPartialFillBuySurplus(params)
+
+  return surplus || ZERO_SURPLUS
 }

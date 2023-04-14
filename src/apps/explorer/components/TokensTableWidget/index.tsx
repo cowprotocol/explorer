@@ -59,8 +59,10 @@ const ExplorerCustomTab = styled(ExplorerTabs)`
       flex-direction: column;
     }
   }
+
   .tab-extra-content {
     justify-content: center;
+    padding: 1.4rem 0;
   }
 `
 

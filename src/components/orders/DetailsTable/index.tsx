@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFill, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { media } from 'theme/styles/media'
 
 import { Order } from 'api/operator'
@@ -21,14 +23,9 @@ import { StatusLabel } from 'components/orders/StatusLabel'
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { sendEvent } from 'components/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import DecodeAppData from 'components/AppData/DecodeAppData'
 
 const Table = styled(SimpleTable)`
-  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
-  border-radius: 0.4rem;
-
   > tbody > tr {
     grid-template-columns: 27rem auto;
     padding: 1.4rem 0 1.4rem 1.1rem;
@@ -130,7 +127,7 @@ export const Wrapper = styled.div`
   }
 `
 
-const LinkButton = styled(LinkWithPrefixNetwork)`
+export const LinkButton = styled(LinkWithPrefixNetwork)`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -167,11 +164,13 @@ const LinkButton = styled(LinkWithPrefixNetwork)`
 
 export type Props = {
   order: Order
+  showFillsButton: boolean | undefined
   areTradesLoading: boolean
+  viewFills: () => void
 }
 
 export function DetailsTable(props: Props): JSX.Element | null {
-  const { order, areTradesLoading } = props
+  const { order, areTradesLoading, showFillsButton, viewFills } = props
   const {
     uid,
     shortId,
@@ -205,8 +204,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
       action: 'Copy',
       label,
     })
-
-  const isFeeHidden = order.class === 'limit' && status !== 'filled'
 
   return (
     <Table
@@ -246,7 +243,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               />
             </td>
           </tr>
-          {!partiallyFillable && (
+          {(!partiallyFillable || txHash) && (
             <tr>
               <td>
                 <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
@@ -301,7 +298,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.type} /> Type
             </td>
             <td>
-              {capitalize(kind)} {order.class} order {!partiallyFillable && '(Fill or Kill)'}
+              {capitalize(kind)} {order.class} order {partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
             </td>
           </tr>
           <tr>
@@ -327,8 +324,6 @@ export function DetailsTable(props: Props): JSX.Element | null {
               />
             </td>
           </tr>
-          {/*TODO: uncomment when fills tab is implemented */}
-          {/*{!partiallyFillable && (*/}
           <>
             <tr>
               <td>
@@ -353,7 +348,15 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 <HelpTooltip tooltip={tooltip.filled} /> Filled
               </td>
               <td>
-                <FilledProgress order={order} />
+                <Wrapper>
+                  <FilledProgress order={order} />
+                  {showFillsButton && (
+                    <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?tab=fills`}>
+                      <FontAwesomeIcon icon={faFill} />
+                      View fills
+                    </LinkButton>
+                  )}
+                </Wrapper>
               </td>
             </tr>
             <tr>
@@ -363,18 +366,14 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <td>{!surplusAmount.isZero() ? <OrderSurplusDisplay order={order} /> : '-'}</td>
             </tr>
           </>
-          {/*TODO: uncomment when fills tab is implemented */}
-          {/*)}*/}
-          {!isFeeHidden && (
-            <tr>
-              <td>
-                <HelpTooltip tooltip={tooltip.fees} /> Fees
-              </td>
-              <td>
-                <GasFeeDisplay order={order} />
-              </td>
-            </tr>
-          )}
+          <tr>
+            <td>
+              <HelpTooltip tooltip={tooltip.fees} /> Fees
+            </td>
+            <td>
+              <GasFeeDisplay order={order} />
+            </td>
+          </tr>
           <tr>
             <td>
               <HelpTooltip tooltip={tooltip.appData} /> AppData

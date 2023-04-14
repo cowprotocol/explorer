@@ -1,15 +1,27 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Order, Trade } from 'api/operator'
+import { Errors } from 'types'
 
+import { formatPercentage } from 'utils'
+import { FillsTableContext } from './context/FillsTableContext'
+import { media } from 'theme/styles/media'
+import { useQuery } from 'hooks/useQuery'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import RedirectToSearch from 'components/RedirectToSearch'
 import { Notification } from 'components/Notification'
-import { Errors } from 'types'
 import { ConnectionStatus } from 'components/ConnectionStatus'
+import { TabItemInterface } from 'components/common/Tabs/Tabs'
+import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import CowLoading from 'components/common/CowLoading'
+import TablePagination, { PaginationWrapper } from 'apps/explorer/components/common/TablePagination'
+import { useTable } from 'apps/explorer/components/TokensTableWidget/useTable'
+import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
+
+import { FillsTableWithData } from './FillsTableWithData'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -20,6 +32,31 @@ const TitleUid = styled(RowWithCopyButton)`
   align-items: center;
 `
 
+const WrapperExtraComponents = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  height: 100%;
+  gap: 1rem;
+  ${media.mobile} {
+    ${PaginationWrapper} {
+      display: none;
+    }
+    justify-content: center;
+  }
+`
+
+const StyledExplorerTabs = styled(ExplorerTabs)`
+  margin-top: 2rem;
+  &.orderDetails-tab {
+    &--overview {
+      .tab-content {
+        padding: 0;
+      }
+    }
+  }
+`
+
 export type Props = {
   order: Order | null
   trades: Trade[]
@@ -28,16 +65,103 @@ export type Props = {
   errors: Errors
 }
 
-export const OrderDetails: React.FC<Props> = (props) => {
-  const { order, isOrderLoading, areTradesLoading, errors, trades } = props
+export enum TabView {
+  OVERVIEW = 1,
+  FILLS,
+}
+
+const DEFAULT_TAB = TabView[1]
+
+function useQueryViewParams(): { tab: string } {
+  const query = useQuery()
+  return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+}
+
+const tabItems = (
+  _order: Order | null,
+  trades: Trade[],
+  areTradesLoading: boolean,
+  isOrderLoading: boolean,
+  onChangeTab: (tab: TabView) => void,
+): TabItemInterface[] => {
+  const order = getOrderWithTxHash(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
-  const [redirectTo, setRedirectTo] = useState(false)
+  const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
+  const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
-  // Only set txHash for fillOrKill orders, if any
-  // Partially fillable order will have a tab only for the trades
-  const txHash =
-    (order && !order.partiallyFillable && trades && trades.length === 1 ? trades[0].txHash : undefined) || undefined
+  const detailsTab = {
+    id: TabView.OVERVIEW,
+    tab: <span>Overview</span>,
+    content: (
+      <>
+        {order && areTokensLoaded && (
+          <DetailsTable
+            order={order}
+            showFillsButton={showFills}
+            viewFills={(): void => onChangeTab(TabView.FILLS)}
+            areTradesLoading={areTradesLoading}
+          />
+        )}
+        {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
+        {isLoadingForTheFirstTime && (
+          <EmptyItemWrapper>
+            <CowLoading />
+          </EmptyItemWrapper>
+        )}
+      </>
+    ),
+  }
+
+  if (!showFills) {
+    return [detailsTab]
+  }
+
+  const fillsTab = {
+    id: TabView.FILLS,
+    tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
+    content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
+  }
+
+  return [detailsTab, fillsTab]
+}
+
+/**
+ * Get the order with txHash set if it has a single trade
+ *
+ * That is the case for any filled fill or kill or a partial fill that has a single trade
+ */
+function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
+  if (order && trades.length === 1) {
+    return { ...order, txHash: trades[0].txHash || undefined }
+  }
+  return order
+}
+
+const RESULTS_PER_PAGE = 10
+
+export const OrderDetails: React.FC<Props> = (props) => {
+  const { order, isOrderLoading, areTradesLoading, errors, trades } = props
+  const { tab } = useQueryViewParams()
+  const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
+  const {
+    state: tableState,
+    setPageSize,
+    setPageOffset,
+    handleNextPage,
+    handlePreviousPage,
+  } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
+  const [redirectTo, setRedirectTo] = useState(false)
+  const history = useHistory()
+
+  tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
+  tableState['totalResults'] = trades.length
+
+  const ExtraComponentNode: React.ReactNode = (
+    <WrapperExtraComponents>
+      {tabViewSelected === TabView.FILLS && <TablePagination context={FillsTableContext} />}
+    </WrapperExtraComponents>
+  )
 
   // Avoid redirecting until another network is searched again
   useEffect(() => {
@@ -49,6 +173,17 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
     return (): void => clearTimeout(timer)
   })
+
+  const onChangeTab = useCallback((tabId: number) => {
+    const newTabViewName = TabView[tabId]
+    if (!newTabViewName) return
+
+    setTabViewSelected(TabView[newTabViewName])
+  }, [])
+
+  useEffect(() => {
+    history.replace({ search: `?tab=${TabView[tabViewSelected].toLowerCase()}` })
+  }, [history, tabViewSelected])
 
   if (redirectTo) {
     return <RedirectToSearch from="orders" />
@@ -64,11 +199,25 @@ export const OrderDetails: React.FC<Props> = (props) => {
       {Object.keys(errors).map((key) => (
         <Notification key={key} type={errors[key].type} message={errors[key].message} />
       ))}
-      {/* TODO: add tabs (overview/fills) */}
-      {order && areTokensLoaded && <DetailsTable order={{ ...order, txHash }} areTradesLoading={areTradesLoading} />}
-      {/* TODO: add fills tab for partiallyFillable orders */}
-      {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-      {isLoadingForTheFirstTime && <CowLoading />}
+      <FillsTableContext.Provider
+        value={{
+          trades,
+          isLoading: areTradesLoading,
+          tableState,
+          setPageSize,
+          setPageOffset,
+          handleNextPage,
+          handlePreviousPage,
+        }}
+      >
+        <StyledExplorerTabs
+          className={`orderDetails-tab--${TabView[tabViewSelected].toLowerCase()}`}
+          tabItems={tabItems(order, trades, areTradesLoading, isOrderLoading, onChangeTab)}
+          defaultTab={tabViewSelected}
+          onChange={(key: number): void => onChangeTab(key)}
+          extra={ExtraComponentNode}
+        />
+      </FillsTableContext.Provider>
     </>
   )
 }
