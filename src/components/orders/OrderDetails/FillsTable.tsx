@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React from 'react'
 import styled, { useTheme } from 'styled-components'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
@@ -211,6 +211,8 @@ export type Props = StyledUserDetailsTableProps & {
   trades: Trade[] | undefined
   order: Order | null
   tableState: TableState
+  isPriceInverted: boolean
+  invertPrice: () => void
 }
 
 interface RowProps {
@@ -321,14 +323,9 @@ const RowFill: React.FC<RowProps> = ({ trade, isPriceInverted, invertButton }) =
 }
 
 const FillsTable: React.FC<Props> = (props) => {
-  const { trades, order, tableState, showBorderTable = false } = props
-  const [isPriceInverted, setIsPriceInverted] = useState(false)
+  const { trades, order, tableState, isPriceInverted, invertPrice, showBorderTable = false } = props
 
-  const onInvert = useCallback(() => {
-    setIsPriceInverted((value) => !value)
-  }, [])
-
-  const invertButton = <Icon icon={faExchangeAlt} onClick={onInvert} />
+  const invertButton = <Icon icon={faExchangeAlt} onClick={invertPrice} />
 
   const tradeItems = (items: Trade[] | undefined): JSX.Element => {
     if (!items || items.length === 0) {
@@ -360,7 +357,9 @@ const FillsTable: React.FC<Props> = (props) => {
 
   return (
     <MainWrapper>
-      {order && <FilledProgress lineBreak fullView order={order} />}
+      {order && (
+        <FilledProgress lineBreak fullView order={order} isPriceInverted={isPriceInverted} invertPrice={invertPrice} />
+      )}
       <Wrapper
         showBorderTable={showBorderTable}
         header={

@@ -10,6 +10,8 @@ import { SurplusComponent, Percentage, Amount } from 'components/common/SurplusC
 
 export type Props = {
   order: Order
+  isPriceInverted?: boolean
+  invertPrice?: () => void
   fullView?: boolean
   lineBreak?: boolean
 }
@@ -158,6 +160,8 @@ export function FilledProgress(props: Props): JSX.Element {
   const {
     lineBreak = false,
     fullView = false,
+    isPriceInverted,
+    invertPrice,
     order: {
       executedFeeAmount,
       filledAmount,
@@ -253,6 +257,8 @@ export function FilledProgress(props: Props): JSX.Element {
               sellAmount={sellAmount}
               sellToken={sellToken}
               showInvertButton
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
             />
           )}
         </p>

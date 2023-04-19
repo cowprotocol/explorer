@@ -12,7 +12,7 @@ export const FillsTableWithData: React.FC<{ areTokensLoaded: boolean; order: Ord
   areTokensLoaded,
   order,
 }) => {
-  const { trades, tableState } = useContext(FillsTableContext)
+  const { trades, tableState, isPriceInverted, invertPrice } = useContext(FillsTableContext)
   const isFirstRender = useFirstRender()
 
   return isFirstRender || !areTokensLoaded ? (
@@ -20,6 +20,12 @@ export const FillsTableWithData: React.FC<{ areTokensLoaded: boolean; order: Ord
       <CowLoading />
     </EmptyItemWrapper>
   ) : (
-    <FillsTable order={order} trades={trades} tableState={tableState} />
+    <FillsTable
+      order={order}
+      trades={trades}
+      tableState={tableState}
+      isPriceInverted={isPriceInverted}
+      invertPrice={invertPrice}
+    />
   )
 }

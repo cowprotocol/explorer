@@ -151,6 +151,9 @@ export const OrderDetails: React.FC<Props> = (props) => {
     handleNextPage,
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
+  const [isPriceInverted, setIsPriceInverted] = useState(false)
+  const invertPrice = useCallback((): void => setIsPriceInverted((prev) => !prev), [])
+
   const [redirectTo, setRedirectTo] = useState(false)
   const history = useHistory()
 
@@ -203,6 +206,8 @@ export const OrderDetails: React.FC<Props> = (props) => {
         value={{
           trades,
           isLoading: areTradesLoading,
+          isPriceInverted,
+          invertPrice,
           tableState,
           setPageSize,
           setPageOffset,
