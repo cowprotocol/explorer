@@ -83,6 +83,8 @@ const tabItems = (
   areTradesLoading: boolean,
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
+  isPriceInverted: boolean,
+  invertPrice: () => void,
 ): TabItemInterface[] => {
   const order = getOrderWithTxHash(_order, trades)
   const areTokensLoaded = order?.buyToken && order?.sellToken
@@ -101,6 +103,8 @@ const tabItems = (
             showFillsButton={showFills}
             viewFills={(): void => onChangeTab(TabView.FILLS)}
             areTradesLoading={areTradesLoading}
+            isPriceInverted={isPriceInverted}
+            invertPrice={invertPrice}
           />
         )}
         {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
@@ -120,7 +124,14 @@ const tabItems = (
   const fillsTab = {
     id: TabView.FILLS,
     tab: <>{filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>}</>,
-    content: <FillsTableWithData order={order} areTokensLoaded={!!areTokensLoaded} />,
+    content: (
+      <FillsTableWithData
+        order={order}
+        areTokensLoaded={!!areTokensLoaded}
+        isPriceInverted={isPriceInverted}
+        invertPrice={invertPrice}
+      />
+    ),
   }
 
   return [detailsTab, fillsTab]
@@ -206,8 +217,6 @@ export const OrderDetails: React.FC<Props> = (props) => {
         value={{
           trades,
           isLoading: areTradesLoading,
-          isPriceInverted,
-          invertPrice,
           tableState,
           setPageSize,
           setPageOffset,
@@ -217,7 +226,15 @@ export const OrderDetails: React.FC<Props> = (props) => {
       >
         <StyledExplorerTabs
           className={`orderDetails-tab--${TabView[tabViewSelected].toLowerCase()}`}
-          tabItems={tabItems(order, trades, areTradesLoading, isOrderLoading, onChangeTab)}
+          tabItems={tabItems(
+            order,
+            trades,
+            areTradesLoading,
+            isOrderLoading,
+            onChangeTab,
+            isPriceInverted,
+            invertPrice,
+          )}
           defaultTab={tabViewSelected}
           onChange={(key: number): void => onChangeTab(key)}
           extra={ExtraComponentNode}

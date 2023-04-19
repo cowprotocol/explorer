@@ -8,11 +8,15 @@ import useFirstRender from 'hooks/useFirstRender'
 import CowLoading from 'components/common/CowLoading'
 import FillsTable from './FillsTable'
 
-export const FillsTableWithData: React.FC<{ areTokensLoaded: boolean; order: Order | null }> = ({
-  areTokensLoaded,
-  order,
-}) => {
-  const { trades, tableState, isPriceInverted, invertPrice } = useContext(FillsTableContext)
+type Props = {
+  areTokensLoaded: boolean
+  order: Order | null
+  isPriceInverted: boolean
+  invertPrice: () => void
+}
+
+export const FillsTableWithData: React.FC<Props> = ({ areTokensLoaded, order, isPriceInverted, invertPrice }) => {
+  const { trades, tableState } = useContext(FillsTableContext)
   const isFirstRender = useFirstRender()
 
   return isFirstRender || !areTokensLoaded ? (

@@ -4,8 +4,6 @@ import { TableState, TableStateSetters } from 'apps/explorer/components/TokensTa
 
 type CommonState = {
   trades: Trade[]
-  isPriceInverted: boolean
-  invertPrice: () => void
   isLoading: boolean
   tableState: TableState
 } & TableStateSetters
