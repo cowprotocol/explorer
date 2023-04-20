@@ -79,8 +79,8 @@ const AppDataPage: React.FC = () => {
         <StyledExplorerTabs
           className={`appData-tab--${TabView[tabViewSelected].toLowerCase()}`}
           tabItems={tabItems(tabData, setTabData, onChangeTab)}
-          defaultTab={tabViewSelected}
-          onChange={(key: number): void => onChangeTab(key)}
+          selectedTab={tabViewSelected}
+          updateSelectedTab={(key: number): void => onChangeTab(key)}
         />
       </Content>
     </Wrapper>

@@ -235,8 +235,8 @@ export const OrderDetails: React.FC<Props> = (props) => {
             isPriceInverted,
             invertPrice,
           )}
-          defaultTab={tabViewSelected}
-          onChange={(key: number): void => onChangeTab(key)}
+          selectedTab={tabViewSelected}
+          updateSelectedTab={(key: number): void => onChangeTab(key)}
           extra={ExtraComponentNode}
         />
       </FillsTableContext.Provider>
