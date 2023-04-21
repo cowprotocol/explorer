@@ -118,8 +118,8 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
       >
         <ExplorerTabs
           tabItems={tabItems(txBatchTrades, networkId)}
-          defaultTab={tabViewSelected}
-          onChange={(key: number): void => onChangeTab(key)}
+          selectedTab={tabViewSelected}
+          updateSelectedTab={(key: number): void => onChangeTab(key)}
         />
       </TransactionsTableContext.Provider>
     </>
