@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { useNetworkId } from 'state/network'
@@ -327,6 +327,10 @@ const FillsTable: React.FC<Props> = (props) => {
 
   const invertButton = <Icon icon={faExchangeAlt} onClick={invertPrice} />
 
+  const shownTrades = useMemo(() => {
+    return trades?.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
+  }, [tableState.pageOffset, tableState.pageSize, trades])
+
   const tradeItems = (items: Trade[] | undefined): JSX.Element => {
     if (!items || items.length === 0) {
       return (
@@ -374,7 +378,7 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Execution time</th>
           </tr>
         }
-        body={tradeItems(trades)}
+        body={tradeItems(shownTrades)}
       />
     </MainWrapper>
   )
