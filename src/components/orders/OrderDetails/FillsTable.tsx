@@ -327,7 +327,7 @@ const FillsTable: React.FC<Props> = (props) => {
 
   const invertButton = <Icon icon={faExchangeAlt} onClick={invertPrice} />
 
-  const shownTrades = useMemo(() => {
+  const currentPageTrades = useMemo(() => {
     return trades?.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
   }, [tableState.pageOffset, tableState.pageSize, trades])
 
@@ -378,7 +378,7 @@ const FillsTable: React.FC<Props> = (props) => {
             <th>Execution time</th>
           </tr>
         }
-        body={tradeItems(shownTrades)}
+        body={tradeItems(currentPageTrades)}
       />
     </MainWrapper>
   )
