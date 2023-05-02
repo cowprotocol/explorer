@@ -50,7 +50,7 @@ const Wrapper = styled.div`
 const TableHeading = styled.div`
   padding: 0 0 1rem;
   display: grid;
-  grid-template-columns: minmax(min-content, auto) auto auto;
+  grid-template-columns: minmax(min-content, auto) auto auto auto;
   justify-content: flex-start;
   gap: 1.6rem;
 
