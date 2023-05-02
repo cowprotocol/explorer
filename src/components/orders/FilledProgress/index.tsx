@@ -247,7 +247,23 @@ export function FilledProgress(props: Props): JSX.Element {
         <p className="title">Total Surplus</p>
         <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
       </TableHeadingContent>
-      <TableHeadingContent className="limit-price">
+      <TableHeadingContent>
+        <p className="title">Avg. Execution Price</p>
+        <p className="priceNumber">
+          {buyToken && sellToken && (
+            <OrderPriceDisplay
+              buyAmount={executedBuyAmount}
+              buyToken={buyToken}
+              sellAmount={executedSellAmount}
+              sellToken={sellToken}
+              showInvertButton
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
+            />
+          )}
+        </p>
+      </TableHeadingContent>
+      <TableHeadingContent>
         <p className="title">Limit Price</p>
         <p className="priceNumber">
           {buyToken && sellToken && (
