@@ -180,7 +180,7 @@ export const NATIVE_TOKEN_PER_NETWORK: Record<string, TokenErc20> = {
 
 export const NO_REDIRECT_HOME_ROUTES: Array<string> = ['/address']
 
-export const TENDERLY_API_URL = 'https://cloudflare-ipfs.com/ipfs/QmUVYe2SGZQYf2NJrbGPeSZTMGSC5mEqaMXjM741P8TeX2'
+export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'
 export const DEFAULT_IPFS_READ_URI = process.env.IPFS_READ_URI || 'https://cloudflare-ipfs.com/ipfs'
 export const IPFS_INVALID_APP_IDS = [
   '0x0000000000000000000000000000000000000000000000000000000000000000',
