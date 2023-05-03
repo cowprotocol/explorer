@@ -243,10 +243,6 @@ export function FilledProgress(props: Props): JSX.Element {
           <ProgressBar showLabel={false} percentage={formattedPercentage} />
         </FilledContainer>
       </TableHeadingContent>
-      <TableHeadingContent className="surplus">
-        <p className="title">Total Surplus</p>
-        <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
-      </TableHeadingContent>
       <TableHeadingContent>
         <p className="title">Avg. Execution Price</p>
         <p className="priceNumber">
@@ -262,6 +258,10 @@ export function FilledProgress(props: Props): JSX.Element {
             />
           )}
         </p>
+      </TableHeadingContent>
+      <TableHeadingContent className="surplus">
+        <p className="title">Total Surplus</p>
+        <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
       </TableHeadingContent>
       <TableHeadingContent>
         <p className="title">Limit Price</p>
