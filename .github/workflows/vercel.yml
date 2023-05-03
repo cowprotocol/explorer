@@ -40,6 +40,7 @@ jobs:
 
       - name: Build Project Artifacts
         run: >
+          REACT_APP_IPFS_READ_URI=${{ secrets.REACT_APP_IPFS_READ_URI }}
           REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           REACT_APP_SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
           GOOGLE_ANALYTICS_ID=${{ secrets.GOOGLE_ANALYTICS_ID }}
