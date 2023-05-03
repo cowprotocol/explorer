@@ -133,12 +133,12 @@ export async function getTrades(
     orderId?: UID
   } & WithNetworkId,
 ): Promise<RawTrade[]> {
-  const { networkId, owner, orderId } = params
-  console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderId })
+  const { networkId, owner, orderId: orderUid } = params
+  console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid })
 
-  const tradesPromise = orderBookSDK.getTrades({ owner, orderId }, { chainId: networkId })
+  const tradesPromise = orderBookSDK.getTrades({ owner, orderUid }, { chainId: networkId })
   const tradesPromiseBarn = orderBookSDK
-    .getTrades({ owner, orderId }, { chainId: networkId, env: 'staging' })
+    .getTrades({ owner, orderUid }, { chainId: networkId, env: 'staging' })
     .catch((error) => {
       console.error('[getTrades] Error getting the trades for Barn', params, error)
       return []
