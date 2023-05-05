@@ -32,6 +32,8 @@ const EXPLORER_APP = {
     OPERATOR_URL_PROD_GOERLI: 'https://api.cow.fi/goerli/api',
     OPERATOR_URL_PROD_XDAI: 'https://api.cow.fi/xdai/api',
 
+    REACT_APP_IPFS_READ_URI: process.env.REACT_APP_IPFS_READ_URI,
+
     GOOGLE_ANALYTICS_ID: undefined,
     REACT_APP_SENTRY_DSN: undefined,
 
