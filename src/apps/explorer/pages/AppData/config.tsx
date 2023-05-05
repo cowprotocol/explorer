@@ -116,6 +116,7 @@ const deleteAllPropertiesByName = (schema: JSONSchema7, property: string): void 
     deletePropertyPath(schema, property)
   }
   if (!schema.properties) return
+
   for (const field in schema.properties) {
     deleteAllPropertiesByName(schema.properties[field] as JSONSchema7, property)
   }
@@ -138,7 +139,15 @@ export const deletePropertyPath = (obj: any, path: any): void => {
     }
   }
 
-  delete obj[path.pop()]
+  const propName = path.pop()
+  if (!propName) {
+    return
+  }
+
+  const propConfigurable = Object.getOwnPropertyDescriptor(obj, propName)?.configurable || false
+  if (propConfigurable) {
+    delete obj[propName]
+  }
 }
 
 const quoteDependencies = {
