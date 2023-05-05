@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
 import { useNetworkId } from 'state/network'
 import { metadataApiSDK } from 'cowSdk'
+import { DEFAULT_IPFS_READ_URI } from 'const'
 
 export const useAppData = (
   appDataHash: string,
@@ -30,7 +31,7 @@ export const useAppData = (
 }
 
 export const getDecodedAppData = (appDataHash: string): Promise<void | AnyAppDataDocVersion> => {
-  return metadataApiSDK.decodeAppData(appDataHash)
+  return metadataApiSDK.decodeAppData(appDataHash, DEFAULT_IPFS_READ_URI)
 }
 
 export const getCidHashFromAppData = (appDataHash: string): Promise<string | void> => {
