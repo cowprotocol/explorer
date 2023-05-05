@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 
 // Components
@@ -37,10 +37,10 @@ export interface Props {
   readonly className?: string
   readonly tabItems: TabItemInterface[]
   readonly tabTheme: TabTheme
-  readonly defaultTab?: TabId
+  readonly selectedTab?: TabId
   readonly extra?: TabBarExtraContent
   readonly extraPosition?: 'top' | 'bottom'
-  onChange?: (activeId: TabId) => void
+  readonly updateSelectedTab?: (activeId: TabId) => void
 }
 
 const Wrapper = styled.div`
@@ -90,37 +90,33 @@ const Tabs: React.FC<Props> = (props) => {
   const {
     tabTheme = DEFAULT_TAB_THEME,
     tabItems,
-    defaultTab = 1,
+    selectedTab: parentSelectedTab,
     extra: tabBarExtraContent,
     extraPosition = 'top',
-    onChange,
+    updateSelectedTab: parentUpdateSelectedTab,
   } = props
 
-  const [activeTab, setActiveTab] = useState(defaultTab)
-
-  const onTabClick = useCallback(
-    (key: TabId): void => {
-      setActiveTab(key)
-      onChange?.(key)
-    },
-    [onChange],
-  )
-
-  useEffect(() => {
-    if (activeTab !== defaultTab) {
-      onTabClick(defaultTab)
-    }
-  }, [activeTab, defaultTab, onTabClick])
+  const [innerSelectedTab, setInnerSelectedTab] = useState(1)
+  // Use parent state management if provided, otherwise use internal state
+  const selectedTab = parentSelectedTab ?? innerSelectedTab
+  const updateTab = parentUpdateSelectedTab ?? setInnerSelectedTab
 
   return (
     <Wrapper>
       <TabList role="tablist" className="tablist">
         {tabItems.map(({ tab, id }) => (
-          <TabItem key={id} id={id} tab={tab} onTabClick={onTabClick} isActive={activeTab === id} tabTheme={tabTheme} />
+          <TabItem
+            key={id}
+            id={id}
+            tab={tab}
+            onTabClick={updateTab}
+            isActive={selectedTab === id}
+            tabTheme={tabTheme}
+          />
         ))}
         {extraPosition === 'top' && <ExtraContent extra={tabBarExtraContent} />}
       </TabList>
-      <TabContent tabItems={tabItems} activeTab={activeTab} />
+      <TabContent tabItems={tabItems} activeTab={selectedTab} />
       {extraPosition === 'bottom' && <ExtraContent extra={tabBarExtraContent} />}
     </Wrapper>
   )

@@ -167,10 +167,12 @@ export type Props = {
   showFillsButton: boolean | undefined
   areTradesLoading: boolean
   viewFills: () => void
+  isPriceInverted: boolean
+  invertPrice: () => void
 }
 
 export function DetailsTable(props: Props): JSX.Element | null {
-  const { order, areTradesLoading, showFillsButton, viewFills } = props
+  const { order, areTradesLoading, showFillsButton, viewFills, isPriceInverted, invertPrice } = props
   const {
     uid,
     shortId,
@@ -321,6 +323,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 sellAmount={sellAmount}
                 sellToken={sellToken}
                 showInvertButton
+                isPriceInverted={isPriceInverted}
+                invertPrice={invertPrice}
               />
             </td>
           </tr>
@@ -337,6 +341,8 @@ export function DetailsTable(props: Props): JSX.Element | null {
                     sellAmount={executedSellAmount}
                     sellToken={sellToken}
                     showInvertButton
+                    isPriceInverted={isPriceInverted}
+                    invertPrice={invertPrice}
                   />
                 ) : (
                   '-'

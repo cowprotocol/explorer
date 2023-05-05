@@ -10,6 +10,8 @@ import { SurplusComponent, Percentage, Amount } from 'components/common/SurplusC
 
 export type Props = {
   order: Order
+  isPriceInverted?: boolean
+  invertPrice?: () => void
   fullView?: boolean
   lineBreak?: boolean
 }
@@ -48,7 +50,7 @@ const Wrapper = styled.div`
 const TableHeading = styled.div`
   padding: 0 0 1rem;
   display: grid;
-  grid-template-columns: minmax(min-content, auto) auto auto;
+  grid-template-columns: minmax(min-content, auto) auto auto auto;
   justify-content: flex-start;
   gap: 1.6rem;
 
@@ -158,6 +160,8 @@ export function FilledProgress(props: Props): JSX.Element {
   const {
     lineBreak = false,
     fullView = false,
+    isPriceInverted,
+    invertPrice,
     order: {
       executedFeeAmount,
       filledAmount,
@@ -239,11 +243,27 @@ export function FilledProgress(props: Props): JSX.Element {
           <ProgressBar showLabel={false} percentage={formattedPercentage} />
         </FilledContainer>
       </TableHeadingContent>
+      <TableHeadingContent>
+        <p className="title">Avg. Execution Price</p>
+        <p className="priceNumber">
+          {buyToken && sellToken && (
+            <OrderPriceDisplay
+              buyAmount={executedBuyAmount}
+              buyToken={buyToken}
+              sellAmount={executedSellAmount}
+              sellToken={sellToken}
+              showInvertButton
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
+            />
+          )}
+        </p>
+      </TableHeadingContent>
       <TableHeadingContent className="surplus">
         <p className="title">Total Surplus</p>
         <StyledSurplusComponent surplus={surplus} token={surplusToken} showHidden />
       </TableHeadingContent>
-      <TableHeadingContent className="limit-price">
+      <TableHeadingContent>
         <p className="title">Limit Price</p>
         <p className="priceNumber">
           {buyToken && sellToken && (
@@ -253,6 +273,8 @@ export function FilledProgress(props: Props): JSX.Element {
               sellAmount={sellAmount}
               sellToken={sellToken}
               showInvertButton
+              isPriceInverted={isPriceInverted}
+              invertPrice={invertPrice}
             />
           )}
         </p>

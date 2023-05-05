@@ -38,6 +38,7 @@ export type Props = {
   sellAmount: string | BigNumber
   sellToken: TokenErc20
   isPriceInverted?: boolean
+  invertPrice?: () => void
   showInvertButton?: boolean
 }
 
@@ -47,12 +48,16 @@ export function OrderPriceDisplay(props: Props): JSX.Element {
     buyToken,
     sellAmount,
     sellToken,
-    isPriceInverted: initialInvertedPrice = false,
+    isPriceInverted: parentIsInvertedPrice,
+    invertPrice: parentInvertPrice,
     showInvertButton = false,
   } = props
 
-  const [isPriceInverted, setIsPriceInverted] = useState(initialInvertedPrice)
-  const invert = (): void => setIsPriceInverted((curr) => !curr)
+  const [innerIsPriceInverted, setInnerIsPriceInverted] = useState(parentIsInvertedPrice)
+
+  // Use external state management if available, otherwise use inner one
+  const isPriceInverted = parentIsInvertedPrice ?? innerIsPriceInverted
+  const invert = parentInvertPrice ?? ((): void => setInnerIsPriceInverted((curr) => !curr))
 
   const calculatedPrice = calculatePrice({
     denominator: { amount: buyAmount, decimals: buyToken.decimals },
