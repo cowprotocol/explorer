@@ -20,7 +20,12 @@ const Wrapper = styled.span`
   > span {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  > span > span:first-child {
+    white-space: nowrap;
   }
 
   > span:first-child {
@@ -79,7 +84,8 @@ export function OrderPriceDisplay(props: Props): JSX.Element {
   return (
     <Wrapper>
       <span>
-        {formattedPrice} {quoteSymbol}
+        <span>{formattedPrice}</span>
+        <span>{quoteSymbol}</span>
       </span>
       <span>
         for {baseSymbol}
