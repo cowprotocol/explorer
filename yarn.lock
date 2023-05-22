@@ -7679,9 +7679,9 @@ cytoscape-popper@^2.0.0:
     "@popperjs/core" "^2.0.0"
 
 cytoscape@^3.2.19, cytoscape@^3.21.0:
-  version "3.24.0"
-  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.24.0.tgz#764e4ca3df37160b1c55244c648afd303a07e109"
-  integrity sha512-W9fJMrAfr/zKFzDCpRR/wn6uoEQ7gfbJmxPK5DadXj69XyAhZYi1QXLOE+UXJfXVXxqGM1o1eeiIrtxrtB43zA==
+  version "3.25.0"
+  resolved "https://registry.yarnpkg.com/cytoscape/-/cytoscape-3.25.0.tgz#5289e9d18be0293b073bfe93f83bb95b908b2dc1"
+  integrity sha512-7MW3Iz57mCUo6JQCho6CmPBCbTlJr7LzyEtIkutG255HLVd4XuBg2I9BkTZLI/e4HoaOB/BiAzXuQybQ95+r9Q==
   dependencies:
     heap "^0.2.6"
     lodash "^4.17.21"
