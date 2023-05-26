@@ -277,7 +277,7 @@ const updateLayout = (cy: Cytoscape.Core, layoutName: string, noAnimation = fals
 const removePopper = (popperInstance: React.MutableRefObject<PopperInstance | null>): void =>
   popperInstance.current?.destroy()
 
-function TransanctionBatchGraph({
+export function TransactionBatchGraph({
   txBatchData: { error, isLoading, txSettlement },
   networkId,
 }: GraphBatchTxParams): JSX.Element {
@@ -386,5 +386,3 @@ function TransanctionBatchGraph({
     </>
   )
 }
-
-export default TransanctionBatchGraph

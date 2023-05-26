@@ -16,7 +16,7 @@ import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { useTxBatchTrades, GetTxBatchTradesResult } from 'hooks/useTxBatchTrades'
-import TransactionBatchGraph from 'apps/explorer/components/TransanctionBatchGraph'
+import { TransactionBatchGraph } from 'apps/explorer/components/TransanctionBatchGraph'
 import CowLoading from 'components/common/CowLoading'
 
 interface Props {
