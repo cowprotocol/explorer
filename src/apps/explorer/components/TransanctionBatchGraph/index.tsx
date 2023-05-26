@@ -290,6 +290,7 @@ export function TransactionBatchGraph({
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
+  const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
 
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
@@ -303,16 +304,22 @@ export function TransactionBatchGraph({
   )
 
   useEffect(() => {
-    const cy = cytoscapeRef.current
-    setElements([])
-    if (error || isLoading || !networkId || !heightSize || !cy) return
+    try {
+      setFailedToLoadGraph(false)
+      const cy = cytoscapeRef.current
+      setElements([])
+      if (error || isLoading || !networkId || !heightSize || !cy) return
 
-    setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
-    if (resetZoom) {
-      updateLayout(cy, layout.name)
+      setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
+      if (resetZoom) {
+        updateLayout(cy, layout.name)
+      }
+      removePopper(cyPopperRef)
+      setResetZoom(null)
+    } catch (e) {
+      console.error(`Failed to build graph`, e)
+      setFailedToLoadGraph(true)
     }
-    removePopper(cyPopperRef)
-    setResetZoom(null)
   }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom, layout.name])
 
   useEffect(() => {
@@ -339,12 +346,20 @@ export function TransactionBatchGraph({
     }
   }, [cytoscapeRef, elements.length])
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <EmptyItemWrapper>
         <CowLoading />
       </EmptyItemWrapper>
     )
+  }
+  if (failedToLoadGraph) {
+    return (
+      <EmptyItemWrapper>
+        <p>Failed to load graph, please try again later</p>
+      </EmptyItemWrapper>
+    )
+  }
 
   return (
     <>
