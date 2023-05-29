@@ -56,6 +56,8 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     [layout.name],
   )
 
+  const stableTxSettlement = JSON.stringify(txSettlement)
+
   useEffect(() => {
     try {
       setFailedToLoadGraph(false)
@@ -73,7 +75,8 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       console.error(`Failed to build graph`, e)
       setFailedToLoadGraph(true)
     }
-  }, [error, isLoading, txSettlement, networkId, heightSize, resetZoom, layout.name])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, isLoading, stableTxSettlement, networkId, heightSize, resetZoom, layout.name])
 
   useEffect(() => {
     const cy = cytoscapeRef.current
