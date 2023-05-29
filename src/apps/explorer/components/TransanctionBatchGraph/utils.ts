@@ -204,9 +204,9 @@ export function getNodes(
 
       const account = { alias: fromId }
       builder.node(
-        { type: TypeNodeOnTx.CowProtocol, entity: account, id: fromId },
         // Put it inside the network node
         getNetworkParentNode(account, networkNode.alias),
+        { type: TypeNodeOnTx.Trader, entity: account, id: fromId },
       )
     }
 
