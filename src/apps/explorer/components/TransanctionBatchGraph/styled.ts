@@ -121,6 +121,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'curve-style': 'bezier',
         'font-size': '15px',
         'text-background-padding': '3px',
+        'control-point-step-size': 75,
       },
     },
     {
