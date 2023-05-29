@@ -14,6 +14,7 @@ import BigNumber from 'bignumber.js'
 import { APP_NAME } from 'const'
 
 const PROTOCOL_NAME = APP_NAME
+const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
 
 export interface PopperInstance {
   scheduleUpdate: () => void
@@ -192,7 +193,7 @@ export function getNodes(
 
   txSettlement.transfers.forEach((transfer) => {
     // Custom from id when internal transfer to avoid re-using existing node
-    const fromId = transfer.isInternal ? 'Internal buffer' : transfer.from
+    const fromId = transfer.isInternal ? INTERNAL_NODE_NAME : transfer.from
 
     // If transfer is internal and a node has not been created yet, create one
     if (transfer.isInternal && !internalNodeCreated) {
