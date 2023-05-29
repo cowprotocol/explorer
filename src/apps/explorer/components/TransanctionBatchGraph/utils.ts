@@ -134,6 +134,15 @@ function getNetworkParentNode(account: Account, networkName: string): string | u
   return account.alias !== ALIAS_TRADER_NAME ? networkName : undefined
 }
 
+function getInternalParentNode(groupNodes: Map<string, string>, transfer: Transfer): string | undefined {
+  for (const [key, value] of groupNodes) {
+    if (value === transfer.from) {
+      return key
+    }
+  }
+  return undefined
+}
+
 export function getNodes(
   txSettlement: TxSettlement,
   networkId: Network,
@@ -204,9 +213,9 @@ export function getNodes(
 
       const account = { alias: fromId }
       builder.node(
-        // Put it inside the network node
-        getNetworkParentNode(account, networkNode.alias),
         { type: TypeNodeOnTx.Trader, entity: account, id: fromId },
+        // Put it inside the parent node
+        getInternalParentNode(groupNodes, transfer),
       )
     }
 
