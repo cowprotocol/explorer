@@ -188,7 +188,25 @@ export function getNodes(
     }
   }
 
+  let internalNodeCreated = false
+
   txSettlement.transfers.forEach((transfer) => {
+    // Custom from id when internal transfer to avoid re-using existing node
+    const fromId = transfer.isInternal ? 'Internal buffer' : transfer.from
+
+    // If transfer is internal and a node has not been created yet, create one
+    if (transfer.isInternal && !internalNodeCreated) {
+      // Set flag to prevent creating more
+      internalNodeCreated = true
+
+      const account = { alias: fromId }
+      builder.node(
+        { type: TypeNodeOnTx.CowProtocol, entity: account, id: fromId },
+        // Put it inside the network node
+        getNetworkParentNode(account, networkNode.alias),
+      )
+    }
+
     const kind = getKindEdge(transfer)
     const token = txSettlement.tokens[transfer.token]
     const tokenSymbol = token?.symbol || TOKEN_SYMBOL_UNKNOWN
@@ -196,14 +214,23 @@ export function getNodes(
       ? formattingAmountPrecision(new BigNumber(transfer.value), token, FormatAmountPrecision.highPrecision)
       : '-'
 
-    const source = builder.getById(transfer.from)
+    const source = builder.getById(fromId)
     const target = builder.getById(transfer.to)
     builder.edge(
-      { type: source?.data.type, id: transfer.from },
+      { type: source?.data.type, id: fromId },
       { type: target?.data.type, id: transfer.to },
       `${tokenSymbol}`,
       kind,
-      { from: transfer.from, to: transfer.to, amount: `${tokenAmount} ${tokenSymbol}` },
+      {
+        from: fromId,
+        // Do not display `to` field on tooltip when internal transfer as it's redundant
+        ...(transfer.isInternal
+          ? undefined
+          : {
+              to: transfer.to,
+            }),
+        amount: `${tokenAmount} ${tokenSymbol}`,
+      },
     )
   })
 
