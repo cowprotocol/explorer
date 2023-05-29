@@ -70,11 +70,14 @@ export function traceToTransfersTrades(trace: Trace): TxTradesAndTransfers {
   try {
     trace.logs.forEach((log) => {
       if (log.name === TypeOfTrace.TRANSFER) {
+        const from = log.inputs[IndexTransferInput.from].value
+        const to = log.inputs[IndexTransferInput.to].value
         transfers.push({
           token: log.raw.address,
-          from: log.inputs[IndexTransferInput.from].value,
-          to: log.inputs[IndexTransferInput.to].value,
+          from,
+          to,
           value: log.inputs[IndexTransferInput.value].value,
+          isInternal: from === to,
         })
       } else if (log.name === TypeOfTrace.TRADE) {
         const trade = {
@@ -93,6 +96,7 @@ export function traceToTransfersTrades(trace: Trace): TxTradesAndTransfers {
             from: log.raw.address,
             to: trade.owner,
             value: trade.buyAmount,
+            isInternal: log.raw.address === trade.owner,
           })
         }
         trades.push(trade)
