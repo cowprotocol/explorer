@@ -142,9 +142,14 @@ export function accountAddressesInvolved(
         })
       })
     trades.forEach((trade) => {
-      result.set(trade.owner, {
-        alias: ALIAS_TRADER_NAME,
-      })
+      // Don't overwrite existing contract alias
+      // This addresses an edge case where the settlement contract is also a trader
+      // See https://github.com/cowprotocol/explorer/issues/491
+      if (!result.has(trade.owner)) {
+        result.set(trade.owner, {
+          alias: ALIAS_TRADER_NAME,
+        })
+      }
     })
     // Track any missing from/to contract as unknown
     transfers
