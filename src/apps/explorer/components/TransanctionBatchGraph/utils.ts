@@ -147,7 +147,8 @@ export function getNodes(
   const builder = new ElementsBuilder(heightSize)
   builder.node({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
 
-  const groupNodes: string[] = []
+  const groupNodes: Map<string, string> = new Map()
+
   for (const key in txSettlement.accounts) {
     const account = txSettlement.accounts[key]
     let parentNodeName = getNetworkParentNode(account, networkNode.alias)
@@ -155,9 +156,10 @@ export function getNodes(
     const receiverNode = { alias: `${abbreviateString(account.owner || key, 4, 4)}-group` }
 
     if (account.owner && account.owner !== key) {
-      if (!groupNodes.includes(receiverNode.alias)) {
+      if (!groupNodes.has(receiverNode.alias)) {
         builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
-        groupNodes.push(receiverNode.alias)
+        groupNodes.set(receiverNode.alias, account.owner || key)
+        console.log('groupNodes', groupNodes, receiverNode)
       }
       parentNodeName = receiverNode.alias
     }
@@ -171,9 +173,9 @@ export function getNodes(
       )
 
       if (receivers.includes(key) && account.owner !== key) {
-        if (!groupNodes.includes(receiverNode.alias)) {
+        if (!groupNodes.has(receiverNode.alias)) {
           builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
-          groupNodes.push(receiverNode.alias)
+          groupNodes.set(receiverNode.alias, account.owner || key)
         }
         parentNodeName = receiverNode.alias
       }
