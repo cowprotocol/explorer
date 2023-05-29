@@ -168,7 +168,6 @@ export function getNodes(
       if (!groupNodes.has(receiverNode.alias)) {
         builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
         groupNodes.set(receiverNode.alias, account.owner || key)
-        console.log('groupNodes', groupNodes, receiverNode)
       }
       parentNodeName = receiverNode.alias
     }
