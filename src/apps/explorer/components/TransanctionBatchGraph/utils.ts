@@ -14,6 +14,7 @@ import BigNumber from 'bignumber.js'
 import { APP_NAME } from 'const'
 
 const PROTOCOL_NAME = APP_NAME
+const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
 
 export interface PopperInstance {
   scheduleUpdate: () => void
@@ -133,6 +134,15 @@ function getNetworkParentNode(account: Account, networkName: string): string | u
   return account.alias !== ALIAS_TRADER_NAME ? networkName : undefined
 }
 
+function getInternalParentNode(groupNodes: Map<string, string>, transfer: Transfer): string | undefined {
+  for (const [key, value] of groupNodes) {
+    if (value === transfer.from) {
+      return key
+    }
+  }
+  return undefined
+}
+
 export function getNodes(
   txSettlement: TxSettlement,
   networkId: Network,
@@ -146,7 +156,8 @@ export function getNodes(
   const builder = new ElementsBuilder(heightSize)
   builder.node({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
 
-  const groupNodes: string[] = []
+  const groupNodes: Map<string, string> = new Map()
+
   for (const key in txSettlement.accounts) {
     const account = txSettlement.accounts[key]
     let parentNodeName = getNetworkParentNode(account, networkNode.alias)
@@ -154,9 +165,9 @@ export function getNodes(
     const receiverNode = { alias: `${abbreviateString(account.owner || key, 4, 4)}-group` }
 
     if (account.owner && account.owner !== key) {
-      if (!groupNodes.includes(receiverNode.alias)) {
+      if (!groupNodes.has(receiverNode.alias)) {
         builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
-        groupNodes.push(receiverNode.alias)
+        groupNodes.set(receiverNode.alias, account.owner || key)
       }
       parentNodeName = receiverNode.alias
     }
@@ -170,9 +181,9 @@ export function getNodes(
       )
 
       if (receivers.includes(key) && account.owner !== key) {
-        if (!groupNodes.includes(receiverNode.alias)) {
+        if (!groupNodes.has(receiverNode.alias)) {
           builder.node({ type: TypeNodeOnTx.NetworkNode, entity: receiverNode, id: receiverNode.alias })
-          groupNodes.push(receiverNode.alias)
+          groupNodes.set(receiverNode.alias, account.owner || key)
         }
         parentNodeName = receiverNode.alias
       }
@@ -188,7 +199,25 @@ export function getNodes(
     }
   }
 
+  let internalNodeCreated = false
+
   txSettlement.transfers.forEach((transfer) => {
+    // Custom from id when internal transfer to avoid re-using existing node
+    const fromId = transfer.isInternal ? INTERNAL_NODE_NAME : transfer.from
+
+    // If transfer is internal and a node has not been created yet, create one
+    if (transfer.isInternal && !internalNodeCreated) {
+      // Set flag to prevent creating more
+      internalNodeCreated = true
+
+      const account = { alias: fromId }
+      builder.node(
+        { type: TypeNodeOnTx.Trader, entity: account, id: fromId },
+        // Put it inside the parent node
+        getInternalParentNode(groupNodes, transfer),
+      )
+    }
+
     const kind = getKindEdge(transfer)
     const token = txSettlement.tokens[transfer.token]
     const tokenSymbol = token?.symbol || TOKEN_SYMBOL_UNKNOWN
@@ -196,14 +225,23 @@ export function getNodes(
       ? formattingAmountPrecision(new BigNumber(transfer.value), token, FormatAmountPrecision.highPrecision)
       : '-'
 
-    const source = builder.getById(transfer.from)
+    const source = builder.getById(fromId)
     const target = builder.getById(transfer.to)
     builder.edge(
-      { type: source?.data.type, id: transfer.from },
+      { type: source?.data.type, id: fromId },
       { type: target?.data.type, id: transfer.to },
       `${tokenSymbol}`,
       kind,
-      { from: transfer.from, to: transfer.to, amount: `${tokenAmount} ${tokenSymbol}` },
+      {
+        from: fromId,
+        // Do not display `to` field on tooltip when internal transfer as it's redundant
+        ...(transfer.isInternal
+          ? undefined
+          : {
+              to: transfer.to,
+            }),
+        amount: `${tokenAmount} ${tokenSymbol}`,
+      },
     )
   })
 
