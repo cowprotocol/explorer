@@ -100,6 +100,10 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     cy.on('mouseout', 'node', (event): void => {
       event.target.removeClass('hover')
     })
+    cy.on('tap', 'node', (event): void => {
+      const href = event.target.data('href')
+      href && window.open(href, '_blank')
+    })
     cy.nodes().noOverlap({ padding: 5 })
 
     return (): void => {
