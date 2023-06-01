@@ -104,6 +104,7 @@ export function useTxBatchTrades(
         if (!(order.receiver in _accounts)) {
           accountsWithReceiver[order.receiver] = {
             alias: ALIAS_TRADER_NAME,
+            address: order.receiver,
           }
         }
         accountsWithReceiver[order.receiver] = {
