@@ -118,6 +118,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'text-background-shape': 'roundrectangle',
         'font-size': '16px',
         'min-zoomed-font-size': 8,
+        'text-rotation': 'autorotate',
       },
     },
     {
@@ -126,7 +127,6 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'curve-style': 'bezier',
         'font-size': '15px',
         'text-background-padding': '3px',
-        'control-point-step-size': 75,
       },
     },
     {
