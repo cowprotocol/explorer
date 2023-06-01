@@ -95,7 +95,12 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'background-color': theme.bg2,
       },
     },
-
+    {
+      selector: 'node[label].hover',
+      style: {
+        color: theme.orange,
+      },
+    },
     {
       selector: 'edge[label]',
       style: {

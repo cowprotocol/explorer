@@ -94,6 +94,12 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     cy.on('mouseout', 'edge', (event): void => {
       event.target.removeClass('hover')
     })
+    cy.on('mouseover', 'node', (event): void => {
+      if (event.target.data('href')) event.target.addClass('hover')
+    })
+    cy.on('mouseout', 'node', (event): void => {
+      event.target.removeClass('hover')
+    })
     cy.nodes().noOverlap({ padding: 5 })
 
     return (): void => {
