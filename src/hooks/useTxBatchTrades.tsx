@@ -7,6 +7,7 @@ import { SingleErc20State } from 'state/erc20'
 import { Order } from 'api/operator'
 import BigNumber from 'bignumber.js'
 import { usePrevious } from './usePrevious'
+import { getExplorerUrl } from 'utils/getExplorerUrl'
 
 interface TxBatchTrades {
   trades: Trade[]
@@ -112,6 +113,9 @@ export function useTxBatchTrades(
           owner: order.owner,
         }
       })
+      Object.values(accountsWithReceiver).forEach(
+        (account) => (account.href = getExplorerUrl(network, 'address', account.address)),
+      )
 
       setErc20Addresses(transfersWithKind.map((transfer: Transfer): string => transfer.token))
       setTxBatchTrades({ trades, transfers: transfersWithKind })
