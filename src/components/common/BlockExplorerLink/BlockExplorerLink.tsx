@@ -5,8 +5,7 @@ import { ExternalLink } from 'components/analytics/ExternalLink'
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
 
 import { abbreviateString } from 'utils'
-
-type BlockExplorerLinkType = 'tx' | 'address' | 'contract' | 'token' | 'event'
+import { BlockExplorerLinkType, getExplorerUrl } from 'utils/getExplorerUrl'
 
 export interface Props {
   /**
@@ -38,37 +37,6 @@ export interface Props {
    * to show explorer logo
    */
   showLogo?: boolean
-}
-
-function getEtherscanUrlPrefix(networkId: Network): string {
-  return !networkId || networkId === Network.MAINNET || networkId === Network.GNOSIS_CHAIN
-    ? ''
-    : (Network[networkId] || '').toLowerCase() + '.'
-}
-
-function getEtherscanUrlSuffix(type: BlockExplorerLinkType, identifier: string): string {
-  switch (type) {
-    case 'tx':
-      return `tx/${identifier}`
-    case 'event':
-      return `tx/${identifier}#eventlog`
-    case 'address':
-      return `address/${identifier}`
-    case 'contract':
-      return `address/${identifier}#code`
-    case 'token':
-      return `token/${identifier}`
-  }
-}
-
-function getEtherscanUrl(host: string, networkId: number, type: BlockExplorerLinkType, identifier: string): string {
-  return `https://${getEtherscanUrlPrefix(networkId)}${host}/${getEtherscanUrlSuffix(type, identifier)}`
-}
-
-function getExplorerUrl(networkId: number, type: BlockExplorerLinkType, identifier: string): string {
-  return networkId === Network.GNOSIS_CHAIN
-    ? getEtherscanUrl('gnosisscan.io', networkId, type, identifier)
-    : getEtherscanUrl('etherscan.io', networkId, type, identifier)
 }
 
 /**
