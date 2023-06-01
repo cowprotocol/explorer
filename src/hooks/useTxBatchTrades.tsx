@@ -113,9 +113,9 @@ export function useTxBatchTrades(
           owner: order.owner,
         }
       })
-      Object.values(accountsWithReceiver).forEach(
-        (account) => (account.href = getExplorerUrl(network, 'address', account.address)),
-      )
+      Object.values(accountsWithReceiver).forEach((account) => {
+        if (account.address) account.href = getExplorerUrl(network, 'address', account.address)
+      })
 
       setErc20Addresses(transfersWithKind.map((transfer: Transfer): string => transfer.token))
       setTxBatchTrades({ trades, transfers: transfersWithKind })
