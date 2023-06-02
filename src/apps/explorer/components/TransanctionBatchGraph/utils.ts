@@ -1,7 +1,7 @@
 import Cytoscape, { ElementDefinition, EventObject } from 'cytoscape'
 import React from 'react'
 import { layouts } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
-import { Account, ALIAS_TRADER_NAME, Transfer } from 'api/tenderly'
+import { Account, ALIAS_TRADER_NAME, SPECIAL_ADDRESSES, Transfer } from 'api/tenderly'
 import { TypeEdgeOnTx, TypeNodeOnTx } from 'apps/explorer/components/TransanctionBatchGraph/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
@@ -105,7 +105,9 @@ export const removePopper = (popperInstance: React.MutableRefObject<PopperInstan
   popperInstance.current?.destroy()
 
 function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
-  if (account.alias === ALIAS_TRADER_NAME || account.owner) {
+  if (account.address && SPECIAL_ADDRESSES[account.address]) {
+    return TypeNodeOnTx.Special
+  } else if (account.alias === ALIAS_TRADER_NAME || account.owner) {
     return TypeNodeOnTx.Trader
   } else if (account.alias === PROTOCOL_NAME) {
     return TypeNodeOnTx.CowProtocol
@@ -212,7 +214,7 @@ export function getNodes(
 
       const account = { alias: fromId }
       builder.node(
-        { type: TypeNodeOnTx.Trader, entity: account, id: fromId },
+        { type: TypeNodeOnTx.Special, entity: account, id: fromId },
         // Put it inside the parent node
         getInternalParentNode(groupNodes, transfer),
       )
