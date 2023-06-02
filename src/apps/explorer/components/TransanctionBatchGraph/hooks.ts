@@ -12,7 +12,6 @@ import {
 } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
-import { cursorPointer } from './styled'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
