@@ -70,11 +70,14 @@ export function traceToTransfersTrades(trace: Trace): TxTradesAndTransfers {
   try {
     trace.logs.forEach((log) => {
       if (log.name === TypeOfTrace.TRANSFER) {
+        const from = log.inputs[IndexTransferInput.from].value
+        const to = log.inputs[IndexTransferInput.to].value
         transfers.push({
           token: log.raw.address,
-          from: log.inputs[IndexTransferInput.from].value,
-          to: log.inputs[IndexTransferInput.to].value,
+          from,
+          to,
           value: log.inputs[IndexTransferInput.value].value,
+          isInternal: from === to,
         })
       } else if (log.name === TypeOfTrace.TRADE) {
         const trade = {
@@ -93,6 +96,7 @@ export function traceToTransfersTrades(trace: Trace): TxTradesAndTransfers {
             from: log.raw.address,
             to: trade.owner,
             value: trade.buyAmount,
+            isInternal: log.raw.address === trade.owner,
           })
         }
         trades.push(trade)
@@ -128,23 +132,31 @@ export function accountAddressesInvolved(
 ): Map<string, Account> {
   const result = new Map()
 
+  // Create a set with transfer (to & from) addresses for quicker access
+  const transferAddresses = new Set()
+
+  transfers.forEach((transfer) => {
+    transferAddresses.add(transfer.from)
+    transferAddresses.add(transfer.to)
+  })
+
   try {
-    contracts
-      .filter((contract: Contract) => {
-        // Only usecontracts which are involved in a transfer
-        return transfers.find((transfer) => {
-          return transfer.from === contract.address || transfer.to === contract.address
-        })
-      })
-      .forEach((contract: Contract) => {
+    contracts.forEach((contract: Contract) => {
+      // Only use contracts which are involved in a transfer
+      if (transferAddresses.has(contract.address))
         result.set(contract.address, {
           alias: _contractName(contract.contract_name),
         })
-      })
+    })
     trades.forEach((trade) => {
-      result.set(trade.owner, {
-        alias: ALIAS_TRADER_NAME,
-      })
+      // Don't overwrite existing contract alias
+      // This addresses an edge case where the settlement contract is also a trader
+      // See https://github.com/cowprotocol/explorer/issues/491
+      if (!result.has(trade.owner)) {
+        result.set(trade.owner, {
+          alias: ALIAS_TRADER_NAME,
+        })
+      }
     })
     // Track any missing from/to contract as unknown
     transfers

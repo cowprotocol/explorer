@@ -2,7 +2,7 @@ import { LayoutOptions, NodeSingular } from 'cytoscape'
 
 export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose'
 
-type CustomLayoutOptions = LayoutOptions & {
+export type CustomLayoutOptions = LayoutOptions & {
   [key: string]: unknown
 }
 
