@@ -18,6 +18,11 @@ export const ALIAS_TRADER_NAME = 'Trader'
 const COW_PROTOCOL_CONTRACT_NAME = 'GPv2Settlement'
 const API_BASE_URLs = _urlAvailableNetwork()
 
+export const SPECIAL_ADDRESSES = {
+  '0xa03be496e67ec29bc62f01a428683d7f9c204930': 'Solver Rewards Safe',
+  '0xca771eda0c70aa7d053ab1b25004559b918fe662': 'CoW DAO',
+}
+
 function _urlAvailableNetwork(): Partial<Record<Network, string>> {
   const urlNetwork = (_networkId: Network): string => `${TENDERLY_API_URL}/${_networkId}`
 
@@ -155,7 +160,7 @@ export function accountAddressesInvolved(
       // See https://github.com/cowprotocol/explorer/issues/491
       if (!result.has(trade.owner)) {
         result.set(trade.owner, {
-          alias: ALIAS_TRADER_NAME,
+          alias: getAliasFromAddress(trade.owner),
           address: trade.owner,
         })
       }
@@ -168,7 +173,7 @@ export function accountAddressesInvolved(
       .forEach((address) => {
         if (!result.get(address)) {
           result.set(address, {
-            alias: abbreviateString(address, 6, 4),
+            alias: getAliasFromAddress(address, true),
             address,
           })
         }
@@ -185,4 +190,12 @@ function _contractName(name: string): string {
   if (name === COW_PROTOCOL_CONTRACT_NAME) return APP_NAME
 
   return name
+}
+
+export function getAliasFromAddress(address: string, isUnknown = false): string {
+  const lowerCaseAddress = address.toLowerCase()
+
+  if (SPECIAL_ADDRESSES[lowerCaseAddress]) return SPECIAL_ADDRESSES[lowerCaseAddress]
+
+  return isUnknown ? abbreviateString(address, 6, 4) : ALIAS_TRADER_NAME
 }
