@@ -12,6 +12,7 @@ import {
 } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
+import { cursorPointer } from './styled'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
@@ -88,17 +89,19 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
 
       bindPopper(event, targetData, cyPopperRef)
     })
-    cy.on('mouseover', 'edge', (event): void => {
-      event.target.addClass('hover')
+    cy.on('mouseover', 'edge', (): void => {
+      document.getElementById('tx-graph')?.classList.add('hover')
     })
-    cy.on('mouseout', 'edge', (event): void => {
-      event.target.removeClass('hover')
+    cy.on('mouseout', 'edge', (): void => {
+      document.getElementById('tx-graph')?.classList.remove('hover')
     })
     cy.on('mouseover', 'node', (event): void => {
-      if (event.target.data('href')) event.target.addClass('hover')
+      if (event.target.data('href')) {
+        document.getElementById('tx-graph')?.classList.add('hover')
+      }
     })
-    cy.on('mouseout', 'node', (event): void => {
-      event.target.removeClass('hover')
+    cy.on('mouseout', 'node', (): void => {
+      document.getElementById('tx-graph')?.classList.remove('hover')
     })
     cy.on('tap', 'node', (event): void => {
       const href = event.target.data('href')
@@ -108,6 +111,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
 
     return (): void => {
       cy.removeAllListeners()
+      document.getElementById('tx-graph')?.classList.remove('hover')
       removePopper(cyPopperRef)
     }
   }, [cytoscapeRef, elements.length])

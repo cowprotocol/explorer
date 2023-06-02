@@ -112,6 +112,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
         cy={setCytoscape}
         wheelSensitivity={0.2}
         className="tx-graph"
+        id="tx-graph"
         maxZoom={3}
         minZoom={0.1}
         zoom={1}
