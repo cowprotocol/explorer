@@ -2,6 +2,7 @@ import { Stylesheet } from 'cytoscape'
 import styled, { DefaultTheme, css } from 'styled-components'
 
 import TraderIcon from 'assets/img/Trader.svg'
+import SpecialIcon from 'assets/img/Trader-variant.svg'
 import CowProtocolIcon from 'assets/img/CoW-protocol.svg'
 import DexIcon from 'assets/img/Dex.svg'
 import { MEDIA } from 'const'
@@ -174,6 +175,14 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       selector: 'node[type="trader"]',
       style: {
         'background-image': `url(${TraderIcon})`,
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
+      selector: 'node[type="special"]',
+      style: {
+        'background-image': `url(${SpecialIcon})`,
         'text-valign': 'bottom',
         'text-margin-y': 8,
       },
