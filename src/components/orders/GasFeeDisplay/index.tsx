@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { Order } from 'api/operator'
 
 import { formatSmartMaxPrecision, safeTokenName } from 'utils'
+import { ZERO_BIG_NUMBER } from 'const'
 
 const Wrapper = styled.div`
   & > span {
@@ -45,7 +46,7 @@ export function GasFeeDisplay(props: Props): JSX.Element | null {
         {formattedExecutedFee} {quoteSymbol}
       </span>
       {/* <UsdAmount>(~${totalFeeUSD})</UsdAmount> */}
-      {!fullyFilled && (
+      {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
         <>
           <span>
             of {formattedTotalFee} {quoteSymbol}
