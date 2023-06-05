@@ -103,7 +103,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
   }
 
   return (
-    <>
+    <div id="tx-graph" style={{ flex: 1 }}>
       <WrapperCytoscape
         elements={elements}
         layout={layout}
@@ -139,6 +139,6 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
           />
         </LayoutButton>
       </FloatingWrapper>
-    </>
+    </div>
   )
 }
