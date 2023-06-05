@@ -146,6 +146,7 @@ export function accountAddressesInvolved(
       if (transferAddresses.has(contract.address))
         result.set(contract.address, {
           alias: _contractName(contract.contract_name),
+          address: contract.address,
         })
     })
     trades.forEach((trade) => {
@@ -155,6 +156,7 @@ export function accountAddressesInvolved(
       if (!result.has(trade.owner)) {
         result.set(trade.owner, {
           alias: ALIAS_TRADER_NAME,
+          address: trade.owner,
         })
       }
     })
@@ -167,6 +169,7 @@ export function accountAddressesInvolved(
         if (!result.get(address)) {
           result.set(address, {
             alias: abbreviateString(address, 6, 4),
+            address,
           })
         }
       })

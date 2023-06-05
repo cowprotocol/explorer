@@ -40,6 +40,8 @@ export interface Transfer {
 
 export interface Account {
   alias: string
+  address?: string
+  href?: string
 }
 
 export interface Contract {

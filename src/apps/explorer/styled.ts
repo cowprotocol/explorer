@@ -30,6 +30,10 @@ export const GlobalStyle = createGlobalStyle`
     ${ScrollBarStyle}
   }
 
+  .hover {
+    cursor: pointer;
+  }
+
   /* Cystoscape - BatchViewer styles */
   .target-popper {
     max-width: 50rem;

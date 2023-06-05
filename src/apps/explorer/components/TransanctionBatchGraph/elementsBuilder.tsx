@@ -35,6 +35,7 @@ export default class ElementsBuilder {
         label: !hideLabel ? node.entity.alias : '',
         type: node.type,
         parent: parent ? `${TypeNodeOnTx.NetworkNode}:${parent}` : undefined,
+        href: node.entity.href,
       },
     }
   }

@@ -95,7 +95,29 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'background-color': theme.bg2,
       },
     },
-
+    {
+      selector: 'node[label].hover',
+      style: {
+        color: theme.orange,
+      },
+    },
+    {
+      selector: 'node',
+      style: {
+        'border-style': 'solid',
+        'border-width': 3,
+        'border-opacity': 0,
+      },
+    },
+    {
+      selector: 'node.hover',
+      style: {
+        'border-color': theme.orange,
+        'border-style': 'solid',
+        'border-width': 3,
+        'border-opacity': 0.75,
+      },
+    },
     {
       selector: 'edge[label]',
       style: {
@@ -113,6 +135,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'text-background-shape': 'roundrectangle',
         'font-size': '16px',
         'min-zoomed-font-size': 8,
+        'text-rotation': 'autorotate',
       },
     },
     {
@@ -121,7 +144,6 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
         'curve-style': 'bezier',
         'font-size': '15px',
         'text-background-padding': '3px',
-        'control-point-step-size': 75,
       },
     },
     {
@@ -180,6 +202,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       style: {
         'border-style': 'dashed',
         'border-opacity': 0.8,
+        'border-width': 1,
         opacity: 0.8,
       },
     },

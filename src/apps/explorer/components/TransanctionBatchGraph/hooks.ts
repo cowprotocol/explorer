@@ -90,14 +90,31 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     })
     cy.on('mouseover', 'edge', (event): void => {
       event.target.addClass('hover')
+      document.getElementById('tx-graph')?.classList.add('hover')
     })
     cy.on('mouseout', 'edge', (event): void => {
       event.target.removeClass('hover')
+      document.getElementById('tx-graph')?.classList.remove('hover')
+    })
+    cy.on('mouseover', 'node', (event): void => {
+      if (event.target.data('href')) {
+        event.target.addClass('hover')
+        document.getElementById('tx-graph')?.classList.add('hover')
+      }
+    })
+    cy.on('mouseout', 'node', (event): void => {
+      event.target.removeClass('hover')
+      document.getElementById('tx-graph')?.classList.remove('hover')
+    })
+    cy.on('tap', 'node', (event): void => {
+      const href = event.target.data('href')
+      href && window.open(href, '_blank')
     })
     cy.nodes().noOverlap({ padding: 5 })
 
     return (): void => {
       cy.removeAllListeners()
+      document.getElementById('tx-graph')?.classList.remove('hover')
       removePopper(cyPopperRef)
     }
   }, [cytoscapeRef, elements.length])
