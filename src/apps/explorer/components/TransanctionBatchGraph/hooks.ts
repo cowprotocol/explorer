@@ -88,18 +88,22 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
 
       bindPopper(event, targetData, cyPopperRef)
     })
-    cy.on('mouseover', 'edge', (): void => {
+    cy.on('mouseover', 'edge', (event): void => {
+      event.target.addClass('hover')
       document.getElementById('tx-graph')?.classList.add('hover')
     })
-    cy.on('mouseout', 'edge', (): void => {
+    cy.on('mouseout', 'edge', (event): void => {
+      event.target.removeClass('hover')
       document.getElementById('tx-graph')?.classList.remove('hover')
     })
     cy.on('mouseover', 'node', (event): void => {
       if (event.target.data('href')) {
+        event.target.addClass('hover')
         document.getElementById('tx-graph')?.classList.add('hover')
       }
     })
-    cy.on('mouseout', 'node', (): void => {
+    cy.on('mouseout', 'node', (event): void => {
+      event.target.removeClass('hover')
       document.getElementById('tx-graph')?.classList.remove('hover')
     })
     cy.on('tap', 'node', (event): void => {
