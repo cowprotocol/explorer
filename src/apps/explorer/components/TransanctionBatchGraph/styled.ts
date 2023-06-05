@@ -102,6 +102,15 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'node.hover',
+      style: {
+        'border-color': theme.orange,
+        'border-style': 'solid',
+        'border-width': 3,
+        'border-opacity': 0.75,
+      },
+    },
+    {
       selector: 'edge[label]',
       style: {
         label: 'data(label)',
