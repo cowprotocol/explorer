@@ -102,6 +102,14 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'node',
+      style: {
+        'border-style': 'solid',
+        'border-width': 3,
+        'border-opacity': 0,
+      },
+    },
+    {
       selector: 'node.hover',
       style: {
         'border-color': theme.orange,
@@ -194,6 +202,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       style: {
         'border-style': 'dashed',
         'border-opacity': 0.8,
+        'border-width': 1,
         opacity: 0.8,
       },
     },
