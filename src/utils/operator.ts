@@ -150,7 +150,10 @@ function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus |
   const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
 
   // BUY is QUOTE
-  const price = buyAmountBigNumber.dividedBy(sellAmountBigNumber)
+  // for some reason, bignumber.js wrongly round very small numbers:
+  // 7152000000 / 4000000000000000000000000000 = 0.00000000000000000179
+  // But native js numbers work fine :)
+  const price = buyAmountBigNumber.toNumber() / sellAmountBigNumber.toNumber()
 
   // What you would get at limit price, in buy token atoms
   const minimumBuyAmount = executedSellAmountBigNumber.multipliedBy(price)
