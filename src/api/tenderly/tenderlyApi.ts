@@ -13,15 +13,11 @@ import {
   TxTradesAndTransfers,
 } from './types'
 import { abbreviateString } from 'utils'
+import { SPECIAL_ADDRESSES } from 'apps/explorer/const'
 
 export const ALIAS_TRADER_NAME = 'Trader'
 const COW_PROTOCOL_CONTRACT_NAME = 'GPv2Settlement'
 const API_BASE_URLs = _urlAvailableNetwork()
-
-export const SPECIAL_ADDRESSES = {
-  '0xa03be496e67ec29bc62f01a428683d7f9c204930': 'Solver Rewards Safe',
-  '0xca771eda0c70aa7d053ab1b25004559b918fe662': 'CoW DAO',
-}
 
 function _urlAvailableNetwork(): Partial<Record<Network, string>> {
   const urlNetwork = (_networkId: Network): string => `${TENDERLY_API_URL}/${_networkId}`

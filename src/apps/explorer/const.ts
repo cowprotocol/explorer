@@ -48,3 +48,8 @@ export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
 export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245'
 
 export const APP_TITLE = 'CoW Protocol Explorer'
+
+export const SPECIAL_ADDRESSES = {
+  '0xa03be496e67ec29bc62f01a428683d7f9c204930': 'Solver Rewards Safe',
+  '0xca771eda0c70aa7d053ab1b25004559b918fe662': 'CoW DAO',
+}
