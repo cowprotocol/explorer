@@ -12,6 +12,7 @@ import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/Trans
 import { TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import BigNumber from 'bignumber.js'
 import { APP_NAME } from 'const'
+import { getExplorerUrl } from 'utils/getExplorerUrl'
 
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
@@ -212,9 +213,13 @@ export function getNodes(
       // Set flag to prevent creating more
       internalNodeCreated = true
 
-      const account = { alias: fromId }
+      const account = { alias: fromId, href: getExplorerUrl(networkId, 'address', transfer.from) }
       builder.node(
-        { type: TypeNodeOnTx.Special, entity: account, id: fromId },
+        {
+          type: TypeNodeOnTx.Special,
+          entity: account,
+          id: fromId,
+        },
         // Put it inside the parent node
         getInternalParentNode(groupNodes, transfer),
       )
