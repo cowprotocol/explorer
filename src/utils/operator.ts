@@ -141,19 +141,20 @@ type PartialFillSurplusParams = {
   executedBuyAmount: string
 }
 
+// The surplus calculation can be called for huge and small values
+// And default DECIMAL_PLACES=20 is not enough for it and can cause rounding problems
+const BigNumberForSurplus = BigNumber.clone({ DECIMAL_PLACES: 32 })
+
 function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus | null {
   const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
 
-  const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
-  const buyAmountBigNumber = new BigNumber(buyAmount)
-  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+  const sellAmountBigNumber = new BigNumberForSurplus(sellAmount)
+  const executedSellAmountBigNumber = new BigNumberForSurplus(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumberForSurplus(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumberForSurplus(executedBuyAmount)
 
   // BUY is QUOTE
-  // for some reason, bignumber.js wrongly round very small numbers:
-  // 7152000000 / 4000000000000000000000000000 = 0.00000000000000000179
-  // But native js numbers work fine :)
-  const price = buyAmountBigNumber.toNumber() / sellAmountBigNumber.toNumber()
+  const price = buyAmountBigNumber.dividedBy(sellAmountBigNumber)
 
   // What you would get at limit price, in buy token atoms
   const minimumBuyAmount = executedSellAmountBigNumber.multipliedBy(price)
@@ -200,10 +201,10 @@ function _getFillOrKillBuySurplus(order: RawOrder): Surplus | null {
 function _getPartialFillBuySurplus(params: PartialFillSurplusParams): Surplus | null {
   const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
 
-  const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
-  const buyAmountBigNumber = new BigNumber(buyAmount)
-  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+  const sellAmountBigNumber = new BigNumberForSurplus(sellAmount)
+  const executedSellAmountBigNumber = new BigNumberForSurplus(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumberForSurplus(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumberForSurplus(executedBuyAmount)
 
   // SELL is QUOTE
   const price = sellAmountBigNumber.dividedBy(buyAmountBigNumber)
