@@ -2,6 +2,7 @@ import { Stylesheet } from 'cytoscape'
 import styled, { DefaultTheme, css } from 'styled-components'
 
 import TraderIcon from 'assets/img/Trader.svg'
+import SpecialIcon from 'assets/img/Trader-variant.svg'
 import CowProtocolIcon from 'assets/img/CoW-protocol.svg'
 import DexIcon from 'assets/img/Dex.svg'
 import { MEDIA } from 'const'
@@ -45,40 +46,45 @@ const FloatingButton = css`
   }
 `
 export const ResetButton = styled.button`
-  ${FloatingButton}
-  min-width: 6.586rem;
-  transition: all 0.2s ease-in-out;
+  ${FloatingButton} {
+    min-width: 6.586rem;
+    transition: all 0.2s ease-in-out;
+  }
 `
 export const LayoutButton = styled.span`
-  ${FloatingButton}
-  display: flex;
-  color: ${({ theme }): string => theme.textPrimary1};
-  font-size: ${({ theme }): string => theme.fontSizeDefault};
-  font-weight: normal;
-  white-space: nowrap;
-  align-items: center;
-  padding: 0 0.6rem 0 0.6rem;
+  ${FloatingButton} {
+    display: flex;
+    color: ${({ theme }): string => theme.textPrimary1};
+    font-size: ${({ theme }): string => theme.fontSizeDefault};
+    font-weight: normal;
+    white-space: nowrap;
+    align-items: center;
+    padding: 0 0.6rem 0 0.6rem;
+  }
 `
 
 export const DropdownWrapper = styled(Dropdown)`
   &.dropdown-container {
-    ${ArrowIconCSS}
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    & div:first-child {
+    ${ArrowIconCSS} {
       width: 100%;
       height: 100%;
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      @media ${MEDIA.mediumDown} {
-        justify-content: center;
+
+      & div:first-child {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        @media ${MEDIA.mediumDown} {
+          justify-content: center;
+        }
       }
-    }
-    > .dropdown-options {
-      min-width: 7rem;
+
+      > .dropdown-options {
+        min-width: 7rem;
+      }
     }
   }
 `
@@ -174,6 +180,14 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       selector: 'node[type="trader"]',
       style: {
         'background-image': `url(${TraderIcon})`,
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
+      selector: 'node[type="special"]',
+      style: {
+        'background-image': `url(${SpecialIcon})`,
         'text-valign': 'bottom',
         'text-margin-y': 8,
       },

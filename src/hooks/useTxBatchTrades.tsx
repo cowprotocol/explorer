@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { Network } from 'types'
-import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account, ALIAS_TRADER_NAME } from 'api/tenderly'
+import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account, getAliasFromAddress } from 'api/tenderly'
 import { useMultipleErc20 } from './useErc20'
 import { SingleErc20State } from 'state/erc20'
 import { Order } from 'api/operator'
@@ -104,7 +104,7 @@ export function useTxBatchTrades(
       filteredOrders?.forEach((order) => {
         if (!(order.receiver in _accounts)) {
           accountsWithReceiver[order.receiver] = {
-            alias: ALIAS_TRADER_NAME,
+            alias: getAliasFromAddress(order.receiver),
             address: order.receiver,
           }
         }

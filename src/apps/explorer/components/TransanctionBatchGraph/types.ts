@@ -5,6 +5,7 @@ export enum TypeNodeOnTx {
   CowProtocol = 'cowProtocol',
   Trader = 'trader',
   Dex = 'dex',
+  Special = 'special',
 }
 
 export enum TypeEdgeOnTx {
@@ -21,3 +22,4 @@ export type Node =
   | NodeType<TypeNodeOnTx.CowProtocol, Account>
   | NodeType<TypeNodeOnTx.Trader, Account>
   | NodeType<TypeNodeOnTx.Dex, Account>
+  | NodeType<TypeNodeOnTx.Special, Account>

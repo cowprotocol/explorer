@@ -9,9 +9,10 @@ import { Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
 import { networkOptions } from 'components/NetworkSelector'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
-import { TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
+import { SPECIAL_ADDRESSES, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import BigNumber from 'bignumber.js'
 import { APP_NAME } from 'const'
+import { getExplorerUrl } from 'utils/getExplorerUrl'
 
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
@@ -105,7 +106,9 @@ export const removePopper = (popperInstance: React.MutableRefObject<PopperInstan
   popperInstance.current?.destroy()
 
 function getTypeNode(account: Account & { owner?: string }): TypeNodeOnTx {
-  if (account.alias === ALIAS_TRADER_NAME || account.owner) {
+  if (account.address && SPECIAL_ADDRESSES[account.address]) {
+    return TypeNodeOnTx.Special
+  } else if (account.alias === ALIAS_TRADER_NAME || account.owner) {
     return TypeNodeOnTx.Trader
   } else if (account.alias === PROTOCOL_NAME) {
     return TypeNodeOnTx.CowProtocol
@@ -210,9 +213,13 @@ export function getNodes(
       // Set flag to prevent creating more
       internalNodeCreated = true
 
-      const account = { alias: fromId }
+      const account = { alias: fromId, href: getExplorerUrl(networkId, 'address', transfer.from) }
       builder.node(
-        { type: TypeNodeOnTx.Trader, entity: account, id: fromId },
+        {
+          type: TypeNodeOnTx.Special,
+          entity: account,
+          id: fromId,
+        },
         // Put it inside the parent node
         getInternalParentNode(groupNodes, transfer),
       )
