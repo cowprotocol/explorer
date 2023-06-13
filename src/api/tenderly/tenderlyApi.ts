@@ -13,6 +13,7 @@ import {
   TxTradesAndTransfers,
 } from './types'
 import { abbreviateString } from 'utils'
+import { SPECIAL_ADDRESSES } from 'apps/explorer/const'
 
 export const ALIAS_TRADER_NAME = 'Trader'
 const COW_PROTOCOL_CONTRACT_NAME = 'GPv2Settlement'
@@ -146,6 +147,7 @@ export function accountAddressesInvolved(
       if (transferAddresses.has(contract.address))
         result.set(contract.address, {
           alias: _contractName(contract.contract_name),
+          address: contract.address,
         })
     })
     trades.forEach((trade) => {
@@ -154,7 +156,8 @@ export function accountAddressesInvolved(
       // See https://github.com/cowprotocol/explorer/issues/491
       if (!result.has(trade.owner)) {
         result.set(trade.owner, {
-          alias: ALIAS_TRADER_NAME,
+          alias: getAliasFromAddress(trade.owner),
+          address: trade.owner,
         })
       }
     })
@@ -166,7 +169,8 @@ export function accountAddressesInvolved(
       .forEach((address) => {
         if (!result.get(address)) {
           result.set(address, {
-            alias: abbreviateString(address, 6, 4),
+            alias: getAliasFromAddress(address, true),
+            address,
           })
         }
       })
@@ -182,4 +186,12 @@ function _contractName(name: string): string {
   if (name === COW_PROTOCOL_CONTRACT_NAME) return APP_NAME
 
   return name
+}
+
+export function getAliasFromAddress(address: string, isUnknown = false): string {
+  const lowerCaseAddress = address.toLowerCase()
+
+  if (SPECIAL_ADDRESSES[lowerCaseAddress]) return SPECIAL_ADDRESSES[lowerCaseAddress]
+
+  return isUnknown ? abbreviateString(address, 6, 4) : ALIAS_TRADER_NAME
 }

@@ -141,13 +141,17 @@ type PartialFillSurplusParams = {
   executedBuyAmount: string
 }
 
+// The surplus calculation can be called for huge and small values
+// And default DECIMAL_PLACES=20 is not enough for it and can cause rounding problems
+const BigNumberForSurplus = BigNumber.clone({ DECIMAL_PLACES: 32 })
+
 function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus | null {
   const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
 
-  const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
-  const buyAmountBigNumber = new BigNumber(buyAmount)
-  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+  const sellAmountBigNumber = new BigNumberForSurplus(sellAmount)
+  const executedSellAmountBigNumber = new BigNumberForSurplus(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumberForSurplus(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumberForSurplus(executedBuyAmount)
 
   // BUY is QUOTE
   const price = buyAmountBigNumber.dividedBy(sellAmountBigNumber)
@@ -197,10 +201,10 @@ function _getFillOrKillBuySurplus(order: RawOrder): Surplus | null {
 function _getPartialFillBuySurplus(params: PartialFillSurplusParams): Surplus | null {
   const { buyAmount, sellAmount, executedSellAmountBeforeFees, executedBuyAmount } = params
 
-  const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
-  const buyAmountBigNumber = new BigNumber(buyAmount)
-  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+  const sellAmountBigNumber = new BigNumberForSurplus(sellAmount)
+  const executedSellAmountBigNumber = new BigNumberForSurplus(executedSellAmountBeforeFees)
+  const buyAmountBigNumber = new BigNumberForSurplus(buyAmount)
+  const executedBuyAmountBigNumber = new BigNumberForSurplus(executedBuyAmount)
 
   // SELL is QUOTE
   const price = sellAmountBigNumber.dividedBy(buyAmountBigNumber)
