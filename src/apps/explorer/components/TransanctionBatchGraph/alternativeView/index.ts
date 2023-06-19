@@ -69,7 +69,7 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
 
   userTrades.forEach((trade) => {
     nodes[trade.sellToken] = { address: trade.sellToken }
-    nodes[trade.sellToken] = { address: trade.buyToken }
+    nodes[trade.buyToken] = { address: trade.buyToken }
 
     // one edge for each user trade
     edges.push({ from: trade.sellToken, to: trade.buyToken })
