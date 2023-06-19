@@ -46,3 +46,58 @@ export function getContractTrades(trades: Trade[], transfers: Transfer[]): Contr
     return { address, sellTokens, buyTokens }
   })
 }
+
+// TODO: these types might overlap with existing ones, consider reusing them
+export type Node = {
+  address: string
+  isHyperNode?: boolean
+}
+
+export type Edge = {
+  from: string
+  to: string
+}
+
+export type NodesAndEdges = {
+  nodes: Node[]
+  edges: Edge[]
+}
+
+export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTrade[]): NodesAndEdges {
+  const nodes: Record<string, { address: string; isHyperNode?: boolean }> = {}
+  const edges: { from: string; to: string }[] = []
+
+  userTrades.forEach((trade) => {
+    nodes[trade.sellToken] = { address: trade.sellToken }
+    nodes[trade.sellToken] = { address: trade.buyToken }
+
+    // one edge for each user trade
+    edges.push({ from: trade.sellToken, to: trade.buyToken })
+  })
+
+  contractTrades.forEach((trade) => {
+    // add all sellTokens from contract trades to nodes
+    trade.sellTokens.forEach((address) => (nodes[address] = { address }))
+    // add all buyTokens from contract trades to nodes
+    trade.buyTokens.forEach((address) => (nodes[address] = { address }))
+
+    if (trade.sellTokens.length === 1 && trade.buyTokens.length === 1) {
+      // no need to add a new node
+      // normal edge for normal contract interaction
+      edges.push({ from: trade.sellTokens[0], to: trade.buyTokens[0] })
+    } else if (trade.sellTokens.length > 1 || trade.buyTokens.length > 1) {
+      // if  there are more than one sellToken or buyToken, the contract becomes a node
+      nodes[trade.address] = { address: trade.address, isHyperNode: true }
+
+      // one edge for each sellToken
+      trade.sellTokens.forEach((address) => edges.push({ from: address, to: trade.address }))
+      // one edge for each buyToken
+      trade.buyTokens.forEach((address) => edges.push({ from: trade.address, to: address }))
+    }
+  })
+
+  return {
+    nodes: Object.values(nodes),
+    edges,
+  }
+}
