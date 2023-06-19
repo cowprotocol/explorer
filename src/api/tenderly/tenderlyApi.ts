@@ -69,10 +69,10 @@ export async function getTransactionContracts(networkId: Network, txHash: string
 export async function getTradesAndTransfers(networkId: Network, txHash: string): Promise<TxTradesAndTransfers> {
   const trace = await _fetchTrace(networkId, txHash)
 
-  return traceToTransfersTrades(trace)
+  return traceToTransfersAndTrades(trace)
 }
 
-export function traceToTransfersTrades(trace: Trace): TxTradesAndTransfers {
+export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
   const transfers: Array<Transfer> = []
   const trades: Array<Trade> = []
 
