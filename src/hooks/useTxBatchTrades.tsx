@@ -1,13 +1,22 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { Network } from 'types'
-import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account, getAliasFromAddress } from 'api/tenderly'
+import {
+  getTradesAccount,
+  getTradesAndTransfers,
+  Trade,
+  Transfer,
+  Account,
+  getAliasFromAddress,
+  Contract,
+} from 'api/tenderly'
 import { useMultipleErc20 } from './useErc20'
 import { SingleErc20State } from 'state/erc20'
 import { Order } from 'api/operator'
 import BigNumber from 'bignumber.js'
 import { usePrevious } from './usePrevious'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
+import { ContractTrade } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 
 interface TxBatchTrades {
   trades: Trade[]
@@ -17,13 +26,16 @@ interface TxBatchTrades {
 type Dict<T> = Record<string, T>
 
 type AccountWithReceiver = Account & { owner?: string; uids?: string[] }
-type Accounts = Dict<AccountWithReceiver> | undefined
+export type Accounts = Dict<AccountWithReceiver> | undefined
 
 export interface Settlement {
   tokens: Dict<SingleErc20State>
   accounts: Accounts
   transfers: Array<Transfer>
   trades: Array<Trade>
+  // TODO: this is a big mix of types, refactor!!!
+  contractTrades?: Array<ContractTrade>
+  contracts?: Array<Contract>
 }
 
 export type GetTxBatchTradesResult = {

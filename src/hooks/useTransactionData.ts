@@ -9,7 +9,7 @@ type LoadingData<T> = {
   error: string
 }
 
-function useTransactionTrace(network: Network, txHash: string): LoadingData<Trace | undefined> {
+function useTransactionTrace(network: Network | undefined, txHash: string): LoadingData<Trace | undefined> {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [trace, setTrace] = useState<Trace | undefined>()
@@ -34,7 +34,7 @@ function useTransactionTrace(network: Network, txHash: string): LoadingData<Trac
   return { data: trace, isLoading, error }
 }
 
-function useTransactionContracts(network: Network, txHash: string): LoadingData<Contract[]> {
+function useTransactionContracts(network: Network | undefined, txHash: string): LoadingData<Contract[]> {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [contracts, setContracts] = useState<Contract[]>([])
@@ -66,7 +66,7 @@ export type TransactionData = {
   error: string
 }
 
-export function useTransactionData(network: Network, txHash: string): TransactionData {
+export function useTransactionData(network: Network | undefined, txHash: string): TransactionData {
   const traceData = useTransactionTrace(network, txHash)
   const contractsData = useTransactionContracts(network, txHash)
 

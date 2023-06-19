@@ -12,6 +12,7 @@ import {
 } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
+import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
@@ -65,7 +66,11 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       setElements([])
       if (error || isLoading || !networkId || !heightSize || !cy) return
 
-      setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
+      // TODO: use the new method when it doesn't have accounts
+      const getNodesFn = txSettlement.contractTrades ? getNodesAlternative : getNodes
+      const nodes = getNodesFn(txSettlement, networkId, heightSize, layout.name)
+
+      setElements(nodes)
       if (resetZoom) {
         updateLayout(cy, layout.name)
       }

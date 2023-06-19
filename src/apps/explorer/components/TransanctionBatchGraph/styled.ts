@@ -167,6 +167,20 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'edge[type="user"].buy',
+      style: {
+        'line-color': theme.green1,
+        'target-arrow-color': theme.green1,
+      },
+    },
+    {
+      selector: 'edge[type="amm"].buy',
+      style: {
+        'line-color': theme.orange1,
+        'target-arrow-color': theme.orange1,
+      },
+    },
+    {
       selector: 'edge[label].hover',
       style: {
         width: 3,
@@ -194,6 +208,15 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
     },
     {
       selector: 'node[type="dex"]',
+      style: {
+        'background-image': `url(${DexIcon})`,
+        'text-max-width': '5rem',
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
+      selector: 'node[type="token"]',
       style: {
         'background-image': `url(${DexIcon})`,
         'text-max-width': '5rem',

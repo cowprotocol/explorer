@@ -1,4 +1,10 @@
 import { Trade, Transfer } from 'api/tenderly'
+import { Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
+import { Network } from 'types'
+import { ElementDefinition } from 'cytoscape'
+import { networkOptions } from 'components/NetworkSelector'
+import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
+import { TypeEdgeOnTx, TypeNodeOnTx } from 'apps/explorer/components/TransanctionBatchGraph/types'
 
 const ADDRESSES_TO_IGNORE = new Set()
 // CoW Protocol settlement contract
@@ -56,6 +62,8 @@ export type Node = {
 export type Edge = {
   from: string
   to: string
+  address: string
+  trade?: Trade
 }
 
 export type NodesAndEdges = {
@@ -64,15 +72,15 @@ export type NodesAndEdges = {
 }
 
 export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTrade[]): NodesAndEdges {
-  const nodes: Record<string, { address: string; isHyperNode?: boolean }> = {}
-  const edges: { from: string; to: string }[] = []
+  const nodes: Record<string, Node> = {}
+  const edges: Edge[] = []
 
   userTrades.forEach((trade) => {
     nodes[trade.sellToken] = { address: trade.sellToken }
     nodes[trade.buyToken] = { address: trade.buyToken }
 
     // one edge for each user trade
-    edges.push({ from: trade.sellToken, to: trade.buyToken })
+    edges.push({ from: trade.sellToken, to: trade.buyToken, address: trade.owner, trade })
   })
 
   contractTrades.forEach((trade) => {
@@ -84,15 +92,15 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
     if (trade.sellTokens.length === 1 && trade.buyTokens.length === 1) {
       // no need to add a new node
       // normal edge for normal contract interaction
-      edges.push({ from: trade.sellTokens[0], to: trade.buyTokens[0] })
+      edges.push({ from: trade.sellTokens[0], to: trade.buyTokens[0], address: trade.address })
     } else if (trade.sellTokens.length > 1 || trade.buyTokens.length > 1) {
       // if  there are more than one sellToken or buyToken, the contract becomes a node
       nodes[trade.address] = { address: trade.address, isHyperNode: true }
 
       // one edge for each sellToken
-      trade.sellTokens.forEach((address) => edges.push({ from: address, to: trade.address }))
+      trade.sellTokens.forEach((address) => edges.push({ from: address, to: trade.address, address: trade.address }))
       // one edge for each buyToken
-      trade.buyTokens.forEach((address) => edges.push({ from: trade.address, to: address }))
+      trade.buyTokens.forEach((address) => edges.push({ from: trade.address, to: address, address: trade.address }))
     }
   })
 
@@ -100,4 +108,40 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
     nodes: Object.values(nodes),
     edges,
   }
+}
+
+export function getNodesAlternative(
+  txSettlement: TxSettlement,
+  networkId: Network,
+  heightSize: number,
+  layout: string,
+): ElementDefinition[] {
+  const networkName = networkOptions.find((network) => network.id === networkId)?.name
+  const networkNode = { alias: `${networkName} Liquidity` || '' }
+  const builder = new ElementsBuilder(heightSize)
+
+  builder.center({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
+
+  const { trades, contractTrades, accounts } = txSettlement
+
+  const { nodes, edges } = getNotesAndEdges(trades, contractTrades || [])
+
+  nodes.forEach((node) => {
+    const entity = accounts?.[node.address] || { alias: node.address }
+    // const type = node.isHyperNode ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
+    const type = TypeNodeOnTx.Token
+    builder.node({ entity, id: node.address, type }, networkNode.alias)
+  })
+  edges.forEach((edge) => {
+    const type = TypeNodeOnTx.Token
+    const tooltip = edge.address.slice(0, 6)
+    const kind = edge.trade ? TypeEdgeOnTx.user : TypeEdgeOnTx.amm
+    builder.edge({ id: edge.from, type }, { id: edge.to, type }, tooltip, kind)
+  })
+
+  return builder.build(
+    layout === 'grid'
+      ? buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes)
+      : undefined,
+  )
 }
