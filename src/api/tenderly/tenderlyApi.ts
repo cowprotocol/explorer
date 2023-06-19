@@ -58,6 +58,14 @@ function _fetchTradesAccounts(networkId: Network, txHash: string): Promise<Contr
   return fetchQuery<Array<Contract>>({ get: () => _get(networkId, queryString) }, queryString)
 }
 
+export async function getTransactionTrace(networkId: Network, txHash: string): Promise<Trace> {
+  return _fetchTrace(networkId, txHash)
+}
+
+export async function getTransactionContracts(networkId: Network, txHash: string): Promise<Contract[]> {
+  return _fetchTradesAccounts(networkId, txHash)
+}
+
 export async function getTradesAndTransfers(networkId: Network, txHash: string): Promise<TxTradesAndTransfers> {
   const trace = await _fetchTrace(networkId, txHash)
 
