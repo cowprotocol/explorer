@@ -5,6 +5,8 @@ import { ElementDefinition } from 'cytoscape'
 import { networkOptions } from 'components/NetworkSelector'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
 import { TypeEdgeOnTx, TypeNodeOnTx } from 'apps/explorer/components/TransanctionBatchGraph/types'
+import { getExplorerUrl } from 'utils/getExplorerUrl'
+import { abbreviateString } from 'utils'
 
 const ADDRESSES_TO_IGNORE = new Set()
 // CoW Protocol settlement contract
@@ -142,7 +144,11 @@ export function getNodesAlternative(
   const { nodes, edges } = getNotesAndEdges(trades, contractTrades || [])
 
   nodes.forEach((node) => {
-    const entity = accounts?.[node.address] || { alias: node.address }
+    const entity = accounts?.[node.address] || {
+      alias: abbreviateString(node.address, 6, 4),
+      address: node.address,
+      href: getExplorerUrl(networkId, 'contract', node.address),
+    }
     const type = node.isHyperNode ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
     builder.node({ entity, id: node.address, type }, networkNode.alias)
   })
