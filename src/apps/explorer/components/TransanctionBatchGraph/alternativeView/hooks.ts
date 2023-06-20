@@ -5,7 +5,7 @@ import { useMemo } from 'react'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { GetTxBatchTradesResult } from 'hooks/useTxBatchTrades'
 import { traceToTransfersAndTrades } from 'api/tenderly'
-import { getContractTrades } from '.'
+import { getContractTrades, getTokenAddress } from '.'
 import { abbreviateString } from 'utils'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
 
@@ -30,8 +30,13 @@ export function useTransactionSettlement(
   }, [transfers, userTrades])
 
   const tokenAddresses = useMemo(() => {
-    return transfers.map((transfer) => transfer.token)
-  }, [transfers])
+    const addressesSet = transfers.reduce((set, transfer) => {
+      set.add(getTokenAddress(transfer.token, networkId || 1))
+      return set
+    }, new Set<string>())
+
+    return Array.from(addressesSet)
+  }, [networkId, transfers])
 
   const { value: tokens, isLoading: areTokensLoading } = useMultipleErc20({ networkId, addresses: tokenAddresses })
 

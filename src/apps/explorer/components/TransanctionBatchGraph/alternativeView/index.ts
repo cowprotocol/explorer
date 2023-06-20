@@ -10,6 +10,8 @@ import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } fr
 import { SingleErc20State } from 'state/erc20'
 import { TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import BigNumber from 'bignumber.js'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from 'const'
 
 const ADDRESSES_TO_IGNORE = new Set()
 // CoW Protocol settlement contract
@@ -79,23 +81,35 @@ export type NodesAndEdges = {
   edges: Edge[]
 }
 
-export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTrade[]): NodesAndEdges {
+export function getNotesAndEdges(
+  userTrades: Trade[],
+  contractTrades: ContractTrade[],
+  networkId: SupportedChainId,
+): NodesAndEdges {
   const nodes: Record<string, Node> = {}
   const edges: Edge[] = []
 
   userTrades.forEach((trade) => {
-    nodes[trade.sellToken] = { address: trade.sellToken }
-    nodes[trade.buyToken] = { address: trade.buyToken }
+    const sellToken = getTokenAddress(trade.sellToken, networkId)
+    nodes[sellToken] = { address: sellToken }
+    const buyToken = getTokenAddress(trade.buyToken, networkId)
+    nodes[buyToken] = { address: buyToken }
 
     // one edge for each user trade
-    edges.push({ from: trade.sellToken, to: trade.buyToken, address: trade.owner, trade })
+    edges.push({ from: sellToken, to: buyToken, address: trade.owner, trade })
   })
 
   contractTrades.forEach((trade) => {
     // add all sellTokens from contract trades to nodes
-    trade.sellTransfers.forEach(({ token }) => (nodes[token] = { address: token }))
+    trade.sellTransfers.forEach(({ token }) => {
+      const tokenAddress = getTokenAddress(token, networkId)
+      nodes[tokenAddress] = { address: tokenAddress }
+    })
     // add all buyTokens from contract trades to nodes
-    trade.buyTransfers.forEach(({ token }) => (nodes[token] = { address: token }))
+    trade.buyTransfers.forEach(({ token }) => {
+      const tokenAddress = getTokenAddress(token, networkId)
+      nodes[tokenAddress] = { address: tokenAddress }
+    })
 
     if (trade.sellTransfers.length === 1 && trade.buyTransfers.length === 1) {
       // no need to add a new node
@@ -103,8 +117,8 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
       const sellTransfer = trade.sellTransfers[0]
       const buyTransfer = trade.buyTransfers[0]
       edges.push({
-        from: sellTransfer.token,
-        to: buyTransfer.token,
+        from: getTokenAddress(sellTransfer.token, networkId),
+        to: getTokenAddress(buyTransfer.token, networkId),
         address: trade.address,
         fromTransfer: sellTransfer,
         toTransfer: buyTransfer,
@@ -116,7 +130,7 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
       // one edge for each sellToken
       trade.sellTransfers.forEach((transfer) =>
         edges.push({
-          from: transfer.token,
+          from: getTokenAddress(transfer.token, networkId),
           to: trade.address,
           address: trade.address,
           hyperNode: 'to',
@@ -127,7 +141,7 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
       trade.buyTransfers.forEach((transfer) =>
         edges.push({
           from: trade.address,
-          to: transfer.token,
+          to: getTokenAddress(transfer.token, networkId),
           address: trade.address,
           hyperNode: 'from',
           toTransfer: transfer,
@@ -140,6 +154,13 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
     nodes: Object.values(nodes),
     edges,
   }
+}
+
+export function getTokenAddress(address: string, networkId: SupportedChainId): string {
+  if (address.toLowerCase() === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
+    return WRAPPED_NATIVE_ADDRESS[networkId].toLowerCase()
+  }
+  return address
 }
 
 export function getNodesAlternative(
@@ -162,7 +183,7 @@ export function getNodesAlternative(
       return acc
     }, {}) || {}
 
-  const { nodes, edges } = getNotesAndEdges(trades, contractTrades || [])
+  const { nodes, edges } = getNotesAndEdges(trades, contractTrades || [], networkId)
 
   nodes.forEach((node) => {
     const entity = accounts?.[node.address] || {
