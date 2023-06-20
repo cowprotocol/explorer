@@ -6,7 +6,10 @@ import { networkOptions } from 'components/NetworkSelector'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
 import { TypeEdgeOnTx, TypeNodeOnTx } from 'apps/explorer/components/TransanctionBatchGraph/types'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
-import { abbreviateString } from 'utils'
+import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
+import { SingleErc20State } from 'state/erc20'
+import { TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
+import BigNumber from 'bignumber.js'
 
 const ADDRESSES_TO_IGNORE = new Set()
 // CoW Protocol settlement contract
@@ -112,11 +115,23 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
 
       // one edge for each sellToken
       trade.sellTransfers.forEach((transfer) =>
-        edges.push({ from: transfer.token, to: trade.address, address: trade.address, hyperNode: 'to' }),
+        edges.push({
+          from: transfer.token,
+          to: trade.address,
+          address: trade.address,
+          hyperNode: 'to',
+          fromTransfer: transfer,
+        }),
       )
       // one edge for each buyToken
       trade.buyTransfers.forEach((transfer) =>
-        edges.push({ from: trade.address, to: transfer.token, address: trade.address, hyperNode: 'from' }),
+        edges.push({
+          from: trade.address,
+          to: transfer.token,
+          address: trade.address,
+          hyperNode: 'from',
+          toTransfer: transfer,
+        }),
       )
     }
   })
@@ -139,7 +154,7 @@ export function getNodesAlternative(
 
   builder.center({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
 
-  const { trades, contractTrades, accounts, contracts } = txSettlement
+  const { trades, contractTrades, accounts, contracts, tokens } = txSettlement
 
   const contractsMap =
     contracts?.reduce((acc, contract) => {
@@ -169,7 +184,8 @@ export function getNodesAlternative(
     }
     const label = getLabel(edge, contractsMap)
     const kind = edge.trade ? TypeEdgeOnTx.user : TypeEdgeOnTx.amm
-    builder.edge(source, target, label, kind)
+    const tooltip = getTooltip(edge, tokens)
+    builder.edge(source, target, label, kind, tooltip)
   })
 
   return builder.build(
@@ -188,4 +204,41 @@ function getLabel(edge: Edge, contractsMap: Record<string, string>): string {
     return contractsMap[edge.address] || abbreviateString(edge.address, 6, 4)
   }
   return 'add transfer info'
+}
+
+function getTooltip(edge: Edge, tokens: Record<string, SingleErc20State>): Record<string, string> {
+  const tooltip = {}
+
+  const fromToken = tokens[edge.from]
+  const toToken = tokens[edge.to]
+
+  if (edge.trade) {
+    tooltip['order-id'] = edge.trade.orderUid
+    tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.trade.sellAmount)
+    tooltip['bought'] = getTokenTooltipAmount(toToken, edge.trade.buyAmount)
+  } else if (edge.hyperNode) {
+    if (edge.fromTransfer) {
+      tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.fromTransfer?.value)
+    }
+    if (edge.toTransfer) {
+      tooltip['bought'] = getTokenTooltipAmount(toToken, edge.toTransfer?.value)
+    }
+  } else {
+    tooltip['sold'] = getTokenTooltipAmount(fromToken, edge.fromTransfer?.value)
+    tooltip['bought'] = getTokenTooltipAmount(toToken, edge.toTransfer?.value)
+  }
+
+  return tooltip
+}
+
+function getTokenTooltipAmount(token: SingleErc20State, value: string | undefined): string {
+  let amount
+  if (token?.decimals && value) {
+    amount = formattingAmountPrecision(new BigNumber(value), token, FormatAmountPrecision.highPrecision)
+  } else {
+    amount = '-'
+  }
+  const tokenSymbol = token?.symbol || TOKEN_SYMBOL_UNKNOWN
+
+  return `${amount} ${tokenSymbol}`
 }
