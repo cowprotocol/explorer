@@ -167,14 +167,14 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'edge[type="user"].buy',
+      selector: 'edge[label].user',
       style: {
         'line-color': theme.green1,
         'target-arrow-color': theme.green1,
       },
     },
     {
-      selector: 'edge[type="amm"].buy',
+      selector: 'edge[label].amm',
       style: {
         'line-color': theme.orange1,
         'target-arrow-color': theme.orange1,
