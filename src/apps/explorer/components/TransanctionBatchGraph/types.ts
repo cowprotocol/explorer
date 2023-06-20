@@ -7,6 +7,7 @@ export enum TypeNodeOnTx {
   Dex = 'dex',
   Special = 'special',
   Token = 'token',
+  Hyper = 'hyper',
 }
 
 export enum TypeEdgeOnTx {
@@ -27,3 +28,4 @@ export type Node =
   | NodeType<TypeNodeOnTx.Dex, Account>
   | NodeType<TypeNodeOnTx.Special, Account>
   | NodeType<TypeNodeOnTx.Token, Account>
+  | NodeType<TypeNodeOnTx.Hyper, Account>

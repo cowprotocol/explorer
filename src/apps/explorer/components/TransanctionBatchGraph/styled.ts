@@ -227,6 +227,18 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'node[type="hyper"]',
+      style: {
+        // 'background-image': `url(${TokenIcon})`,
+        'background-color': theme.orange1,
+        width: '5',
+        height: '5',
+        'text-max-width': '5rem',
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
       selector: 'node[type="cowProtocol"]',
       style: {
         'background-image': `url(${CowProtocolIcon})`,

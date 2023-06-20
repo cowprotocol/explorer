@@ -191,17 +191,17 @@ export function getNodesAlternative(
       address: node.address,
       href: getExplorerUrl(networkId, 'contract', node.address),
     }
-    const type = node.isHyperNode ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
+    const type = node.isHyperNode ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token
     builder.node({ entity, id: node.address, type }, networkNode.alias)
   })
   edges.forEach((edge) => {
     const source = {
       id: edge.from,
-      type: edge.hyperNode === 'from' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token,
+      type: edge.hyperNode === 'from' ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token,
     }
     const target = {
       id: edge.to,
-      type: edge.hyperNode === 'to' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token,
+      type: edge.hyperNode === 'to' ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token,
     }
     const label = getLabel(edge, contractsMap)
     const kind = edge.trade ? TypeEdgeOnTx.user : TypeEdgeOnTx.amm
