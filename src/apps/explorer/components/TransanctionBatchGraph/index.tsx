@@ -3,7 +3,7 @@ import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
 import fcose from 'cytoscape-fcose'
 import klay from 'cytoscape-klay'
-import React from 'react'
+import React, { useMemo } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import {
@@ -81,10 +81,15 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
     resetZoom,
     setCytoscape,
     cyPopperRef,
+    tokensStylesheets,
   } = useCytoscape(params)
 
   const theme = useTheme()
   const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
+
+  const stylesheet = useMemo(() => {
+    return STYLESHEET(theme).concat(tokensStylesheets)
+  }, [tokensStylesheets, theme])
 
   if (isLoading) {
     return (
@@ -108,7 +113,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
         elements={elements}
         layout={layout}
         style={{ width: '100%', height: heightSize }}
-        stylesheet={STYLESHEET(theme)}
+        stylesheet={stylesheet}
         cy={setCytoscape}
         wheelSensitivity={0.2}
         className="tx-graph"

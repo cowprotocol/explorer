@@ -31,6 +31,7 @@ export default class ElementsBuilder {
     return {
       group: 'nodes',
       data: {
+        address: node.id,
         id: `${node.type}:${node.id}`,
         label: !hideLabel ? node.entity.alias : '',
         type: node.type,

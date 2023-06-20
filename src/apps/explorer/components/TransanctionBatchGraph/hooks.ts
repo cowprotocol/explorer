@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition } from 'cytoscape'
+import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
 import { CustomLayoutOptions, layouts } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { HEIGHT_HEADER_FOOTER } from 'apps/explorer/const'
@@ -13,6 +13,8 @@ import {
 import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
 import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
+import { getImageUrl } from 'utils'
+import QuestionImg from 'assets/img/question1.svg'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
@@ -29,6 +31,7 @@ export type UseCytoscapeReturn = {
   layout: CustomLayoutOptions
   setLayout: (layout: CustomLayoutOptions) => void
   cyPopperRef: React.MutableRefObject<PopperInstance | null>
+  tokensStylesheets: Cytoscape.Stylesheet[]
 }
 
 export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
@@ -45,6 +48,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
+  const [tokensStylesheets, setTokensStylesheets] = useState<Cytoscape.Stylesheet[]>([])
 
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
@@ -70,6 +74,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       const getNodesFn = txSettlement.contractTrades ? getNodesAlternative : getNodes
       const nodes = getNodesFn(txSettlement, networkId, heightSize, layout.name)
 
+      setTokensStylesheets(getStylesheets(nodes))
       setElements(nodes)
       if (resetZoom) {
         updateLayout(cy, layout.name)
@@ -134,5 +139,28 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     setLayout,
     cyPopperRef,
     elements,
+    tokensStylesheets,
   }
+}
+
+function getStylesheets(
+  nodes: ElementDefinition[],
+  // networkId: SupportedChainId,
+): Stylesheet[] {
+  const stylesheets: Stylesheet[] = []
+
+  nodes.forEach((node) => {
+    if (node.data.type === 'token') {
+      const image = getImageUrl(node.data.address) || QuestionImg
+
+      stylesheets.push({
+        selector: `node[id="${node.data.id}"]`,
+        style: {
+          'background-image': `url("${image}")`,
+        },
+      })
+    }
+  })
+
+  return stylesheets
 }
