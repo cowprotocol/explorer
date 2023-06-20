@@ -14,8 +14,8 @@ ADDRESSES_TO_IGNORE.add('0x40a50cf069e992aa4536211b23f286ef88752187')
 
 export type ContractTrade = {
   address: string
-  sellTokens: string[]
-  buyTokens: string[]
+  sellTransfers: Transfer[]
+  buyTransfers: Transfer[]
 }
 
 export function getContractTrades(trades: Trade[], transfers: Transfer[]): ContractTrade[] {
@@ -38,18 +38,18 @@ export function getContractTrades(trades: Trade[], transfers: Transfer[]): Contr
 
   // Get contract trades
   return Array.from(contractAddresses).map((address) => {
-    const sellTokens: string[] = []
-    const buyTokens: string[] = []
+    const sellTransfers: Transfer[] = []
+    const buyTransfers: Transfer[] = []
 
     transfers.forEach((transfer) => {
       if (transfer.from === address) {
-        sellTokens.push(transfer.token)
+        sellTransfers.push(transfer)
       } else if (transfer.to === address) {
-        buyTokens.push(transfer.token)
+        buyTransfers.push(transfer)
       }
     })
 
-    return { address, sellTokens, buyTokens }
+    return { address, sellTransfers, buyTransfers }
   })
 }
 
@@ -64,6 +64,9 @@ export type Edge = {
   to: string
   address: string
   trade?: Trade
+  fromTransfer?: Transfer
+  toTransfer?: Transfer
+  hyperNode?: 'from' | 'to'
 }
 
 export type NodesAndEdges = {
@@ -85,22 +88,34 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
 
   contractTrades.forEach((trade) => {
     // add all sellTokens from contract trades to nodes
-    trade.sellTokens.forEach((address) => (nodes[address] = { address }))
+    trade.sellTransfers.forEach(({ token }) => (nodes[token] = { address: token }))
     // add all buyTokens from contract trades to nodes
-    trade.buyTokens.forEach((address) => (nodes[address] = { address }))
+    trade.buyTransfers.forEach(({ token }) => (nodes[token] = { address: token }))
 
-    if (trade.sellTokens.length === 1 && trade.buyTokens.length === 1) {
+    if (trade.sellTransfers.length === 1 && trade.buyTransfers.length === 1) {
       // no need to add a new node
       // normal edge for normal contract interaction
-      edges.push({ from: trade.sellTokens[0], to: trade.buyTokens[0], address: trade.address })
-    } else if (trade.sellTokens.length > 1 || trade.buyTokens.length > 1) {
+      const sellTransfer = trade.sellTransfers[0]
+      const buyTransfer = trade.buyTransfers[0]
+      edges.push({
+        from: sellTransfer.token,
+        to: buyTransfer.token,
+        address: trade.address,
+        fromTransfer: sellTransfer,
+        toTransfer: buyTransfer,
+      })
+    } else if (trade.sellTransfers.length > 1 || trade.buyTransfers.length > 1) {
       // if  there are more than one sellToken or buyToken, the contract becomes a node
       nodes[trade.address] = { address: trade.address, isHyperNode: true }
 
       // one edge for each sellToken
-      trade.sellTokens.forEach((address) => edges.push({ from: address, to: trade.address, address: trade.address }))
+      trade.sellTransfers.forEach((transfer) =>
+        edges.push({ from: transfer.token, to: trade.address, address: trade.address, hyperNode: 'from' }),
+      )
       // one edge for each buyToken
-      trade.buyTokens.forEach((address) => edges.push({ from: trade.address, to: address, address: trade.address }))
+      trade.buyTransfers.forEach((transfer) =>
+        edges.push({ from: trade.address, to: transfer.token, address: trade.address, hyperNode: 'to' }),
+      )
     }
   })
 
@@ -133,10 +148,13 @@ export function getNodesAlternative(
     builder.node({ entity, id: node.address, type }, networkNode.alias)
   })
   edges.forEach((edge) => {
+    // const typeFrom = edge.hyperNode === 'from' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
+    // const typeTo = edge.hyperNode === 'to' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
     const type = TypeNodeOnTx.Token
-    const tooltip = edge.address.slice(0, 6)
+    const label = getLabel(edge)
     const kind = edge.trade ? TypeEdgeOnTx.user : TypeEdgeOnTx.amm
-    builder.edge({ id: edge.from, type }, { id: edge.to, type }, tooltip, kind)
+    // builder.edge({ id: edge.from, type: typeFrom }, { id: edge.to, type: typeTo }, label, kind)
+    builder.edge({ id: edge.from, type }, { id: edge.to, type }, label, kind)
   })
 
   return builder.build(
@@ -144,4 +162,17 @@ export function getNodesAlternative(
       ? buildGridLayout(builder._countNodeTypes as Map<TypeNodeOnTx, number>, builder._center, builder._nodes)
       : undefined,
   )
+}
+
+function getLabel(edge: Edge): string {
+  if (edge.trade) {
+    return edge.trade.orderUid.slice(0, 6)
+  } else if (edge.hyperNode) {
+    return ''
+  } else if (edge.toTransfer && edge.fromTransfer) {
+    return `${edge.fromTransfer.value} ${edge.fromTransfer.token.slice(0, 6)} -> ${
+      edge.toTransfer.value
+    } ${edge.toTransfer.token.slice(0, 6)}`
+  }
+  return 'add transfer info'
 }
