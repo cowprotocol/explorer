@@ -107,6 +107,15 @@ export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
             value: trade.buyAmount,
             isInternal: log.raw.address === trade.owner,
           })
+        } else if (trade.sellToken === ETH_NULL_ADDRESS) {
+          //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
+          transfers.push({
+            token: ETH_NULL_ADDRESS,
+            from: trade.owner,
+            to: log.raw.address,
+            value: trade.sellAmount,
+            isInternal: log.raw.address === trade.owner,
+          })
         }
         trades.push(trade)
       }
