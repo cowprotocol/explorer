@@ -6,6 +6,8 @@ import { useMultipleErc20 } from 'hooks/useErc20'
 import { GetTxBatchTradesResult } from 'hooks/useTxBatchTrades'
 import { traceToTransfersAndTrades } from 'api/tenderly'
 import { getContractTrades } from '.'
+import { abbreviateString } from 'utils'
+import { getExplorerUrl } from 'utils/getExplorerUrl'
 
 export function useTransactionSettlement(
   networkId: Network | undefined,
@@ -35,16 +37,17 @@ export function useTransactionSettlement(
 
   const accounts = useMemo(() => {
     return tokenAddresses.reduce((acc, address) => {
-      const alias = tokens?.[address]?.symbol
+      const symbol = tokens?.[address]?.symbol
 
       acc[address] = {
-        alias: alias || address,
+        alias: symbol || abbreviateString(address, 6, 4),
         address,
+        href: symbol || !networkId ? undefined : getExplorerUrl(networkId, 'token', address),
       }
 
       return acc
     }, {})
-  }, [tokenAddresses, tokens])
+  }, [networkId, tokenAddresses, tokens])
 
   return {
     txSettlement: {
