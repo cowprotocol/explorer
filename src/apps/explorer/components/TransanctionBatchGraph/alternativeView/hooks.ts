@@ -42,7 +42,7 @@ export function useTransactionSettlement(
       acc[address] = {
         alias: symbol || abbreviateString(address, 6, 4),
         address,
-        href: symbol || !networkId ? undefined : getExplorerUrl(networkId, 'token', address),
+        href: !networkId ? undefined : getExplorerUrl(networkId, 'token', address),
       }
 
       return acc
