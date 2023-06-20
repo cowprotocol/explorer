@@ -110,11 +110,11 @@ export function getNotesAndEdges(userTrades: Trade[], contractTrades: ContractTr
 
       // one edge for each sellToken
       trade.sellTransfers.forEach((transfer) =>
-        edges.push({ from: transfer.token, to: trade.address, address: trade.address, hyperNode: 'from' }),
+        edges.push({ from: transfer.token, to: trade.address, address: trade.address, hyperNode: 'to' }),
       )
       // one edge for each buyToken
       trade.buyTransfers.forEach((transfer) =>
-        edges.push({ from: trade.address, to: transfer.token, address: trade.address, hyperNode: 'to' }),
+        edges.push({ from: trade.address, to: transfer.token, address: trade.address, hyperNode: 'from' }),
       )
     }
   })
@@ -143,18 +143,21 @@ export function getNodesAlternative(
 
   nodes.forEach((node) => {
     const entity = accounts?.[node.address] || { alias: node.address }
-    // const type = node.isHyperNode ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
-    const type = TypeNodeOnTx.Token
+    const type = node.isHyperNode ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
     builder.node({ entity, id: node.address, type }, networkNode.alias)
   })
   edges.forEach((edge) => {
-    // const typeFrom = edge.hyperNode === 'from' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
-    // const typeTo = edge.hyperNode === 'to' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token
-    const type = TypeNodeOnTx.Token
+    const source = {
+      id: edge.from,
+      type: edge.hyperNode === 'from' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token,
+    }
+    const target = {
+      id: edge.to,
+      type: edge.hyperNode === 'to' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token,
+    }
     const label = getLabel(edge)
     const kind = edge.trade ? TypeEdgeOnTx.user : TypeEdgeOnTx.amm
-    // builder.edge({ id: edge.from, type: typeFrom }, { id: edge.to, type: typeTo }, label, kind)
-    builder.edge({ id: edge.from, type }, { id: edge.to, type }, label, kind)
+    builder.edge(source, target, label, kind)
   })
 
   return builder.build(
