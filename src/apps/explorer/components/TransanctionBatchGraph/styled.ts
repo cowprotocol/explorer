@@ -5,6 +5,8 @@ import TraderIcon from 'assets/img/Trader.svg'
 import SpecialIcon from 'assets/img/Trader-variant.svg'
 import CowProtocolIcon from 'assets/img/CoW-protocol.svg'
 import DexIcon from 'assets/img/Dex.svg'
+import TokenIcon from 'assets/img/eth-network.svg'
+
 import { MEDIA } from 'const'
 import { Dropdown } from 'apps/explorer/components/common/Dropdown'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
@@ -218,7 +220,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
     {
       selector: 'node[type="token"]',
       style: {
-        'background-image': `url(${DexIcon})`,
+        'background-image': `url(${TokenIcon})`,
         'text-max-width': '5rem',
         'text-valign': 'bottom',
         'text-margin-y': 8,
