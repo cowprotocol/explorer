@@ -139,7 +139,13 @@ export function getNodesAlternative(
 
   builder.center({ type: TypeNodeOnTx.NetworkNode, entity: networkNode, id: networkNode.alias })
 
-  const { trades, contractTrades, accounts } = txSettlement
+  const { trades, contractTrades, accounts, contracts } = txSettlement
+
+  const contractsMap =
+    contracts?.reduce((acc, contract) => {
+      acc[contract.address] = contract.contract_name
+      return acc
+    }, {}) || {}
 
   const { nodes, edges } = getNotesAndEdges(trades, contractTrades || [])
 
@@ -161,7 +167,7 @@ export function getNodesAlternative(
       id: edge.to,
       type: edge.hyperNode === 'to' ? TypeNodeOnTx.Dex : TypeNodeOnTx.Token,
     }
-    const label = getLabel(edge)
+    const label = getLabel(edge, contractsMap)
     const kind = edge.trade ? TypeEdgeOnTx.user : TypeEdgeOnTx.amm
     builder.edge(source, target, label, kind)
   })
@@ -173,15 +179,13 @@ export function getNodesAlternative(
   )
 }
 
-function getLabel(edge: Edge): string {
+function getLabel(edge: Edge, contractsMap: Record<string, string>): string {
   if (edge.trade) {
-    return edge.trade.orderUid.slice(0, 6)
+    return abbreviateString(edge.trade.orderUid, 6, 4)
   } else if (edge.hyperNode) {
     return ''
   } else if (edge.toTransfer && edge.fromTransfer) {
-    return `${edge.fromTransfer.value} ${edge.fromTransfer.token.slice(0, 6)} -> ${
-      edge.toTransfer.value
-    } ${edge.toTransfer.token.slice(0, 6)}`
+    return contractsMap[edge.address] || abbreviateString(edge.address, 6, 4)
   }
   return 'add transfer info'
 }
