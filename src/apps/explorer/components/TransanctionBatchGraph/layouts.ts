@@ -1,6 +1,6 @@
 import { LayoutOptions, NodeSingular } from 'cytoscape'
 
-export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose'
+export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose' | 'circle' | 'concentric'
 
 export type CustomLayoutOptions = LayoutOptions & {
   [key: string]: unknown
@@ -12,6 +12,15 @@ const defaultValues = {
   fit: true, // whether to fit the viewport to the graph
 }
 export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
+  circle: {
+    ...defaultValues,
+    name: 'circle',
+  },
+  concentric: {
+    ...defaultValues,
+    name: 'concentric',
+    spacingFactor: 2,
+  },
   grid: {
     ...defaultValues,
     name: 'grid',
@@ -100,4 +109,6 @@ export enum LayoutNames {
   grid = 'Grid',
   klay = 'KLay',
   fcose = 'FCoSE',
+  circle = 'Circle',
+  concentric = 'Concentric',
 }
