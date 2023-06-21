@@ -23,7 +23,7 @@ import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper, FloatingWrapper
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import { layouts, LayoutNames } from './layouts'
+import { LAYOUTS, LayoutNames } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
 import { removePopper } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { useCytoscape } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
@@ -136,7 +136,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
             }
             callback={(): void => removePopper(cyPopperRef)}
             items={Object.values(LayoutNames).map((layoutName) => (
-              <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
+              <DropdownOption key={layoutName} onClick={(): void => setLayout(LAYOUTS[layoutName.toLowerCase()])}>
                 {layoutName}
               </DropdownOption>
             ))}

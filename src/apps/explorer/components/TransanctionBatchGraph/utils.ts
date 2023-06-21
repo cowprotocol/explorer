@@ -1,6 +1,6 @@
 import Cytoscape, { ElementDefinition, EventObject } from 'cytoscape'
 import React from 'react'
-import { layouts } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
+import { LAYOUTS } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
 import { Account, ALIAS_TRADER_NAME, Transfer } from 'api/tenderly'
 import { TypeEdgeOnTx, TypeNodeOnTx } from 'apps/explorer/components/TransanctionBatchGraph/types'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -98,7 +98,7 @@ export function bindPopper(
 }
 
 export const updateLayout = (cy: Cytoscape.Core, layoutName: string, noAnimation = false): void => {
-  cy.layout(noAnimation ? { ...layouts[layoutName], animate: false } : layouts[layoutName]).run()
+  cy.layout(noAnimation ? { ...LAYOUTS[layoutName], animate: false } : LAYOUTS[layoutName]).run()
   cy.fit()
 }
 

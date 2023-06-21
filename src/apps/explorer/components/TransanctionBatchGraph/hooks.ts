@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
-import { CustomLayoutOptions, layouts } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
+import { CustomLayoutOptions, LAYOUTS } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { HEIGHT_HEADER_FOOTER } from 'apps/explorer/const'
 import {
@@ -44,7 +44,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
-  const [layout, setLayout] = useState(layouts.grid)
+  const [layout, setLayout] = useState(LAYOUTS.grid)
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
