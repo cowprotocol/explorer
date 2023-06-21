@@ -1,13 +1,22 @@
 import { useState, useCallback, useEffect } from 'react'
 
 import { Network } from 'types'
-import { getTradesAccount, getTradesAndTransfers, Trade, Transfer, Account, getAliasFromAddress } from 'api/tenderly'
+import {
+  getTradesAccount,
+  getTradesAndTransfers,
+  Trade,
+  Transfer,
+  Account,
+  getAliasFromAddress,
+  Contract,
+} from 'api/tenderly'
 import { useMultipleErc20 } from './useErc20'
 import { SingleErc20State } from 'state/erc20'
 import { Order } from 'api/operator'
 import BigNumber from 'bignumber.js'
 import { usePrevious } from './usePrevious'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
+import { ContractTrade } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 
 interface TxBatchTrades {
   trades: Trade[]
@@ -17,13 +26,16 @@ interface TxBatchTrades {
 type Dict<T> = Record<string, T>
 
 type AccountWithReceiver = Account & { owner?: string; uids?: string[] }
-type Accounts = Dict<AccountWithReceiver> | undefined
+export type Accounts = Dict<AccountWithReceiver> | undefined
 
 export interface Settlement {
   tokens: Dict<SingleErc20State>
   accounts: Accounts
   transfers: Array<Transfer>
   trades: Array<Trade>
+  // TODO: this is a big mix of types, refactor!!!
+  contractTrades?: Array<ContractTrade>
+  contracts?: Array<Contract>
 }
 
 export type GetTxBatchTradesResult = {
@@ -32,7 +44,10 @@ export type GetTxBatchTradesResult = {
   isLoading: boolean
 }
 
-const getGroupedByTransfers = (arr: Transfer[]): Transfer[] => {
+/**
+ * Group transfers by token, from and to
+ */
+function groupTransfers(arr: Transfer[]): Transfer[] {
   return [
     ...arr
       .reduce((r, t) => {
@@ -44,10 +59,10 @@ const getGroupedByTransfers = (arr: Transfer[]): Transfer[] => {
             value: new BigNumber(0),
           })
 
-        item.value = BigNumber.sum(item.value, new BigNumber(t.value))
+        item.value = BigNumber.sum(new BigNumber(item.value), new BigNumber(t.value)).toString()
 
         return r.set(key, item)
-      }, new Map())
+      }, new Map<string, Transfer>())
       .values(),
   ]
 }
@@ -74,30 +89,32 @@ export function useTxBatchTrades(
       const { transfers, trades } = await getTradesAndTransfers(network, _txHash)
       const _accounts: Accounts = Object.fromEntries(await getTradesAccount(network, _txHash, trades, transfers))
       const filteredOrders = _orders?.filter((order) => _accounts[order.owner])
-      const orderOwnersReceivers = [
-        ...(filteredOrders?.map((order) => order.owner) || []),
-        ...(filteredOrders?.map((order) => order.receiver) || []),
-      ]
-      const groupedByTransfers = getGroupedByTransfers(transfers)
-      const transfersWithKind: Transfer[] = groupedByTransfers.filter(
-        (transfer) => !orderOwnersReceivers.includes(transfer.from) && !orderOwnersReceivers.includes(transfer.to),
+
+      const ownersAndReceivers = filteredOrders.reduce<Set<string>>((_set, { owner, receiver }) => {
+        _set.add(owner)
+        _set.add(receiver)
+
+        return _set
+      }, new Set<string>())
+
+      const groupedTransfers = groupTransfers(transfers)
+      const transfersWithKind: Transfer[] = groupedTransfers.filter(
+        (transfer) => !ownersAndReceivers.has(transfer.from) && !ownersAndReceivers.has(transfer.to),
       )
       filteredOrders?.forEach((order) => {
         const { owner, kind, receiver } = order
-        if (!orderOwnersReceivers.includes(owner)) return
+        if (!ownersAndReceivers.has(owner)) return
         transfersWithKind.push(
-          ...groupedByTransfers
-            .filter((t) => [t.from, t.to].includes(owner))
-            .map((transfer) => ({ ...transfer, kind })),
+          ...groupedTransfers.filter((t) => [t.from, t.to].includes(owner)).map((transfer) => ({ ...transfer, kind })),
         )
 
         transfersWithKind.push(
-          ...groupedByTransfers
+          ...groupedTransfers
             .filter((t) => [t.from, t.to].includes(receiver))
             .map((transfer) => ({ ...transfer, kind })),
         )
-        orderOwnersReceivers.splice(orderOwnersReceivers.indexOf(owner), 1)
-        orderOwnersReceivers.splice(orderOwnersReceivers.indexOf(receiver), 1)
+        ownersAndReceivers.delete(owner)
+        ownersAndReceivers.delete(receiver)
       })
 
       const accountsWithReceiver = _accounts

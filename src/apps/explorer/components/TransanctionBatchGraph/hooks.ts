@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition } from 'cytoscape'
+import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
 import { CustomLayoutOptions, layouts } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { HEIGHT_HEADER_FOOTER } from 'apps/explorer/const'
@@ -12,6 +12,9 @@ import {
 } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
+import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
+import { getImageUrl } from 'utils'
+import UnknownToken from 'assets/img/question1.svg'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
@@ -28,6 +31,7 @@ export type UseCytoscapeReturn = {
   layout: CustomLayoutOptions
   setLayout: (layout: CustomLayoutOptions) => void
   cyPopperRef: React.MutableRefObject<PopperInstance | null>
+  tokensStylesheets: Cytoscape.Stylesheet[]
 }
 
 export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
@@ -44,6 +48,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
+  const [tokensStylesheets, setTokensStylesheets] = useState<Cytoscape.Stylesheet[]>([])
 
   const setCytoscape = useCallback(
     (ref: Cytoscape.Core) => {
@@ -65,7 +70,12 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       setElements([])
       if (error || isLoading || !networkId || !heightSize || !cy) return
 
-      setElements(getNodes(txSettlement, networkId, heightSize, layout.name))
+      // TODO: use the new method when it doesn't have accounts
+      const getNodesFn = txSettlement.contractTrades ? getNodesAlternative : getNodes
+      const nodes = getNodesFn(txSettlement, networkId, heightSize, layout.name)
+
+      setTokensStylesheets(getStylesheets(nodes))
+      setElements(nodes)
       if (resetZoom) {
         updateLayout(cy, layout.name)
       }
@@ -129,5 +139,38 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
     setLayout,
     cyPopperRef,
     elements,
+    tokensStylesheets,
   }
+}
+
+function getStylesheets(
+  nodes: ElementDefinition[],
+  // networkId: SupportedChainId,
+): Stylesheet[] {
+  const stylesheets: Stylesheet[] = []
+
+  nodes.forEach((node) => {
+    if (node.data.type === 'token') {
+      // Right now unknown token image will only be used when the address is undefined
+      // which is not likely
+      // A way to deal with this would be to first fetch the image and when it fails set the fallback image
+      const image = getImageUrl(node.data.address) || UnknownToken
+
+      stylesheets.push({
+        selector: `node[id="${node.data.id}"]`,
+        style: {
+          // It's in theory possible to pass multiple images as a fallback, but when that's done,
+          // the image sizes are broken, going over the image bounds
+          'background-image': `url("${image}")`,
+          'background-color': 'white',
+          'background-fit': 'contain',
+          // These settings are not respected as far as I tried
+          // 'background-width': 20,
+          // 'background-height': 20,
+        },
+      })
+    }
+  })
+
+  return stylesheets
 }

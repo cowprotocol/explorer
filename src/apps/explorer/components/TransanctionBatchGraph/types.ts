@@ -6,12 +6,16 @@ export enum TypeNodeOnTx {
   Trader = 'trader',
   Dex = 'dex',
   Special = 'special',
+  Token = 'token',
+  Hyper = 'hyper',
 }
 
 export enum TypeEdgeOnTx {
   sellEdge = 'sell',
   buyEdge = 'buy',
   noKind = 'noKind',
+  user = 'user',
+  amm = 'amm',
 }
 
 export type InfoTooltip = Record<string, string>
@@ -23,3 +27,5 @@ export type Node =
   | NodeType<TypeNodeOnTx.Trader, Account>
   | NodeType<TypeNodeOnTx.Dex, Account>
   | NodeType<TypeNodeOnTx.Special, Account>
+  | NodeType<TypeNodeOnTx.Token, Account>
+  | NodeType<TypeNodeOnTx.Hyper, Account>

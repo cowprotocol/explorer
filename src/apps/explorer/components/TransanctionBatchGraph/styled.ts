@@ -5,6 +5,8 @@ import TraderIcon from 'assets/img/Trader.svg'
 import SpecialIcon from 'assets/img/Trader-variant.svg'
 import CowProtocolIcon from 'assets/img/CoW-protocol.svg'
 import DexIcon from 'assets/img/Dex.svg'
+import TokenIcon from 'assets/img/eth-network.svg'
+
 import { MEDIA } from 'const'
 import { Dropdown } from 'apps/explorer/components/common/Dropdown'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
@@ -167,6 +169,20 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'edge[label].user',
+      style: {
+        'line-color': theme.green1,
+        'target-arrow-color': theme.green1,
+      },
+    },
+    {
+      selector: 'edge[label].amm',
+      style: {
+        'line-color': theme.orange1,
+        'target-arrow-color': theme.orange1,
+      },
+    },
+    {
       selector: 'edge[label].hover',
       style: {
         width: 3,
@@ -196,6 +212,27 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       selector: 'node[type="dex"]',
       style: {
         'background-image': `url(${DexIcon})`,
+        'text-max-width': '5rem',
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
+      selector: 'node[type="token"]',
+      style: {
+        'background-image': `url(${TokenIcon})`,
+        'text-max-width': '5rem',
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
+      selector: 'node[type="hyper"]',
+      style: {
+        // 'background-image': `url(${TokenIcon})`,
+        'background-color': theme.orange1,
+        width: '5',
+        height: '5',
         'text-max-width': '5rem',
         'text-valign': 'bottom',
         'text-margin-y': 8,

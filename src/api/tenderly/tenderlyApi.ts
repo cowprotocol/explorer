@@ -1,4 +1,4 @@
-import { TENDERLY_API_URL, ETH_NULL_ADDRESS, APP_NAME } from 'const'
+import { TENDERLY_API_URL, NATIVE_TOKEN_ADDRESS_LOWERCASE, APP_NAME } from 'const'
 import { Network } from 'types'
 import { fetchQuery } from 'api/baseApi'
 import {
@@ -98,13 +98,22 @@ export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
           feeAmount: log.inputs[IndexTradeInput.feeAmount].value,
           orderUid: log.inputs[IndexTradeInput.orderUid].value,
         }
-        if (trade.buyToken === ETH_NULL_ADDRESS) {
+        if (trade.buyToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
           //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
           transfers.push({
-            token: ETH_NULL_ADDRESS,
+            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
             from: log.raw.address,
             to: trade.owner,
             value: trade.buyAmount,
+            isInternal: log.raw.address === trade.owner,
+          })
+        } else if (trade.sellToken === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
+          //ETH transfers are not captured by ERC20 events, so we need to manually add them to the Transfer list
+          transfers.push({
+            token: NATIVE_TOKEN_ADDRESS_LOWERCASE,
+            from: trade.owner,
+            to: log.raw.address,
+            value: trade.sellAmount,
             isInternal: log.raw.address === trade.owner,
           })
         }
