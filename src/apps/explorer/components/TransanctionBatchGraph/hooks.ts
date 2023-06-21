@@ -14,7 +14,7 @@ import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
 import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 import { getImageUrl } from 'utils'
-import QuestionImg from 'assets/img/question1.svg'
+import UnknownToken from 'assets/img/question1.svg'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
@@ -151,12 +151,22 @@ function getStylesheets(
 
   nodes.forEach((node) => {
     if (node.data.type === 'token') {
-      const image = getImageUrl(node.data.address) || QuestionImg
+      // Right now unknown token image will only be used when the address is undefined
+      // which is not likely
+      // A way to deal with this would be to first fetch the image and when it fails set the fallback image
+      const image = getImageUrl(node.data.address) || UnknownToken
 
       stylesheets.push({
         selector: `node[id="${node.data.id}"]`,
         style: {
+          // It's in theory possible to pass multiple images as a fallback, but when that's done,
+          // the image sizes are broken, going over the image bounds
           'background-image': `url("${image}")`,
+          'background-color': 'white',
+          'background-fit': 'contain',
+          // These settings are not respected as far as I tried
+          // 'background-width': 20,
+          // 'background-height': 20,
         },
       })
     }
