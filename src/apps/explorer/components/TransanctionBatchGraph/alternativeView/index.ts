@@ -60,6 +60,21 @@ export function getContractTrades(trades: Trade[], transfers: Transfer[]): Contr
   })
 }
 
+function isRoutingTrade(contractTrade: ContractTrade): boolean {
+  const token_balances: { [key: string]: bigint } = {}
+  contractTrade.sellTransfers.forEach((transfer) => {
+    token_balances[transfer.token] = token_balances[transfer.token]
+      ? token_balances[transfer.token] - BigInt(transfer.value)
+      : -BigInt(transfer.value)
+  })
+  contractTrade.buyTransfers.forEach((transfer) => {
+    token_balances[transfer.token] = token_balances[transfer.token]
+      ? token_balances[transfer.token] + BigInt(transfer.value)
+      : BigInt(transfer.value)
+  })
+  return Object.values(token_balances).every((val) => val === BigInt(0))
+}
+
 // TODO: these types might overlap with existing ones, consider reusing them
 export type Node = {
   address: string
@@ -99,56 +114,58 @@ export function getNotesAndEdges(
     edges.push({ from: sellToken, to: buyToken, address: trade.owner, trade })
   })
 
-  contractTrades.forEach((trade) => {
-    // add all sellTokens from contract trades to nodes
-    trade.sellTransfers.forEach(({ token }) => {
-      const tokenAddress = getTokenAddress(token, networkId)
-      nodes[tokenAddress] = { address: tokenAddress }
-    })
-    // add all buyTokens from contract trades to nodes
-    trade.buyTransfers.forEach(({ token }) => {
-      const tokenAddress = getTokenAddress(token, networkId)
-      nodes[tokenAddress] = { address: tokenAddress }
-    })
-
-    if (trade.sellTransfers.length === 1 && trade.buyTransfers.length === 1) {
-      // no need to add a new node
-      // normal edge for normal contract interaction
-      const sellTransfer = trade.sellTransfers[0]
-      const buyTransfer = trade.buyTransfers[0]
-      edges.push({
-        from: getTokenAddress(sellTransfer.token, networkId),
-        to: getTokenAddress(buyTransfer.token, networkId),
-        address: trade.address,
-        fromTransfer: sellTransfer,
-        toTransfer: buyTransfer,
+  contractTrades
+    .filter((trade) => !isRoutingTrade(trade))
+    .forEach((trade) => {
+      // add all sellTokens from contract trades to nodes
+      trade.sellTransfers.forEach(({ token }) => {
+        const tokenAddress = getTokenAddress(token, networkId)
+        nodes[tokenAddress] = { address: tokenAddress }
       })
-    } else if (trade.sellTransfers.length > 1 || trade.buyTransfers.length > 1) {
-      // if  there are more than one sellToken or buyToken, the contract becomes a node
-      nodes[trade.address] = { address: trade.address, isHyperNode: true }
+      // add all buyTokens from contract trades to nodes
+      trade.buyTransfers.forEach(({ token }) => {
+        const tokenAddress = getTokenAddress(token, networkId)
+        nodes[tokenAddress] = { address: tokenAddress }
+      })
 
-      // one edge for each sellToken
-      trade.sellTransfers.forEach((transfer) =>
+      if (trade.sellTransfers.length === 1 && trade.buyTransfers.length === 1) {
+        // no need to add a new node
+        // normal edge for normal contract interaction
+        const sellTransfer = trade.sellTransfers[0]
+        const buyTransfer = trade.buyTransfers[0]
         edges.push({
-          from: getTokenAddress(transfer.token, networkId),
-          to: trade.address,
+          from: getTokenAddress(sellTransfer.token, networkId),
+          to: getTokenAddress(buyTransfer.token, networkId),
           address: trade.address,
-          hyperNode: 'to',
-          fromTransfer: transfer,
-        }),
-      )
-      // one edge for each buyToken
-      trade.buyTransfers.forEach((transfer) =>
-        edges.push({
-          from: trade.address,
-          to: getTokenAddress(transfer.token, networkId),
-          address: trade.address,
-          hyperNode: 'from',
-          toTransfer: transfer,
-        }),
-      )
-    }
-  })
+          fromTransfer: sellTransfer,
+          toTransfer: buyTransfer,
+        })
+      } else if (trade.sellTransfers.length > 1 || trade.buyTransfers.length > 1) {
+        // if  there are more than one sellToken or buyToken, the contract becomes a node
+        nodes[trade.address] = { address: trade.address, isHyperNode: true }
+
+        // one edge for each sellToken
+        trade.sellTransfers.forEach((transfer) =>
+          edges.push({
+            from: getTokenAddress(transfer.token, networkId),
+            to: trade.address,
+            address: trade.address,
+            hyperNode: 'to',
+            fromTransfer: transfer,
+          }),
+        )
+        // one edge for each buyToken
+        trade.buyTransfers.forEach((transfer) =>
+          edges.push({
+            from: trade.address,
+            to: getTokenAddress(transfer.token, networkId),
+            address: trade.address,
+            hyperNode: 'from',
+            toTransfer: transfer,
+          }),
+        )
+      }
+    })
 
   return {
     nodes: Object.values(nodes),
