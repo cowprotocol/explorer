@@ -10,7 +10,7 @@ import {
   removePopper,
   updateLayout,
 } from 'apps/explorer/components/TransanctionBatchGraph/utils'
-import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
+import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useContractBasedVisualizationData'
 import { Network } from 'types'
 import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 import { getImageUrl } from 'utils'

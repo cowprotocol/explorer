@@ -15,10 +15,8 @@ import { TitleAddress, FlexContainer, Title } from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
-import { GetTxBatchTradesResult } from 'hooks/useTxBatchTrades'
 import { TransactionBatchGraph } from 'apps/explorer/components/TransanctionBatchGraph'
 import CowLoading from 'components/common/CowLoading'
-import { useTransactionSettlement } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView/hooks'
 
 interface Props {
   txHash: string
@@ -38,7 +36,7 @@ function useQueryViewParams(): { tab: string } {
   return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
-const tabItems = (txBatchTrades: GetTxBatchTradesResult, networkId: BlockchainNetwork): TabItemInterface[] => {
+const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txHash: string): TabItemInterface[] => {
   return [
     {
       id: TabView.ORDERS,
@@ -48,7 +46,7 @@ const tabItems = (txBatchTrades: GetTxBatchTradesResult, networkId: BlockchainNe
     {
       id: TabView.GRAPH,
       tab: <TabIcon title="Graph" iconFontName={faProjectDiagram} />,
-      content: <TransactionBatchGraph txBatchData={txBatchTrades} networkId={networkId} />,
+      content: <TransactionBatchGraph orders={orders} networkId={networkId} txHash={txHash} />,
     },
   ]
 }
@@ -63,9 +61,6 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const isZeroOrders = !!(orders && orders.length === 0)
   const notGpv2ExplorerData = useTxOrderExplorerLink(txHash, isZeroOrders)
 
-  // TODO: refactor/unify the way settlement is loaded from tenderly
-  // const txBatchTrades = useTxBatchTrades(networkId, txHash, orders)
-  const txBatchTrades = useTransactionSettlement(networkId, txHash, orders)
   const history = useHistory()
 
   // Avoid redirecting until another network is searched again
@@ -121,7 +116,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
         }}
       >
         <ExplorerTabs
-          tabItems={tabItems(txBatchTrades, networkId)}
+          tabItems={tabItems(orders, networkId, txHash)}
           selectedTab={tabViewSelected}
           updateSelectedTab={(key: number): void => onChangeTab(key)}
         />

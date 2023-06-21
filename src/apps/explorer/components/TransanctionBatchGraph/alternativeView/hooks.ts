@@ -1,23 +1,24 @@
-import { useTransactionData } from 'hooks/useTransactionData'
+import { TransactionData } from 'hooks/useTransactionData'
 import { Network } from 'types'
 import { Order } from 'api/operator'
 import { useMemo } from 'react'
 import { useMultipleErc20 } from 'hooks/useErc20'
-import { GetTxBatchTradesResult } from 'hooks/useTxBatchTrades'
+import { GetTxBatchTradesResult } from 'hooks/useContractBasedVisualizationData'
 import { traceToTransfersAndTrades } from 'api/tenderly'
 import { getContractTrades, getTokenAddress } from '.'
 import { abbreviateString } from 'utils'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
 
-export function useTransactionSettlement(
+// TODO: turn this into a fn, no need to be a hook since the data is loaded outside
+export function useTokenBasedVisualizationData(
   networkId: Network | undefined,
-  txHash: string,
   // TODO: use orders obj for calculating the receivers
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _orders: Order[] | undefined,
+  txData: TransactionData,
   // TODO: reusing the same type as the other hook. Refactor and merge hooks/simplify them
 ): GetTxBatchTradesResult {
-  const { trace, contracts, isLoading: isTxDataLoading, error: txDataError } = useTransactionData(networkId, txHash)
+  const { trace, contracts, isLoading: isTxDataLoading, error: txDataError } = txData
 
   const { trades: userTrades, transfers } = useMemo(() => {
     if (!trace) return { trades: [], transfers: [] }

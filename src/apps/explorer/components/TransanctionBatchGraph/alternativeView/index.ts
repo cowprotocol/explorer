@@ -1,5 +1,5 @@
 import { Trade, Transfer } from 'api/tenderly'
-import { Settlement as TxSettlement } from 'hooks/useTxBatchTrades'
+import { Settlement as TxSettlement } from 'hooks/useContractBasedVisualizationData'
 import { Network } from 'types'
 import { ElementDefinition } from 'cytoscape'
 import { networkOptions } from 'components/NetworkSelector'
