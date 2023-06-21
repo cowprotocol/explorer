@@ -12,6 +12,7 @@ import { TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
 import BigNumber from 'bignumber.js'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NATIVE_TOKEN_ADDRESS_LOWERCASE, WRAPPED_NATIVE_ADDRESS } from 'const'
+import { BuildNodesFn } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 
 const ADDRESSES_TO_IGNORE = new Set()
 // CoW Protocol settlement contract
@@ -180,7 +181,7 @@ export function getTokenAddress(address: string, networkId: SupportedChainId): s
   return address
 }
 
-export function getNodesAlternative(
+export const getNodesAlternative: BuildNodesFn = function getNodesAlternative(
   txSettlement: TxSettlement,
   networkId: Network,
   heightSize: number,

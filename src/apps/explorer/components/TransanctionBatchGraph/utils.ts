@@ -146,7 +146,14 @@ function getInternalParentNode(groupNodes: Map<string, string>, transfer: Transf
   return undefined
 }
 
-export function getNodes(
+export type BuildNodesFn = (
+  txSettlement: TxSettlement,
+  networkId: Network,
+  heightSize: number,
+  layout: string,
+) => ElementDefinition[]
+
+export const getNodes: BuildNodesFn = function getNodes(
   txSettlement: TxSettlement,
   networkId: Network,
   heightSize: number,

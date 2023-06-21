@@ -12,9 +12,9 @@ import {
 } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useContractBasedVisualizationData'
 import { Network } from 'types'
-import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 import { getImageUrl } from 'utils'
 import UnknownToken from 'assets/img/question1.svg'
+import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
@@ -68,7 +68,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       setFailedToLoadGraph(false)
       const cy = cytoscapeRef.current
       setElements([])
-      if (error || isLoading || !networkId || !heightSize || !cy) return
+      if (error || isLoading || !networkId || !heightSize || !cy || !txSettlement) return
 
       // TODO: use the new method when it doesn't have accounts
       const getNodesFn = txSettlement.contractTrades ? getNodesAlternative : getNodes

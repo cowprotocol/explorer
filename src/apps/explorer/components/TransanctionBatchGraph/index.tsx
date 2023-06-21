@@ -18,8 +18,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import {
+  buildContractBasedSettlement,
   GetTxBatchTradesResult as TxBatchData,
-  useContractBasedVisualizationData,
 } from 'hooks/useContractBasedVisualizationData'
 import { Network } from 'types'
 import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper, FloatingWrapper } from './styled'
@@ -31,7 +31,10 @@ import { DropdownOption, DropdownPosition } from 'apps/explorer/components/commo
 import { removePopper } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { useCytoscape } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
 import { useTransactionData } from 'hooks/useTransactionData'
-import { useTokenBasedVisualizationData } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView/hooks'
+import {
+  BuildSettlementParams,
+  buildTokenBasedSettlement,
+} from 'apps/explorer/components/TransanctionBatchGraph/alternativeView/hooks'
 import { Order } from 'api/operator'
 import { useQuery } from 'hooks/useQuery'
 import { useHistory } from 'react-router-dom'
@@ -109,23 +112,35 @@ function useUpdateVisQuery(): (vis: string) => void {
   )
 }
 
-function useBatchGraphParams(
+function useTxBatchData(
   networkId: Network | undefined,
   orders: Order[] | undefined,
   txHash: string,
   visualization: ViewType,
-): { txBatchData: TxBatchData } {
+): TxBatchData {
   const txData = useTransactionData(networkId, txHash)
 
-  const tokenBasedVisualizationData = useTokenBasedVisualizationData(networkId, orders, txData)
-  const contractBasedVisualizationData = useContractBasedVisualizationData(networkId, orders, txData)
+  const tokens = useMemo(
+    () =>
+      orders?.reduce((acc, order) => {
+        if (order.sellToken) acc[order.sellToken.address] = order.sellToken
+        if (order.buyToken) acc[order.buyToken.address] = order.buyToken
 
-  const txBatchData = useMemo(() => {
-    console.log(`bug--useBatchGraphParams`, visualization, tokenBasedVisualizationData, contractBasedVisualizationData)
-    return visualization === ViewType.TOKEN ? tokenBasedVisualizationData : contractBasedVisualizationData
-  }, [contractBasedVisualizationData, tokenBasedVisualizationData, visualization])
+        return acc
+      }, {}) || {},
+    [orders],
+  )
 
-  return { txBatchData }
+  // const tokenBasedVisualizationData = useTokenBasedVisualizationData(networkId, orders, txData)
+  // const contractBasedVisualizationData = useContractBasedVisualizationData(networkId, orders, txData)
+
+  const txSettlement = useMemo(() => {
+    console.log(`bug--useBatchGraphParams`, visualization)
+    const params: BuildSettlementParams = { networkId, tokens, txData, orders }
+    return visualization === ViewType.TOKEN ? buildTokenBasedSettlement(params) : buildContractBasedSettlement(params)
+  }, [networkId, orders, tokens, txData, visualization])
+
+  return { txSettlement, error: txData.error, isLoading: txData.isLoading }
 }
 
 type UseVisualizationReturn = {
@@ -160,7 +175,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
   const { orders, networkId, txHash } = params
   const { visualization, onChangeVisualization } = useVisualization()
 
-  const { txBatchData } = useBatchGraphParams(networkId, orders, txHash, visualization)
+  const txBatchData = useTxBatchData(networkId, orders, txHash, visualization)
 
   const { isLoading } = txBatchData
 
