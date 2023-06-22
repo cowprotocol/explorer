@@ -253,7 +253,6 @@ function mergeContractTrade(contractTrade: ContractTrade): ContractTrade {
         to: contractTrade.address,
         value: (-amount).toString(),
         token: token,
-        isInternal: true, // not sure what to choose here
       })
     } else if (amount > 0) {
       mergedBuyTransfers.push({
@@ -261,7 +260,6 @@ function mergeContractTrade(contractTrade: ContractTrade): ContractTrade {
         to: '',
         value: amount.toString(),
         token: token,
-        isInternal: true,
       })
     }
   })
@@ -448,35 +446,38 @@ function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): 
   return tooltip
 }
 
-function getNodeTooltip(node: TokenNode, edges: TokenEdge[], tokens: Record<string, SingleErc20State>): Record<string, string> {
-  const tooltip = {}
-
-  let token: SingleErc20State
-  const address = node.address
-
-  if (!node.isHyperNode) {
-    token = tokens[address]
-
-    let amount = BigInt(0)
-    edges.forEach((edge) => {
-      if (edge.from === address) {
-        if (edge.fromTransfer) {
-          amount += BigInt(edge.fromTransfer.value)
-        } else if (edge.trade) {
-          amount += BigInt(edge.trade.sellAmount)
-        }
-      }
-      if (edge.to === address) {
-        if (edge.toTransfer) {
-          amount -= BigInt(edge.toTransfer.value)
-        } else if (edge.trade) {
-          amount -= BigInt(edge.trade.buyAmount)
-        }
-      }
-    })
-
-    tooltip['balance'] = getTokenTooltipAmount(token, amount.toString())
+function getNodeTooltip(
+  node: TokenNode,
+  edges: TokenEdge[],
+  tokens: Record<string, SingleErc20State>,
+): Record<string, string> | undefined {
+  if (node.isHyperNode) {
+    return undefined
   }
+
+  const tooltip = {}
+  const address = node.address
+  const token = tokens[address]
+
+  let amount = BigInt(0)
+  edges.forEach((edge) => {
+    if (edge.from === address) {
+      if (edge.fromTransfer) {
+        amount += BigInt(edge.fromTransfer.value)
+      } else if (edge.trade) {
+        amount += BigInt(edge.trade.sellAmount)
+      }
+    }
+    if (edge.to === address) {
+      if (edge.toTransfer) {
+        amount -= BigInt(edge.toTransfer.value)
+      } else if (edge.trade) {
+        amount -= BigInt(edge.trade.buyAmount)
+      }
+    }
+  })
+
+  tooltip['balance'] = getTokenTooltipAmount(token, amount.toString())
 
   return tooltip
 }
@@ -485,7 +486,7 @@ function getTokenTooltipAmount(token: SingleErc20State, value: string | undefine
   let amount, amount_atoms, amount_atoms_abs, sign
   if (token?.decimals && value) {
     amount_atoms = BigInt(value)
-    sign = amount_atoms > BigInt(0) ? BigInt(1) : BigInt(-1)
+    sign = amount_atoms >= BigInt(0) ? BigInt(1) : BigInt(-1)
     amount_atoms_abs = sign * amount_atoms
     amount = formattingAmountPrecision(
       new BigNumber(amount_atoms_abs.toString()),
