@@ -1,7 +1,7 @@
 import { TransactionData } from 'hooks/useTransactionData'
 import { Network } from 'types'
 import { Order } from 'api/operator'
-import { Settlement } from 'hooks/useContractBasedVisualizationData'
+import { Settlement } from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
 import { traceToTransfersAndTrades } from 'api/tenderly'
 import { getContractTrades, getTokenAddress } from '.'
 import { abbreviateString } from 'utils'

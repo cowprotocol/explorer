@@ -10,7 +10,7 @@ import {
   removePopper,
   updateLayout,
 } from 'apps/explorer/components/TransanctionBatchGraph/utils'
-import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useContractBasedVisualizationData'
+import { GetTxBatchTradesResult as TxBatchData } from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
 import { Network } from 'types'
 import { getImageUrl } from 'utils'
 import UnknownToken from 'assets/img/question1.svg'

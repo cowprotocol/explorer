@@ -20,7 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   buildContractBasedSettlement,
   GetTxBatchTradesResult as TxBatchData,
-} from 'hooks/useContractBasedVisualizationData'
+} from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
 import { Network } from 'types'
 import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper, FloatingWrapper } from './styled'
 import CowLoading from 'components/common/CowLoading'
