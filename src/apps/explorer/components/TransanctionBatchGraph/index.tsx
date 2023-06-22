@@ -159,13 +159,7 @@ function useVisualization(): UseVisualizationReturn {
 
   console.log(`bug--useVisualization`, visualization, ViewType[visualization], visualizationViewSelected)
 
-  const onChangeVisualization = useCallback((viewName: ViewType) => {
-    // IMPORTANT!!!
-    // viewName comes from the dropdown, so it's a string
-    // even though it matches the enum type, which should be a number
-    // so we need to convert it to a number
-    setVisualizationViewSelected(Number(viewName))
-  }, [])
+  const onChangeVisualization = useCallback((viewName: ViewType) => setVisualizationViewSelected(viewName), [])
 
   useEffect(() => {
     updateVisQuery(ViewType[visualizationViewSelected].toLowerCase())
@@ -292,13 +286,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
             }
             callback={(): void => removePopper(cyPopperRef)}
             items={Object.keys(ViewTypeNames).map((viewType) => (
-              <DropdownOption
-                key={viewType}
-                onClick={(): void => {
-                  console.log(`bug--onclick`, viewType, ViewType[viewType], ViewTypeNames[viewType])
-                  onChangeVisualization(viewType as unknown as ViewType)
-                }}
-              >
+              <DropdownOption key={viewType} onClick={(): void => onChangeVisualization(Number(viewType))}>
                 {ViewTypeNames[viewType]}
               </DropdownOption>
             ))}
