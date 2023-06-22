@@ -219,8 +219,11 @@ export function getContractTrades(trades: Trade[], transfers: Transfer[]): Contr
   })
 }
 
-function isRoutingTrade(contractTrade: ContractTrade): boolean {
+function mergeContractTrade(contractTrade: ContractTrade): ContractTrade {
+  const mergedSellTransfers: Transfer[] = []
+  const mergedBuyTransfers: Transfer[] = []
   const token_balances: { [key: string]: bigint } = {}
+
   contractTrade.sellTransfers.forEach((transfer) => {
     token_balances[transfer.token] = token_balances[transfer.token]
       ? token_balances[transfer.token] - BigInt(transfer.value)
@@ -231,7 +234,32 @@ function isRoutingTrade(contractTrade: ContractTrade): boolean {
       ? token_balances[transfer.token] + BigInt(transfer.value)
       : BigInt(transfer.value)
   })
-  return Object.values(token_balances).every((val) => val === BigInt(0))
+
+  Object.entries(token_balances).forEach(([token, amount]) => {
+    if (amount < 0) {
+      mergedSellTransfers.push({
+        from: '', // field should not be used later on
+        to: contractTrade.address,
+        value: (-amount).toString(),
+        token: token,
+        isInternal: true, // not sure what to choose here
+      })
+    } else if (amount > 0) {
+      mergedBuyTransfers.push({
+        from: contractTrade.address,
+        to: '',
+        value: amount.toString(),
+        token: token,
+        isInternal: true,
+      })
+    }
+  })
+
+  return { address: contractTrade.address, sellTransfers: mergedSellTransfers, buyTransfers: mergedBuyTransfers }
+}
+
+function isRoutingTrade(contractTrade: ContractTrade): boolean {
+  return contractTrade.sellTransfers.length === 0 && contractTrade.buyTransfers.length === 0
 }
 
 export function getNotesAndEdges(
@@ -253,6 +281,7 @@ export function getNotesAndEdges(
   })
 
   contractTrades
+    .map(mergeContractTrade)
     .filter((trade) => !isRoutingTrade(trade))
     .forEach((trade) => {
       // add all sellTokens from contract trades to nodes
