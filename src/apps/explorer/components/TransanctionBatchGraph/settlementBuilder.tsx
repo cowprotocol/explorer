@@ -32,7 +32,7 @@ function groupTransfers(arr: Transfer[]): Transfer[] {
   ]
 }
 
-export function buildContractBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
+export function buildTransfersBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
   const { networkId, orders, txData, tokens } = params
   const { trace, contracts } = txData
 
@@ -112,7 +112,7 @@ export type BuildSettlementParams = {
   txData: TransactionData
 }
 
-export function buildTokenBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
+export function buildTradesBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
   const { networkId, txData, tokens } = params
   const { trace, contracts } = txData
 

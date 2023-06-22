@@ -64,8 +64,8 @@ function DropdownButtonContent({
 }
 
 const ViewTypeNames: Record<ViewType, string> = {
-  [ViewType.CONTRACT]: 'Contract',
-  [ViewType.TOKEN]: 'Token',
+  [ViewType.TRANSFERS]: 'Transfer based',
+  [ViewType.TRADES]: 'Trade based',
 }
 
 interface GraphBatchTxParams {
@@ -101,7 +101,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
 
   useEffect(() => {
     if (visualizationChanged) {
-      const layoutName = visualization === ViewType.CONTRACT ? 'fcose' : 'circle'
+      const layoutName = visualization === ViewType.TRANSFERS ? 'fcose' : 'circle'
       setLayout(LAYOUTS[layoutName])
     }
   }, [setLayout, visualization, visualizationChanged])

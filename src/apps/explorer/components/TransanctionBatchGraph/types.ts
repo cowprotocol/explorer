@@ -34,8 +34,8 @@ export type Node =
   | NodeType<TypeNodeOnTx.Hyper, Account>
 
 export enum ViewType {
-  CONTRACT,
-  TOKEN,
+  TRANSFERS,
+  TRADES,
 }
 
 export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose' | 'circle' | 'concentric'

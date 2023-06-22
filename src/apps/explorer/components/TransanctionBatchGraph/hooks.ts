@@ -22,9 +22,9 @@ import { useHistory } from 'react-router-dom'
 import { Order } from 'api/operator'
 import { useTransactionData } from 'hooks/useTransactionData'
 import {
-  buildContractBasedSettlement,
   BuildSettlementParams,
-  buildTokenBasedSettlement,
+  buildTradesBasedSettlement,
+  buildTransfersBasedSettlement,
 } from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
 
 export type UseCytoscapeParams = {
@@ -185,7 +185,7 @@ function getStylesheets(
   return stylesheets
 }
 
-const DEFAULT_VIEW_TYPE = ViewType.CONTRACT
+const DEFAULT_VIEW_TYPE = ViewType.TRANSFERS
 const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
 
 const VISUALIZATION_PARAM_NAME = 'vis'
@@ -232,7 +232,9 @@ export function useTxBatchData(
   const txSettlement = useMemo(() => {
     const params: BuildSettlementParams = { networkId, tokens, txData, orders }
 
-    return visualization === ViewType.TOKEN ? buildTokenBasedSettlement(params) : buildContractBasedSettlement(params)
+    return visualization === ViewType.TRADES
+      ? buildTradesBasedSettlement(params)
+      : buildTransfersBasedSettlement(params)
   }, [networkId, orders, tokens, txData, visualization])
 
   return { txSettlement, error: txData.error, isLoading: txData.isLoading }
