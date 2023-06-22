@@ -169,6 +169,12 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
+      selector: 'edge.amm,edge.user',
+      style: {
+        'curve-style': 'bezier',
+      },
+    },
+    {
       selector: 'edge[label].hover',
       style: {
         width: 3,
