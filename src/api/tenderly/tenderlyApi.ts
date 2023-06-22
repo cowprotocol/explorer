@@ -1,16 +1,16 @@
-import { TENDERLY_API_URL, NATIVE_TOKEN_ADDRESS_LOWERCASE, APP_NAME } from 'const'
+import { APP_NAME, NATIVE_TOKEN_ADDRESS_LOWERCASE, TENDERLY_API_URL } from 'const'
 import { Network } from 'types'
 import { fetchQuery } from 'api/baseApi'
 import {
   Account,
   Contract,
-  Trace,
-  PublicTrade as Trade,
-  Transfer,
-  TypeOfTrace,
   IndexTradeInput,
   IndexTransferInput,
+  PublicTrade as Trade,
+  Trace,
+  Transfer,
   TxTradesAndTransfers,
+  TypeOfTrace,
 } from './types'
 import { abbreviateString } from 'utils'
 import { SPECIAL_ADDRESSES } from 'apps/explorer/const'
