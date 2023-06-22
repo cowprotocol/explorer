@@ -135,8 +135,8 @@ function useTxBatchData(
   )
 
   const txSettlement = useMemo(() => {
-    console.log(`bug--useBatchGraphParams`, visualization, typeof visualization)
     const params: BuildSettlementParams = { networkId, tokens, txData, orders }
+
     return visualization === ViewType.TOKEN ? buildTokenBasedSettlement(params) : buildContractBasedSettlement(params)
   }, [networkId, orders, tokens, txData, visualization])
 
@@ -157,13 +157,10 @@ function useVisualization(): UseVisualizationReturn {
     ViewType[visualization] || DEFAULT_VIEW_TYPE,
   )
 
-  console.log(`bug--useVisualization`, visualization, ViewType[visualization], visualizationViewSelected)
-
   const onChangeVisualization = useCallback((viewName: ViewType) => setVisualizationViewSelected(viewName), [])
 
   useEffect(() => {
     updateVisQuery(ViewType[visualizationViewSelected].toLowerCase())
-    console.log(`bug--useVisualization--useeffect`, visualizationViewSelected)
   }, [updateVisQuery, visualizationViewSelected])
 
   return { visualization: visualizationViewSelected, onChangeVisualization }
@@ -268,7 +265,6 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
           />
         </LayoutButton>
         <LayoutButton>
-          {/* TODO: use a proper callback */}
           <DropdownWrapper
             currentItem={visualization}
             dropdownButtonContent={
