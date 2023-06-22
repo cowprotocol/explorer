@@ -113,7 +113,7 @@ export type BuildSettlementParams = {
 }
 
 export function buildTradesBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
-  const { networkId, txData, tokens } = params
+  const { networkId, txData, tokens, orders } = params
   const { trace, contracts } = txData
 
   if (!networkId || !trace || !contracts) {
@@ -121,7 +121,7 @@ export function buildTradesBasedSettlement(params: BuildSettlementParams): Settl
   }
 
   const { trades, transfers } = traceToTransfersAndTrades(trace)
-  const contractTrades = getContractTrades(trades, transfers)
+  const contractTrades = getContractTrades(trades, transfers, orders)
 
   const addressesSet = transfers.reduce((set, transfer) => {
     set.add(getTokenAddress(transfer.token, networkId || 1))

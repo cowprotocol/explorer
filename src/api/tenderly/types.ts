@@ -35,7 +35,7 @@ export interface Transfer {
   to: string
   value: string
   token: string
-  isInternal: boolean
+  isInternal?: boolean
 }
 
 export interface Account {

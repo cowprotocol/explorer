@@ -1,4 +1,5 @@
 import { Network } from 'types'
+import { Order } from 'api/operator'
 import { ElementDefinition } from 'cytoscape'
 import { networkOptions } from 'components/NetworkSelector'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
@@ -184,13 +185,23 @@ ADDRESSES_TO_IGNORE.add('0x9008d19f58aabd9ed0d60971565aa8510560ab41')
 // ETH Flow contract
 ADDRESSES_TO_IGNORE.add('0x40a50cf069e992aa4536211b23f286ef88752187')
 
-export function getContractTrades(trades: Trade[], transfers: Transfer[]): ContractTrade[] {
+export function getContractTrades(
+  trades: Trade[],
+  transfers: Transfer[],
+  orders: Order[] | undefined,
+): ContractTrade[] {
   const userAddresses = new Set<string>()
   const contractAddresses = new Set<string>()
 
   // Build a list of addresses that are involved in trades
-  // Note: at this point we don't have the receivers - if different from owner
-  trades.forEach((trade) => userAddresses.add(trade.owner))
+  if (orders) {
+    orders.forEach((order) => {
+      userAddresses.add(order.owner)
+      userAddresses.add(order.receiver)
+    })
+  } else {
+    trades.forEach((trade) => userAddresses.add(trade.owner))
+  }
 
   // Build list of contract addresses based on trades, which are not traders
   // nor part of the ignored set (CoW Protocol itself, special contracts etc)
@@ -219,8 +230,11 @@ export function getContractTrades(trades: Trade[], transfers: Transfer[]): Contr
   })
 }
 
-function isRoutingTrade(contractTrade: ContractTrade): boolean {
+function mergeContractTrade(contractTrade: ContractTrade): ContractTrade {
+  const mergedSellTransfers: Transfer[] = []
+  const mergedBuyTransfers: Transfer[] = []
   const token_balances: { [key: string]: bigint } = {}
+
   contractTrade.sellTransfers.forEach((transfer) => {
     token_balances[transfer.token] = token_balances[transfer.token]
       ? token_balances[transfer.token] - BigInt(transfer.value)
@@ -231,7 +245,30 @@ function isRoutingTrade(contractTrade: ContractTrade): boolean {
       ? token_balances[transfer.token] + BigInt(transfer.value)
       : BigInt(transfer.value)
   })
-  return Object.values(token_balances).every((val) => val === BigInt(0))
+
+  Object.entries(token_balances).forEach(([token, amount]) => {
+    if (amount < 0) {
+      mergedSellTransfers.push({
+        from: '', // field should not be used later on
+        to: contractTrade.address,
+        value: (-amount).toString(),
+        token: token,
+      })
+    } else if (amount > 0) {
+      mergedBuyTransfers.push({
+        from: contractTrade.address,
+        to: '',
+        value: amount.toString(),
+        token: token,
+      })
+    }
+  })
+
+  return { address: contractTrade.address, sellTransfers: mergedSellTransfers, buyTransfers: mergedBuyTransfers }
+}
+
+function isRoutingTrade(contractTrade: ContractTrade): boolean {
+  return contractTrade.sellTransfers.length === 0 && contractTrade.buyTransfers.length === 0
 }
 
 export function getNotesAndEdges(
@@ -253,6 +290,7 @@ export function getNotesAndEdges(
   })
 
   contractTrades
+    .map(mergeContractTrade)
     .filter((trade) => !isRoutingTrade(trade))
     .forEach((trade) => {
       // add all sellTokens from contract trades to nodes
@@ -278,7 +316,7 @@ export function getNotesAndEdges(
           fromTransfer: sellTransfer,
           toTransfer: buyTransfer,
         })
-      } else if (trade.sellTransfers.length > 1 || trade.buyTransfers.length > 1) {
+      } else if (trade.sellTransfers.length != 1 || trade.buyTransfers.length != 1) {
         // if  there are more than one sellToken or buyToken, the contract becomes a node
         nodes[trade.address] = { address: trade.address, isHyperNode: true }
 
@@ -347,7 +385,8 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
       href: getExplorerUrl(networkId, 'contract', node.address),
     }
     const type = node.isHyperNode ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token
-    builder.node({ entity, id: node.address, type }, networkNode.alias)
+    const tooltip = getNodeTooltip(node, edges, tokens)
+    builder.node({ entity, id: node.address, type }, networkNode.alias, tooltip)
   })
   edges.forEach((edge) => {
     const source = {
@@ -407,14 +446,58 @@ function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): 
   return tooltip
 }
 
+function getNodeTooltip(
+  node: TokenNode,
+  edges: TokenEdge[],
+  tokens: Record<string, SingleErc20State>,
+): Record<string, string> | undefined {
+  if (node.isHyperNode) {
+    return undefined
+  }
+
+  const tooltip = {}
+  const address = node.address
+  const token = tokens[address]
+
+  let amount = BigInt(0)
+  edges.forEach((edge) => {
+    if (edge.from === address) {
+      if (edge.fromTransfer) {
+        amount += BigInt(edge.fromTransfer.value)
+      } else if (edge.trade) {
+        amount += BigInt(edge.trade.sellAmount)
+      }
+    }
+    if (edge.to === address) {
+      if (edge.toTransfer) {
+        amount -= BigInt(edge.toTransfer.value)
+      } else if (edge.trade) {
+        amount -= BigInt(edge.trade.buyAmount)
+      }
+    }
+  })
+
+  tooltip['balance'] = getTokenTooltipAmount(token, amount.toString())
+
+  return tooltip
+}
+
 function getTokenTooltipAmount(token: SingleErc20State, value: string | undefined): string {
-  let amount
+  let amount, amount_atoms, amount_atoms_abs, sign
   if (token?.decimals && value) {
-    amount = formattingAmountPrecision(new BigNumber(value), token, FormatAmountPrecision.highPrecision)
+    amount_atoms = BigInt(value)
+    sign = amount_atoms >= BigInt(0) ? BigInt(1) : BigInt(-1)
+    amount_atoms_abs = sign * amount_atoms
+    amount = formattingAmountPrecision(
+      new BigNumber(amount_atoms_abs.toString()),
+      token,
+      FormatAmountPrecision.highPrecision,
+    )
   } else {
     amount = '-'
   }
   const tokenSymbol = token?.symbol || TOKEN_SYMBOL_UNKNOWN
+  const sign_char = sign && sign > 0 ? '' : '-'
 
-  return `${amount} ${tokenSymbol}`
+  return `${sign_char}${amount} ${tokenSymbol}`
 }
