@@ -1,5 +1,5 @@
 import { Stylesheet } from 'cytoscape'
-import styled, { DefaultTheme, css } from 'styled-components'
+import styled, { css, DefaultTheme } from 'styled-components'
 
 import TraderIcon from 'assets/img/Trader.svg'
 import SpecialIcon from 'assets/img/Trader-variant.svg'
@@ -155,31 +155,17 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'edge[label].sell',
+      selector: 'edge[label].sell,edge[label].amm',
       style: {
         'line-color': theme.red1,
         'target-arrow-color': theme.red1,
       },
     },
     {
-      selector: 'edge[label].buy',
+      selector: 'edge[label].buy,edge[label].user',
       style: {
         'line-color': theme.green1,
         'target-arrow-color': theme.green1,
-      },
-    },
-    {
-      selector: 'edge[label].user',
-      style: {
-        'line-color': theme.green1,
-        'target-arrow-color': theme.green1,
-      },
-    },
-    {
-      selector: 'edge[label].amm',
-      style: {
-        'line-color': theme.orange1,
-        'target-arrow-color': theme.orange1,
       },
     },
     {
@@ -229,10 +215,9 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
     {
       selector: 'node[type="hyper"]',
       style: {
-        // 'background-image': `url(${TokenIcon})`,
-        'background-color': theme.orange1,
-        width: '5',
-        height: '5',
+        'background-color': theme.red1,
+        width: '10',
+        height: '10',
         'text-max-width': '5rem',
         'text-valign': 'bottom',
         'text-margin-y': 8,
