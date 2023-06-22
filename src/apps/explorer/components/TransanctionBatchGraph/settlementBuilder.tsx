@@ -10,11 +10,11 @@ import {
 import { SingleErc20State } from 'state/erc20'
 import BigNumber from 'bignumber.js'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
-import { ContractTrade } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
+import { ContractTrade } from 'apps/explorer/components/TransanctionBatchGraph/nodesBuilder'
 import { TransactionData } from 'hooks/useTransactionData'
 import { Network } from 'types'
 import { Order } from 'api/operator'
-import { getContractTrades, getTokenAddress } from './alternativeView'
+import { getContractTrades, getTokenAddress } from './nodesBuilder'
 import { abbreviateString } from 'utils'
 
 type Dict<T> = Record<string, T>

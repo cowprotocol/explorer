@@ -5,7 +5,6 @@ import useWindowSizes from 'hooks/useWindowSizes'
 import { HEIGHT_HEADER_FOOTER } from 'apps/explorer/const'
 import {
   bindPopper,
-  getNodes,
   PopperInstance,
   removePopper,
   updateLayout,
@@ -14,7 +13,10 @@ import { GetTxBatchTradesResult as TxBatchData } from 'apps/explorer/components/
 import { Network } from 'types'
 import { getImageUrl } from 'utils'
 import UnknownToken from 'assets/img/question1.svg'
-import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
+import {
+  buildContractViewNodes,
+  buildTokenViewNodes,
+} from 'apps/explorer/components/TransanctionBatchGraph/nodesBuilder'
 
 export type UseCytoscapeParams = {
   txBatchData: TxBatchData
@@ -70,8 +72,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       setElements([])
       if (error || isLoading || !networkId || !heightSize || !cy || !txSettlement) return
 
-      // TODO: use the new method when it doesn't have accounts
-      const getNodesFn = txSettlement.contractTrades ? getNodesAlternative : getNodes
+      const getNodesFn = txSettlement.contractTrades ? buildTokenViewNodes : buildContractViewNodes
       const nodes = getNodesFn(txSettlement, networkId, heightSize, layout.name)
 
       setTokensStylesheets(getStylesheets(nodes))
