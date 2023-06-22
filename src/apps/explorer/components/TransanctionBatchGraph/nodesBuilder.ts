@@ -347,7 +347,8 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
       href: getExplorerUrl(networkId, 'contract', node.address),
     }
     const type = node.isHyperNode ? TypeNodeOnTx.Hyper : TypeNodeOnTx.Token
-    builder.node({ entity, id: node.address, type }, networkNode.alias)
+    const tooltip = getNodeTooltip(node, edges, tokens)
+    builder.node({ entity, id: node.address, type }, networkNode.alias, tooltip)
   })
   edges.forEach((edge) => {
     const source = {
@@ -407,14 +408,55 @@ function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): 
   return tooltip
 }
 
+function getNodeTooltip(node: Node, edges: Edge[], tokens: Record<string, SingleErc20State>): Record<string, string> {
+  const tooltip = {}
+
+  let token: SingleErc20State
+  const address = node.address
+
+  if (!node.isHyperNode) {
+    token = tokens[address]
+
+    let amount = BigInt(0)
+    edges.forEach((edge) => {
+      if (edge.from === address) {
+        if (edge.fromTransfer) {
+          amount += BigInt(edge.fromTransfer.value)
+        } else if (edge.trade) {
+          amount += BigInt(edge.trade.sellAmount)
+        }
+      }
+      if (edge.to === address) {
+        if (edge.toTransfer) {
+          amount -= BigInt(edge.toTransfer.value)
+        } else if (edge.trade) {
+          amount -= BigInt(edge.trade.buyAmount)
+        }
+      }
+    })
+
+    tooltip['balance'] = getTokenTooltipAmount(token, amount.toString())
+  }
+
+  return tooltip
+}
+
 function getTokenTooltipAmount(token: SingleErc20State, value: string | undefined): string {
-  let amount
+  let amount, amount_atoms, amount_atoms_abs, sign
   if (token?.decimals && value) {
-    amount = formattingAmountPrecision(new BigNumber(value), token, FormatAmountPrecision.highPrecision)
+    amount_atoms = BigInt(value)
+    sign = amount_atoms > BigInt(0) ? BigInt(1) : BigInt(-1)
+    amount_atoms_abs = sign * amount_atoms
+    amount = formattingAmountPrecision(
+      new BigNumber(amount_atoms_abs.toString()),
+      token,
+      FormatAmountPrecision.highPrecision,
+    )
   } else {
     amount = '-'
   }
   const tokenSymbol = token?.symbol || TOKEN_SYMBOL_UNKNOWN
+  const sign_char = sign && sign > 0 ? '' : '-'
 
-  return `${amount} ${tokenSymbol}`
+  return `${sign_char}${amount} ${tokenSymbol}`
 }

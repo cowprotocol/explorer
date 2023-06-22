@@ -116,6 +116,12 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       event.target.removeClass('hover')
       document.getElementById('tx-graph')?.classList.remove('hover')
     })
+    cy.on('mouseover touchstart', 'node', (event): void => {
+      const target = event.target
+      const targetData: NodeDataDefinition | EdgeDataDefinition = target.data()
+
+      bindPopper(event, targetData, cyPopperRef)
+    })
     cy.on('mouseover', 'node', (event): void => {
       if (event.target.data('href')) {
         event.target.addClass('hover')
