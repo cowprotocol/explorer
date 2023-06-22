@@ -141,6 +141,10 @@ export function buildGridLayout(
     throw new Error('Center node is required')
   }
 
+  if (countTypes.get(TypeNodeOnTx.Token)) {
+    return { center, nodes }
+  }
+
   const maxRows = Math.max(...countTypes.values())
   const middleOfTotalRows = Math.floor(maxRows / 2)
   const traders = countTypes.get(TypeNodeOnTx.Trader) || 0
