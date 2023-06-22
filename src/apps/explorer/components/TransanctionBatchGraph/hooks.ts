@@ -1,23 +1,34 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
-import { CustomLayoutOptions, layouts } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
+import { LAYOUTS } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { HEIGHT_HEADER_FOOTER } from 'apps/explorer/const'
-import {
-  bindPopper,
-  getNodes,
-  PopperInstance,
-  removePopper,
-  updateLayout,
-} from 'apps/explorer/components/TransanctionBatchGraph/utils'
-import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
+import { bindPopper, removePopper, updateLayout } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { Network } from 'types'
-import { getNodesAlternative } from 'apps/explorer/components/TransanctionBatchGraph/alternativeView'
 import { getImageUrl } from 'utils'
 import UnknownToken from 'assets/img/question1.svg'
+import {
+  buildContractViewNodes,
+  buildTokenViewNodes,
+} from 'apps/explorer/components/TransanctionBatchGraph/nodesBuilder'
+import {
+  CustomLayoutOptions,
+  GetTxBatchTradesResult,
+  PopperInstance,
+  ViewType,
+} from 'apps/explorer/components/TransanctionBatchGraph/types'
+import { useQuery } from 'hooks/useQuery'
+import { useHistory } from 'react-router-dom'
+import { Order } from 'api/operator'
+import { useTransactionData } from 'hooks/useTransactionData'
+import {
+  BuildSettlementParams,
+  buildTradesBasedSettlement,
+  buildTransfersBasedSettlement,
+} from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
 
 export type UseCytoscapeParams = {
-  txBatchData: TxBatchData
+  txBatchData: GetTxBatchTradesResult
   networkId: Network | undefined
 }
 
@@ -44,7 +55,7 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const cytoscapeRef = useRef<Cytoscape.Core | null>(null)
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
-  const [layout, setLayout] = useState(layouts.grid)
+  const [layout, setLayout] = useState(LAYOUTS.grid)
   const { innerHeight } = useWindowSizes()
   const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
   const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
@@ -68,10 +79,9 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
       setFailedToLoadGraph(false)
       const cy = cytoscapeRef.current
       setElements([])
-      if (error || isLoading || !networkId || !heightSize || !cy) return
+      if (error || isLoading || !networkId || !heightSize || !cy || !txSettlement) return
 
-      // TODO: use the new method when it doesn't have accounts
-      const getNodesFn = txSettlement.contractTrades ? getNodesAlternative : getNodes
+      const getNodesFn = txSettlement.contractTrades ? buildTokenViewNodes : buildContractViewNodes
       const nodes = getNodesFn(txSettlement, networkId, heightSize, layout.name)
 
       setTokensStylesheets(getStylesheets(nodes))
@@ -173,4 +183,82 @@ function getStylesheets(
   })
 
   return stylesheets
+}
+
+const DEFAULT_VIEW_TYPE = ViewType.TRANSFERS
+const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
+
+const VISUALIZATION_PARAM_NAME = 'vis'
+
+function useQueryViewParams(): { visualization: string } {
+  const query = useQuery()
+  return { visualization: query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME }
+}
+
+function useUpdateVisQuery(): (vis: string) => void {
+  const query = useQuery()
+  const history = useHistory()
+
+  // TODO: this is causing one extra re-render as the query is being updated when history is updated
+  // TODO: make it not depend on query
+  return useCallback(
+    (vis: string) => {
+      query.set(VISUALIZATION_PARAM_NAME, vis)
+      history.replace({ search: query.toString() })
+    },
+    [history, query],
+  )
+}
+
+export function useTxBatchData(
+  networkId: Network | undefined,
+  orders: Order[] | undefined,
+  txHash: string,
+  visualization: ViewType,
+): GetTxBatchTradesResult {
+  const txData = useTransactionData(networkId, txHash)
+
+  const tokens = useMemo(
+    () =>
+      orders?.reduce((acc, order) => {
+        if (order.sellToken) acc[order.sellToken.address] = order.sellToken
+        if (order.buyToken) acc[order.buyToken.address] = order.buyToken
+
+        return acc
+      }, {}) || {},
+    [orders],
+  )
+
+  const txSettlement = useMemo(() => {
+    const params: BuildSettlementParams = { networkId, tokens, txData, orders }
+
+    return visualization === ViewType.TRADES
+      ? buildTradesBasedSettlement(params)
+      : buildTransfersBasedSettlement(params)
+  }, [networkId, orders, tokens, txData, visualization])
+
+  return { txSettlement, error: txData.error, isLoading: txData.isLoading }
+}
+
+type UseVisualizationReturn = {
+  visualization: ViewType
+  onChangeVisualization: (vis: ViewType) => void
+}
+
+export function useVisualization(): UseVisualizationReturn {
+  const { visualization } = useQueryViewParams()
+
+  const updateVisQuery = useUpdateVisQuery()
+
+  const [visualizationViewSelected, setVisualizationViewSelected] = useState<ViewType>(
+    ViewType[visualization] || DEFAULT_VIEW_TYPE,
+  )
+
+  const onChangeVisualization = useCallback((viewName: ViewType) => setVisualizationViewSelected(viewName), [])
+
+  useEffect(() => {
+    updateVisQuery(ViewType[visualizationViewSelected].toLowerCase())
+  }, [updateVisQuery, visualizationViewSelected])
+
+  return { visualization: visualizationViewSelected, onChangeVisualization }
 }

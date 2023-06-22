@@ -9,6 +9,12 @@ type LoadingData<T> = {
   error: string
 }
 
+const TRACE_CACHE = new Map<string, Trace>()
+
+function getCachedData<T>(key: string, cache: Map<string, T>): T | undefined {
+  return cache.get(key)
+}
+
 function useTransactionTrace(network: Network | undefined, txHash: string): LoadingData<Trace | undefined> {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -18,7 +24,17 @@ function useTransactionTrace(network: Network | undefined, txHash: string): Load
     setIsLoading(true)
     setError('')
     try {
-      setTrace(await getTransactionTrace(network, _txHash))
+      const cacheKey = `${network}-${_txHash}`
+      const cachedData = getCachedData(cacheKey, TRACE_CACHE)
+
+      if (cachedData) {
+        setTrace(cachedData)
+      } else {
+        const trace = await getTransactionTrace(network, _txHash)
+
+        setTrace(trace)
+        TRACE_CACHE.set(cacheKey, trace)
+      }
     } catch (e) {
       setError(e.message)
     }
@@ -34,6 +50,8 @@ function useTransactionTrace(network: Network | undefined, txHash: string): Load
   return { data: trace, isLoading, error }
 }
 
+const CONTRACTS_CACHE = new Map<string, Contract[]>()
+
 function useTransactionContracts(network: Network | undefined, txHash: string): LoadingData<Contract[]> {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -43,7 +61,17 @@ function useTransactionContracts(network: Network | undefined, txHash: string): 
     setIsLoading(true)
     setError('')
     try {
-      setContracts(await getTransactionContracts(network, _txHash))
+      const cacheKey = `${network}-${_txHash}`
+      const cachedData = getCachedData(cacheKey, CONTRACTS_CACHE)
+
+      if (cachedData) {
+        setContracts(cachedData)
+      } else {
+        const contracts = await getTransactionContracts(network, _txHash)
+
+        setContracts(contracts)
+        CONTRACTS_CACHE.set(cacheKey, contracts)
+      }
     } catch (e) {
       setError(e.message)
     }

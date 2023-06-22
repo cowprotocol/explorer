@@ -3,30 +3,31 @@ import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
 import fcose from 'cytoscape-fcose'
 import klay from 'cytoscape-klay'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import {
-  faRedo,
-  faDiceOne,
-  faDiceTwo,
-  faDiceThree,
-  faDiceFour,
   faDiceFive,
+  faDiceFour,
+  faDiceOne,
+  faDiceThree,
+  faDiceTwo,
+  faRedo,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import { GetTxBatchTradesResult as TxBatchData } from 'hooks/useTxBatchTrades'
 import { Network } from 'types'
-import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper, FloatingWrapper } from './styled'
+import { DropdownWrapper, FloatingWrapper, LayoutButton, ResetButton, STYLESHEET } from './styled'
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import { layouts, LayoutNames } from './layouts'
+import { LAYOUTS } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
 import { removePopper } from 'apps/explorer/components/TransanctionBatchGraph/utils'
-import { useCytoscape } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
+import { useCytoscape, useTxBatchData, useVisualization } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
+import { Order } from 'api/operator'
+import { usePrevious } from 'hooks/usePrevious'
+import { LayoutNames, ViewType } from 'apps/explorer/components/TransanctionBatchGraph/types'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -44,33 +45,43 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
 `
 const iconDice = [faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive]
 
-interface GraphBatchTxParams {
-  txBatchData: TxBatchData
-  networkId: Network | undefined
-}
-
 function DropdownButtonContent({
-  layout,
+  label,
   icon,
   open,
 }: {
-  layout: string
+  label: string
   icon: IconDefinition
   open?: boolean
 }): JSX.Element {
   return (
     <>
       <FontAwesomeIcon icon={icon} />
-      <span>Layout: {layout}</span>
+      <span>{label}</span>
       <span className={`arrow ${open && 'open'}`} />
     </>
   )
 }
 
+const ViewTypeNames: Record<ViewType, string> = {
+  [ViewType.TRANSFERS]: 'Transfer based',
+  [ViewType.TRADES]: 'Trade based',
+}
+
+interface GraphBatchTxParams {
+  orders: Order[] | undefined
+  txHash: string
+  networkId: Network | undefined
+}
+
 export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
-  const {
-    txBatchData: { isLoading },
-  } = params
+  const { orders, networkId, txHash } = params
+  const { visualization, onChangeVisualization } = useVisualization()
+
+  const txBatchData = useTxBatchData(networkId, orders, txHash, visualization)
+
+  const { isLoading } = txBatchData
+
   const {
     elements,
     failedToLoadGraph,
@@ -82,7 +93,18 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
     setCytoscape,
     cyPopperRef,
     tokensStylesheets,
-  } = useCytoscape(params)
+  } = useCytoscape({ networkId, txBatchData })
+
+  const previousVisualization = usePrevious(visualization)
+
+  const visualizationChanged = previousVisualization !== visualization
+
+  useEffect(() => {
+    if (visualizationChanged) {
+      const layoutName = visualization === ViewType.TRANSFERS ? 'fcose' : 'circle'
+      setLayout(LAYOUTS[layoutName])
+    }
+  }, [setLayout, visualization, visualizationChanged])
 
   const theme = useTheme()
   const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
@@ -129,15 +151,47 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
           <DropdownWrapper
             currentItem={currentLayoutIndex}
             dropdownButtonContent={
-              <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} />
+              <DropdownButtonContent
+                icon={iconDice[currentLayoutIndex]}
+                label={`Layout: ${LayoutNames[layout.name]}`}
+              />
             }
             dropdownButtonContentOpened={
-              <DropdownButtonContent icon={iconDice[currentLayoutIndex]} layout={LayoutNames[layout.name]} open />
+              <DropdownButtonContent
+                icon={iconDice[currentLayoutIndex]}
+                label={`Layout: ${LayoutNames[layout.name]}`}
+                open
+              />
             }
             callback={(): void => removePopper(cyPopperRef)}
             items={Object.values(LayoutNames).map((layoutName) => (
-              <DropdownOption key={layoutName} onClick={(): void => setLayout(layouts[layoutName.toLowerCase()])}>
+              <DropdownOption key={layoutName} onClick={(): void => setLayout(LAYOUTS[layoutName.toLowerCase()])}>
                 {layoutName}
+              </DropdownOption>
+            ))}
+            dropdownPosition={DropdownPosition.center}
+          />
+        </LayoutButton>
+        <LayoutButton>
+          <DropdownWrapper
+            currentItem={visualization}
+            dropdownButtonContent={
+              <DropdownButtonContent
+                icon={iconDice[visualization]}
+                label={`Visualization: ${ViewTypeNames[visualization]}`}
+              />
+            }
+            dropdownButtonContentOpened={
+              <DropdownButtonContent
+                icon={iconDice[visualization]}
+                label={`Visualization: ${ViewTypeNames[visualization]}`}
+                open
+              />
+            }
+            callback={(): void => removePopper(cyPopperRef)}
+            items={Object.keys(ViewTypeNames).map((viewType) => (
+              <DropdownOption key={viewType} onClick={(): void => onChangeVisualization(Number(viewType))}>
+                {ViewTypeNames[viewType]}
               </DropdownOption>
             ))}
             dropdownPosition={DropdownPosition.center}

@@ -1,4 +1,7 @@
-import { Account } from 'api/tenderly'
+import { Account, Contract, Trade, Transfer } from 'api/tenderly'
+import { ElementDefinition, LayoutOptions } from 'cytoscape'
+import { Network } from 'types'
+import { SingleErc20State } from 'state/erc20'
 
 export enum TypeNodeOnTx {
   NetworkNode = 'networkNode',
@@ -29,3 +32,81 @@ export type Node =
   | NodeType<TypeNodeOnTx.Special, Account>
   | NodeType<TypeNodeOnTx.Token, Account>
   | NodeType<TypeNodeOnTx.Hyper, Account>
+
+export enum ViewType {
+  TRANSFERS,
+  TRADES,
+}
+
+export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose' | 'circle' | 'concentric'
+
+export type CustomLayoutOptions = LayoutOptions & {
+  [key: string]: unknown
+}
+
+export enum LayoutNames {
+  grid = 'Grid',
+  klay = 'KLay',
+  fcose = 'FCoSE',
+  circle = 'Circle',
+  concentric = 'Concentric',
+}
+
+export type BuildNodesFn = (
+  txSettlement: Settlement,
+  networkId: Network,
+  heightSize: number,
+  layout: string,
+) => ElementDefinition[]
+
+export type ContractTrade = {
+  address: string
+  sellTransfers: Transfer[]
+  buyTransfers: Transfer[]
+}
+
+export type TokenNode = {
+  address: string
+  isHyperNode?: boolean
+}
+
+export type TokenEdge = {
+  from: string
+  to: string
+  address: string
+  trade?: Trade
+  fromTransfer?: Transfer
+  toTransfer?: Transfer
+  hyperNode?: 'from' | 'to'
+}
+
+export type NodesAndEdges = {
+  nodes: TokenNode[]
+  edges: TokenEdge[]
+}
+
+export type Dict<T> = Record<string, T>
+
+export type AccountWithReceiver = Account & { owner?: string; uids?: string[] }
+export type Accounts = Dict<AccountWithReceiver> | undefined
+
+export interface Settlement {
+  tokens: Dict<SingleErc20State>
+  accounts: Accounts
+  transfers: Array<Transfer>
+  trades: Array<Trade>
+  // TODO: this is a big mix of types, refactor!!!
+  contractTrades?: Array<ContractTrade>
+  contracts?: Array<Contract>
+}
+
+export type GetTxBatchTradesResult = {
+  txSettlement: Settlement | undefined
+  error: string
+  isLoading: boolean
+}
+
+export interface PopperInstance {
+  scheduleUpdate: () => void
+  destroy: () => void
+}
