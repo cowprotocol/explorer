@@ -1,9 +1,17 @@
-import { Settlement as TxSettlement } from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
 import { Network } from 'types'
 import { ElementDefinition } from 'cytoscape'
 import { networkOptions } from 'components/NetworkSelector'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
-import { TypeEdgeOnTx, TypeNodeOnTx } from 'apps/explorer/components/TransanctionBatchGraph/types'
+import {
+  BuildNodesFn,
+  ContractTrade,
+  NodesAndEdges,
+  Settlement,
+  TokenEdge,
+  TokenNode,
+  TypeEdgeOnTx,
+  TypeNodeOnTx,
+} from 'apps/explorer/components/TransanctionBatchGraph/types'
 import { abbreviateString, FormatAmountPrecision, formattingAmountPrecision } from 'utils'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
 import { SPECIAL_ADDRESSES, TOKEN_SYMBOL_UNKNOWN } from 'apps/explorer/const'
@@ -16,15 +24,8 @@ import { SingleErc20State } from 'state/erc20'
 const PROTOCOL_NAME = APP_NAME
 const INTERNAL_NODE_NAME = `${APP_NAME} Buffer`
 
-export type BuildNodesFn = (
-  txSettlement: TxSettlement,
-  networkId: Network,
-  heightSize: number,
-  layout: string,
-) => ElementDefinition[]
-
 export const buildContractViewNodes: BuildNodesFn = function getNodes(
-  txSettlement: TxSettlement,
+  txSettlement: Settlement,
   networkId: Network,
   heightSize: number,
   layout: string,
@@ -183,12 +184,6 @@ ADDRESSES_TO_IGNORE.add('0x9008d19f58aabd9ed0d60971565aa8510560ab41')
 // ETH Flow contract
 ADDRESSES_TO_IGNORE.add('0x40a50cf069e992aa4536211b23f286ef88752187')
 
-export type ContractTrade = {
-  address: string
-  sellTransfers: Transfer[]
-  buyTransfers: Transfer[]
-}
-
 export function getContractTrades(trades: Trade[], transfers: Transfer[]): ContractTrade[] {
   const userAddresses = new Set<string>()
   const contractAddresses = new Set<string>()
@@ -239,34 +234,13 @@ function isRoutingTrade(contractTrade: ContractTrade): boolean {
   return Object.values(token_balances).every((val) => val === BigInt(0))
 }
 
-// TODO: these types might overlap with existing ones, consider reusing them
-export type Node = {
-  address: string
-  isHyperNode?: boolean
-}
-
-export type Edge = {
-  from: string
-  to: string
-  address: string
-  trade?: Trade
-  fromTransfer?: Transfer
-  toTransfer?: Transfer
-  hyperNode?: 'from' | 'to'
-}
-
-export type NodesAndEdges = {
-  nodes: Node[]
-  edges: Edge[]
-}
-
 export function getNotesAndEdges(
   userTrades: Trade[],
   contractTrades: ContractTrade[],
   networkId: SupportedChainId,
 ): NodesAndEdges {
-  const nodes: Record<string, Node> = {}
-  const edges: Edge[] = []
+  const nodes: Record<string, TokenNode> = {}
+  const edges: TokenEdge[] = []
 
   userTrades.forEach((trade) => {
     const sellToken = getTokenAddress(trade.sellToken, networkId)
@@ -345,7 +319,7 @@ export function getTokenAddress(address: string, networkId: SupportedChainId): s
 }
 
 export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
-  txSettlement: TxSettlement,
+  txSettlement: Settlement,
   networkId: Network,
   heightSize: number,
   layout: string,
@@ -397,7 +371,7 @@ export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(
   )
 }
 
-function getLabel(edge: Edge, contractsMap: Record<string, string>): string {
+function getLabel(edge: TokenEdge, contractsMap: Record<string, string>): string {
   if (edge.trade) {
     return abbreviateString(edge.trade.orderUid, 6, 4)
   } else if (edge.hyperNode) {
@@ -408,7 +382,7 @@ function getLabel(edge: Edge, contractsMap: Record<string, string>): string {
   return 'add transfer info'
 }
 
-function getTooltip(edge: Edge, tokens: Record<string, SingleErc20State>): Record<string, string> {
+function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): Record<string, string> {
   const tooltip = {}
 
   const fromToken = tokens[edge.from]

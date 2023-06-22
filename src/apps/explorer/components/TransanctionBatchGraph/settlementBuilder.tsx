@@ -1,42 +1,13 @@
-import {
-  Account,
-  accountAddressesInvolved,
-  Contract,
-  getAliasFromAddress,
-  traceToTransfersAndTrades,
-  Trade,
-  Transfer,
-} from 'api/tenderly'
+import { accountAddressesInvolved, getAliasFromAddress, traceToTransfersAndTrades, Transfer } from 'api/tenderly'
 import { SingleErc20State } from 'state/erc20'
 import BigNumber from 'bignumber.js'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
-import { ContractTrade } from 'apps/explorer/components/TransanctionBatchGraph/nodesBuilder'
 import { TransactionData } from 'hooks/useTransactionData'
 import { Network } from 'types'
 import { Order } from 'api/operator'
 import { getContractTrades, getTokenAddress } from './nodesBuilder'
 import { abbreviateString } from 'utils'
-
-type Dict<T> = Record<string, T>
-
-type AccountWithReceiver = Account & { owner?: string; uids?: string[] }
-export type Accounts = Dict<AccountWithReceiver> | undefined
-
-export interface Settlement {
-  tokens: Dict<SingleErc20State>
-  accounts: Accounts
-  transfers: Array<Transfer>
-  trades: Array<Trade>
-  // TODO: this is a big mix of types, refactor!!!
-  contractTrades?: Array<ContractTrade>
-  contracts?: Array<Contract>
-}
-
-export type GetTxBatchTradesResult = {
-  txSettlement: Settlement | undefined
-  error: string
-  isLoading: boolean
-}
+import { Accounts, Dict, Settlement } from 'apps/explorer/components/TransanctionBatchGraph/types'
 
 /**
  * Group transfers by token, from and to

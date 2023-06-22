@@ -1,10 +1,5 @@
-import { LayoutOptions, NodeSingular } from 'cytoscape'
-
-export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose' | 'circle' | 'concentric'
-
-export type CustomLayoutOptions = LayoutOptions & {
-  [key: string]: unknown
-}
+import { NodeSingular } from 'cytoscape'
+import { CustomLayoutOptions, CytoscapeLayouts } from './types'
 
 const DEFAULT_VALUES = {
   padding: 10, // padding used on fit
@@ -103,12 +98,4 @@ export const LAYOUTS: Record<CytoscapeLayouts, CustomLayoutOptions> = {
     // [{top: 'n1', bottom: 'n2', gap: 100}, {left: 'n3', right: 'n4', gap: 75}, {...}]
     relativePlacementConstraint: undefined,
   },
-}
-
-export enum LayoutNames {
-  grid = 'Grid',
-  klay = 'KLay',
-  fcose = 'FCoSE',
-  circle = 'Circle',
-  concentric = 'Concentric',
 }

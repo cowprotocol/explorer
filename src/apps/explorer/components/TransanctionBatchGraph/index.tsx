@@ -17,18 +17,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import {
-  buildContractBasedSettlement,
-  BuildSettlementParams,
-  buildTokenBasedSettlement,
-  GetTxBatchTradesResult as TxBatchData,
-} from './settlementBuilder'
+import { buildContractBasedSettlement, BuildSettlementParams, buildTokenBasedSettlement } from './settlementBuilder'
 import { Network } from 'types'
 import { DropdownWrapper, FloatingWrapper, LayoutButton, ResetButton, STYLESHEET } from './styled'
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import { LayoutNames, LAYOUTS } from './layouts'
+import { LAYOUTS } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
 import { removePopper } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { useCytoscape } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
@@ -37,6 +32,7 @@ import { Order } from 'api/operator'
 import { useQuery } from 'hooks/useQuery'
 import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'hooks/usePrevious'
+import { GetTxBatchTradesResult, LayoutNames, ViewType } from 'apps/explorer/components/TransanctionBatchGraph/types'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -78,11 +74,6 @@ function DropdownButtonContent({
   )
 }
 
-enum ViewType {
-  CONTRACT,
-  TOKEN,
-}
-
 const ViewTypeNames: Record<ViewType, string> = {
   [ViewType.CONTRACT]: 'Contract',
   [ViewType.TOKEN]: 'Token',
@@ -118,7 +109,7 @@ function useTxBatchData(
   orders: Order[] | undefined,
   txHash: string,
   visualization: ViewType,
-): TxBatchData {
+): GetTxBatchTradesResult {
   const txData = useTransactionData(networkId, txHash)
 
   const tokens = useMemo(

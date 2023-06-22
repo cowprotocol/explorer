@@ -1,15 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
-import { CustomLayoutOptions, LAYOUTS } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
+import { LAYOUTS } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
 import useWindowSizes from 'hooks/useWindowSizes'
 import { HEIGHT_HEADER_FOOTER } from 'apps/explorer/const'
-import {
-  bindPopper,
-  PopperInstance,
-  removePopper,
-  updateLayout,
-} from 'apps/explorer/components/TransanctionBatchGraph/utils'
-import { GetTxBatchTradesResult as TxBatchData } from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
+import { bindPopper, removePopper, updateLayout } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { Network } from 'types'
 import { getImageUrl } from 'utils'
 import UnknownToken from 'assets/img/question1.svg'
@@ -17,9 +11,14 @@ import {
   buildContractViewNodes,
   buildTokenViewNodes,
 } from 'apps/explorer/components/TransanctionBatchGraph/nodesBuilder'
+import {
+  CustomLayoutOptions,
+  GetTxBatchTradesResult,
+  PopperInstance,
+} from 'apps/explorer/components/TransanctionBatchGraph/types'
 
 export type UseCytoscapeParams = {
-  txBatchData: TxBatchData
+  txBatchData: GetTxBatchTradesResult
   networkId: Network | undefined
 }
 

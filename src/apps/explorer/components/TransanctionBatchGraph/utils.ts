@@ -1,11 +1,7 @@
 import Cytoscape, { EventObject } from 'cytoscape'
 import React from 'react'
 import { LAYOUTS } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
-
-export interface PopperInstance {
-  scheduleUpdate: () => void
-  destroy: () => void
-}
+import { PopperInstance } from 'apps/explorer/components/TransanctionBatchGraph/types'
 
 /**
  * This allows to bind a tooltip (popper.js) around to a cytoscape elements (node, edge)
