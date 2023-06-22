@@ -104,12 +104,6 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'node[label].hover',
-      style: {
-        color: theme.orange,
-      },
-    },
-    {
       selector: 'node',
       style: {
         'border-style': 'solid',
@@ -147,7 +141,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'edge[label].many-bidirectional',
+      selector: 'edge.many-bidirectional',
       style: {
         'curve-style': 'bezier',
         'font-size': '15px',
@@ -155,14 +149,14 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'edge[label].sell,edge[label].amm',
+      selector: 'edge.sell,edge.amm',
       style: {
         'line-color': theme.red1,
         'target-arrow-color': theme.red1,
       },
     },
     {
-      selector: 'edge[label].buy,edge[label].user',
+      selector: 'edge.buy,edge.user',
       style: {
         'line-color': theme.green1,
         'target-arrow-color': theme.green1,
@@ -175,7 +169,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'edge[label].hover',
+      selector: 'edge.hover',
       style: {
         width: 3,
         'line-color': theme.orange1,
