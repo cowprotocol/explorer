@@ -14,7 +14,7 @@ export const LAYOUTS: Record<CytoscapeLayouts, CustomLayoutOptions> = {
   concentric: {
     ...DEFAULT_VALUES,
     name: 'concentric',
-    spacingFactor: 2,
+    spacingFactor: 4,
   },
   grid: {
     ...DEFAULT_VALUES,
