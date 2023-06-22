@@ -7,34 +7,32 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import {
-  faRedo,
-  faDiceOne,
-  faDiceTwo,
-  faDiceThree,
-  faDiceFour,
   faDiceFive,
+  faDiceFour,
+  faDiceOne,
+  faDiceThree,
+  faDiceTwo,
+  faRedo,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import {
   buildContractBasedSettlement,
+  BuildSettlementParams,
+  buildTokenBasedSettlement,
   GetTxBatchTradesResult as TxBatchData,
-} from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
+} from './settlementBuilder'
 import { Network } from 'types'
-import { STYLESHEET, ResetButton, LayoutButton, DropdownWrapper, FloatingWrapper } from './styled'
+import { DropdownWrapper, FloatingWrapper, LayoutButton, ResetButton, STYLESHEET } from './styled'
 import CowLoading from 'components/common/CowLoading'
 import { media } from 'theme/styles/media'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
-import { LAYOUTS, LayoutNames } from './layouts'
+import { LayoutNames, LAYOUTS } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
 import { removePopper } from 'apps/explorer/components/TransanctionBatchGraph/utils'
 import { useCytoscape } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
 import { useTransactionData } from 'hooks/useTransactionData'
-import {
-  BuildSettlementParams,
-  buildTokenBasedSettlement,
-} from 'apps/explorer/components/TransanctionBatchGraph/alternativeView/hooks'
 import { Order } from 'api/operator'
 import { useQuery } from 'hooks/useQuery'
 import { useHistory } from 'react-router-dom'
