@@ -353,7 +353,7 @@ export function getTokenAddress(address: string, networkId: SupportedChainId): s
   if (address.toLowerCase() === NATIVE_TOKEN_ADDRESS_LOWERCASE) {
     return WRAPPED_NATIVE_ADDRESS[networkId].toLowerCase()
   }
-  return address
+  return address.toLowerCase()
 }
 
 export const buildTokenViewNodes: BuildNodesFn = function getNodesAlternative(

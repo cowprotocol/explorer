@@ -1,4 +1,4 @@
-import { accountAddressesInvolved, getAliasFromAddress, traceToTransfersAndTrades, Transfer } from 'api/tenderly'
+import { accountAddressesInvolved, getAliasFromAddress, PublicTrade, Transfer } from 'api/tenderly'
 import { SingleErc20State } from 'state/erc20'
 import BigNumber from 'bignumber.js'
 import { getExplorerUrl } from 'utils/getExplorerUrl'
@@ -33,14 +33,13 @@ function groupTransfers(arr: Transfer[]): Transfer[] {
 }
 
 export function buildTransfersBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
-  const { networkId, orders, txData, tokens } = params
+  const { networkId, orders, txData, tokens, trades, transfers } = params
   const { trace, contracts } = txData
 
   if (!networkId || !orders || !trace || !contracts) {
     return undefined
   }
 
-  const { trades, transfers } = trace ? traceToTransfersAndTrades(trace) : { trades: [], transfers: [] }
   const _accounts: Accounts = Object.fromEntries(accountAddressesInvolved(contracts, trades, transfers))
   const filteredOrders = orders.filter((order) => _accounts[order.owner])
 
@@ -110,17 +109,18 @@ export type BuildSettlementParams = {
   tokens: Dict<SingleErc20State>
   orders?: Order[] | undefined
   txData: TransactionData
+  trades: PublicTrade[]
+  transfers: Transfer[]
 }
 
 export function buildTradesBasedSettlement(params: BuildSettlementParams): Settlement | undefined {
-  const { networkId, txData, tokens, orders } = params
+  const { networkId, txData, tokens, orders, trades, transfers } = params
   const { trace, contracts } = txData
 
   if (!networkId || !trace || !contracts) {
     return undefined
   }
 
-  const { trades, transfers } = traceToTransfersAndTrades(trace)
   const contractTrades = getContractTrades(trades, transfers, orders)
 
   const addressesSet = transfers.reduce((set, transfer) => {

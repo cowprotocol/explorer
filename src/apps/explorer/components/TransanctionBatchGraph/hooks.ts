@@ -10,6 +10,7 @@ import UnknownToken from 'assets/img/question1.svg'
 import {
   buildContractViewNodes,
   buildTokenViewNodes,
+  getTokenAddress,
 } from 'apps/explorer/components/TransanctionBatchGraph/nodesBuilder'
 import {
   CustomLayoutOptions,
@@ -26,6 +27,8 @@ import {
   buildTradesBasedSettlement,
   buildTransfersBasedSettlement,
 } from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
+import { traceToTransfersAndTrades } from 'api/tenderly'
+import { useMultipleErc20 } from 'hooks/useErc20'
 
 export type UseCytoscapeParams = {
   txBatchData: GetTxBatchTradesResult
@@ -222,28 +225,68 @@ export function useTxBatchData(
   txHash: string,
   visualization: ViewType,
 ): GetTxBatchTradesResult {
+  // Fetch data from tenderly
   const txData = useTransactionData(networkId, txHash)
 
-  const tokens = useMemo(
+  // Parse data into trades and transfers
+  const { trades, transfers } = useMemo(() => {
+    if (!txData.trace) {
+      return { trades: [], transfers: [] }
+    }
+
+    return traceToTransfersAndTrades(txData.trace)
+  }, [txData.trace])
+
+  // Extract tokens from orders
+  const orderTokens = useMemo(
     () =>
       orders?.reduce((acc, order) => {
-        if (order.sellToken) acc[order.sellToken.address] = order.sellToken
-        if (order.buyToken) acc[order.buyToken.address] = order.buyToken
+        if (order.sellToken) acc[order.sellToken.address.toLowerCase()] = order.sellToken
+        if (order.buyToken) acc[order.buyToken.address.toLowerCase()] = order.buyToken
 
         return acc
       }, {}) || {},
     [orders],
   )
 
+  // Collect addresses of missing tokens which were not part of any order
+  const missingTokensAddresses = useMemo(() => {
+    const addressesSet = transfers.reduce((set, transfer) => {
+      const tokenAddress = getTokenAddress(transfer.token, networkId || 1)
+
+      if (!orderTokens[tokenAddress]) {
+        set.add(tokenAddress)
+      }
+
+      return set
+    }, new Set<string>())
+
+    return Array.from(addressesSet)
+  }, [networkId, orderTokens, transfers])
+
+  // Load missing tokens data
+  const { isLoading: areTokensLoading, value: missingTokens } = useMultipleErc20({
+    addresses: missingTokensAddresses,
+    networkId,
+  })
+
+  // Build settlement object
   const txSettlement = useMemo(() => {
-    const params: BuildSettlementParams = { networkId, tokens, txData, orders }
+    const params: BuildSettlementParams = {
+      networkId,
+      tokens: { ...orderTokens, ...missingTokens },
+      txData,
+      orders,
+      trades,
+      transfers,
+    }
 
     return visualization === ViewType.TRADES
       ? buildTradesBasedSettlement(params)
       : buildTransfersBasedSettlement(params)
-  }, [networkId, orders, tokens, txData, visualization])
+  }, [networkId, orderTokens, missingTokens, txData, orders, trades, transfers, visualization])
 
-  return { txSettlement, error: txData.error, isLoading: txData.isLoading }
+  return { txSettlement, error: txData.error, isLoading: txData.isLoading || areTokensLoading }
 }
 
 type UseVisualizationReturn = {
