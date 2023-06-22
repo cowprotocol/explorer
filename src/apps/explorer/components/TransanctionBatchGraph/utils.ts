@@ -18,6 +18,10 @@ export function bindPopper(
   const existingTooltips: HTMLCollectionOf<Element> = document.getElementsByClassName(popperClassTarget)
   Array.from(existingTooltips).forEach((ele: { remove: () => void }): void => ele && ele.remove())
 
+  if (!targetData.tooltip) {
+    return
+  }
+
   const target = event.target
   popperRef.current = target.popper({
     content: () => {
