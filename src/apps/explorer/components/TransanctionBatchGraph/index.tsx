@@ -38,6 +38,7 @@ import {
 import { Order } from 'api/operator'
 import { useQuery } from 'hooks/useQuery'
 import { useHistory } from 'react-router-dom'
+import { usePrevious } from 'hooks/usePrevious'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -194,6 +195,17 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
     cyPopperRef,
     tokensStylesheets,
   } = useCytoscape({ networkId, txBatchData })
+
+  const previousVisualization = usePrevious(visualization)
+
+  const visualizationChanged = previousVisualization !== visualization
+
+  useEffect(() => {
+    if (visualizationChanged) {
+      const layoutName = visualization === ViewType.CONTRACT ? 'fcose' : 'circle'
+      setLayout(LAYOUTS[layoutName])
+    }
+  }, [setLayout, visualization, visualizationChanged])
 
   const theme = useTheme()
   const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
