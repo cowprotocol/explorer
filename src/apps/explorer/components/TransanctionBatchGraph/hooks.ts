@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, Stylesheet } from 'cytoscape'
 import { LAYOUTS } from 'apps/explorer/components/TransanctionBatchGraph/layouts'
 import useWindowSizes from 'hooks/useWindowSizes'
@@ -15,7 +15,17 @@ import {
   CustomLayoutOptions,
   GetTxBatchTradesResult,
   PopperInstance,
+  ViewType,
 } from 'apps/explorer/components/TransanctionBatchGraph/types'
+import { useQuery } from 'hooks/useQuery'
+import { useHistory } from 'react-router-dom'
+import { Order } from 'api/operator'
+import { useTransactionData } from 'hooks/useTransactionData'
+import {
+  buildContractBasedSettlement,
+  BuildSettlementParams,
+  buildTokenBasedSettlement,
+} from 'apps/explorer/components/TransanctionBatchGraph/settlementBuilder'
 
 export type UseCytoscapeParams = {
   txBatchData: GetTxBatchTradesResult
@@ -173,4 +183,80 @@ function getStylesheets(
   })
 
   return stylesheets
+}
+
+const DEFAULT_VIEW_TYPE = ViewType.CONTRACT
+const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
+
+const VISUALIZATION_PARAM_NAME = 'vis'
+
+function useQueryViewParams(): { visualization: string } {
+  const query = useQuery()
+  return { visualization: query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME }
+}
+
+function useUpdateVisQuery(): (vis: string) => void {
+  const query = useQuery()
+  const history = useHistory()
+
+  // TODO: this is causing one extra re-render as the query is being updated when history is updated
+  // TODO: make it not depend on query
+  return useCallback(
+    (vis: string) => {
+      query.set(VISUALIZATION_PARAM_NAME, vis)
+      history.replace({ search: query.toString() })
+    },
+    [history, query],
+  )
+}
+
+export function useTxBatchData(
+  networkId: Network | undefined,
+  orders: Order[] | undefined,
+  txHash: string,
+  visualization: ViewType,
+): GetTxBatchTradesResult {
+  const txData = useTransactionData(networkId, txHash)
+
+  const tokens = useMemo(
+    () =>
+      orders?.reduce((acc, order) => {
+        if (order.sellToken) acc[order.sellToken.address] = order.sellToken
+        if (order.buyToken) acc[order.buyToken.address] = order.buyToken
+
+        return acc
+      }, {}) || {},
+    [orders],
+  )
+
+  const txSettlement = useMemo(() => {
+    const params: BuildSettlementParams = { networkId, tokens, txData, orders }
+
+    return visualization === ViewType.TOKEN ? buildTokenBasedSettlement(params) : buildContractBasedSettlement(params)
+  }, [networkId, orders, tokens, txData, visualization])
+
+  return { txSettlement, error: txData.error, isLoading: txData.isLoading }
+}
+
+type UseVisualizationReturn = {
+  visualization: ViewType
+  onChangeVisualization: (vis: ViewType) => void
+}
+
+export function useVisualization(): UseVisualizationReturn {
+  const { visualization } = useQueryViewParams()
+
+  const updateVisQuery = useUpdateVisQuery()
+
+  const [visualizationViewSelected, setVisualizationViewSelected] = useState<ViewType>(
+    ViewType[visualization] || DEFAULT_VIEW_TYPE,
+  )
+
+  const onChangeVisualization = useCallback((viewName: ViewType) => setVisualizationViewSelected(viewName), [])
+
+  useEffect(() => {
+    updateVisQuery(ViewType[visualizationViewSelected].toLowerCase())
+  }, [updateVisQuery, visualizationViewSelected])
+
+  return { visualization: visualizationViewSelected, onChangeVisualization }
 }

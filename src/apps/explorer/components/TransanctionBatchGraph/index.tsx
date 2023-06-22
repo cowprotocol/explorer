@@ -3,7 +3,7 @@ import popper from 'cytoscape-popper'
 import noOverlap from 'cytoscape-no-overlap'
 import fcose from 'cytoscape-fcose'
 import klay from 'cytoscape-klay'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs'
 import styled, { useTheme } from 'styled-components'
 import {
@@ -16,8 +16,6 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-
-import { buildContractBasedSettlement, BuildSettlementParams, buildTokenBasedSettlement } from './settlementBuilder'
 import { Network } from 'types'
 import { DropdownWrapper, FloatingWrapper, LayoutButton, ResetButton, STYLESHEET } from './styled'
 import CowLoading from 'components/common/CowLoading'
@@ -26,13 +24,10 @@ import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { LAYOUTS } from './layouts'
 import { DropdownOption, DropdownPosition } from 'apps/explorer/components/common/Dropdown'
 import { removePopper } from 'apps/explorer/components/TransanctionBatchGraph/utils'
-import { useCytoscape } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
-import { useTransactionData } from 'hooks/useTransactionData'
+import { useCytoscape, useTxBatchData, useVisualization } from 'apps/explorer/components/TransanctionBatchGraph/hooks'
 import { Order } from 'api/operator'
-import { useQuery } from 'hooks/useQuery'
-import { useHistory } from 'react-router-dom'
 import { usePrevious } from 'hooks/usePrevious'
-import { GetTxBatchTradesResult, LayoutNames, ViewType } from 'apps/explorer/components/TransanctionBatchGraph/types'
+import { LayoutNames, ViewType } from 'apps/explorer/components/TransanctionBatchGraph/types'
 
 Cytoscape.use(popper)
 Cytoscape.use(noOverlap)
@@ -49,12 +44,6 @@ const WrapperCytoscape = styled(CytoscapeComponent)`
   }
 `
 const iconDice = [faDiceOne, faDiceTwo, faDiceThree, faDiceFour, faDiceFive]
-
-interface GraphBatchTxParams {
-  orders: Order[] | undefined
-  txHash: string
-  networkId: Network | undefined
-}
 
 function DropdownButtonContent({
   label,
@@ -79,80 +68,10 @@ const ViewTypeNames: Record<ViewType, string> = {
   [ViewType.TOKEN]: 'Token',
 }
 
-const DEFAULT_VIEW_TYPE = ViewType.CONTRACT
-const DEFAULT_VIEW_NAME = ViewType[DEFAULT_VIEW_TYPE]
-
-const VISUALIZATION_PARAM_NAME = 'vis'
-
-function useQueryViewParams(): { visualization: string } {
-  const query = useQuery()
-  return { visualization: query.get(VISUALIZATION_PARAM_NAME)?.toUpperCase() || DEFAULT_VIEW_NAME }
-}
-
-function useUpdateVisQuery(): (vis: string) => void {
-  const query = useQuery()
-  const history = useHistory()
-
-  // TODO: this is causing one extra re-render as the query is being updated when history is updated
-  // TODO: make it not depend on query
-  return useCallback(
-    (vis: string) => {
-      query.set(VISUALIZATION_PARAM_NAME, vis)
-      history.replace({ search: query.toString() })
-    },
-    [history, query],
-  )
-}
-
-function useTxBatchData(
-  networkId: Network | undefined,
-  orders: Order[] | undefined,
-  txHash: string,
-  visualization: ViewType,
-): GetTxBatchTradesResult {
-  const txData = useTransactionData(networkId, txHash)
-
-  const tokens = useMemo(
-    () =>
-      orders?.reduce((acc, order) => {
-        if (order.sellToken) acc[order.sellToken.address] = order.sellToken
-        if (order.buyToken) acc[order.buyToken.address] = order.buyToken
-
-        return acc
-      }, {}) || {},
-    [orders],
-  )
-
-  const txSettlement = useMemo(() => {
-    const params: BuildSettlementParams = { networkId, tokens, txData, orders }
-
-    return visualization === ViewType.TOKEN ? buildTokenBasedSettlement(params) : buildContractBasedSettlement(params)
-  }, [networkId, orders, tokens, txData, visualization])
-
-  return { txSettlement, error: txData.error, isLoading: txData.isLoading }
-}
-
-type UseVisualizationReturn = {
-  visualization: ViewType
-  onChangeVisualization: (vis: ViewType) => void
-}
-
-function useVisualization(): UseVisualizationReturn {
-  const { visualization } = useQueryViewParams()
-
-  const updateVisQuery = useUpdateVisQuery()
-
-  const [visualizationViewSelected, setVisualizationViewSelected] = useState<ViewType>(
-    ViewType[visualization] || DEFAULT_VIEW_TYPE,
-  )
-
-  const onChangeVisualization = useCallback((viewName: ViewType) => setVisualizationViewSelected(viewName), [])
-
-  useEffect(() => {
-    updateVisQuery(ViewType[visualizationViewSelected].toLowerCase())
-  }, [updateVisQuery, visualizationViewSelected])
-
-  return { visualization: visualizationViewSelected, onChangeVisualization }
+interface GraphBatchTxParams {
+  orders: Order[] | undefined
+  txHash: string
+  networkId: Network | undefined
 }
 
 export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
