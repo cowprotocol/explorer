@@ -103,6 +103,8 @@ function useUpdateVisQuery(): (vis: string) => void {
   const query = useQuery()
   const history = useHistory()
 
+  // TODO: this is causing one extra re-render as the query is being updated when history is updated
+  // TODO: make it not depend on query
   return useCallback(
     (vis: string) => {
       query.set(VISUALIZATION_PARAM_NAME, vis)
@@ -131,11 +133,8 @@ function useTxBatchData(
     [orders],
   )
 
-  // const tokenBasedVisualizationData = useTokenBasedVisualizationData(networkId, orders, txData)
-  // const contractBasedVisualizationData = useContractBasedVisualizationData(networkId, orders, txData)
-
   const txSettlement = useMemo(() => {
-    console.log(`bug--useBatchGraphParams`, visualization)
+    console.log(`bug--useBatchGraphParams`, visualization, typeof visualization)
     const params: BuildSettlementParams = { networkId, tokens, txData, orders }
     return visualization === ViewType.TOKEN ? buildTokenBasedSettlement(params) : buildContractBasedSettlement(params)
   }, [networkId, orders, tokens, txData, visualization])
@@ -160,7 +159,11 @@ function useVisualization(): UseVisualizationReturn {
   console.log(`bug--useVisualization`, visualization, ViewType[visualization], visualizationViewSelected)
 
   const onChangeVisualization = useCallback((viewName: ViewType) => {
-    setVisualizationViewSelected(viewName)
+    // IMPORTANT!!!
+    // viewName comes from the dropdown, so it's a string
+    // even though it matches the enum type, which should be a number
+    // so we need to convert it to a number
+    setVisualizationViewSelected(Number(viewName))
   }, [])
 
   useEffect(() => {
