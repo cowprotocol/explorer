@@ -99,12 +99,19 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): JSX.Element {
 
   const visualizationChanged = previousVisualization !== visualization
 
+  const nodesCount = elements.filter((el) => el.data.type === 'amm' || el.data.type === 'user').length
+
   useEffect(() => {
     if (visualizationChanged) {
-      const layoutName = visualization === ViewType.TRANSFERS ? 'fcose' : 'circle'
-      setLayout(LAYOUTS[layoutName])
+      if (visualization === ViewType.TRANSFERS) {
+        setLayout(LAYOUTS['fcose'])
+      } else if (nodesCount <= 2) {
+        setLayout(LAYOUTS['grid'])
+      } else {
+        setLayout(LAYOUTS['circle'])
+      }
     }
-  }, [setLayout, visualization, visualizationChanged])
+  }, [nodesCount, setLayout, visualization, visualizationChanged])
 
   const theme = useTheme()
   const currentLayoutIndex = Object.keys(LayoutNames).findIndex((nameLayout) => nameLayout === layout.name)
