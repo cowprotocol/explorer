@@ -1,4 +1,5 @@
 import { Network } from 'types'
+import { Order } from 'api/operator'
 import { ElementDefinition } from 'cytoscape'
 import { networkOptions } from 'components/NetworkSelector'
 import ElementsBuilder, { buildGridLayout } from 'apps/explorer/components/TransanctionBatchGraph/elementsBuilder'
@@ -184,13 +185,23 @@ ADDRESSES_TO_IGNORE.add('0x9008d19f58aabd9ed0d60971565aa8510560ab41')
 // ETH Flow contract
 ADDRESSES_TO_IGNORE.add('0x40a50cf069e992aa4536211b23f286ef88752187')
 
-export function getContractTrades(trades: Trade[], transfers: Transfer[]): ContractTrade[] {
+export function getContractTrades(
+  trades: Trade[],
+  transfers: Transfer[],
+  orders: Order[] | undefined,
+): ContractTrade[] {
   const userAddresses = new Set<string>()
   const contractAddresses = new Set<string>()
 
   // Build a list of addresses that are involved in trades
-  // Note: at this point we don't have the receivers - if different from owner
-  trades.forEach((trade) => userAddresses.add(trade.owner))
+  if (orders) {
+    orders.forEach((order) => {
+      userAddresses.add(order.owner)
+      userAddresses.add(order.receiver)
+    })
+  } else {
+    trades.forEach((trade) => userAddresses.add(trade.owner))
+  }
 
   // Build list of contract addresses based on trades, which are not traders
   // nor part of the ignored set (CoW Protocol itself, special contracts etc)
@@ -437,7 +448,7 @@ function getTooltip(edge: TokenEdge, tokens: Record<string, SingleErc20State>): 
   return tooltip
 }
 
-function getNodeTooltip(node: Node, edges: Edge[], tokens: Record<string, SingleErc20State>): Record<string, string> {
+function getNodeTooltip(node: TokenNode, edges: TokenEdge[], tokens: Record<string, SingleErc20State>): Record<string, string> {
   const tooltip = {}
 
   let token: SingleErc20State
