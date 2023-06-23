@@ -316,7 +316,7 @@ export function getNotesAndEdges(
           fromTransfer: sellTransfer,
           toTransfer: buyTransfer,
         })
-      } else if (trade.sellTransfers.length != 1 || trade.buyTransfers.length != 1) {
+      } else if (trade.sellTransfers.length > 1 || trade.buyTransfers.length > 1) {
         // if  there are more than one sellToken or buyToken, the contract becomes a node
         nodes[trade.address] = { address: trade.address, isHyperNode: true }
 
