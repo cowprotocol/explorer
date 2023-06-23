@@ -316,9 +316,12 @@ export function getNotesAndEdges(
           fromTransfer: sellTransfer,
           toTransfer: buyTransfer,
         })
-      } else if (trade.sellTransfers.length > 1 || trade.buyTransfers.length > 1) {
-        // if  there are more than one sellToken or buyToken, the contract becomes a node
-        nodes[trade.address] = { address: trade.address, isHyperNode: true }
+      } else {
+        // if there is more than one sellToken or buyToken, the contract becomes a node
+        const nodeExists = nodes[trade.address]
+        if (!nodeExists) {
+          nodes[trade.address] = { address: trade.address, isHyperNode: true }
+        }
 
         // one edge for each sellToken
         trade.sellTransfers.forEach((transfer) =>
@@ -326,8 +329,8 @@ export function getNotesAndEdges(
             from: getTokenAddress(transfer.token, networkId),
             to: trade.address,
             address: trade.address,
-            hyperNode: 'to',
             fromTransfer: transfer,
+            ...(nodeExists ? undefined : { hyperNode: 'to' }),
           }),
         )
         // one edge for each buyToken
@@ -336,8 +339,8 @@ export function getNotesAndEdges(
             from: trade.address,
             to: getTokenAddress(transfer.token, networkId),
             address: trade.address,
-            hyperNode: 'from',
             toTransfer: transfer,
+            ...(nodeExists ? undefined : { hyperNode: 'from' }),
           }),
         )
       }
