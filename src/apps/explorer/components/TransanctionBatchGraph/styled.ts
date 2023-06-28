@@ -1,10 +1,12 @@
 import { Stylesheet } from 'cytoscape'
-import styled, { DefaultTheme, css } from 'styled-components'
+import styled, { css, DefaultTheme } from 'styled-components'
 
 import TraderIcon from 'assets/img/Trader.svg'
 import SpecialIcon from 'assets/img/Trader-variant.svg'
 import CowProtocolIcon from 'assets/img/CoW-protocol.svg'
 import DexIcon from 'assets/img/Dex.svg'
+import TokenIcon from 'assets/img/eth-network.svg'
+
 import { MEDIA } from 'const'
 import { Dropdown } from 'apps/explorer/components/common/Dropdown'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
@@ -102,12 +104,6 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'node[label].hover',
-      style: {
-        color: theme.orange,
-      },
-    },
-    {
       selector: 'node',
       style: {
         'border-style': 'solid',
@@ -145,7 +141,7 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'edge[label].many-bidirectional',
+      selector: 'edge.many-bidirectional',
       style: {
         'curve-style': 'bezier',
         'font-size': '15px',
@@ -153,21 +149,27 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       },
     },
     {
-      selector: 'edge[label].sell',
+      selector: 'edge.sell,edge.amm',
       style: {
         'line-color': theme.red1,
         'target-arrow-color': theme.red1,
       },
     },
     {
-      selector: 'edge[label].buy',
+      selector: 'edge.buy,edge.user',
       style: {
         'line-color': theme.green1,
         'target-arrow-color': theme.green1,
       },
     },
     {
-      selector: 'edge[label].hover',
+      selector: 'edge.amm,edge.user',
+      style: {
+        'curve-style': 'bezier',
+      },
+    },
+    {
+      selector: 'edge.hover',
       style: {
         width: 3,
         'line-color': theme.orange1,
@@ -196,6 +198,26 @@ export function STYLESHEET(theme: DefaultTheme): Stylesheet[] {
       selector: 'node[type="dex"]',
       style: {
         'background-image': `url(${DexIcon})`,
+        'text-max-width': '5rem',
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
+      selector: 'node[type="token"]',
+      style: {
+        'background-image': `url(${TokenIcon})`,
+        'text-max-width': '5rem',
+        'text-valign': 'bottom',
+        'text-margin-y': 8,
+      },
+    },
+    {
+      selector: 'node[type="hyper"]',
+      style: {
+        'background-color': theme.red1,
+        width: '10',
+        height: '10',
         'text-max-width': '5rem',
         'text-valign': 'bottom',
         'text-margin-y': 8,
