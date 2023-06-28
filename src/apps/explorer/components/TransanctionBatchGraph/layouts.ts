@@ -1,19 +1,23 @@
-import { LayoutOptions, NodeSingular } from 'cytoscape'
+import { NodeSingular } from 'cytoscape'
+import { CustomLayoutOptions, CytoscapeLayouts } from './types'
 
-export type CytoscapeLayouts = 'grid' | 'klay' | 'fcose'
-
-export type CustomLayoutOptions = LayoutOptions & {
-  [key: string]: unknown
-}
-
-const defaultValues = {
+const DEFAULT_VALUES = {
   padding: 10, // padding used on fit
   animate: true,
   fit: true, // whether to fit the viewport to the graph
 }
-export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
+export const LAYOUTS: Record<CytoscapeLayouts, CustomLayoutOptions> = {
+  circle: {
+    ...DEFAULT_VALUES,
+    name: 'circle',
+  },
+  concentric: {
+    ...DEFAULT_VALUES,
+    name: 'concentric',
+    spacingFactor: 4,
+  },
   grid: {
-    ...defaultValues,
+    ...DEFAULT_VALUES,
     name: 'grid',
     position: (node: NodeSingular): { row: number; col: number } => ({ row: node.data('row'), col: node.data('col') }),
     avoidOverlap: true, // prevents node overlap, may overflow boundingBox if not enough space
@@ -22,7 +26,7 @@ export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
     condense: false,
   },
   klay: {
-    ...defaultValues,
+    ...DEFAULT_VALUES,
     name: 'klay',
     klay: {
       addUnnecessaryBendpoints: true, // Adds bend points even if an edge does not change direction.
@@ -35,7 +39,7 @@ export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
     },
   },
   fcose: {
-    ...defaultValues,
+    ...DEFAULT_VALUES,
     name: 'fcose',
     quality: 'proof',
     randomize: true,
@@ -94,10 +98,4 @@ export const layouts: Record<CytoscapeLayouts, CustomLayoutOptions> = {
     // [{top: 'n1', bottom: 'n2', gap: 100}, {left: 'n3', right: 'n4', gap: 75}, {...}]
     relativePlacementConstraint: undefined,
   },
-}
-
-export enum LayoutNames {
-  grid = 'Grid',
-  klay = 'KLay',
-  fcose = 'FCoSE',
 }

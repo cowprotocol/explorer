@@ -26,15 +26,17 @@ export default class ElementsBuilder {
     this._countEdgeDirection.set(idDirection, count + 1)
   }
 
-  _createNodeElement = (node: Node, parent?: string, hideLabel?: boolean): ElementDefinition => {
+  _createNodeElement = (node: Node, parent?: string, hideLabel?: boolean, tooltip?: InfoTooltip): ElementDefinition => {
     this._increaseCountNodeType(node.type)
     return {
       group: 'nodes',
       data: {
+        address: node.id,
         id: `${node.type}:${node.id}`,
         label: !hideLabel ? node.entity.alias : '',
         type: node.type,
         parent: parent ? `${TypeNodeOnTx.NetworkNode}:${parent}` : undefined,
+        tooltip,
         href: node.entity.href,
       },
     }
@@ -45,9 +47,9 @@ export default class ElementsBuilder {
     return this
   }
 
-  node(node: Node, parent?: string): this {
+  node(node: Node, parent?: string, tooltip?: InfoTooltip): this {
     const GROUP_NODE_NAME = 'group'
-    this._nodes.push(this._createNodeElement(node, parent, node.id.includes(GROUP_NODE_NAME)))
+    this._nodes.push(this._createNodeElement(node, parent, node.id.includes(GROUP_NODE_NAME), tooltip))
     return this
   }
 
@@ -137,6 +139,10 @@ export function buildGridLayout(
 ): { center: ElementDefinition; nodes: ElementDefinition[] } {
   if (!center) {
     throw new Error('Center node is required')
+  }
+
+  if (countTypes.get(TypeNodeOnTx.Token)) {
+    return { center, nodes }
   }
 
   const maxRows = Math.max(...countTypes.values())

@@ -50,7 +50,7 @@ export const GlobalStyle = createGlobalStyle`
   .target-popper tr > td:first-child {
     font-weight: bold;
     text-transform: uppercase;
-    width: 6rem;
+    width: 6.5rem;
   }
 `
 
