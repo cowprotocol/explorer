@@ -2,23 +2,23 @@ import BigNumber from 'bignumber.js'
 import { parseBytes32String } from '@ethersproject/strings'
 import { arrayify } from 'ethers/lib/utils'
 
-import { TokenErc20, formatSmart, safeTokenName } from '@gnosis.pm/dex-js'
+import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 
 import {
-  ONE_HUNDRED_BIG_NUMBER,
   BATCH_TIME_IN_MS,
   DEFAULT_DECIMALS,
-  ONE_BIG_NUMBER,
-  TEN_BIG_NUMBER,
   MINIMUM_ATOM_VALUE,
+  ONE_BIG_NUMBER,
+  ONE_HUNDRED_BIG_NUMBER,
+  TEN_BIG_NUMBER,
 } from 'const'
 import {
-  MIDDLE_PRECISION_DECIMALS,
   HIGH_PRECISION_DECIMALS,
   HIGH_PRECISION_SMALL_LIMIT,
+  MIDDLE_PRECISION_DECIMALS,
   NO_ADJUSTMENT_NEEDED_PRECISION,
 } from 'apps/explorer/const'
-import { FormatAmountPrecision, batchIdToDate } from 'utils'
+import { batchIdToDate, FormatAmountPrecision } from 'utils'
 
 export {
   formatSmart,
