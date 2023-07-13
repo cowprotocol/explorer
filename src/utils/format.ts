@@ -156,7 +156,15 @@ export function formatPercentage(percentage: BigNumber): string {
   if (displayPercentage.gt('99.99') && displayPercentage.lt('100')) {
     return '>99.99%'
   }
-  return displayPercentage.decimalPlaces(2, BigNumber.ROUND_FLOOR).toString(10) + '%'
+
+  return (
+    formatSmart({
+      amount: displayPercentage.decimalPlaces(2).toString(),
+      precision: 0,
+      thousandSeparator: false,
+      decimals: 2,
+    }) + '%'
+  )
 }
 
 /**
