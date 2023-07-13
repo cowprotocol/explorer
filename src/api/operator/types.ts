@@ -18,7 +18,7 @@ export type RawOrder = EnrichedOrder
  */
 export type Order = Pick<
   RawOrder,
-  'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature' | 'class'
+  'owner' | 'uid' | 'appData' | 'kind' | 'partiallyFillable' | 'signature' | 'class' | 'fullAppData'
 > & {
   receiver: string
   txHash?: string
