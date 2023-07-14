@@ -159,7 +159,7 @@ export function formatPercentage(percentage: BigNumber): string {
 
   return (
     formatSmart({
-      amount: displayPercentage.decimalPlaces(2).toString(),
+      amount: displayPercentage.decimalPlaces(2, BigNumber.ROUND_DOWN).toString(),
       precision: 0,
       thousandSeparator: false,
       decimals: 2,
