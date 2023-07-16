@@ -25,6 +25,7 @@ async function _getDecodedAppData(
       return { decodedAppData, isError: false }
     } catch (error) {
       console.error('Error parsing fullAppData from the API', { fullAppData }, error)
+      return { isError: true }
     }
   }
 
