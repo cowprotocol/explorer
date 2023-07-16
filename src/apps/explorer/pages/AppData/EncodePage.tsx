@@ -137,7 +137,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
   const onSubmit = useCallback(async ({ formData }: FormProps): Promise<void> => {
     setIsLoading(true)
     try {
-      const hashInfo = await metadataApiSDK.calculateAppDataHash(handleFormatData(formData))
+      const hashInfo = await metadataApiSDK.appDataToCid(handleFormatData(formData))
       setIpfsHashInfo(hashInfo)
     } catch (e) {
       setError(e.message)
@@ -159,7 +159,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
       if (!ipfsHashInfo) return
       setIsLoading(true)
       try {
-        await metadataApiSDK.uploadMetadataDocToIpfs(handleFormatData(appDataForm), formData)
+        await metadataApiSDK.uploadMetadataDocToIpfsLegacy(handleFormatData(appDataForm), formData)
         setIsDocUploaded(true)
       } catch (e) {
         if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
@@ -240,8 +240,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
                 </p>
                 <RowWithCopyButton
                   className="appData-hash"
-                  textToCopy={ipfsHashInfo.appDataHash}
-                  contentsToDisplay={ipfsHashInfo.appDataHash}
+                  textToCopy={ipfsHashInfo.appDataHex}
+                  contentsToDisplay={ipfsHashInfo.appDataHex}
                 />
                 <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
               </>
@@ -313,10 +313,10 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
           <>
             <RowWithCopyButton
               className="appData-hash"
-              textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`}
+              textToCopy={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cid}`}
               contentsToDisplay={
-                <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cidV0}`} target="_blank" rel="noopener noreferrer">
-                  {ipfsHashInfo?.cidV0}
+                <a href={`${DEFAULT_IPFS_READ_URI}/${ipfsHashInfo?.cid}`} target="_blank" rel="noopener noreferrer">
+                  {ipfsHashInfo?.cid}
                 </a>
               }
             />

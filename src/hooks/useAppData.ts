@@ -30,8 +30,8 @@ export const useAppData = (
   return { isLoading, appDataDoc }
 }
 
-export const getDecodedAppData = (appDataHash: string): Promise<void | AnyAppDataDocVersion> => {
-  return metadataApiSDK.decodeAppData(appDataHash, DEFAULT_IPFS_READ_URI)
+export const getDecodedAppData = (appDataHex: string): Promise<void | AnyAppDataDocVersion> => {
+  return metadataApiSDK.fetchDocFromAppDataHex(appDataHex, DEFAULT_IPFS_READ_URI)
 }
 
 export const getCidHashFromAppData = (appDataHash: string): Promise<string | void> => {

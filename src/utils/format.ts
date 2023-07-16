@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { parseBytes32String } from '@ethersproject/strings'
-import { arrayify } from 'ethers/lib/utils'
+import { toBeArray } from 'ethers'
 
 import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 
@@ -330,7 +330,7 @@ export function formattingAmountPrecision(
 const BYTES32_REGEX = /^0x[a-fA-F0-9]{64}$/
 
 export function parseStringOrBytes32(value: string | undefined, defaultValue: string): string {
-  return value && BYTES32_REGEX.test(value) && arrayify(value)[31] === 0
+  return value && BYTES32_REGEX.test(value) && toBeArray(value)[31] === 0
     ? parseBytes32String(value)
     : value && value.length > 0
     ? value
