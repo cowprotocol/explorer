@@ -10,11 +10,34 @@ import useSafeState from 'hooks/useSafeState'
 
 type Props = {
   appData: string
+  fullAppData?: string
   showExpanded?: boolean
 }
 
+async function _getDecodedAppData(
+  appData: string,
+  fullAppData?: string,
+): Promise<{ decodedAppData?: void | AnyAppDataDocVersion; isError: boolean }> {
+  // If the full appData is available, we try to parse it as JSON
+  if (fullAppData) {
+    try {
+      const decodedAppData = JSON.parse(fullAppData)
+      return { decodedAppData, isError: false }
+    } catch (error) {
+      console.error('Error parsing fullAppData from the API', { fullAppData }, error)
+    }
+  }
+
+  if (IPFS_INVALID_APP_IDS.includes(appData.toString())) {
+    return { isError: true }
+  }
+
+  const decodedAppData = await getDecodedAppData(appData.toString())
+  return { isError: false, decodedAppData }
+}
+
 const DecodeAppData = (props: Props): JSX.Element => {
-  const { appData, showExpanded = false } = props
+  const { appData, showExpanded = false, fullAppData } = props
   const [appDataLoading, setAppDataLoading] = useSafeState(false)
   const [appDataError, setAppDataError] = useSafeState(false)
   const [decodedAppData, setDecodedAppData] = useSafeState<AnyAppDataDocVersion | void | undefined>(undefined)
@@ -41,14 +64,15 @@ const DecodeAppData = (props: Props): JSX.Element => {
         setShowDecodedAppData(!showDecodedAppData)
       }
       if (decodedAppData) return
-      if (IPFS_INVALID_APP_IDS.includes(appData.toString())) {
-        setAppDataError(true)
-        return
-      }
+
       setAppDataLoading(true)
       try {
-        const decodedAppData = await getDecodedAppData(appData.toString())
-        setDecodedAppData(decodedAppData)
+        const { isError, decodedAppData } = await _getDecodedAppData(appData, fullAppData)
+        if (isError) {
+          setAppDataError(true)
+        } else {
+          setDecodedAppData(decodedAppData)
+        }
       } catch (e) {
         setDecodedAppData(undefined)
         setAppDataError(true)
@@ -58,6 +82,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
     },
     [
       appData,
+      fullAppData,
       decodedAppData,
       setAppDataError,
       setAppDataLoading,

@@ -194,6 +194,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     buyToken,
     sellToken,
     appData,
+    fullAppData,
   } = order
 
   if (!buyToken || !sellToken) {
@@ -385,7 +386,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.appData} /> AppData
             </td>
             <td>
-              <DecodeAppData appData={appData} />
+              <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
             </td>
           </tr>
         </>
