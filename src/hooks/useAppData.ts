@@ -6,6 +6,7 @@ import { DEFAULT_IPFS_READ_URI } from 'const'
 
 export const useAppData = (
   appDataHash: string,
+  isLegacyAppDataHex: boolean,
 ): { isLoading: boolean; appDataDoc: AnyAppDataDocVersion | void | undefined } => {
   const network = useNetworkId() || undefined
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -14,7 +15,7 @@ export const useAppData = (
     async function getAppDataDoc(): Promise<void> {
       setLoading(true)
       try {
-        const decodedAppData = await getDecodedAppData(appDataHash)
+        const decodedAppData = await fetchDocFromAppDataHex(appDataHash, isLegacyAppDataHex)
         setAppDataDoc(decodedAppData)
       } catch (e) {
         const msg = `Failed to fetch appData document`
@@ -25,15 +26,20 @@ export const useAppData = (
       }
     }
     getAppDataDoc()
-  }, [appDataHash, network])
+  }, [appDataHash, network, isLegacyAppDataHex])
 
   return { isLoading, appDataDoc }
 }
 
-export const getDecodedAppData = (appDataHex: string): Promise<void | AnyAppDataDocVersion> => {
-  return metadataApiSDK.fetchDocFromAppDataHex(appDataHex, DEFAULT_IPFS_READ_URI)
+export const fetchDocFromAppDataHex = (
+  appDataHex: string,
+  isLegacyAppDataHex: boolean,
+): Promise<void | AnyAppDataDocVersion> => {
+  const method = isLegacyAppDataHex ? 'fetchDocFromAppDataHexLegacy' : 'fetchDocFromAppDataHex'
+  return metadataApiSDK[method](appDataHex, DEFAULT_IPFS_READ_URI)
 }
 
-export const getCidHashFromAppData = (appDataHash: string): Promise<string | void> => {
-  return metadataApiSDK.appDataHexToCid(appDataHash)
+export const appDataHexToCid = (appDataHash: string, isLegacyAppDataHex: boolean): Promise<string | void> => {
+  const method = isLegacyAppDataHex ? 'appDataHexToCidLegacy' : 'appDataHexToCid'
+  return metadataApiSDK[method](appDataHash)
 }

@@ -5,7 +5,7 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { Notification } from 'components/Notification'
 import Spinner from 'components/common/Spinner'
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
-import { getCidHashFromAppData, getDecodedAppData } from 'hooks/useAppData'
+import { appDataHexToCid, fetchDocFromAppDataHex } from 'hooks/useAppData'
 import useSafeState from 'hooks/useSafeState'
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
 
 async function _getDecodedAppData(
   appData: string,
+  isLegacyAppDataHex: boolean,
   fullAppData?: string,
 ): Promise<{ decodedAppData?: void | AnyAppDataDocVersion; isError: boolean }> {
   // If the full appData is available, we try to parse it as JSON
@@ -32,7 +33,7 @@ async function _getDecodedAppData(
     return { isError: true }
   }
 
-  const decodedAppData = await getDecodedAppData(appData.toString())
+  const decodedAppData = await fetchDocFromAppDataHex(appData.toString(), isLegacyAppDataHex)
   return { isError: false, decodedAppData }
 }
 
@@ -45,18 +46,21 @@ const DecodeAppData = (props: Props): JSX.Element => {
 
   const [showDecodedAppData, setShowDecodedAppData] = useSafeState<boolean>(showExpanded)
 
+  // Old AppData use a different way to derive the CID (we know is old if fullAppData is not available)
+  const isLegacyAppDataHex = fullAppData === undefined
+
   useEffect(() => {
     const fetchIPFS = async (): Promise<void> => {
       try {
-        const decodedAppDataHex = await getCidHashFromAppData(appData.toString())
-        setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${decodedAppDataHex}`)
+        const cid = await appDataHexToCid(appData.toString(), isLegacyAppDataHex)
+        setIpfsUri(`${DEFAULT_IPFS_READ_URI}/${cid}`)
       } catch {
         setAppDataError(true)
       }
     }
 
     fetchIPFS()
-  }, [appData, setAppDataError, setIpfsUri])
+  }, [appData, setAppDataError, setIpfsUri, isLegacyAppDataHex])
 
   const handleDecodedAppData = useCallback(
     async (isOpen?: boolean): Promise<void> => {
@@ -67,7 +71,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
 
       setAppDataLoading(true)
       try {
-        const { isError, decodedAppData } = await _getDecodedAppData(appData, fullAppData)
+        const { isError, decodedAppData } = await _getDecodedAppData(appData, isLegacyAppDataHex, fullAppData)
         if (isError) {
           setAppDataError(true)
         } else {
@@ -89,6 +93,7 @@ const DecodeAppData = (props: Props): JSX.Element => {
       setDecodedAppData,
       setShowDecodedAppData,
       showDecodedAppData,
+      isLegacyAppDataHex,
     ],
   )
 
