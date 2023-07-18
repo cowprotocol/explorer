@@ -131,9 +131,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
         resetFormFields('appData')
         setError(undefined)
       }
-      // if (fullAppData !== JSON.stringify(INITIAL_FORM_VALUES)) {
-      //   setDisabledAppData(false)
-      // }
     },
     [ipfsHashInfo],
   )
