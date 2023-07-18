@@ -288,8 +288,24 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                     IPFS CID
                   </a>{' '}
                 </p>
+                )
                 <p>
-                  Use this in your orders <strong>appData</strong> field of CoW Orders.
+                  This CID is derived from the <strong>AppData hex</strong> (
+                  <a
+                    href="https://github.com/cowprotocol/app-data/blob/main/src/api/appDataHexToCid.ts#L30"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    see here how
+                  </a>
+                  ). You can see how this <strong>AppData hex</strong> is encoded, using the{' '}
+                  <a href={'https://cid.ipfs.tech/#' + ipfsHashInfo.cid} target="_blank" rel="noreferrer">
+                    CID Inspector
+                  </a>{' '}
+                </p>
+                <p>
+                  What this means is that you can derived the IPFS CID from on-chain CoW Orders, and download the JSON
+                  from IPFS network to see the meta-information of that order
                 </p>
                 <RowWithCopyButton
                   className="appData-hash"
