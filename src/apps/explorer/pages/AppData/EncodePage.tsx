@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
-import { IpfsHashInfo } from '@cowprotocol/app-data'
+import { IpfsHashInfo, stringifyDeterministic } from '@cowprotocol/app-data'
 
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
@@ -12,7 +12,6 @@ import {
   getSchema,
   transformErrors,
   handleErrors,
-  handleFormatData,
   uiSchema,
   CustomField,
   FormProps,
@@ -25,11 +24,16 @@ type EncodeProps = {
   setTabData: React.Dispatch<React.SetStateAction<TabData>>
   handleTabChange: (tabId: number) => void
 }
+type FullAppData = { fullAppData: string; fullAppDataPrettified: string }
 
 const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabChange */ }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
+  const [{ fullAppData, fullAppDataPrettified }, setFullAppData] = useState<FullAppData>({
+    fullAppData: '',
+    fullAppDataPrettified: '',
+  })
   const [disabledAppData, setDisabledAppData] = useState<boolean>(encode.options.disabledAppData ?? true)
   const [disabledIPFS /* setDisabledIPFS*/] = useState<boolean>(encode.options.disabledIPFS ?? true)
   const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>(
@@ -94,6 +98,10 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     setTabData,
   ])
 
+  useEffect(() => {
+    _toFullAppData(appDataForm).then(setFullAppData)
+  }, [appDataForm])
+
   const toggleInvalid = (data: { [key: string]: boolean }): void => {
     setInvalidFormDataAttempted((prevState) => ({ ...prevState, ...data }))
   }
@@ -123,17 +131,17 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
         resetFormFields('appData')
         setError(undefined)
       }
-      if (JSON.stringify(handleFormatData(formData)) !== JSON.stringify(INITIAL_FORM_VALUES)) {
-        setDisabledAppData(false)
-      }
+      // if (fullAppData !== JSON.stringify(INITIAL_FORM_VALUES)) {
+      //   setDisabledAppData(false)
+      // }
     },
     [ipfsHashInfo],
   )
 
-  const onSubmit = useCallback(async ({ formData }: FormProps): Promise<void> => {
+  const onSubmit = useCallback(async (): Promise<void> => {
     setIsLoading(true)
     try {
-      const hashInfo = await metadataApiSDK.appDataToCid(handleFormatData(formData))
+      const hashInfo = await metadataApiSDK.appDataToCid(fullAppData)
       setIpfsHashInfo(hashInfo)
     } catch (e) {
       setError(e.message)
@@ -222,10 +230,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
             <RowWithCopyButton
-              textToCopy={JSON.stringify(handleFormatData(appDataForm), null, 2)}
-              contentsToDisplay={
-                <pre className="json-formatter">{JSON.stringify(handleFormatData(appDataForm), null, 2)}</pre>
-              }
+              textToCopy={fullAppData}
+              contentsToDisplay={<pre className="json-formatter">{fullAppDataPrettified}</pre>}
             />
             {ipfsHashInfo && (
               <>
@@ -332,6 +338,23 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
       */}
     </>
   )
+}
+
+async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
+  const doc = await metadataApiSDK.generateAppDataDoc(formData)
+
+  const metadata = doc.metadata
+  Object.keys(metadata).forEach((key) => {
+    const meta = metadata[key]
+    if (!meta || Object.keys(meta).length === 0) {
+      delete metadata[key]
+    }
+  })
+
+  return {
+    fullAppData: await stringifyDeterministic(doc), // deterministic string
+    fullAppDataPrettified: JSON.stringify(doc, null, 2), // prettified string
+  }
 }
 
 export default EncodePage
