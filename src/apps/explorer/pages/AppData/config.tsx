@@ -31,32 +31,8 @@ export const getSchema = async (): Promise<JSONSchema7> => {
   return formatSchema(latestSchema)
 }
 
-// const setDependencies = (formattedSchema: JSONSchema7, field: string, dependencies: { [key: string]: any }): void => {
-//   if (formattedSchema?.properties?.metadata['properties'][field]) {
-//     const requiredFields = formattedSchema.properties.metadata['properties'][field].required
-//     deletePropertyPath(formattedSchema, `properties.metadata.properties.${field}.required`)
-
-//     const properties = formattedSchema.properties.metadata['properties'][field].properties
-//     const [fieldKey] = Object.keys(dependencies)
-//     formattedSchema.properties.metadata['properties'][field].properties = {
-//       [fieldKey]: { type: 'boolean', title: 'Enable/Disable' },
-//     }
-//     dependencies[fieldKey].oneOf[0] = {
-//       properties: {
-//         ...dependencies[fieldKey].oneOf[0].properties,
-//         ...properties,
-//       },
-//       required: requiredFields,
-//     }
-//     formattedSchema.properties.metadata['properties'][field].dependencies = dependencies
-//   }
-// }
-
 const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
   const formattedSchema = structuredClone(schema)
-
-  // setDependencies(formattedSchema, 'quote', quoteDependencies)
-  // setDependencies(formattedSchema, 'referrer', referrerDependencies)
 
   return formattedSchema
 }
@@ -64,7 +40,9 @@ const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
   return errors.reduce((errorsList, error) => {
     if (error.name === 'required') {
-      error.message = ERROR_MESSAGES.REQUIRED
+      // Disable the non-required fields (it validates the required fields on un-required fields)
+      // error.message = ERROR_MESSAGES.REQUIRED
+      return errorsList
     } else {
       if (error.property === '.metadata.referrer.address') {
         error.message = ERROR_MESSAGES.INVALID_ADDRESS
@@ -157,7 +135,7 @@ export const decodeAppDataSchema: JSONSchema7 = {
   properties: {
     appData: {
       type: 'string',
-      title: 'AppData',
+      title: 'AppData Hex',
       pattern: '^0x[a-fA-F0-9]{64}',
     },
   },
