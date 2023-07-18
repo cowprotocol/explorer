@@ -1,8 +1,9 @@
 import React, { RefObject } from 'react'
 import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
-import { LATEST_APP_DATA_VERSION, getAppDataSchema } from '@cowprotocol/app-data'
+import { LATEST_APP_DATA_VERSION } from '@cowprotocol/app-data'
 import { JSONSchema7 } from 'json-schema'
 import { HelpTooltip } from 'components/Tooltip'
+import { metadataApiSDK } from 'cowSdk'
 
 const ERROR_MESSAGES = {
   REQUIRED: 'Required field.',
@@ -24,7 +25,7 @@ export const INVALID_IPFS_CREDENTIALS = [
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
-  const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
+  const latestSchema = (await metadataApiSDK.getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
   deleteAllPropertiesByName(latestSchema, 'examples')
   deleteAllPropertiesByName(latestSchema, '$id')
   return formatSchema(latestSchema)
