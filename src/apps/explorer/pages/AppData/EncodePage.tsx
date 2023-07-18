@@ -2,26 +2,22 @@ import React, { useCallback, useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
 import { IpfsHashInfo } from '@cowprotocol/app-data'
-import { DEFAULT_IPFS_READ_URI } from 'const'
+
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
-import Spinner from 'components/common/Spinner'
+
 import AppDataWrapper from 'components/common/AppDataWrapper'
-import { Notification } from 'components/Notification'
+
 import {
   INITIAL_FORM_VALUES,
-  INVALID_IPFS_CREDENTIALS,
   getSchema,
   transformErrors,
   handleErrors,
   handleFormatData,
-  ipfsSchema,
   uiSchema,
-  ipfsUiSchema,
   CustomField,
   FormProps,
 } from './config'
-import { TabData, TabView } from '.'
-import { IpfsWrapper } from './styled'
+import { TabData } from '.'
 import { metadataApiSDK } from 'cowSdk'
 
 type EncodeProps = {
@@ -30,12 +26,12 @@ type EncodeProps = {
   handleTabChange: (tabId: number) => void
 }
 
-const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChange }) => {
+const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabChange */ }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
   const [disabledAppData, setDisabledAppData] = useState<boolean>(encode.options.disabledAppData ?? true)
-  const [disabledIPFS, setDisabledIPFS] = useState<boolean>(encode.options.disabledIPFS ?? true)
+  const [disabledIPFS /* setDisabledIPFS*/] = useState<boolean>(encode.options.disabledIPFS ?? true)
   const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>(
     encode.options.invalidFormDataAttempted ?? {
       appData: false,
@@ -44,13 +40,13 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
   )
   const [isLoading, setIsLoading] = useState<boolean>(encode.options.isLoading ?? false)
   const [ipfsHashInfo, setIpfsHashInfo] = useState<IpfsHashInfo | void | undefined>(encode.options.ipfsHashInfo)
-  const [ipfsCredentials, setIpfsCredentials] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>(
+  const [ipfsCredentials /* setIpfsCredentials */] = useState<{ pinataApiKey?: string; pinataApiSecret?: string }>(
     encode.options.ipfsCredentials ?? {},
   )
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(encode.options.isDocUploaded ?? false)
   const [error, setError] = useState<string | undefined>(encode.options.error)
   const formRef = React.useRef<Form<FormProps>>(null)
-  const ipfsFormRef = React.useRef<Form<FormProps>>(null)
+  // const ipfsFormRef = React.useRef<Form<FormProps>>(null)
 
   const isDisabled = !appDataForm.metadata?.orderClass?.orderClass || disabledAppData
 
@@ -107,10 +103,10 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
     [],
   )
 
-  const handleIPFSErrors = useCallback(
-    (_: FormProps, errors: FormValidation): FormValidation => handleErrors(ipfsFormRef, errors, setDisabledIPFS),
-    [],
-  )
+  // const handleIPFSErrors = useCallback(
+  //   (_: FormProps, errors: FormValidation): FormValidation => handleErrors(ipfsFormRef, errors, setDisabledIPFS),
+  //   [],
+  // )
 
   const handleOnChange = useCallback(
     ({ formData }: FormProps): void => {
@@ -147,33 +143,33 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
     }
   }, [])
 
-  const handleIPFSOnChange = useCallback(({ formData: ipfsData }: FormProps): void => {
-    setIpfsCredentials(ipfsData)
-    if (JSON.stringify(ipfsData) !== JSON.stringify({})) {
-      setDisabledIPFS(false)
-    }
-  }, [])
+  // const handleIPFSOnChange = useCallback(({ formData: ipfsData }: FormProps): void => {
+  //   setIpfsCredentials(ipfsData)
+  //   if (JSON.stringify(ipfsData) !== JSON.stringify({})) {
+  //     setDisabledIPFS(false)
+  //   }
+  // }, [])
 
-  const onUploadToIPFS = useCallback(
-    async ({ formData }: FormProps): Promise<void> => {
-      if (!ipfsHashInfo) return
-      setIsLoading(true)
-      try {
-        await metadataApiSDK.uploadMetadataDocToIpfsLegacy(handleFormatData(appDataForm), formData)
-        setIsDocUploaded(true)
-      } catch (e) {
-        if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
-          e.message = 'Invalid API keys provided.'
-        }
-        setError(e.message)
-        setIsDocUploaded(false)
-      } finally {
-        setIsLoading(false)
-        toggleInvalid({ ipfs: true })
-      }
-    },
-    [appDataForm, ipfsHashInfo],
-  )
+  // const onUploadToIPFS = useCallback(
+  //   async ({ formData }: FormProps): Promise<void> => {
+  //     if (!ipfsHashInfo) return
+  //     setIsLoading(true)
+  //     try {
+  //       await metadataApiSDK.uploadMetadataDocToIpfsLegacy(handleFormatData(appDataForm), formData)
+  //       setIsDocUploaded(true)
+  //     } catch (e) {
+  //       if (INVALID_IPFS_CREDENTIALS.includes(e.message)) {
+  //         e.message = 'Invalid API keys provided.'
+  //       }
+  //       setError(e.message)
+  //       setIsDocUploaded(false)
+  //     } finally {
+  //       setIsLoading(false)
+  //       toggleInvalid({ ipfs: true })
+  //     }
+  //   },
+  //   [appDataForm, ipfsHashInfo],
+  // )
 
   return (
     <>
@@ -249,7 +245,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
           </div>
         </AppDataWrapper>
       </div>
-      <div className="ipfs-container">
+      {/* <div className="ipfs-container">
         {ipfsHashInfo && (
           <>
             <IpfsWrapper>
@@ -332,7 +328,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData, handleTabChang
         {error && !isDocUploaded && (
           <Notification type="error" message={error} closable={false} appendMessage={false} />
         )}
-      </div>
+      </div> 
+      */}
     </>
   )
 }
