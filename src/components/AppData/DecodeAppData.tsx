@@ -134,9 +134,15 @@ const DecodeAppData = (props: Props): JSX.Element => {
           <RowWithCopyButton
             textToCopy={ipfsUri}
             contentsToDisplay={
-              <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
-                {appData}
-              </a>
+              isLegacyAppDataHex ? (
+                <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
+                  {appData}
+                </a>
+              ) : (
+                // TODO: Remove this, and leave just the LINK after the backend uploads the IPFS documents
+                //  https://cowservices.slack.com/archives/C0375NV72SC/p1689618027267289
+                appData
+              )
             }
           />
         )}
