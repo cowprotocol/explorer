@@ -185,10 +185,17 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     <>
       <div className="info-header box">
         <p>
-          The <strong>appData</strong> is an optional field part of CoW Protocol orders. It allows users/dapps/wallets
-          to attach meta-information to orders. This is useful for giving context to your orders, like crediting the
-          order to a specific UI, adding affiliate information, or even signalling your order should be treated in a
-          special way.
+          The{' '}
+          <a
+            href="https://github.com/cowprotocol/contracts/blob/main/src/contracts/libraries/GPv2Order.sol#L18"
+            target="_blank"
+            rel="noreferrer"
+          >
+            AppData hex
+          </a>
+          is an optional field part of CoW Protocol orders. It allows users/dapps/wallets to attach meta-information to
+          orders. This is useful for giving context to your orders, like crediting the order to a specific UI, adding
+          affiliate information, or even signalling your order should be treated in a special way.
         </p>
         <p>This field is the hexadecimal digest of an IPFS document’s CID of a JSON file.</p>
         <p>
