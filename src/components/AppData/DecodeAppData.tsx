@@ -130,21 +130,19 @@ const DecodeAppData = (props: Props): JSX.Element => {
       <div className="data-container">
         {appDataError ? (
           <span className="app-data">{appData}</span>
-        ) : (
+        ) : isLegacyAppDataHex ? (
           <RowWithCopyButton
             textToCopy={ipfsUri}
             contentsToDisplay={
-              isLegacyAppDataHex ? (
-                <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
-                  {appData}
-                </a>
-              ) : (
-                // TODO: Remove this, and leave just the LINK after the backend uploads the IPFS documents
-                //  https://cowservices.slack.com/archives/C0375NV72SC/p1689618027267289
-                appData
-              )
+              <a href={ipfsUri} target="_blank" rel="noopener noreferrer">
+                {appData}
+              </a>
             }
           />
+        ) : (
+          // TODO: Remove this, and leave just the LINK after the backend uploads the IPFS documents
+          //  https://cowservices.slack.com/archives/C0375NV72SC/p1689618027267289
+          appData
         )}
         <a className="showMoreAnchor" onClick={(): Promise<void> => handleDecodedAppData(false)}>
           {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
