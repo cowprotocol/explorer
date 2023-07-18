@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'
-import { IpfsHashInfo } from '@cowprotocol/app-data'
+import { IpfsHashInfo, stringifyDeterministic } from '@cowprotocol/app-data'
 
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 
@@ -12,7 +12,6 @@ import {
   getSchema,
   transformErrors,
   handleErrors,
-  handleFormatData,
   uiSchema,
   CustomField,
   FormProps,
@@ -25,11 +24,16 @@ type EncodeProps = {
   setTabData: React.Dispatch<React.SetStateAction<TabData>>
   handleTabChange: (tabId: number) => void
 }
+type FullAppData = { fullAppData: string; fullAppDataPrettified: string }
 
 const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabChange */ }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
+  const [{ fullAppData, fullAppDataPrettified }, setFullAppData] = useState<FullAppData>({
+    fullAppData: '',
+    fullAppDataPrettified: '',
+  })
   const [disabledAppData, setDisabledAppData] = useState<boolean>(encode.options.disabledAppData ?? true)
   const [disabledIPFS /* setDisabledIPFS*/] = useState<boolean>(encode.options.disabledIPFS ?? true)
   const [invalidFormDataAttempted, setInvalidFormDataAttempted] = useState<{ appData: boolean; ipfs: boolean }>(
@@ -46,9 +50,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   const [isDocUploaded, setIsDocUploaded] = useState<boolean>(encode.options.isDocUploaded ?? false)
   const [error, setError] = useState<string | undefined>(encode.options.error)
   const formRef = React.useRef<Form<FormProps>>(null)
-  // const ipfsFormRef = React.useRef<Form<FormProps>>(null)
-
-  const isDisabled = !appDataForm.metadata?.orderClass?.orderClass || disabledAppData
 
   useEffect(() => {
     const fetchSchema = async (): Promise<void> => {
@@ -94,6 +95,31 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     setTabData,
   ])
 
+  useEffect(() => {
+    _toFullAppData(appDataForm).then(setFullAppData)
+  }, [appDataForm])
+
+  useEffect(() => {
+    setIsLoading(true)
+
+    // Get the fullAppData (dermenistic stringify JSON)
+    _toFullAppData(appDataForm)
+      .then((fullAppData) => {
+        // Update the fullAppData
+        setFullAppData(fullAppData)
+
+        // Get the IPFS hash
+        return metadataApiSDK.appDataToCid(fullAppData.fullAppData)
+      })
+      // Update CID
+      .then(setIpfsHashInfo)
+      .catch((e) => setError(e.message))
+      .finally(() => {
+        setIsLoading(false)
+        toggleInvalid({ appData: true })
+      })
+  }, [appDataForm])
+
   const toggleInvalid = (data: { [key: string]: boolean }): void => {
     setInvalidFormDataAttempted((prevState) => ({ ...prevState, ...data }))
   }
@@ -123,25 +149,9 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
         resetFormFields('appData')
         setError(undefined)
       }
-      if (JSON.stringify(handleFormatData(formData)) !== JSON.stringify(INITIAL_FORM_VALUES)) {
-        setDisabledAppData(false)
-      }
     },
     [ipfsHashInfo],
   )
-
-  const onSubmit = useCallback(async ({ formData }: FormProps): Promise<void> => {
-    setIsLoading(true)
-    try {
-      const hashInfo = await metadataApiSDK.appDataToCid(handleFormatData(formData))
-      setIpfsHashInfo(hashInfo)
-    } catch (e) {
-      setError(e.message)
-    } finally {
-      setIsLoading(false)
-      toggleInvalid({ appData: true })
-    }
-  }, [])
 
   // const handleIPFSOnChange = useCallback(({ formData: ipfsData }: FormProps): void => {
   //   setIpfsCredentials(ipfsData)
@@ -175,10 +185,17 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
     <>
       <div className="info-header box">
         <p>
-          The <strong>appData</strong> is an optional field part of CoW Protocol orders. It allows users/dapps/wallets
-          to attach meta-information to orders. This is useful for giving context to your orders, like crediting the
-          order to a specific UI, adding affiliate information, or even signalling your order should be treated in a
-          special way.
+          The{' '}
+          <a
+            href="https://github.com/cowprotocol/contracts/blob/main/src/contracts/libraries/GPv2Order.sol#L18"
+            target="_blank"
+            rel="noreferrer"
+          >
+            AppData hex
+          </a>
+          is an optional field part of CoW Protocol orders. It allows users/dapps/wallets to attach meta-information to
+          orders. This is useful for giving context to your orders, like crediting the order to a specific UI, adding
+          affiliate information, or even signalling your order should be treated in a special way.
         </p>
         <p>This field is the hexadecimal digest of an IPFS document’s CID of a JSON file.</p>
         <p>
@@ -207,39 +224,94 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           transformErrors={transformErrors}
           ref={formRef}
           autoComplete="off"
-          onSubmit={onSubmit}
           onError={(): void => toggleInvalid({ appData: true })}
           schema={schema}
           uiSchema={uiSchema}
         >
-          <button className="btn btn-info" disabled={isDisabled} type="submit">
-            GENERATE APPDATA DOC
-          </button>
+          <></>
         </Form>
         <AppDataWrapper>
           <div className="hidden-content">
+            <h2>💅 AppData prettified</h2>
             <p>
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
+            <p>This content is for illustration porpouses, see below </p>
             <RowWithCopyButton
-              textToCopy={JSON.stringify(handleFormatData(appDataForm), null, 2)}
-              contentsToDisplay={
-                <pre className="json-formatter">{JSON.stringify(handleFormatData(appDataForm), null, 2)}</pre>
-              }
+              textToCopy={fullAppDataPrettified}
+              contentsToDisplay={<pre className="json-formatter">{fullAppDataPrettified}</pre>}
             />
+            {fullAppData && (
+              <>
+                <h2>ℹ️ AppData string</h2>
+                <p>
+                  This is the actual content that is hashed using <code>keccak-256</code> to get the{' '}
+                  <strong>AppData hex</strong>.
+                </p>
+                <p>
+                  This UI formats the provided info using a{' '}
+                  <a href="https://www.npmjs.com/package/json-stringify-deterministic" target="_blank" rel="noreferrer">
+                    deterministic JSON formatter
+                  </a>{' '}
+                  , this way the same content yields always the same <strong>AppData hex</strong>
+                </p>
+                <RowWithCopyButton className="appData-hash" textToCopy={fullAppData} contentsToDisplay={fullAppData} />
+                <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
+              </>
+            )}
             {ipfsHashInfo && (
               <>
-                <h4>AppData Hash</h4>
+                <h2>🐮 AppData hex</h2>
                 <p>
-                  This is the corresponding hash of the above document. Use this in your orders <strong>appData</strong>{' '}
-                  field.
+                  This is the <code>keccak-256</code> hash of the above document represented in hexadecimal format.
+                </p>
+                <p>
+                  Use this in your{' '}
+                  <a
+                    href="https://github.com/cowprotocol/contracts/blob/main/src/contracts/libraries/GPv2Order.sol#L18"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    CoW Orders appData field
+                  </a>{' '}
+                  .
                 </p>
                 <RowWithCopyButton
                   className="appData-hash"
                   textToCopy={ipfsHashInfo.appDataHex}
                   contentsToDisplay={ipfsHashInfo.appDataHex}
                 />
-                <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
+                <h2>🌍 IPFS CiD</h2>
+                <p>
+                  This is the{' '}
+                  <a href="https://docs.ipfs.tech/concepts/content-addressing/" target="_blank" rel="noreferrer">
+                    IPFS CID
+                  </a>{' '}
+                </p>
+                )
+                <p>
+                  This CID is derived from the <strong>AppData hex</strong> (
+                  <a
+                    href="https://github.com/cowprotocol/app-data/blob/main/src/api/appDataHexToCid.ts#L30"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    see here how
+                  </a>
+                  ). You can see how this <strong>AppData hex</strong> is encoded, using the{' '}
+                  <a href={'https://cid.ipfs.tech/#' + ipfsHashInfo.cid} target="_blank" rel="noreferrer">
+                    CID Inspector
+                  </a>{' '}
+                </p>
+                <p>
+                  What this means is that you can derived the IPFS CID from on-chain CoW Orders, and download the JSON
+                  from IPFS network to see the meta-information of that order
+                </p>
+                <RowWithCopyButton
+                  className="appData-hash"
+                  textToCopy={ipfsHashInfo.cid}
+                  contentsToDisplay={ipfsHashInfo.cid}
+                />
               </>
             )}
           </div>
@@ -332,6 +404,31 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
       */}
     </>
   )
+}
+
+async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
+  const doc = await metadataApiSDK.generateAppDataDoc(formData)
+
+  // Cleanup doc (remove undefined props since it messess up with the validation)
+  const metadata = doc.metadata
+  Object.keys(metadata).forEach((key) => {
+    const meta = metadata[key]
+    Object.keys(meta).forEach((k) => {
+      if (!meta[k]) {
+        delete meta[k]
+      }
+    })
+    if (!meta || Object.keys(meta).length === 0) {
+      delete metadata[key]
+    }
+  })
+
+  console.log('doc', { doc, formData })
+
+  return {
+    fullAppData: await stringifyDeterministic(doc), // deterministic string
+    fullAppDataPrettified: JSON.stringify(doc, null, 2), // prettified string
+  }
 }
 
 export default EncodePage

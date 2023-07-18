@@ -83,7 +83,7 @@ export const Wrapper = styled(WrapperTemplate)`
     }
     .appData-hash {
       margin: 0 0 1rem 0;
-      max-width: 54rem;
+      max-width: 55rem;
       border: 1px solid ${({ theme }): string => theme.tableRowBorder};
       padding: 0.75rem;
       background: ${({ theme }): string => theme.tableRowBorder};
@@ -136,8 +136,9 @@ export const Wrapper = styled(WrapperTemplate)`
         top: 4rem;
         width: 60rem;
       }
-      h4 {
-        margin: 1rem 0 0.75rem 0;
+      h2 {
+        margin: 2rem 0 2rem 0;
+        font-size: 2rem;
       }
     }
   }
