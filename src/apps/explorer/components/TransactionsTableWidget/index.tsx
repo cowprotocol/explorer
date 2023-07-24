@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { useHistory } from 'react-router-dom'
 
@@ -9,9 +9,9 @@ import RedirectToSearch from 'components/RedirectToSearch'
 import { RedirectToNetwork, useNetworkId } from 'state/network'
 import { Order } from 'api/operator'
 import { TransactionsTableWithData } from 'apps/explorer/components/TransactionsTableWidget/TransactionsTableWithData'
-import { TabItemInterface, TabIcon } from 'components/common/Tabs/Tabs'
+import { TabIcon, TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
-import { TitleAddress, FlexContainer, Title } from 'apps/explorer/pages/styled'
+import { FlexContainer, Title, TitleAddress } from 'apps/explorer/pages/styled'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
@@ -60,6 +60,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
   const notGpv2ExplorerData = useTxOrderExplorerLink(txHash, isZeroOrders)
+  const query = useQuery()
 
   const history = useHistory()
 
@@ -82,8 +83,9 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   }, [])
 
   useEffect(() => {
-    history.replace({ search: `?tab=${TabView[tabViewSelected].toLowerCase()}` })
-  }, [history, tabViewSelected])
+    query.set('tab', TabView[tabViewSelected].toLowerCase())
+    history.replace({ search: query.toString() })
+  }, [history, query, tabViewSelected])
 
   if (errorTxPresentInNetworkId && networkId != errorTxPresentInNetworkId) {
     return <RedirectToNetwork networkId={errorTxPresentInNetworkId} />
