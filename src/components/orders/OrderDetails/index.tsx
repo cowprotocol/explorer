@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Order, Trade } from 'api/operator'
@@ -8,7 +7,7 @@ import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 import { FillsTableContext } from './context/FillsTableContext'
 import { media } from 'theme/styles/media'
-import { useQuery } from 'hooks/useQuery'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import RedirectToSearch from 'components/RedirectToSearch'
@@ -166,7 +165,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const invertPrice = useCallback((): void => setIsPriceInverted((prev) => !prev), [])
 
   const [redirectTo, setRedirectTo] = useState(false)
-  const history = useHistory()
+  const updateQueryString = useUpdateQueryString()
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
   tableState['totalResults'] = trades.length
@@ -195,9 +194,10 @@ export const OrderDetails: React.FC<Props> = (props) => {
     setTabViewSelected(TabView[newTabViewName])
   }, [])
 
-  useEffect(() => {
-    history.replace({ search: `?tab=${TabView[tabViewSelected].toLowerCase()}` })
-  }, [history, tabViewSelected])
+  useEffect(
+    () => updateQueryString('tab', TabView[tabViewSelected].toLowerCase()),
+    [tabViewSelected, updateQueryString],
+  )
 
   if (redirectTo) {
     return <RedirectToSearch from="orders" />

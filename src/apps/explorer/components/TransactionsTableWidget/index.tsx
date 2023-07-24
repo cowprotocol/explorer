@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
-import { useHistory } from 'react-router-dom'
 
-import { useQuery } from 'hooks/useQuery'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { BlockchainNetwork, TransactionsTableContext } from './context/TransactionsTableContext'
 import { useGetTxOrders, useTxOrderExplorerLink } from 'hooks/useGetOrders'
 import RedirectToSearch from 'components/RedirectToSearch'
@@ -60,9 +59,8 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const txHashParams = { networkId, txHash }
   const isZeroOrders = !!(orders && orders.length === 0)
   const notGpv2ExplorerData = useTxOrderExplorerLink(txHash, isZeroOrders)
-  const query = useQuery()
 
-  const history = useHistory()
+  const updateQueryString = useUpdateQueryString()
 
   // Avoid redirecting until another network is searched again
   useEffect(() => {
@@ -82,10 +80,10 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
     setTabViewSelected(TabView[newTabViewName])
   }, [])
 
-  useEffect(() => {
-    query.set('tab', TabView[tabViewSelected].toLowerCase())
-    history.replace({ search: query.toString() })
-  }, [history, query, tabViewSelected])
+  useEffect(
+    () => updateQueryString('tab', TabView[tabViewSelected].toLowerCase()),
+    [tabViewSelected, updateQueryString],
+  )
 
   if (errorTxPresentInNetworkId && networkId != errorTxPresentInNetworkId) {
     return <RedirectToNetwork networkId={errorTxPresentInNetworkId} />

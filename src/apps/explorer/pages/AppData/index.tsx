@@ -1,8 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
-import { useQuery } from 'hooks/useQuery'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import EncodePage from './EncodePage'
 import DecodePage from './DecodePage'
 import TabIcon from 'components/common/Tabs/TabIcon'
@@ -51,13 +50,13 @@ const tabItems = (
 }
 
 const AppDataPage: React.FC = () => {
-  const history = useHistory()
   const { tab } = useQueryViewParams()
   const [tabData, setTabData] = useState<TabData>({
     encode: { formData: {}, options: {} },
     decode: { formData: {}, options: {} },
   })
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
+  const updateQueryString = useUpdateQueryString()
 
   const onChangeTab = useCallback((tabId: number) => {
     const newTabViewName = TabView[tabId]
@@ -65,9 +64,10 @@ const AppDataPage: React.FC = () => {
     setTabViewSelected(TabView[newTabViewName])
   }, [])
 
-  useEffect(() => {
-    history.replace({ search: `?tab=${TabView[tabViewSelected].toLowerCase()}` })
-  }, [history, tabViewSelected])
+  useEffect(
+    () => updateQueryString('tab', TabView[tabViewSelected].toLowerCase()),
+    [tabViewSelected, updateQueryString],
+  )
 
   return (
     <Wrapper>
