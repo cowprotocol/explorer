@@ -158,9 +158,6 @@ function getWebpackConfig({ apps = [], config = {}, envVars = {}, defineVars = {
   assert(templatePath, '"templatePath" missing in config')
   assert(logoPath, '"logoPath" missing in config')
 
-  // Log the apps
-  console.log('apps', apps)
-
   // Generate one entry point per app
   const entryPoints = apps.reduce((acc, app) => {
     const { name } = app

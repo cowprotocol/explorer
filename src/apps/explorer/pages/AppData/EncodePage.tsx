@@ -24,15 +24,16 @@ type EncodeProps = {
   setTabData: React.Dispatch<React.SetStateAction<TabData>>
   handleTabChange: (tabId: number) => void
 }
-type FullAppData = { fullAppData: string; fullAppDataPrettified: string }
+type FullAppData = { fullAppData: string; fullAppDataPrettified: string; isValidAppData: boolean }
 
 const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabChange */ }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
-  const [{ fullAppData, fullAppDataPrettified }, setFullAppData] = useState<FullAppData>({
+  const [{ fullAppData, fullAppDataPrettified, isValidAppData }, setFullAppData] = useState<FullAppData>({
     fullAppData: '',
     fullAppDataPrettified: '',
+    isValidAppData: false,
   })
   const [disabledAppData, setDisabledAppData] = useState<boolean>(encode.options.disabledAppData ?? true)
   const [disabledIPFS /* setDisabledIPFS*/] = useState<boolean>(encode.options.disabledIPFS ?? true)
@@ -181,6 +182,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   //   [appDataForm, ipfsHashInfo],
   // )
 
+  console.log('isValidAppData', { isValidAppData })
+
   return (
     <>
       <div className="info-header box">
@@ -237,10 +240,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
             <p>This content is for illustration porpouses, see below </p>
-            <RowWithCopyButton
-              textToCopy={fullAppDataPrettified}
-              contentsToDisplay={<pre className="json-formatter">{fullAppDataPrettified}</pre>}
-            />
+            <JsonContent content={fullAppDataPrettified} isError={!isValidAppData} />
             {fullAppData && (
               <>
                 <h2>ℹ️ AppData string</h2>
@@ -255,7 +255,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   </a>{' '}
                   , this way the same content yields always the same <strong>AppData hex</strong>
                 </p>
-                <RowWithCopyButton className="appData-hash" textToCopy={fullAppData} contentsToDisplay={fullAppData} />
+                <JsonContent content={fullAppData} isError={!isValidAppData} />
                 <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
               </>
             )}
@@ -406,6 +406,18 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   )
 }
 
+function JsonContent({ content, isError }: { content: string; isError: boolean }): JSX.Element {
+  return (
+    <>
+      <RowWithCopyButton
+        textToCopy={content}
+        contentsToDisplay={<pre className={(isError ? 'error ' : '') + 'json-formatter'}>{content}</pre>}
+      />
+      {isError && <span className="error">The AppData content is not valid, check the errors in the input form.</span>}
+    </>
+  )
+}
+
 async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
   const doc = await metadataApiSDK.generateAppDataDoc(formData)
 
@@ -423,11 +435,10 @@ async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
     }
   })
 
-  console.log('doc', { doc, formData })
-
   return {
     fullAppData: await stringifyDeterministic(doc), // deterministic string
     fullAppDataPrettified: JSON.stringify(doc, null, 2), // prettified string
+    isValidAppData: await metadataApiSDK.validateAppDataDoc(doc).then((result) => result.success),
   }
 }
 

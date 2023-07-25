@@ -3,6 +3,7 @@ import { ContentCard as Content, Wrapper as WrapperTemplate } from 'apps/explore
 import { media } from 'theme/styles/media'
 import AppDataWrapper from 'components/common/AppDataWrapper'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
+import { transparentize } from 'polished'
 
 export const StyledExplorerTabs = styled(ExplorerTabs)`
   margin: 1.6rem auto 0;
@@ -70,6 +71,10 @@ export const Wrapper = styled(WrapperTemplate)`
       }
       ${media.mobile} {
         max-width: none;
+      }
+
+      &.error {
+        background: ${({ theme }): string => transparentize(0.8, theme.red1)};
       }
     }
     .hidden-content {
@@ -306,6 +311,10 @@ export const Wrapper = styled(WrapperTemplate)`
         position: initial;
       }
     }
+  }
+
+  span.error {
+    color: ${(props): string => props.theme.red1};
   }
 `
 export const IpfsWrapper = styled.div`
