@@ -114,7 +114,10 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
       })
       // Update CID
       .then(setIpfsHashInfo)
-      .catch((e) => setError(e.message))
+      .catch((e) => {
+        console.error('Error updating the IPFS Hash info (CID, hex)', e)
+        setError(e.message)
+      })
       .finally(() => {
         setIsLoading(false)
         toggleInvalid({ appData: true })
@@ -182,7 +185,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   //   [appDataForm, ipfsHashInfo],
   // )
 
-  console.log('isValidAppData', { isValidAppData })
+  console.log('isValidAppData', { isValidAppData, ipfsHashInfo })
 
   return (
     <>
