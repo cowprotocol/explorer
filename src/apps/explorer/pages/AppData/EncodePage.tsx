@@ -240,7 +240,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
             <p>
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
-            <p>This content is for illustration porpouses, see below.</p>
+            <p>This content is for illustration purposes, see below.</p>
             <JsonContent content={fullAppDataPrettified} isError={!isValidAppData} />
             {fullAppData && (
               <>
