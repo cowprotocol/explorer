@@ -185,8 +185,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   //   [appDataForm, ipfsHashInfo],
   // )
 
-  console.log('isValidAppData', { isValidAppData, ipfsHashInfo })
-
   return (
     <>
       <div className="info-header box">
