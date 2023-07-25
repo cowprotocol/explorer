@@ -24,15 +24,16 @@ type EncodeProps = {
   setTabData: React.Dispatch<React.SetStateAction<TabData>>
   handleTabChange: (tabId: number) => void
 }
-type FullAppData = { fullAppData: string; fullAppDataPrettified: string }
+type FullAppData = { fullAppData: string; fullAppDataPrettified: string; isValidAppData: boolean }
 
 const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabChange */ }) => {
   const { encode } = tabData
   const [schema, setSchema] = useState<JSONSchema7>(encode.options.schema ?? {})
   const [appDataForm, setAppDataForm] = useState(encode.formData)
-  const [{ fullAppData, fullAppDataPrettified }, setFullAppData] = useState<FullAppData>({
+  const [{ fullAppData, fullAppDataPrettified, isValidAppData }, setFullAppData] = useState<FullAppData>({
     fullAppData: '',
     fullAppDataPrettified: '',
+    isValidAppData: false,
   })
   const [disabledAppData, setDisabledAppData] = useState<boolean>(encode.options.disabledAppData ?? true)
   const [disabledIPFS /* setDisabledIPFS*/] = useState<boolean>(encode.options.disabledIPFS ?? true)
@@ -113,7 +114,10 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
       })
       // Update CID
       .then(setIpfsHashInfo)
-      .catch((e) => setError(e.message))
+      .catch((e) => {
+        console.error('Error updating the IPFS Hash info (CID, hex)', e)
+        setError(e.message)
+      })
       .finally(() => {
         setIsLoading(false)
         toggleInvalid({ appData: true })
@@ -236,11 +240,8 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
             <p>
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
-            <p>This content is for illustration porpouses, see below </p>
-            <RowWithCopyButton
-              textToCopy={fullAppDataPrettified}
-              contentsToDisplay={<pre className="json-formatter">{fullAppDataPrettified}</pre>}
-            />
+            <p>This content is for illustration porpouses, see below.</p>
+            <JsonContent content={fullAppDataPrettified} isError={!isValidAppData} />
             {fullAppData && (
               <>
                 <h2>ℹ️ AppData string</h2>
@@ -253,9 +254,9 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   <a href="https://www.npmjs.com/package/json-stringify-deterministic" target="_blank" rel="noreferrer">
                     deterministic JSON formatter
                   </a>{' '}
-                  , this way the same content yields always the same <strong>AppData hex</strong>
+                  , this way the same content yields always the same <strong>AppData hex</strong>.
                 </p>
-                <RowWithCopyButton className="appData-hash" textToCopy={fullAppData} contentsToDisplay={fullAppData} />
+                <JsonContent content={fullAppData} isError={!isValidAppData} />
                 <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
               </>
             )}
@@ -286,9 +287,9 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   This is the{' '}
                   <a href="https://docs.ipfs.tech/concepts/content-addressing/" target="_blank" rel="noreferrer">
                     IPFS CID
-                  </a>{' '}
+                  </a>
+                  .
                 </p>
-                )
                 <p>
                   This CID is derived from the <strong>AppData hex</strong> (
                   <a
@@ -301,11 +302,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   ). You can see how this <strong>AppData hex</strong> is encoded, using the{' '}
                   <a href={'https://cid.ipfs.tech/#' + ipfsHashInfo.cid} target="_blank" rel="noreferrer">
                     CID Inspector
-                  </a>{' '}
+                  </a>
+                  .
                 </p>
                 <p>
                   What this means is that you can derived the IPFS CID from on-chain CoW Orders, and download the JSON
-                  from IPFS network to see the meta-information of that order
+                  from IPFS network to see the meta-information of that order.
                 </p>
                 <RowWithCopyButton
                   className="appData-hash"
@@ -406,6 +408,18 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
   )
 }
 
+function JsonContent({ content, isError }: { content: string; isError: boolean }): JSX.Element {
+  return (
+    <>
+      <RowWithCopyButton
+        textToCopy={content}
+        contentsToDisplay={<pre className={(isError ? 'error ' : '') + 'json-formatter'}>{content}</pre>}
+      />
+      {isError && <span className="error">The AppData content is not valid, check the errors in the input form.</span>}
+    </>
+  )
+}
+
 async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
   const doc = await metadataApiSDK.generateAppDataDoc(formData)
 
@@ -423,11 +437,10 @@ async function _toFullAppData(formData: FormProps): Promise<FullAppData> {
     }
   })
 
-  console.log('doc', { doc, formData })
-
   return {
     fullAppData: await stringifyDeterministic(doc), // deterministic string
     fullAppDataPrettified: JSON.stringify(doc, null, 2), // prettified string
+    isValidAppData: await metadataApiSDK.validateAppDataDoc(doc).then((result) => result.success),
   }
 }
 
