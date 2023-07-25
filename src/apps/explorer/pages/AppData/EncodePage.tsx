@@ -239,7 +239,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
             <p>
               This is the generated and <strong>prettified</strong> file based on the input you provided on the form.
             </p>
-            <p>This content is for illustration porpouses, see below </p>
+            <p>This content is for illustration porpouses, see below.</p>
             <JsonContent content={fullAppDataPrettified} isError={!isValidAppData} />
             {fullAppData && (
               <>
@@ -253,7 +253,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   <a href="https://www.npmjs.com/package/json-stringify-deterministic" target="_blank" rel="noreferrer">
                     deterministic JSON formatter
                   </a>{' '}
-                  , this way the same content yields always the same <strong>AppData hex</strong>
+                  , this way the same content yields always the same <strong>AppData hex</strong>.
                 </p>
                 <JsonContent content={fullAppData} isError={!isValidAppData} />
                 <p className="disclaimer">Note: Don’t forget to upload this file to IPFS!</p>
@@ -286,9 +286,9 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   This is the{' '}
                   <a href="https://docs.ipfs.tech/concepts/content-addressing/" target="_blank" rel="noreferrer">
                     IPFS CID
-                  </a>{' '}
+                  </a>
+                  .
                 </p>
-                )
                 <p>
                   This CID is derived from the <strong>AppData hex</strong> (
                   <a
@@ -301,11 +301,12 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                   ). You can see how this <strong>AppData hex</strong> is encoded, using the{' '}
                   <a href={'https://cid.ipfs.tech/#' + ipfsHashInfo.cid} target="_blank" rel="noreferrer">
                     CID Inspector
-                  </a>{' '}
+                  </a>
+                  .
                 </p>
                 <p>
                   What this means is that you can derived the IPFS CID from on-chain CoW Orders, and download the JSON
-                  from IPFS network to see the meta-information of that order
+                  from IPFS network to see the meta-information of that order.
                 </p>
                 <RowWithCopyButton
                   className="appData-hash"
