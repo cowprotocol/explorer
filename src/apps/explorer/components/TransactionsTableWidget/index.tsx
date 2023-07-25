@@ -16,6 +16,7 @@ import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
 import { TransactionBatchGraph } from 'apps/explorer/components/TransanctionBatchGraph'
 import CowLoading from 'components/common/CowLoading'
+import { TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
 
 interface Props {
   txHash: string
@@ -32,7 +33,7 @@ const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
-  return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txHash: string): TabItemInterface[] => {
@@ -81,7 +82,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   }, [])
 
   useEffect(
-    () => updateQueryString('tab', TabView[tabViewSelected].toLowerCase()),
+    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
     [tabViewSelected, updateQueryString],
   )
 

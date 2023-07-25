@@ -53,3 +53,5 @@ export const SPECIAL_ADDRESSES = {
   '0xa03be496e67ec29bc62f01a428683d7f9c204930': 'Solver Rewards Safe',
   '0xca771eda0c70aa7d053ab1b25004559b918fe662': 'CoW DAO',
 }
+
+export const TAB_QUERY_PARAM_KEY = 'tab'

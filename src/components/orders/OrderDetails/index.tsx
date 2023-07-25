@@ -21,6 +21,7 @@ import { useTable } from 'apps/explorer/components/TokensTableWidget/useTable'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 
 import { FillsTableWithData } from './FillsTableWithData'
+import { TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -73,7 +74,7 @@ const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
-  return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
@@ -195,7 +196,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
   }, [])
 
   useEffect(
-    () => updateQueryString('tab', TabView[tabViewSelected].toLowerCase()),
+    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
     [tabViewSelected, updateQueryString],
   )
 

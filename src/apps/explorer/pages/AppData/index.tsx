@@ -11,7 +11,7 @@ import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
 import { FormProps } from './config'
 
 import { StyledExplorerTabs, Wrapper } from './styled'
-import { APP_TITLE } from 'apps/explorer/const'
+import { APP_TITLE, TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
 
 export enum TabView {
   ENCODE = 1,
@@ -27,7 +27,7 @@ const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
-  return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
@@ -65,7 +65,7 @@ const AppDataPage: React.FC = () => {
   }, [])
 
   useEffect(
-    () => updateQueryString('tab', TabView[tabViewSelected].toLowerCase()),
+    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
     [tabViewSelected, updateQueryString],
   )
 
