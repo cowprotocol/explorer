@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { Order, Trade } from 'api/operator'
@@ -8,7 +7,7 @@ import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 import { FillsTableContext } from './context/FillsTableContext'
 import { media } from 'theme/styles/media'
-import { useQuery } from 'hooks/useQuery'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { DetailsTable } from 'components/orders/DetailsTable'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import RedirectToSearch from 'components/RedirectToSearch'
@@ -22,6 +21,7 @@ import { useTable } from 'apps/explorer/components/TokensTableWidget/useTable'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 
 import { FillsTableWithData } from './FillsTableWithData'
+import { TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
 
 const TitleUid = styled(RowWithCopyButton)`
   color: ${({ theme }): string => theme.grey};
@@ -74,7 +74,7 @@ const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
-  return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
@@ -166,7 +166,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const invertPrice = useCallback((): void => setIsPriceInverted((prev) => !prev), [])
 
   const [redirectTo, setRedirectTo] = useState(false)
-  const history = useHistory()
+  const updateQueryString = useUpdateQueryString()
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
   tableState['totalResults'] = trades.length
@@ -195,9 +195,10 @@ export const OrderDetails: React.FC<Props> = (props) => {
     setTabViewSelected(TabView[newTabViewName])
   }, [])
 
-  useEffect(() => {
-    history.replace({ search: `?tab=${TabView[tabViewSelected].toLowerCase()}` })
-  }, [history, tabViewSelected])
+  useEffect(
+    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
+    [tabViewSelected, updateQueryString],
+  )
 
   if (redirectTo) {
     return <RedirectToSearch from="orders" />

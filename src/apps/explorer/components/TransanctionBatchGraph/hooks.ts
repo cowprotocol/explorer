@@ -18,8 +18,7 @@ import {
   PopperInstance,
   ViewType,
 } from 'apps/explorer/components/TransanctionBatchGraph/types'
-import { useQuery } from 'hooks/useQuery'
-import { useHistory } from 'react-router-dom'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { Order } from 'api/operator'
 import { useTransactionData } from 'hooks/useTransactionData'
 import {
@@ -205,18 +204,9 @@ function useQueryViewParams(): { visualization: string } {
 }
 
 function useUpdateVisQuery(): (vis: string) => void {
-  const query = useQuery()
-  const history = useHistory()
+  const updateQueryString = useUpdateQueryString()
 
-  // TODO: this is causing one extra re-render as the query is being updated when history is updated
-  // TODO: make it not depend on query
-  return useCallback(
-    (vis: string) => {
-      query.set(VISUALIZATION_PARAM_NAME, vis)
-      history.replace({ search: query.toString() })
-    },
-    [history, query],
-  )
+  return useCallback((vis: string) => updateQueryString(VISUALIZATION_PARAM_NAME, vis), [updateQueryString])
 }
 
 export function useTxBatchData(

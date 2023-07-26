@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js'
 import BN from 'bn.js'
-import { TokenErc20, UNLIMITED_ORDER_AMOUNT, BATCH_TIME } from '@gnosis.pm/dex-js'
+import { BATCH_TIME, TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 export {
   UNLIMITED_ORDER_AMOUNT,
   FEE_DENOMINATOR,
@@ -196,3 +197,10 @@ export const IPFS_INVALID_APP_IDS = [
   '0xf6a005bde820da47fdbb19bc07e56782b9ccec403a6899484cf502090627af8a',
   '0x00000000000000000000000055662e225a3376759c24331a9aed764f8f0c9fbb',
 ]
+
+/**
+ * The maximum percentage of the surplus that can be used for the surplus
+ * Values above this will not be displayed.
+ * Instead, the Surplus amount will be used
+ */
+export const MAX_SURPLUS_PERCENTAGE = '1000'

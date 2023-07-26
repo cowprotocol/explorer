@@ -5,6 +5,7 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { MAX_SURPLUS_PERCENTAGE } from 'const'
 
 const IconWrapper = styled(FontAwesomeIcon)`
   padding: 0 0.5rem 0 0;
@@ -31,6 +32,11 @@ export const Amount = styled.span<{ showHiddenSection: boolean; strechHiddenSect
     `}
 `
 
+const Wrapper = styled.span`
+  display: flex;
+  align-items: center;
+`
+
 export type SurplusComponentProps = {
   surplus: Surplus | null
   token: TokenErc20 | null
@@ -49,13 +55,19 @@ export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
 
   const { percentage, amount } = surplus
 
+  const showPercentage = percentage.lt(MAX_SURPLUS_PERCENTAGE)
+
+  const amountDisplay = (
+    <Amount showHiddenSection={!!showHidden || !showPercentage}>
+      <TokenAmount amount={amount} token={token} />
+    </Amount>
+  )
+
   return (
-    <span className={className}>
+    <Wrapper className={className}>
       {icon && <IconWrapper icon={icon} color={iconColor} />}
-      <Percentage>{formatPercentage(percentage)}</Percentage>
-      <Amount showHiddenSection={!!showHidden}>
-        <TokenAmount amount={amount} token={token} />
-      </Amount>
-    </span>
+      <Percentage>{showPercentage ? formatPercentage(percentage) : amountDisplay}</Percentage>
+      {showPercentage && amountDisplay}
+    </Wrapper>
   )
 }

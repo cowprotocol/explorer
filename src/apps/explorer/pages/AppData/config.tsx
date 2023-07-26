@@ -1,8 +1,9 @@
 import React, { RefObject } from 'react'
 import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
-import { LATEST_APP_DATA_VERSION, getAppDataSchema } from '@cowprotocol/app-data'
+import { LATEST_APP_DATA_VERSION } from '@cowprotocol/app-data'
 import { JSONSchema7 } from 'json-schema'
 import { HelpTooltip } from 'components/Tooltip'
+import { metadataApiSDK } from 'cowSdk'
 
 const ERROR_MESSAGES = {
   REQUIRED: 'Required field.',
@@ -24,65 +25,24 @@ export const INVALID_IPFS_CREDENTIALS = [
 export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
-  const latestSchema = (await getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
+  const latestSchema = (await metadataApiSDK.getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
   deleteAllPropertiesByName(latestSchema, 'examples')
   deleteAllPropertiesByName(latestSchema, '$id')
   return formatSchema(latestSchema)
 }
 
-const setDependencies = (formattedSchema: JSONSchema7, field: string, dependencies: { [key: string]: any }): void => {
-  if (formattedSchema?.properties?.metadata['properties'][field]) {
-    const requiredFields = formattedSchema.properties.metadata['properties'][field].required
-    deletePropertyPath(formattedSchema, `properties.metadata.properties.${field}.required`)
-
-    const properties = formattedSchema.properties.metadata['properties'][field].properties
-    const [fieldKey] = Object.keys(dependencies)
-    formattedSchema.properties.metadata['properties'][field].properties = {
-      [fieldKey]: { type: 'boolean', title: 'Enable/Disable' },
-    }
-    dependencies[fieldKey].oneOf[0] = {
-      properties: {
-        ...dependencies[fieldKey].oneOf[0].properties,
-        ...properties,
-      },
-      required: requiredFields,
-    }
-    formattedSchema.properties.metadata['properties'][field].dependencies = dependencies
-  }
-}
-
 const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
   const formattedSchema = structuredClone(schema)
 
-  setDependencies(formattedSchema, 'quote', quoteDependencies)
-  setDependencies(formattedSchema, 'referrer', referrerDependencies)
-
   return formattedSchema
-}
-
-export const handleFormatData = (formData: FormProps): any => {
-  if (!formData.metadata || !Object.keys(formData.metadata).length) return formData
-  const formattedData = structuredClone(formData)
-  const isReferrerEnabled = formattedData.metadata.referrer.enableReferrer
-  const isQuoteEnabled = formattedData.metadata.quote.enableQuote
-
-  deletePropertyPath(formattedData, 'metadata.referrer.enableReferrer')
-  deletePropertyPath(formattedData, 'metadata.quote.enableQuote')
-
-  if (!isReferrerEnabled) {
-    deletePropertyPath(formattedData, 'metadata.referrer')
-  }
-  if (!isQuoteEnabled) {
-    deletePropertyPath(formattedData, 'metadata.quote')
-  }
-
-  return formattedData
 }
 
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
   return errors.reduce((errorsList, error) => {
     if (error.name === 'required') {
-      error.message = ERROR_MESSAGES.REQUIRED
+      // Disable the non-required fields (it validates the required fields on un-required fields)
+      // error.message = ERROR_MESSAGES.REQUIRED
+      return errorsList
     } else {
       if (error.property === '.metadata.referrer.address') {
         error.message = ERROR_MESSAGES.INVALID_ADDRESS
@@ -150,36 +110,6 @@ export const deletePropertyPath = (obj: any, path: any): void => {
   }
 }
 
-const quoteDependencies = {
-  enableQuote: {
-    oneOf: [
-      {
-        properties: {
-          enableQuote: {
-            const: true,
-          },
-        },
-        required: [],
-      },
-    ],
-  },
-}
-
-const referrerDependencies = {
-  enableReferrer: {
-    oneOf: [
-      {
-        properties: {
-          enableReferrer: {
-            const: true,
-          },
-        },
-        required: [],
-      },
-    ],
-  },
-}
-
 export const ipfsSchema: JSONSchema7 = {
   type: 'object',
   required: ['pinataApiKey', 'pinataApiSecret'],
@@ -205,7 +135,7 @@ export const decodeAppDataSchema: JSONSchema7 = {
   properties: {
     appData: {
       type: 'string',
-      title: 'AppData',
+      title: 'AppData Hex',
       pattern: '^0x[a-fA-F0-9]{64}',
     },
   },
@@ -253,20 +183,12 @@ export const uiSchema = {
   },
   metadata: {
     referrer: {
-      version: {
-        'ui:field': 'cField',
-        tooltip: 'The schema will be versioned using Semantic Versioning.',
-      },
       address: {
         'ui:field': 'cField',
         tooltip: 'Add a valid address to enable referrer.',
       },
     },
     quote: {
-      version: {
-        'ui:field': 'cField',
-        tooltip: 'The schema will be versioned using Semantic Versioning.',
-      },
       slippageBips: {
         'ui:field': 'cField',
         tooltip: 'Set the slippage in BIPS (e.g. "0.3").',

@@ -1,8 +1,7 @@
-import React, { useCallback, useState, useEffect } from 'react'
-import { useHistory } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Helmet } from 'react-helmet'
 import { faCode, faListUl } from '@fortawesome/free-solid-svg-icons'
-import { useQuery } from 'hooks/useQuery'
+import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import EncodePage from './EncodePage'
 import DecodePage from './DecodePage'
 import TabIcon from 'components/common/Tabs/TabIcon'
@@ -12,7 +11,7 @@ import { ContentCard as Content, Title } from 'apps/explorer/pages/styled'
 import { FormProps } from './config'
 
 import { StyledExplorerTabs, Wrapper } from './styled'
-import { APP_TITLE } from 'apps/explorer/const'
+import { APP_TITLE, TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
 
 export enum TabView {
   ENCODE = 1,
@@ -28,7 +27,7 @@ const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): { tab: string } {
   const query = useQuery()
-  return { tab: query.get('tab')?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
+  return { tab: query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB } // if URL param empty will be used DEFAULT
 }
 
 const tabItems = (
@@ -51,13 +50,13 @@ const tabItems = (
 }
 
 const AppDataPage: React.FC = () => {
-  const history = useHistory()
   const { tab } = useQueryViewParams()
   const [tabData, setTabData] = useState<TabData>({
     encode: { formData: {}, options: {} },
     decode: { formData: {}, options: {} },
   })
   const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
+  const updateQueryString = useUpdateQueryString()
 
   const onChangeTab = useCallback((tabId: number) => {
     const newTabViewName = TabView[tabId]
@@ -65,9 +64,10 @@ const AppDataPage: React.FC = () => {
     setTabViewSelected(TabView[newTabViewName])
   }, [])
 
-  useEffect(() => {
-    history.replace({ search: `?tab=${TabView[tabViewSelected].toLowerCase()}` })
-  }, [history, tabViewSelected])
+  useEffect(
+    () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
+    [tabViewSelected, updateQueryString],
+  )
 
   return (
     <Wrapper>

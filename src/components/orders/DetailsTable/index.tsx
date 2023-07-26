@@ -24,6 +24,7 @@ import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { sendEvent } from 'components/analytics'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import DecodeAppData from 'components/AppData/DecodeAppData'
+import { TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
 
 const Table = styled(SimpleTable)`
   > tbody > tr {
@@ -194,6 +195,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
     buyToken,
     sellToken,
     appData,
+    fullAppData,
   } = order
 
   if (!buyToken || !sellToken) {
@@ -260,7 +262,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
                       onCopy={(): void => onCopy('settlementTx')}
                       contentsToDisplay={<LinkWithPrefixNetwork to={`/tx/${txHash}`}>{txHash}</LinkWithPrefixNetwork>}
                     />
-                    <LinkButton to={`/tx/${txHash}/?tab=graph`}>
+                    <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
                       <FontAwesomeIcon icon={faProjectDiagram} />
                       View batch graph
                     </LinkButton>
@@ -357,7 +359,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
                 <Wrapper>
                   <FilledProgress order={order} />
                   {showFillsButton && (
-                    <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?tab=fills`}>
+                    <LinkButton onClickOptional={viewFills} to={`/orders/${uid}/?${TAB_QUERY_PARAM_KEY}=fills`}>
                       <FontAwesomeIcon icon={faFill} />
                       View fills
                     </LinkButton>
@@ -385,7 +387,7 @@ export function DetailsTable(props: Props): JSX.Element | null {
               <HelpTooltip tooltip={tooltip.appData} /> AppData
             </td>
             <td>
-              <DecodeAppData appData={appData} />
+              <DecodeAppData appData={appData} fullAppData={fullAppData ?? undefined} />
             </td>
           </tr>
         </>
