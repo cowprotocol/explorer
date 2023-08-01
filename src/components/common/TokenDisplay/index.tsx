@@ -21,10 +21,9 @@ const NativeWrapper = styled.span`
   color: ${({ theme }): string => theme.textPrimary1};
 `
 
-const StyledImg = styled(TokenImg)`
-  width: 1.6rem;
-  height: 1.6rem;
-  margin: 0 0.5rem;
+export const StyledImg = styled(TokenImg)`
+  width: 2.2rem;
+  height: 2.2rem;
 `
 
 export function TokenDisplay(props: Props): JSX.Element {

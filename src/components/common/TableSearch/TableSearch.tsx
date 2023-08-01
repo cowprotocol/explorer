@@ -63,7 +63,7 @@ const SearchWrapped = styled(Wrapper)`
 export function TableSearch({
   query,
   setQuery,
-  placeholder = 'Search token by name, symbol or hash',
+  placeholder = 'Search Tokens by ID, token ID, or address',
 }: SearchProps): JSX.Element {
   return (
     <SearchWrapped onSubmit={(e): void => e.preventDefault()}>

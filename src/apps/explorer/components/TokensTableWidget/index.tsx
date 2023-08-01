@@ -3,8 +3,11 @@ import styled from 'styled-components'
 import { BlockchainNetwork, TokensTableContext } from './context/TokensTableContext'
 import { useNetworkId } from 'state/network'
 import { Token, useGetTokens } from 'hooks/useGetTokens'
+import { Batch, useGetBatches } from 'hooks/useGetBatches'
+
 import { useFlexSearch } from 'hooks/useFlexSearch'
 import { TokensTableWithData } from 'apps/explorer/components/TokensTableWidget/TokensTableWithData'
+import { BatchesTableWithData } from 'apps/explorer/components/LastBatchesWidget/BatchesTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination from 'apps/explorer/components/common/TablePagination'
@@ -71,22 +74,25 @@ const ExtraComponentNode: React.ReactNode = (
     <TablePagination context={TokensTableContext} fixedResultsPerPage />
   </WrapperExtraComponents>
 )
+interface Props {
+  networkId: BlockchainNetwork
+}
 
 interface Props {
   networkId: BlockchainNetwork
 }
 
-const tabItems = (query: string, setQuery: (query: string) => void): TabItemInterface[] => {
+const tabItems = (): TabItemInterface[] => {
   return [
     {
       id: 1,
-      tab: (
-        <>
-          Top tokens
-          <TableSearch query={query} setQuery={setQuery} />
-        </>
-      ),
+      tab: <>Top tokens</>,
       content: <TokensTableWithData />,
+    },
+    {
+      id: 2,
+      tab: <>Recent Batches</>,
+      content: <BatchesTableWithData />,
     },
   ]
 }
@@ -103,7 +109,13 @@ export const TokensTableWidget: React.FC<Props> = () => {
     handleNextPage,
     handlePreviousPage,
   } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
-  const { tokens, isLoading, error } = useGetTokens(networkId)
+  const { tokens, isLoading: isTokensLoading, error: tokensError } = useGetTokens(networkId)
+  const { batches, isLoading: isLoadingBatches, error: errorBatches } = useGetBatches(networkId)
+
+  const isLoading = isTokensLoading || isLoadingBatches
+  const error = tokensError || errorBatches
+
+  const filteredBatches = useFlexSearch(query, batches, ['id'])
   const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol', 'address'])
   const resultsLength = query.length ? filteredTokens.length : tokens.length
 
@@ -135,6 +147,11 @@ export const TokensTableWidget: React.FC<Props> = () => {
       }))
       .slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
   }
+  const filterBatches = (): Batch[] => {
+    const data = query ? (filteredBatches as Batch[]) : batches
+    console.log('data', data.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize))
+    return data.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
+  }
 
   if (!tokens?.length) {
     return (
@@ -143,12 +160,19 @@ export const TokensTableWidget: React.FC<Props> = () => {
       </EmptyItemWrapper>
     )
   }
-
+  const ExtraComponentNodeSearchBar: React.ReactNode = (
+    <div style={{ marginRight: '1rem' }}>
+      <WrapperExtraComponents>
+        <TableSearch query={query} setQuery={setQuery} />
+      </WrapperExtraComponents>
+    </div>
+  )
   return (
     <TableWrapper>
       <TokensTableContext.Provider
         value={{
           data: filterData(),
+          batchesData: filterBatches(),
           error,
           isLoading,
           networkId,
@@ -160,7 +184,12 @@ export const TokensTableWidget: React.FC<Props> = () => {
         }}
       >
         <ConnectionStatus />
-        <ExplorerCustomTab extraPosition={'bottom'} tabItems={tabItems(query, setQuery)} extra={ExtraComponentNode} />
+        <ExplorerCustomTab
+          extraPosition={'bottom'}
+          tabItems={tabItems()}
+          extra={ExtraComponentNode}
+          searchBar={ExtraComponentNodeSearchBar}
+        />
       </TokensTableContext.Provider>
     </TableWrapper>
   )

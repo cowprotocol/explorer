@@ -41,6 +41,7 @@ export interface Props {
   readonly extra?: TabBarExtraContent
   readonly extraPosition?: 'top' | 'bottom'
   readonly updateSelectedTab?: (activeId: TabId) => void
+  readonly searchBar?: React.ReactNode
 }
 
 const Wrapper = styled.div`
@@ -94,6 +95,7 @@ const Tabs: React.FC<Props> = (props) => {
     extra: tabBarExtraContent,
     extraPosition = 'top',
     updateSelectedTab: parentUpdateSelectedTab,
+    searchBar: searchBar,
   } = props
 
   const [innerSelectedTab, setInnerSelectedTab] = useState(1)
@@ -114,6 +116,7 @@ const Tabs: React.FC<Props> = (props) => {
             tabTheme={tabTheme}
           />
         ))}
+        <ExtraContent extra={searchBar} />
         {extraPosition === 'top' && <ExtraContent extra={tabBarExtraContent} />}
       </TabList>
       <TabContent tabItems={tabItems} activeTab={selectedTab} />
