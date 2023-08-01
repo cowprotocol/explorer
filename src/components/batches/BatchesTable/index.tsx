@@ -343,13 +343,17 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
             }}
           >
             <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
-              View on Etherscan
+              <a href={`https://etherscan.io/tx/${id}`} target="_blank" rel="noopener noreferrer">
+                View on Etherscan
+              </a>
             </MenuItem>
             <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
-              View on Cow Explorer
-            </MenuItem>{' '}
+              <a href={`/tx/${id}`}>View on Cow Explorer</a>
+            </MenuItem>
             <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
-              Copy Tx Id
+              <a href="#" onClick={(): Promise<void> => navigator.clipboard.writeText(id)}>
+                Copy Tx Id
+              </a>
             </MenuItem>
           </Menu>
         </HeaderValue>

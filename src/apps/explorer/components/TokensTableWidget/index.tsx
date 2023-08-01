@@ -7,7 +7,7 @@ import { Batch, useGetBatches } from 'hooks/useGetBatches'
 
 import { useFlexSearch } from 'hooks/useFlexSearch'
 import { TokensTableWithData } from 'apps/explorer/components/TokensTableWidget/TokensTableWithData'
-import { BatchesTableWithData } from 'apps/explorer/components/LastBatchesWidget/BatchesTableWithData'
+import { BatchesTableWithData } from 'apps/explorer/components/TokensTableWidget/BatchesTableWithData'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination from 'apps/explorer/components/common/TablePagination'
@@ -149,7 +149,6 @@ export const TokensTableWidget: React.FC<Props> = () => {
   }
   const filterBatches = (): Batch[] => {
     const data = query ? (filteredBatches as Batch[]) : batches
-    console.log('data', data.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize))
     return data.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
   }
 
