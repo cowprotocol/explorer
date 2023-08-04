@@ -414,10 +414,11 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
                 marginTop: '3rem',
                 backgroundColor: '#16171F',
                 color: 'white',
+                fontFamily: 'Inter var !important',
               },
             }}
           >
-            <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
+            <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem', fontFamily: 'Inter var, sans-serif' }}>
               <a
                 href={
                   network === 1
@@ -432,10 +433,10 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
                 {network === 1 ? 'View on Etherscan' : network === 100 ? 'View on Gnosisscan' : 'Not Available'}
               </a>
             </MenuItem>
-            <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
+            <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem', fontFamily: 'Inter var, sans-serif' }}>
               <a href={`/tx/${id}`}>View on Cow Explorer</a>
             </MenuItem>
-            <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
+            <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem', fontFamily: 'Inter var, sans-serif' }}>
               <a href="#" onClick={(): Promise<void> => navigator.clipboard.writeText(id)}>
                 Copy Tx Id
               </a>
