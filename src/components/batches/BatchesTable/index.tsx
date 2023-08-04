@@ -17,6 +17,8 @@ import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip
 import { Batch } from 'hooks/useGetBatches'
 import { getImageAddress } from 'utils'
 import TokenImg from 'components/common/TokenImg'
+import { CopyButton } from 'components/common/CopyButton'
+
 import { Menu, MenuItem, IconButton } from '@material-ui/core'
 // import horizontal dots
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -57,7 +59,7 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   > thead > tr,
   > tbody > tr {
-    grid-template-columns: 24rem 12rem minmax(14rem, auto) repeat(4, minmax(10rem, 1.5fr)) 5rem;
+    grid-template-columns: 24rem 16rem minmax(14rem, auto) repeat(4, minmax(10rem, 1.5fr)) 5rem;
   }
   > tbody > tr > td,
   > thead > tr > th {
@@ -84,6 +86,10 @@ const Wrapper = styled(StyledUserDetailsTable)`
     }
   }
   ${media.mobile} {
+    > thead > tr > th:nth-child(8),
+    > tbody > tr > td:nth-child(8) {
+      display: none;
+    }
     > thead > tr {
       display: none;
 
@@ -151,7 +157,12 @@ const Wrapper = styled(StyledUserDetailsTable)`
   }
   overflow: auto;
 `
-
+const TokenLabel = styled.span`
+  display: none;
+  ${media.mobile} {
+    display: inline;
+  }
+`
 const HeaderTitle = styled.span`
   display: none;
   ${media.mobile} {
@@ -168,7 +179,6 @@ const HeaderTitle = styled.span`
 const HeaderValue = styled.span<{ captionColor?: 'green' | 'red1' | 'grey' }>`
   color: ${({ theme, captionColor }): string => (captionColor ? theme[captionColor] : theme.textPrimary1)};
   overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
   ${media.mobile} {
     flex-wrap: wrap;
@@ -199,7 +209,38 @@ const TokenContainer = styled.div`
   :hover {
     transform: scale(1.4);
   }
+  ${media.mobile} {
+    :hover {
+      transform: scale(1);
+    }
+  }
 `
+
+const MiddleEllipsis = ({ text, maxWidth }: { text: string; maxWidth: number }): React.ReactElement => {
+  const ref = React.useRef<HTMLSpanElement>(null)
+  React.useEffect(() => {
+    if (ref.current && text) {
+      const element = ref.current
+      const chars = text.split('')
+      let truncatedText = text
+
+      // Check if the text overflows the container
+      if (element.offsetWidth > maxWidth) {
+        // Loop to find the position where to place the ellipsis
+        while (element.offsetWidth > maxWidth && chars.length > 0) {
+          const middleIndex = Math.floor(chars.length / 2)
+          chars.splice(middleIndex, 1)
+          truncatedText = chars.join('')
+          truncatedText = truncatedText.substring(0, middleIndex) + '...' + truncatedText.substring(middleIndex)
+          element.textContent = truncatedText
+        }
+      }
+    }
+  }, [text, maxWidth])
+
+  return <span ref={ref}>{text}</span>
+}
+
 const RowToken: React.FC<RowProps> = ({ batch }) => {
   const { id, firstTradeTimestamp, solver, tokens_in, tokens_out, num_trades, total_value } = batch
   // const erc20 = { name, address, symbol, decimals } as TokenErc20
@@ -240,15 +281,25 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
   return (
     <tr key={id}>
       <td>
-        <HeaderTitle>ID</HeaderTitle>
+        <HeaderTitle>Tx. hash</HeaderTitle>
         <HeaderValue>
-          <a href={`/tx/${id}`}>{id}</a>
+          <a
+            href={`/tx/${id}`}
+            style={{
+              marginRight: ' 0.5rem',
+            }}
+          >
+            <MiddleEllipsis text={id} maxWidth={180} />
+          </a>
+          <CopyButton text={id} onCopy={(): void => console.log('copied')} />
         </HeaderValue>
       </td>
       <td>
         <HeaderTitle>Date</HeaderTitle>
         <HeaderValue>
-          {firstTradeTimestamp ? formatDistanceToNow(new Date(firstTradeTimestamp * 1000)) + ' ago' : 'N/A'}{' '}
+          <TextWithTooltip textInTooltip={new Date(firstTradeTimestamp * 1000).toLocaleString()}>
+            {firstTradeTimestamp ? formatDistanceToNow(new Date(firstTradeTimestamp * 1000)) + ' ago' : 'N/A'}{' '}
+          </TextWithTooltip>
         </HeaderValue>
       </td>
       <td>
@@ -256,16 +307,27 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
         <HeaderValue>{displaySolver(solver)}</HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Tokens In</HeaderTitle>
+        <HeaderTitle>Tokens in</HeaderTitle>
         <HeaderValue>
           <TokensContainers>
             {tokens_in.map((token) => {
               const imageAddress = getImageAddress(token.address, 1)
               return (
-                <TextWithTooltip key={token.address} textInTooltip={token.symbol}>
+                <TextWithTooltip key={token.address} textInTooltip={token.name + '(' + token.symbol + ')'}>
                   <TokenContainer>
-                    <a href={`https://etherscan.io/address/${token.address}`} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={`https://etherscan.io/address/${token.address}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                      }}
+                    >
                       <StyledImg address={imageAddress} />
+                      <TokenLabel>{token.symbol}</TokenLabel>
                     </a>
                   </TokenContainer>
                 </TextWithTooltip>
@@ -275,16 +337,27 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
         </HeaderValue>
       </td>
       <td>
-        <HeaderTitle>Tokens Out</HeaderTitle>
+        <HeaderTitle>Tokens out</HeaderTitle>
         <HeaderValue>
           <TokensContainers>
             {tokens_out.map((token) => {
               const imageAddress = getImageAddress(token.address, 1)
               return (
-                <TextWithTooltip key={token.address} textInTooltip={token.symbol}>
+                <TextWithTooltip key={token.address} textInTooltip={token.name + '(' + token.symbol + ')'}>
                   <TokenContainer>
-                    <a href={`https://etherscan.io/address/${token.address}`} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={`https://etherscan.io/address/${token.address}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                      }}
+                    >
                       <StyledImg address={imageAddress} />
+                      <TokenLabel>{token.symbol}</TokenLabel>
                     </a>
                   </TokenContainer>
                 </TextWithTooltip>
@@ -296,14 +369,16 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
 
       {/* Add Trades */}
       <td>
-        <HeaderTitle>Trades Count</HeaderTitle>
+        <HeaderTitle>Trades count</HeaderTitle>
         <HeaderValue>{num_trades}</HeaderValue>
       </td>
       {/* Add Volume */}
       <td>
-        <HeaderTitle>Batch Value</HeaderTitle>
+        <HeaderTitle>Batch value</HeaderTitle>
         <HeaderValue>
-          {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(total_value))}
+          {total_value !== 0
+            ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(total_value))
+            : 'Not Available'}
         </HeaderValue>
       </td>
       <td>
@@ -343,8 +418,18 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
             }}
           >
             <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
-              <a href={`https://etherscan.io/tx/${id}`} target="_blank" rel="noopener noreferrer">
-                View on Etherscan
+              <a
+                href={
+                  network === 1
+                    ? `https://etherscan.io/tx/${id}`
+                    : network === 100
+                    ? `https://gnosisscan.io/tx/${id}`
+                    : '#'
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {network === 1 ? 'View on Etherscan' : network === 100 ? 'View on Gnosisscan' : 'Not Available'}
               </a>
             </MenuItem>
             <MenuItem onClick={handleClose} style={{ fontSize: '1.2rem' }}>
@@ -381,7 +466,7 @@ const BatchesTable: React.FC<Props> = (props) => {
         <>
           <tr className="header-row">
             <td>
-              <HeaderTitle className="mobile-header">Sorted by Volume(24h): from highest to lowest</HeaderTitle>
+              <HeaderTitle className="mobile-header">Sorted by Date</HeaderTitle>
             </td>
           </tr>
           {items.map((item, i) => (
@@ -398,13 +483,13 @@ const BatchesTable: React.FC<Props> = (props) => {
       showBorderTable={showBorderTable}
       header={
         <tr>
-          <th>Tx. Hash </th>
-          <th>Date</th>
+          <th>Tx. hash </th>
+          <th>Date&darr;</th>
           <th>Solver</th>
-          <th>Tokens In</th>
-          <th>Tokens Out</th>
-          <th>Trades Count</th>
-          <th>Batch Value</th>
+          <th>Tokens in</th>
+          <th>Tokens out</th>
+          <th>Trades count</th>
+          <th>Batch value</th>
           <th></th>
         </tr>
       }

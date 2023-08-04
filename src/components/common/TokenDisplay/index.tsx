@@ -22,8 +22,9 @@ const NativeWrapper = styled.span`
 `
 
 export const StyledImg = styled(TokenImg)`
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin: 0 0.5rem;
 `
 
 export function TokenDisplay(props: Props): JSX.Element {

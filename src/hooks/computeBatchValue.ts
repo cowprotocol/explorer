@@ -14,7 +14,7 @@ export const computeBatchValue = (batch: Batch): BatchValue => {
     let amount = trade.buyAmount / 10 ** trade.buyToken.decimals
     let tokenPriceInUsd = trade.buyToken.priceUsd
 
-    if (!tokenPriceInUsd) {
+    if (tokenPriceInUsd == 0) {
       // If USD price for buyToken is not available, use USD price for sellToken
       // and consider sellAmount instead of buyAmount
       tokenPriceInUsd = trade.sellToken.priceUsd

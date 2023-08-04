@@ -20,7 +20,12 @@ import CowLoading from 'components/common/CowLoading'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { ScrollBarStyle } from 'apps/explorer/styled'
 import { CardRow } from 'components/common/CardRow'
+import { useHistory, useLocation } from 'react-router-dom'
 
+const TABS = {
+  TOKENS: 1,
+  BATCHES: 2,
+}
 const WrapperExtraComponents = styled.div`
   align-items: center;
   display: flex;
@@ -91,7 +96,7 @@ const tabItems = (): TabItemInterface[] => {
     },
     {
       id: 2,
-      tab: <>Recent Batches</>,
+      tab: <>Recent batches</>,
       content: <BatchesTableWithData />,
     },
   ]
@@ -100,8 +105,12 @@ const tabItems = (): TabItemInterface[] => {
 const RESULTS_PER_PAGE = 10
 
 export const TokensTableWidget: React.FC<Props> = () => {
+  const history = useHistory()
+  const location = useLocation()
   const networkId = useNetworkId() || undefined
   const [query, setQuery] = useState('')
+
+  const [selectedTab, setSelectedTab] = useState(location.hash === '#batches' ? TABS.BATCHES : TABS.TOKENS)
   const {
     state: tableState,
     setPageSize,
@@ -115,7 +124,7 @@ export const TokensTableWidget: React.FC<Props> = () => {
   const isLoading = isTokensLoading || isLoadingBatches
   const error = tokensError || errorBatches
 
-  const filteredBatches = useFlexSearch(query, batches, ['id'])
+  const filteredBatches = useFlexSearch(query, batches, ['id', 'txHash'])
   const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol', 'address'])
   const resultsLength = query.length ? filteredTokens.length : tokens.length
 
@@ -132,6 +141,14 @@ export const TokensTableWidget: React.FC<Props> = () => {
     setQuery('')
     setPageOffset(0)
   }, [networkId, setPageOffset])
+
+  useEffect(() => {
+    const handleHashChange = (): void => {
+      setSelectedTab(location.hash === '#batches' ? TABS.BATCHES : TABS.TOKENS)
+    }
+    window.addEventListener('hashchange', handleHashChange)
+    return (): void => window.removeEventListener('hashchange', handleHashChange)
+  }, [location.hash])
 
   const filterData = (): Token[] => {
     const data = query ? (filteredTokens as Token[]) : tokens
@@ -186,8 +203,13 @@ export const TokensTableWidget: React.FC<Props> = () => {
         <ExplorerCustomTab
           extraPosition={'bottom'}
           tabItems={tabItems()}
+          updateSelectedTab={(tabId: number): void => {
+            setSelectedTab(tabId)
+            history.push(tabId === TABS.BATCHES ? '#batches' : '#tokens')
+          }}
           extra={ExtraComponentNode}
           searchBar={ExtraComponentNodeSearchBar}
+          selectedTab={selectedTab}
         />
       </TokensTableContext.Provider>
     </TableWrapper>

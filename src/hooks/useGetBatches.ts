@@ -6,6 +6,7 @@ import { UTCTimestamp } from 'lightweight-charts'
 // import { getPercentageDifference, isNativeToken } from 'utils'
 import { subgraphApiSDK } from 'cowSdk'
 import { computeBatchValue } from './computeBatchValue'
+const FETCH_DATA_INTERVAL = 30000 // 30 seconds
 
 export function useGetBatches(networkId: Network | undefined): GetBatchesResult {
   const [isLoading, setIsLoading] = useState(false)
@@ -31,7 +32,6 @@ export function useGetBatches(networkId: Network | undefined): GetBatchesResult 
   const fetchBatches = useCallback(
     async (network: Network): Promise<void> => {
       setIsLoading(true)
-      setBatches([])
       // const lastWeekTimestamp = Number(lastDaysTimestamp(8)) // last 8 days
       try {
         const response = await subgraphApiSDK.runQuery<{ settlements: SettlementsResponse[] }>(
@@ -63,8 +63,16 @@ export function useGetBatches(networkId: Network | undefined): GetBatchesResult 
     if (!networkId) {
       return
     }
-
+    // Initial fetch
     fetchBatches(networkId)
+
+    // Set up interval to refetch data every FETCH_DATA_INTERVAL milliseconds
+    const intervalId = setInterval(() => {
+      fetchBatches(networkId)
+    }, FETCH_DATA_INTERVAL)
+
+    // Clear the interval when the component unmounts
+    return (): void => clearInterval(intervalId)
   }, [fetchBatches, networkId])
 
   return { batches, error, isLoading }
@@ -123,8 +131,8 @@ type SettlementsResponse = {
   firstTradeTimestamp: number
   trades: Trade[]
   solver: User
-  tokens_in: { symbol: string; address: string }[]
-  tokens_out: { symbol: string; address: string }[]
+  tokens_in: { symbol: string; address: string; name: string }[]
+  tokens_out: { symbol: string; address: string; name: string }[]
   num_trades: number
   total_value: number
 }
@@ -201,25 +209,35 @@ export type BatchValue = {
   batchId: string
   totalValue: number
 }
-const extractBuyTokens = (trades: Trade[]): { symbol: string; address: string }[] => {
+const extractBuyTokens = (trades: Trade[]): { name: string; symbol: string; address: string }[] => {
   const tokens = trades.map((trade) => {
     const symbol =
       trade.buyToken.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
         ? 'ETH'
         : trade.buyToken.symbol
-    return { symbol, address: trade.buyToken.address }
+    const name =
+      trade.buyToken.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+        ? 'Ethereum'
+        : trade.buyToken.name
+
+    return { name, symbol, address: trade.buyToken.address }
   })
   // Remove duplicates
   return tokens.filter((token, index) => tokens.findIndex((t) => t.address === token.address) === index)
 }
 
-const extractSellTokens = (trades: Trade[]): { symbol: string; address: string }[] => {
+const extractSellTokens = (trades: Trade[]): { name: string; symbol: string; address: string }[] => {
   const tokens = trades.map((trade) => {
     const symbol =
       trade.sellToken.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
         ? 'ETH'
         : trade.sellToken.symbol
-    return { symbol, address: trade.sellToken.address }
+    const name =
+      trade.sellToken.address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+        ? 'Ethereum'
+        : trade.sellToken.name
+
+    return { name, symbol, address: trade.sellToken.address }
   })
   // Remove duplicates
   return tokens.filter((token, index) => tokens.findIndex((t) => t.address === token.address) === index)
