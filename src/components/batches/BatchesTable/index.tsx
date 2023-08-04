@@ -289,7 +289,7 @@ const RowToken: React.FC<RowProps> = ({ batch }) => {
               marginRight: ' 0.5rem',
             }}
           >
-            <MiddleEllipsis text={id} maxWidth={180} />
+            <MiddleEllipsis text={id} maxWidth={170} />
           </a>
           <CopyButton text={id} onCopy={(): void => console.log('copied')} />
         </HeaderValue>
