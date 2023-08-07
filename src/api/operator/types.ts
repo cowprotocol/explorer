@@ -2,7 +2,8 @@ import BigNumber from 'bignumber.js'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
-import { EnrichedOrder, OrderKind, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, OrderKind, Trade as TradeMetaData, SolverCompetitionResponse } from '@cowprotocol/cow-sdk'
+import { SolverSettlement } from '@cowprotocol/cow-sdk/dist/order-book/generated/models/SolverSettlement'
 
 export type TxHash = string
 
@@ -71,6 +72,23 @@ export type Trade = Pick<RawTrade, 'blockNumber' | 'logIndex' | 'owner' | 'txHas
   surplusPercentage?: BigNumber
 }
 
+export type Solution = SolverSettlement & {
+  ranking: number
+}
+
+/**
+ * Raw API SolverCompetition response type
+ */
+export type RawSolverCompetition = SolverCompetitionResponse & {
+  solutions: Solution[]
+  auctionStartBlock: number
+}
+
+/**
+ * Enriched SolverCompetition type
+ */
+export type SolverCompetition = RawSolverCompetition
+
 export type WithNetworkId = { networkId: Network }
 
 export type GetOrderParams = WithNetworkId & {
@@ -91,6 +109,10 @@ export type GetOrdersParams = WithNetworkId & {
 }
 
 export type GetTxOrdersParams = WithNetworkId & {
+  txHash: TxHash
+}
+
+export type GetTxSolverCompetitionParams = WithNetworkId & {
   txHash: TxHash
 }
 

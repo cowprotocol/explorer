@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { Order, RawOrder, RawTrade } from 'api/operator'
+import { Order, RawOrder, RawSolverCompetition, RawTrade } from 'api/operator'
 
 import { ZERO_BIG_NUMBER } from 'const'
 
@@ -75,4 +75,51 @@ export const RAW_TRADE: RawTrade = {
   buyToken: '0xc778417e063141139fce010982780140aa0cd5ab',
   sellToken: '0xd9ba894e0097f8cc2bbc9d24d308b98e36dc6d02',
   txHash: '0x2ebf2ba8c2a568af0b11d2498648d6fec01db11e81c6e4bc5dbba9237472dce9',
+}
+
+export const RAW_SOLVER_COMPETITION: RawSolverCompetition = {
+  auctionStartBlock: 0,
+  auctionId: 0,
+  transactionHash: '0xd51f28edffcaaa76be4a22f6375ad289272c037f3cc072345676e88d92ced8b5',
+  gasPrice: 0,
+  liquidityCollectedBlock: 0,
+  competitionSimulationBlock: 0,
+  auction: {
+    orders: [
+      '0xff2e2e54d178997f173266817c1e9ed6fee1a1aae4b43971c53b543cffcc2969845c6f5599fbb25dbdd1b9b013daf85c03f3c63763e4bc4a',
+    ],
+    prices: {
+      additionalProp1: '1234567890',
+      additionalProp2: '1234567890',
+      additionalProp3: '1234567890',
+    },
+  },
+  solutions: [
+    {
+      ranking: 1,
+      solver: 'string',
+      solverAddress: 'string',
+      objective: {
+        total: 0,
+        surplus: 0,
+        fees: 0,
+        cost: 0,
+        gas: 0,
+      },
+      score: '1234567890',
+      clearingPrices: {
+        additionalProp1: '1234567890',
+        additionalProp2: '1234567890',
+        additionalProp3: '1234567890',
+      },
+      orders: [
+        {
+          id: '0xff2e2e54d178997f173266817c1e9ed6fee1a1aae4b43971c53b543cffcc2969845c6f5599fbb25dbdd1b9b013daf85c03f3c63763e4bc4a',
+          executedAmount: '1234567890',
+        },
+      ],
+      callData: '0xca11da7a',
+      uninternalizedCallData: '0xca11da7a',
+    },
+  ]
 }

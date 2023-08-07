@@ -6,9 +6,11 @@ import {
   GetTradesParams,
   RawOrder,
   RawTrade,
+  GetTxSolverCompetitionParams,
+  RawSolverCompetition,
 } from './types'
 
-import { RAW_ORDER, RAW_TRADE } from '../../../test/data'
+import { RAW_ORDER, RAW_SOLVER_COMPETITION, RAW_TRADE } from '../../../test/data'
 import { GetAccountOrdersResponse } from './accountOrderUtils'
 
 export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
@@ -56,4 +58,12 @@ export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   trade.orderUid = orderId || trade.orderUid
 
   return [trade]
+}
+
+export async function getSolverCompetitionByTx(params: GetTxSolverCompetitionParams): Promise<RawSolverCompetition[]> {
+  const { txHash } = params
+  const solverCompetition = { ...RAW_SOLVER_COMPETITION }
+  solverCompetition.transactionHash = txHash || solverCompetition.transactionHash
+
+  return [solverCompetition]
 }

@@ -2,7 +2,16 @@ import { Network } from 'types'
 import { buildSearchString } from 'utils/url'
 import { isProd, isStaging } from 'utils/env'
 
-import { GetOrderParams, GetOrdersParams, RawOrder, RawTrade, GetTxOrdersParams, WithNetworkId } from './types'
+import {
+  GetOrderParams,
+  GetOrdersParams,
+  RawOrder,
+  RawTrade,
+  GetTxOrdersParams,
+  WithNetworkId,
+  GetTxSolverCompetitionParams,
+  RawSolverCompetition,
+} from './types'
 import { fetchQuery } from 'api/baseApi'
 import { orderBookSDK } from 'cowSdk'
 import { Address, UID } from '@cowprotocol/cow-sdk'
@@ -148,6 +157,24 @@ export async function getTrades(
   const trades = await Promise.all([tradesPromise, tradesPromiseBarn])
 
   return [...trades[0], ...trades[1]]
+}
+
+/**
+ * Gets information about solver competition By Transaction Hash
+ *  Required params:
+ *   - txHash: string
+ *
+ */
+export async function getSolverCompetitionByTx(params: GetTxSolverCompetitionParams): Promise<RawSolverCompetition> {
+  const { networkId, txHash } = params
+
+  console.log(
+    `[getSolverCompetitionByTx] Fetching Solver Competition on network ${networkId} with filters: tx_hash=${txHash}`,
+  )
+
+  const queryString = '/solver_competition/by_tx_hash/' + txHash
+
+  return _fetchQuery(networkId, queryString)
 }
 
 function _fetchQuery<T>(networkId: Network, queryString: string): Promise<T>

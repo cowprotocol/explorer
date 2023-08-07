@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faListUl, faProjectDiagram, faHandshakeAngle } from '@fortawesome/free-solid-svg-icons'
 
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { BlockchainNetwork, TransactionsTableContext } from './context/TransactionsTableContext'
@@ -17,6 +17,7 @@ import { Notification } from 'components/Notification'
 import { TransactionBatchGraph } from 'apps/explorer/components/TransanctionBatchGraph'
 import CowLoading from 'components/common/CowLoading'
 import { TAB_QUERY_PARAM_KEY } from 'apps/explorer/const'
+import { SolverCompetition } from 'components/transaction/SolverCompetition'
 
 interface Props {
   txHash: string
@@ -27,6 +28,7 @@ interface Props {
 enum TabView {
   ORDERS = 1,
   GRAPH,
+  SOLVER = 3,
 }
 
 const DEFAULT_TAB = TabView[1]
@@ -47,6 +49,11 @@ const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txH
       id: TabView.GRAPH,
       tab: <TabIcon title="Graph" iconFontName={faProjectDiagram} />,
       content: <TransactionBatchGraph orders={orders} networkId={networkId} txHash={txHash} />,
+    },
+    {
+      id: TabView.SOLVER,
+      tab: <TabIcon title="Solver" iconFontName={faHandshakeAngle} />,
+      content: <SolverCompetition orders={orders} networkId={networkId} txHash={txHash} />,
     },
   ]
 }
