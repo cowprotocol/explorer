@@ -1375,9 +1375,9 @@
   integrity sha512-XLs3SlPmXD4lbiWIO7mxxuCn1eE5isuO6EUlE1cj17HqN/wukDAN0xXYPx6umOH/XdjGS33miMiPHELEyY9siw==
 
 "@cowprotocol/cow-sdk@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-2.2.1.tgz#496c7caf3a17e8873e8e4bb4cdbd54b2f966ac1e"
-  integrity sha512-EjvVnfHsM9a/f60msa2MebDQTF7137cIMr/fuCb4K0AdUAsk5NqTrr6fVrp+YMyVrIj9OZ/zhaJUxDfGcwza3w==
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-2.3.1.tgz#ea7347869eada629b706cc24567ddcaa48bcc1ed"
+  integrity sha512-Rn3zCo3VCPqi3Wzqov0mDHXVVxBVhkLpnxnxcEZW7Kpv9WGcudl1vpz9e3Gs3YMzUQ5G6IA+kHxm5l81boIPhQ==
   dependencies:
     "@cowprotocol/contracts" "^1.4.0"
     "@ethersproject/abstract-signer" "^5.7.0"
