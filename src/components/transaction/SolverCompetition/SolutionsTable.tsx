@@ -28,6 +28,15 @@ type RowProps = {
   solution: Solution
   orders: Order[] | undefined
 }
+
+const tooltip = {
+  gas: '',
+  fees: '',
+  cost: '',
+  surplus: '',
+  total: '',
+  name: ''
+}
 const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
   return (
     <tr>
@@ -64,8 +73,8 @@ const AccordionContent: React.FC<AccordionProps> = ({ orders, loadedOrders, call
   console.log(mapOrders)
   return (
     <DetailsTr>
-      <td>
-        <Collapse in={open}>
+      <Collapse in={open}>
+        <td>
           <DetailsTable
             header={
               <tr>
@@ -75,11 +84,11 @@ const AccordionContent: React.FC<AccordionProps> = ({ orders, loadedOrders, call
             }
             body={mapOrders.map((order) => RowDetails({ executedAmount: order.executedAmount, order: order.order }))}
           />
-        </Collapse>
-      </td>
-      <td>
-        <textarea>{callData}</textarea>
-      </td>
+        </td>
+        <td>
+          <textarea value={callData} />
+        </td>
+      </Collapse>
     </DetailsTr>
   )
 }
@@ -92,7 +101,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
       <tr>
         <td>{ranking}</td>
         <td>{solver}</td>
-        <td>{total}</td>
+        <td>{<TokenAmount amount={total} token={} />}</td>
         <td>{surplus}</td>
         <td>{fees}</td>
         <td>{cost}</td>
@@ -144,27 +153,27 @@ const Solutions: React.FC<Props> = (props) => {
         <tr>
           <th>#</th>
           <th>
-            Name <HelpTooltip tooltip={} />
+            Name <HelpTooltip tooltip={tooltip.name} />
           </th>
           <th>
             Total
-            <HelpTooltip tooltip={} />
+            <HelpTooltip tooltip={tooltip.total} />
           </th>
           <th>
             Surplus
-            <HelpTooltip tooltip={} />
+            <HelpTooltip tooltip={tooltip.surplus} />
           </th>
           <th>
             Fees
-            <HelpTooltip tooltip={} />
+            <HelpTooltip tooltip={tooltip.fees} />
           </th>
           <th>
             Cost
-            <HelpTooltip tooltip={} />
+            <HelpTooltip tooltip={tooltip.cost} />
           </th>
           <th>
             Gas
-            <HelpTooltip tooltip={} />
+            <HelpTooltip tooltip={tooltip.gas} />
           </th>
           <th></th>
         </tr>

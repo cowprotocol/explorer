@@ -17,7 +17,7 @@ export const Table = styled(SimpleTable)`
       grid-template-columns: 17rem auto;
       padding: 1.4rem 0;
     }
-    &:last-child {
+    &.auction {
       grid-template-columns: 27rem auto auto;
       ${media.mediumDown} {
         grid-template-columns: 17rem auto auto;
@@ -153,3 +153,4 @@ export const ContentCard = styled.div`
     background-color: rgba(0, 0, 0, 0.2);
   }
 `
+

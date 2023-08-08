@@ -13,6 +13,11 @@ import SolutionsTable from './SolutionsTable'
 import { Order, Solution } from 'api/operator'
 
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
+import { abbreviateString, FormatAmountPrecision, formattedAmount, getShortOrderId } from 'utils'
+import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import { TokenImgWrapper } from 'components/common/TokenImg'
+import { TextWithTooltip } from 'apps/explorer/components/common/TextWithTooltip'
+import { TokenDisplay } from 'components/common/TokenDisplay'
 
 interface SolverCompetitionParams {
   txHash: string
@@ -112,7 +117,7 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                 />
               </td>
             </tr>
-            <tr>
+            <tr className={'auction'}>
               <td>
                 <HelpTooltip tooltip={tooltip} /> Auction Orders
               </td>
@@ -124,7 +129,9 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                   {data.auction?.orders &&
                     data.auction?.orders.map((order) => (
                       <span key={order}>
-                        <BlockExplorerLink type="order" networkId={networkId} identifier={order} /> ,
+                        <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
+                          {abbreviateString(order,6,4)}
+                        </LinkWithPrefixNetwork> ,
                       </span>
                     ))}
                 </ContentCard>
@@ -137,10 +144,19 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                   {data.auction?.orders &&
                     data.auction?.orders.map((order) => (
                       <span key={order}>
-                        <BlockExplorerLink type="order" networkId={networkId} identifier={order} /> ,
+                        <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
+                          {abbreviateString(order,6,4)}
+                        </LinkWithPrefixNetwork> ,
                       </span>
                     ))}
                 </ContentCard>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <HelpTooltip tooltip={tooltip} /> Clearing Price
+              </td>
+              <td colSpan={2}>
               </td>
             </tr>
           </>
