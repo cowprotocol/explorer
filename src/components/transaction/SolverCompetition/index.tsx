@@ -70,11 +70,13 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                 <HelpTooltip tooltip={tooltip} /> Auction Id
               </td>
               <td colSpan={2}>
-                <RowWithCopyButton
-                  textToCopy={data.auctionId?.toString()}
-                  contentsToDisplay={data.auctionId?.toString()}
-                  onCopy={(): void => onCopy('auctionId')}
-                />
+                {data.auctionId && (
+                  <RowWithCopyButton
+                    textToCopy={data.auctionId?.toString()}
+                    contentsToDisplay={data.auctionId?.toString()}
+                    onCopy={(): void => onCopy('auctionId')}
+                  />
+                )}
               </td>
             </tr>
             <tr>
@@ -82,11 +84,13 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                 <HelpTooltip tooltip={tooltip} /> Auction Start Block
               </td>
               <td colSpan={2}>
-                <RowWithCopyButton
-                  textToCopy={data.auctionStartBlock}
-                  contentsToDisplay={data.auctionStartBlock}
-                  onCopy={(): void => onCopy('auctionId')}
-                />
+                {data.auctionStartBlock && (
+                  <RowWithCopyButton
+                    textToCopy={data.auctionStartBlock}
+                    contentsToDisplay={data.auctionStartBlock}
+                    onCopy={(): void => onCopy('auctionId')}
+                  />
+                )}
               </td>
             </tr>
             <tr>
@@ -94,11 +98,13 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                 <HelpTooltip tooltip={tooltip} /> Liquidity Collected Block
               </td>
               <td colSpan={2}>
-                <RowWithCopyButton
-                  textToCopy={data.liquidityCollectedBlock}
-                  contentsToDisplay={data.liquidityCollectedBlock}
-                  onCopy={(): void => onCopy('auctionId')}
-                />
+                {data.liquidityCollectedBlock && (
+                  <RowWithCopyButton
+                    textToCopy={data.liquidityCollectedBlock.toString()}
+                    contentsToDisplay={data.liquidityCollectedBlock.toString()}
+                    onCopy={(): void => onCopy('auctionId')}
+                  />
+                )}
               </td>
             </tr>
             <tr>
