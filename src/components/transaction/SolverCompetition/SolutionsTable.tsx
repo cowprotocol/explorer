@@ -9,6 +9,7 @@ import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { Collapse, IconButton } from '@material-ui/core'
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import BigNumber from 'bignumber.js'
 
 export type Props = {
   solutions: Solution[] | undefined
@@ -38,6 +39,9 @@ const tooltip = {
   name: '',
 }
 const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
+  if (!order) {
+    return <></>
+  }
   return (
     <tr>
       <td>
@@ -51,9 +55,7 @@ const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
           }
         />
       </td>
-      <td>
-        <TokenAmount amount={executedAmount} token={order?.buyToken} />
-      </td>
+      <td>{executedAmount && <TokenAmount amount={BigNumber(executedAmount)} token={order?.buyToken} />}</td>
     </tr>
   )
 }
