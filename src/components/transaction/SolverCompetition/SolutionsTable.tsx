@@ -35,7 +35,7 @@ const tooltip = {
   cost: '',
   surplus: '',
   total: '',
-  name: ''
+  name: '',
 }
 const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
   return (
@@ -82,7 +82,9 @@ const AccordionContent: React.FC<AccordionProps> = ({ orders, loadedOrders, call
                 <th>Executed Amount</th>
               </tr>
             }
-            body={mapOrders.map((order) => RowDetails({ executedAmount: order.executedAmount, order: order.order }))}
+            body={
+              <> {mapOrders.map((order) => RowDetails({ executedAmount: order.executedAmount, order: order.order }))}</>
+            }
           />
         </td>
         <td>
@@ -101,7 +103,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
       <tr>
         <td>{ranking}</td>
         <td>{solver}</td>
-        <td>{<TokenAmount amount={total} token={} />}</td>
+        <td>{total}</td>
         <td>{surplus}</td>
         <td>{fees}</td>
         <td>{cost}</td>

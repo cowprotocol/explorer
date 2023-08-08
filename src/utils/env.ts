@@ -12,7 +12,7 @@ function checkEnvironment(host: string): EnvsFlags {
   const domainStagingRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_STAGING)
   const domainProdRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_PROD)
   const domainBarnRegex = getRegex(process.env.EXPLORER_APP_DOMAIN_REGEX_BARN)
-  console.log("host", domainStagingRegex, domainStagingRegex?.test(host), host)
+  console.log('host', domainStagingRegex, domainStagingRegex?.test(host), host)
   return {
     isDev: domainDevRegex?.test(host) || false,
     isStaging: domainStagingRegex?.test(host) || false,
