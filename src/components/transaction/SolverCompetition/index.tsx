@@ -106,11 +106,13 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                 <HelpTooltip tooltip={tooltip} /> Competition Block
               </td>
               <td colSpan={2}>
-                <RowWithCopyButton
-                  textToCopy={data.auctionId}
-                  contentsToDisplay={data.auctionId}
-                  onCopy={(): void => onCopy('auctionId')}
-                />
+                {data?.auctionId && (
+                  <RowWithCopyButton
+                    textToCopy={data.auctionId.toString()}
+                    contentsToDisplay={data.auctionId.toString()}
+                    onCopy={(): void => onCopy('auctionId')}
+                  />
+                )}
               </td>
             </tr>
             <tr className={'auction'}>
