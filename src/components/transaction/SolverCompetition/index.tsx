@@ -86,8 +86,8 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
               <td colSpan={2}>
                 {data.auctionStartBlock && (
                   <RowWithCopyButton
-                    textToCopy={data.auctionStartBlock}
-                    contentsToDisplay={data.auctionStartBlock}
+                    textToCopy={data.auctionStartBlock.toString()}
+                    contentsToDisplay={data.auctionStartBlock.toString()}
                     onCopy={(): void => onCopy('auctionId')}
                   />
                 )}
