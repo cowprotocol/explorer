@@ -72,7 +72,6 @@ const AccordionContent: React.FC<AccordionProps> = ({ orders, loadedOrders, call
     )
   }
   const mapOrders = orders.map((order) => ({ ...order, order: loadedOrders?.find((o) => o.uid == order.id) }))
-  console.log(mapOrders)
   return (
     <DetailsTr>
       <Collapse in={open}>
@@ -102,7 +101,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
   const { total, surplus, fees, cost, gas } = solution?.objective || {}
   return (
     <>
-      <tr>
+      <tr key={ranking}>
         <td>{ranking}</td>
         <td>{solver}</td>
         <td>{total}</td>

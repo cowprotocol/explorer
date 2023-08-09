@@ -14,6 +14,7 @@ import { Order, Solution } from 'api/operator'
 
 import { abbreviateString } from 'utils'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
+import ClearingPrices from './ClearingPrices'
 
 interface SolverCompetitionParams {
   txHash: string
@@ -37,6 +38,7 @@ const StatusIcon = ({ type }: StatusType): JSX.Element => {
 export function SolverCompetition(params: SolverCompetitionParams): JSX.Element {
   const { networkId, txHash, orders } = params
   const { data, isLoading, error } = useGetSolverCompetition(txHash, networkId)
+
   console.log(data)
   const onCopy = (label: string): void =>
     sendEvent({
@@ -162,12 +164,14 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
               <td>
                 <HelpTooltip tooltip={tooltip} /> Clearing Price
               </td>
-              <td colSpan={2}></td>
+              <td colSpan={2}>{data.auction?.prices && <ClearingPrices prices={data.auction?.prices} />}</td>
+            </tr>
+            <tr>
+              <SolutionsTable solutions={data.solutions as Solution[]} orders={orders} />
             </tr>
           </>
         }
       />
-      <SolutionsTable solutions={data.solutions as Solution[]} orders={orders} />
     </Container>
   )
 }

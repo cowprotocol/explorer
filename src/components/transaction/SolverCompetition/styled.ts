@@ -9,6 +9,7 @@ export const Container = styled(FlexContainer)`
   align-items: baseline;
 `
 export const Table = styled(SimpleTable)`
+  margin-bottom: 10px;
   > tbody > tr {
     grid-template-columns: 27rem auto;
     padding: 1.4rem 0 1.4rem 1.1rem;
@@ -16,6 +17,9 @@ export const Table = styled(SimpleTable)`
     ${media.mediumDown} {
       grid-template-columns: 17rem auto;
       padding: 1.4rem 0;
+    }
+    &:last-of-type {
+      grid-template-columns: auto;
     }
     &.auction {
       grid-template-columns: 27rem auto auto;
@@ -34,6 +38,7 @@ export const Table = styled(SimpleTable)`
         }
       }
     }
+
     > td {
       justify-content: flex-start;
 
@@ -151,5 +156,37 @@ export const ContentCard = styled.div`
   }
   ::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0.2);
+  }
+`
+
+export const PricesCard = styled.div`
+  border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
+  padding: 20px;
+  border-radius: 0.4rem;
+  min-height: 23rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 3px;
+  row-gap: 10px;
+  width: 100%;
+  max-height: 100px;
+  overflow-y: auto;
+  ::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsla(0, 0%, 100%, 0.1);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  span {
+    display: flex;
+    align-items: center;
+    img {
+      margin-right: 4px;
+    }
   }
 `
