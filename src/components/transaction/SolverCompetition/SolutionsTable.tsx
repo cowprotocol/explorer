@@ -3,13 +3,18 @@ import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { Order, Solution } from 'api/operator'
 import { HelpTooltip } from 'components/Tooltip'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { DetailsTable, SolutionsTable, DetailsTr } from 'components/transaction/SolverCompetition/styled'
+import { DetailsTable, SolutionsTable, DetailsTr, CalldataCard } from 'components/transaction/SolverCompetition/styled'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { TokenAmount } from 'components/token/TokenAmount'
 import { Collapse, IconButton } from '@material-ui/core'
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp, faMedal } from '@fortawesome/free-solid-svg-icons'
 import BigNumber from 'bignumber.js'
+import BoringAvatar from 'components/common/Avatar'
+import { formatSmart } from '@gnosis.pm/dex-js'
+import TokenImg from 'components/common/TokenImg'
+import { getImageAddress } from 'utils'
+import { useNetworkId } from 'state/network'
 
 export type Props = {
   solutions: Solution[] | undefined
@@ -22,7 +27,7 @@ type DetailsProps = {
 type AccordionProps = {
   orders: Solution['orders']
   loadedOrders: Order[] | undefined
-  callData: string | undefined
+  callData?: string
   open?: boolean
 }
 type RowProps = {
@@ -38,10 +43,15 @@ const tooltip = {
   total: '',
   name: '',
 }
+
 const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
-  if (!order) {
+  const network = useNetworkId()
+  if (!order || !network) {
     return <></>
   }
+
+  const imageAddress = getImageAddress(order.buyTokenAddress, network)
+
   return (
     <tr>
       <td>
@@ -55,7 +65,14 @@ const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
           }
         />
       </td>
-      <td>{executedAmount && <TokenAmount amount={BigNumber(executedAmount)} token={order?.buyToken} />}</td>
+      <td className={'amount'}>
+        {executedAmount && (
+          <span>
+            <TokenImg address={imageAddress} />
+            <TokenAmount amount={BigNumber(executedAmount)} token={order?.buyToken} />
+          </span>
+        )}
+      </td>
     </tr>
   )
 }
@@ -89,29 +106,54 @@ const AccordionContent: React.FC<AccordionProps> = ({ orders, loadedOrders, call
           />
         </td>
         <td>
-          <textarea value={callData} />
+          {callData && (
+            <RowWithCopyButton
+              textToCopy={callData}
+              className={'calldataBox'}
+              contentsToDisplay={
+                <>
+                  <div>
+                    Calldata <HelpTooltip tooltip={tooltip.name} />
+                  </div>
+                  <CalldataCard>
+                    <span>{callData}</span>
+                  </CalldataCard>
+                </>
+              }
+            />
+          )}
         </td>
       </Collapse>
     </DetailsTr>
   )
 }
 const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
-  const { ranking, solver } = solution ?? {}
+  const { ranking, solver, solverAddress } = solution ?? {}
   const [open, setOpen] = useState<boolean>(false)
+
   const { total, surplus, fees, cost, gas } = solution?.objective || {}
   return (
     <>
-      <tr key={ranking}>
+      <tr className={'ranking'} key={ranking}>
         <td>{ranking}</td>
-        <td>{solver}</td>
-        <td>{total}</td>
-        <td>{surplus}</td>
-        <td>{fees}</td>
-        <td>{cost}</td>
-        <td>{gas}</td>
+        <td>
+          <BoringAvatar alt={solver} /> {solver}{' '}
+          <LinkWithPrefixNetwork to={`/user/${solverAddress}`}>
+            {ranking == 1 && <FontAwesomeIcon icon={faMedal} style={{ color: '#f4b731' }} />}
+          </LinkWithPrefixNetwork>
+        </td>
+        <td>{total} ETH</td>
+        <td>{surplus} ETH</td>
+        <td>{fees} ETH</td>
+        <td>{cost} ETH</td>
+        <td>{gas && formatSmart(gas?.toString(), 4)}</td>
         <td>
           <IconButton aria-label="expand row" size="small" onClick={(): void => setOpen(!open)}>
-            {open ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />}
+            {open ? (
+              <FontAwesomeIcon color={'#ffffff'} icon={faChevronUp} />
+            ) : (
+              <FontAwesomeIcon color={'#ffffff'} icon={faChevronDown} />
+            )}
           </IconButton>
         </td>
       </tr>
