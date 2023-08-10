@@ -57,7 +57,13 @@ const Item: React.FC<ItemProps> = (props) => {
 const ClearingPrices: React.FC<Props> = (props) => {
   const { prices } = props
   const networkId = useNetworkId() ?? undefined
-  const { isLoading, error, value: tokens } = useMultipleErc20({ addresses: Object.keys(prices), networkId })
+  const {
+    isLoading,
+    error,
+    value: tokens,
+  } = /*{
+    isLoading:false, error:{}, tokens={}
+  }*/ useMultipleErc20({ addresses: Object.keys(prices), networkId })
 
   if (isLoading && Object.keys(tokens).length == 0) {
     return <CircularProgress />
@@ -65,7 +71,7 @@ const ClearingPrices: React.FC<Props> = (props) => {
   if ((error && Object.keys(error).length && !tokens) || !networkId) {
     return <EmptyItemWrapper>{'Can&apos;t load details'}</EmptyItemWrapper>
   }
-
+  console.log('tokens', tokens)
   return (
     <PricesCard>
       {Object.values(tokens)

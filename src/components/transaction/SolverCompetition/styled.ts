@@ -232,9 +232,10 @@ export const PricesCard = styled.div`
   ::-webkit-scrollbar-track {
     background-color: rgba(0, 0, 0, 0.2);
   }
-  span {
+  div {
     display: flex;
     align-items: center;
+    align-content: center;
     img {
       margin-right: 4px;
     }
@@ -244,12 +245,11 @@ export const CalldataCard = styled.div`
   border: 0.1rem solid ${({ theme }): string => theme.borderPrimary};
   padding: 20px;
   border-radius: 0.4rem;
-  display: inline;
   color: #ffffff;
   width: available;
   display: block;
   line-height: 1.3;
-  max-height: 1030px;
+  max-height: 100px;
   overflow-y: auto;
   ::-webkit-scrollbar {
     width: 8px !important;

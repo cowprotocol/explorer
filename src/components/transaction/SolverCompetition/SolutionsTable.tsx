@@ -137,9 +137,9 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
       <tr className={'ranking'} key={ranking}>
         <td>{ranking}</td>
         <td>
-          <BoringAvatar alt={solver} /> {solver}{' '}
+          <BoringAvatar alt={solver} />
           <LinkWithPrefixNetwork to={`/user/${solverAddress}`}>
-            {ranking == 1 && <FontAwesomeIcon icon={faMedal} style={{ color: '#f4b731' }} />}
+            {solver} {ranking == 1 && <FontAwesomeIcon icon={faMedal} style={{ color: '#f4b731' }} />}
           </LinkWithPrefixNetwork>
         </td>
         <td>{total} ETH</td>

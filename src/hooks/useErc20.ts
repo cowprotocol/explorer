@@ -18,6 +18,12 @@ import { web3, erc20Api } from 'apps/explorer/api'
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
 import { isNativeToken, retry } from 'utils'
 
+const ERC20_INFO_CACHE = new Map<string, SingleErc20State>()
+
+function getCachedData<T>(key: string, cache: Map<string, T>): T | undefined {
+  return cache.get(key)
+}
+
 async function _fetchErc20FromNetwork(params: {
   address: string
   networkId: number
@@ -32,9 +38,15 @@ async function _fetchErc20FromNetwork(params: {
     // Causing the caller to never know we got the token it was looking for
     return { ...nativeToken, address }
   }
-
+  const cacheKey = `${networkId}-${address}`
+  const cachedData = getCachedData(cacheKey, ERC20_INFO_CACHE)
+  if (cachedData) {
+    return cachedData
+  }
   try {
-    return await retry(() => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api }))
+    const Erc20Info = await retry(() => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api }))
+    ERC20_INFO_CACHE.set(cacheKey, Erc20Info)
+    return Erc20Info
   } catch (e) {
     const msg = `Failed to fetch erc20 details for ${address} on network ${networkId}`
     console.error(msg, e)
