@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { AuctionPrices, BigUint } from '@cowprotocol/cow-sdk'
-import { useMultipleErc20 } from 'hooks/useErc20'
 import { useNetworkId } from 'state/network'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { PricesCard } from 'components/transaction/SolverCompetition/styled'
@@ -13,6 +12,7 @@ import { invertPrice } from '@gnosis.pm/dex-js/build-esm/utils/price'
 import Icon from 'components/Icon'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { CircularProgress } from '@material-ui/core'
+import { useMultipleErc20 } from 'hooks/useErc20'
 
 type Props = {
   prices: AuctionPrices
@@ -57,13 +57,7 @@ const Item: React.FC<ItemProps> = (props) => {
 const ClearingPrices: React.FC<Props> = (props) => {
   const { prices } = props
   const networkId = useNetworkId() ?? undefined
-  const {
-    isLoading,
-    error,
-    value: tokens,
-  } = /*{
-    isLoading:false, error:{}, tokens={}
-  }*/ useMultipleErc20({ addresses: Object.keys(prices), networkId })
+  const { isLoading, error, value: tokens } = useMultipleErc20({ addresses: Object.keys(prices), networkId })
 
   if (isLoading && Object.keys(tokens).length == 0) {
     return <CircularProgress />

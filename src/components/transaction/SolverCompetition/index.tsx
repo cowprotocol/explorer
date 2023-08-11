@@ -15,6 +15,7 @@ import { Order, Solution } from 'api/operator'
 import { abbreviateString } from 'utils'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import ClearingPrices from './ClearingPrices'
+import { Title } from 'apps/explorer/pages/styled'
 
 interface SolverCompetitionParams {
   txHash: string
@@ -167,6 +168,7 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
               <td colSpan={2}>{data.auction?.prices && <ClearingPrices prices={data.auction?.prices} />}</td>
             </tr>
             <tr>
+              <Title> Solutions</Title>
               <SolutionsTable solutions={data.solutions as Solution[]} orders={orders} />
             </tr>
           </>
