@@ -80,7 +80,7 @@ const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
         {executedAmount && (
           <span>
             <TokenImg address={imageAddress} />
-            <TokenAmount amount={BigNumber(executedAmount)} token={order?.buyToken} />
+            <TokenAmount amount={BigNumber(executedAmount)} token={order?.sellToken} />
           </span>
         )}
       </td>

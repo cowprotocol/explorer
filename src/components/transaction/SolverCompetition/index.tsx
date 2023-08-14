@@ -40,7 +40,7 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
   const { networkId, txHash, orders } = params
   const { data, isLoading, error } = useGetSolverCompetition(txHash, networkId)
 
-  console.log(data)
+  console.log(orders)
   const onCopy = (label: string): void =>
     sendEvent({
       category: 'Transaction Solve Competition screen',
@@ -133,11 +133,11 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                   <StatusIcon type={'executed'} /> Executed
                 </p>
                 <ContentCard>
-                  {data.auction?.orders &&
-                    data.auction?.orders.map((order) => (
-                      <span key={order}>
+                  {orders &&
+                    orders.map((order) => (
+                      <span key={order.uid}>
                         <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
-                          {abbreviateString(order, 6, 4)}
+                          {abbreviateString(order.uid, 6, 4)}
                         </LinkWithPrefixNetwork>{' '}
                         ,
                       </span>
@@ -150,14 +150,16 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                 </p>
                 <ContentCard>
                   {data.auction?.orders &&
-                    data.auction?.orders.map((order) => (
-                      <span key={order}>
-                        <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
-                          {abbreviateString(order, 6, 4)}
-                        </LinkWithPrefixNetwork>{' '}
-                        ,
-                      </span>
-                    ))}
+                    data.auction?.orders
+                      .filter((o) => !orders?.map((order) => order.uid).includes(o))
+                      .map((order) => (
+                        <span key={order}>
+                          <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
+                            {abbreviateString(order, 6, 4)}
+                          </LinkWithPrefixNetwork>{' '}
+                          ,
+                        </span>
+                      ))}
                 </ContentCard>
               </td>
             </tr>
