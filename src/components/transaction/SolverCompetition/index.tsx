@@ -134,12 +134,12 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                 </p>
                 <ContentCard>
                   {orders &&
-                    orders.map((order) => (
+                    orders.map((order, key, array) => (
                       <span key={order.uid}>
                         <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
                           {abbreviateString(order.uid, 6, 4)}
                         </LinkWithPrefixNetwork>{' '}
-                        ,
+                        {key + 1 != array.length && <>,</>}
                       </span>
                     ))}
                 </ContentCard>
@@ -152,12 +152,12 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                   {data.auction?.orders &&
                     data.auction?.orders
                       .filter((o) => !orders?.map((order) => order.uid).includes(o))
-                      .map((order) => (
+                      .map((order, key, array) => (
                         <span key={order}>
                           <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
                             {abbreviateString(order, 6, 4)}
                           </LinkWithPrefixNetwork>{' '}
-                          ,
+                          {key + 1 < array.length && <>,</>}
                         </span>
                       ))}
                 </ContentCard>

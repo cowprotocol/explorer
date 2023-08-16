@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { Order, Solution } from 'api/operator'
 import { HelpTooltip } from 'components/Tooltip'
+import { isMobile } from 'react-device-detect'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   DetailsTable,
@@ -61,7 +63,7 @@ const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
     return <></>
   }
 
-  const imageAddress = getImageAddress(order.buyTokenAddress, network)
+  const imageAddress = getImageAddress(order.sellTokenAddress, network)
 
   return (
     <tr>
@@ -166,7 +168,7 @@ const ModalContent: React.FC<AccordionProps> = ({ orders, loadedOrders, callData
   }
   const elements = DetailsGenerator({ orders, loadedOrders, callData })
   return (
-    <StyledDialog onClose={handleClose} className={'modal-mobile'} open={!!open}>
+    <StyledDialog scroll={'body'} onClose={handleClose} className={'modal-mobile'} open={!!open}>
       <DialogTitle id="customized-dialog-title">
         Details
         <CloseButton onClick={closeModal}>X</CloseButton>
@@ -284,6 +286,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
       {solution.orders &&
         AccordionContent({ orders: solution.orders, loadedOrders: orders, callData: solution.callData, open })}
       {solution.orders &&
+        isMobile &&
         ModalContent({
           orders: solution.orders,
           loadedOrders: orders,
