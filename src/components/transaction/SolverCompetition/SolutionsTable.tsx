@@ -27,6 +27,8 @@ import TokenImg from 'components/common/TokenImg'
 import { getImageAddress } from 'utils'
 import { useNetworkId } from 'state/network'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
+import { TEN_BIG_NUMBER } from 'const'
+import { MIDDLE_PRECISION_DECIMALS } from 'apps/explorer/const'
 
 export type Props = {
   solutions: Solution[] | undefined
@@ -55,6 +57,16 @@ const tooltip = {
   surplus: '',
   total: '',
   name: '',
+}
+
+const formatNumbers = (amount = 0): string => {
+  const calculatedPrice = BigNumber(amount).div(TEN_BIG_NUMBER.exponentiatedBy(18))
+  return formatSmart({
+    amount: calculatedPrice.toString(10),
+    precision: MIDDLE_PRECISION_DECIMALS,
+    decimals: MIDDLE_PRECISION_DECIMALS,
+    isLocaleAware: false,
+  })
 }
 
 const RowDetails: React.FC<DetailsProps> = ({ executedAmount, order }) => {
@@ -244,25 +256,25 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
           <HeaderTitle>
             Total <HelpTooltip tooltip={tooltip.total} />
           </HeaderTitle>
-          <HeaderValue>{total} ETH</HeaderValue>
+          <HeaderValue>{formatNumbers(total)} ETH</HeaderValue>
         </td>
         <td>
           <HeaderTitle>
             Surplus <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{surplus} ETH</HeaderValue>
+          <HeaderValue>{formatNumbers(surplus)} ETH</HeaderValue>
         </td>
         <td>
           <HeaderTitle>
             Fees <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{fees} ETH</HeaderValue>
+          <HeaderValue>{formatNumbers(fees)} ETH</HeaderValue>
         </td>
         <td>
           <HeaderTitle>
             Fees <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{cost} ETH</HeaderValue>
+          <HeaderValue>{formatNumbers(cost)} ETH</HeaderValue>
         </td>
         <td>
           <HeaderTitle>

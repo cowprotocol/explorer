@@ -3,7 +3,7 @@ import { AuctionPrices, BigUint } from '@cowprotocol/cow-sdk'
 import { useNetworkId } from 'state/network'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { PricesCard } from 'components/transaction/SolverCompetition/styled'
-import { calculatePrice, formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
+import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 import TokenImg from 'components/common/TokenImg'
 import { MIDDLE_PRECISION_DECIMALS } from 'apps/explorer/const'
@@ -13,6 +13,8 @@ import Icon from 'components/Icon'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import { CircularProgress } from '@material-ui/core'
 import { useMultipleErc20 } from 'hooks/useErc20'
+import BigNumber from 'bignumber.js'
+import { TEN_BIG_NUMBER } from 'const'
 
 type Props = {
   prices: AuctionPrices
@@ -29,26 +31,21 @@ const Item: React.FC<ItemProps> = (props) => {
   const { amount, erc20, network } = props
   const [invertedPrice, setInvertedPrice] = useState<boolean>(false)
 
-  const calculatedPrice = calculatePrice({
-    denominator: { amount: '1', decimals: 1 },
-    numerator: { amount: amount, decimals: erc20.decimals },
-  })
-
+  const calculatedPrice = BigNumber(amount).div(TEN_BIG_NUMBER.exponentiatedBy(18))
   const formattedPrice = formatSmart({
     amount: (invertedPrice ? invertPrice(calculatedPrice) : calculatedPrice).toString(10),
     precision: MIDDLE_PRECISION_DECIMALS,
-    smallLimit: '0.00001',
     decimals: MIDDLE_PRECISION_DECIMALS,
     isLocaleAware: false,
   })
   const imageAddress = getImageAddress(erc20.address, network)
   const symbol = safeTokenName(erc20)
-  const tokenNames = invertedPrice ? ['ETH', symbol] : [symbol, 'ETH']
+  const tokenNames = !invertedPrice ? ['ETH', symbol] : [symbol, 'ETH']
 
   return (
     <div>
       <TokenImg address={imageAddress} />
-      {`1 ${tokenNames[0]}`} = {`${formattedPrice} ${tokenNames[1]}`}
+      {`1 ${tokenNames[0]}`} ={formattedPrice} {`${tokenNames[1]}`}
       {<Icon icon={faExchangeAlt} onClick={(): void => setInvertedPrice(!invertedPrice)} />}
     </div>
   )
