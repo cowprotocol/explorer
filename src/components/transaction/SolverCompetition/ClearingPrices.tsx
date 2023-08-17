@@ -29,8 +29,8 @@ type ItemProps = {
 const Item: React.FC<ItemProps> = (props) => {
   const { token, network, amount } = props
   const [invertedPrice, setInvertedPrice] = useState<boolean>(false)
-
-  const calculatedPrice = amount.div(TEN_BIG_NUMBER.exponentiatedBy(18))
+  console.log(token, amount.toNumber())
+  const calculatedPrice = amount.div(TEN_BIG_NUMBER.exponentiatedBy(36 - token.decimals.valueOf()))
   const displayPrice = (invertedPrice ? invertPrice(calculatedPrice) : calculatedPrice).toString(10)
   const formattedPrice = formatSmart({
     amount: displayPrice,
@@ -44,7 +44,6 @@ const Item: React.FC<ItemProps> = (props) => {
   const tokenSymbol = token && safeTokenName(token)
 
   const tokenNames = !invertedPrice ? [tokenSymbol, 'ETH'] : ['ETH', tokenSymbol]
-
   return (
     <div key={token?.address}>
       <TokenImg address={tokenImage} />
