@@ -167,7 +167,9 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
               <td>
                 <HelpTooltip tooltip={tooltip} /> Clearing Price
               </td>
-              <td colSpan={2}>{data.auction?.prices && <ClearingPrices prices={data.auction?.prices} />}</td>
+              <td colSpan={2}>
+                {data.auction?.prices && orders && <ClearingPrices orders={orders} prices={data.auction?.prices} />}
+              </td>
             </tr>
             <tr>
               <Title> Solutions</Title>

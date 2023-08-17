@@ -1,50 +1,53 @@
 import React, { useState } from 'react'
-import { AuctionPrices, BigUint } from '@cowprotocol/cow-sdk'
 import { useNetworkId } from 'state/network'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { PricesCard } from 'components/transaction/SolverCompetition/styled'
 import { formatSmart, safeTokenName, TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 import TokenImg from 'components/common/TokenImg'
-import { MIDDLE_PRECISION_DECIMALS } from 'apps/explorer/const'
+import { HIGH_PRECISION_SMALL_LIMIT, NO_ADJUSTMENT_NEEDED_PRECISION } from 'apps/explorer/const'
 import { getImageAddress } from 'utils'
 import { invertPrice } from '@gnosis.pm/dex-js/build-esm/utils/price'
 import Icon from 'components/Icon'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
-import { CircularProgress } from '@material-ui/core'
-import { useMultipleErc20 } from 'hooks/useErc20'
 import BigNumber from 'bignumber.js'
 import { TEN_BIG_NUMBER } from 'const'
+import { Order } from 'api/operator'
+import { AuctionPrices } from '@cowprotocol/cow-sdk'
 
 type Props = {
+  orders: Order[]
   prices: AuctionPrices
 }
 
 type ItemProps = {
-  amount: BigUint
-  erc20: TokenErc20
+  token: TokenErc20
+  amount: BigNumber
   network: Network
 }
-
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Item: React.FC<ItemProps> = (props) => {
-  const { amount, erc20, network } = props
+  const { token, network, amount } = props
   const [invertedPrice, setInvertedPrice] = useState<boolean>(false)
 
-  const calculatedPrice = BigNumber(amount).div(TEN_BIG_NUMBER.exponentiatedBy(18))
+  const calculatedPrice = amount.div(TEN_BIG_NUMBER.exponentiatedBy(18))
+  const displayPrice = (invertedPrice ? invertPrice(calculatedPrice) : calculatedPrice).toString(10)
   const formattedPrice = formatSmart({
-    amount: (invertedPrice ? invertPrice(calculatedPrice) : calculatedPrice).toString(10),
-    precision: MIDDLE_PRECISION_DECIMALS,
-    decimals: MIDDLE_PRECISION_DECIMALS,
+    amount: displayPrice,
+    precision: NO_ADJUSTMENT_NEEDED_PRECISION,
+    smallLimit: HIGH_PRECISION_SMALL_LIMIT,
+    decimals: 6,
     isLocaleAware: false,
   })
-  const imageAddress = getImageAddress(erc20.address, network)
-  const symbol = safeTokenName(erc20)
-  const tokenNames = !invertedPrice ? ['ETH', symbol] : [symbol, 'ETH']
+
+  const tokenImage = getImageAddress(token?.address ?? '', network)
+  const tokenSymbol = token && safeTokenName(token)
+
+  const tokenNames = !invertedPrice ? [tokenSymbol, 'ETH'] : ['ETH', tokenSymbol]
 
   return (
-    <div>
-      <TokenImg address={imageAddress} />
+    <div key={token?.address}>
+      <TokenImg address={tokenImage} />
       {`1 ${tokenNames[0]}`} ={formattedPrice} {`${tokenNames[1]}`}
       {<Icon icon={faExchangeAlt} onClick={(): void => setInvertedPrice(!invertedPrice)} />}
     </div>
@@ -52,24 +55,26 @@ const Item: React.FC<ItemProps> = (props) => {
 }
 
 const ClearingPrices: React.FC<Props> = (props) => {
-  const { prices } = props
+  const { orders, prices } = props
   const networkId = useNetworkId() ?? undefined
-  const { isLoading, error, value: tokens } = useMultipleErc20({ addresses: Object.keys(prices), networkId })
-
-  if (isLoading && Object.keys(tokens).length == 0) {
-    return <CircularProgress />
-  }
-  if ((error && Object.keys(error).length && !tokens) || !networkId) {
+  const tokens: { [p: string]: TokenErc20 | null | undefined } = Object.assign(
+    {},
+    ...orders.map((o): { [p: string]: TokenErc20 | null | undefined } => ({
+      [o.buyTokenAddress]: o.buyToken,
+      [o.sellTokenAddress]: o.sellToken,
+    })),
+  )
+  console.log(tokens)
+  if (!networkId) {
     return <EmptyItemWrapper>{'Can&apos;t load details'}</EmptyItemWrapper>
   }
-  console.log('tokens', tokens)
   return (
     <PricesCard>
-      {Object.values(tokens)
-        .filter((token) => token)
-        .map((token) => (
-          <>{token && <Item erc20={token} network={networkId} amount={prices[token.address]} />}</>
-        ))}
+      {Object.values(tokens).map((token, key) => {
+        return (
+          <>{token && <Item key={key} token={token} amount={BigNumber(prices[token.address])} network={networkId} />}</>
+        )
+      })}
     </PricesCard>
   )
 }

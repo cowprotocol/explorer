@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import { Order, Solution } from 'api/operator'
 import { HelpTooltip } from 'components/Tooltip'
-import { isMobile } from 'react-device-detect'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -28,7 +27,8 @@ import { getImageAddress } from 'utils'
 import { useNetworkId } from 'state/network'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
 import { TEN_BIG_NUMBER } from 'const'
-import { MIDDLE_PRECISION_DECIMALS } from 'apps/explorer/const'
+import { HIGH_PRECISION_SMALL_LIMIT, NO_ADJUSTMENT_NEEDED_PRECISION } from 'apps/explorer/const'
+import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 
 export type Props = {
   solutions: Solution[] | undefined
@@ -62,10 +62,10 @@ const tooltip = {
 const formatNumbers = (amount = 0): string => {
   const calculatedPrice = BigNumber(amount).div(TEN_BIG_NUMBER.exponentiatedBy(18))
   return formatSmart({
-    amount: calculatedPrice.toString(10),
-    precision: MIDDLE_PRECISION_DECIMALS,
-    decimals: MIDDLE_PRECISION_DECIMALS,
-    isLocaleAware: false,
+    amount: calculatedPrice.toString(),
+    precision: NO_ADJUSTMENT_NEEDED_PRECISION,
+    smallLimit: HIGH_PRECISION_SMALL_LIMIT,
+    decimals: 6,
   })
 }
 
@@ -230,7 +230,7 @@ const AccordionContent: React.FC<AccordionProps> = ({ orders, loadedOrders, call
 const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
   const { ranking, solver, solverAddress } = solution ?? {}
   const [open, setOpen] = useState<boolean>(false)
-
+  const isMobile = useMediaBreakpoint(['xs', 'sm'])
   const { total, surplus, fees, cost, gas } = solution?.objective || {}
   return (
     <>

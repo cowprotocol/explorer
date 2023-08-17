@@ -14,7 +14,9 @@ export const Table = styled(SimpleTable)`
   > tbody > tr {
     grid-template-columns: 27rem auto;
     padding: 1.4rem 0 1.4rem 1.1rem;
-
+    &:hover {
+      background: transparent !important;
+    }
     ${media.mediumDown} {
       grid-template-columns: 17rem auto;
       padding: 1.4rem 0;
@@ -82,6 +84,9 @@ export const SolutionsTable = styled(SimpleTable)`
   > thead > tr,
   > tbody > tr {
     grid-template-columns: 1fr repeat(6, 4fr) 1fr;
+    &:hover {
+      background: transparent !important;
+    }
   }
   > thead {
     ${media.mobile} {
