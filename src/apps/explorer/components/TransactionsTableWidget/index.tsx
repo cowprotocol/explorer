@@ -52,7 +52,7 @@ const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txH
     },
     {
       id: TabView.SOLVER,
-      tab: <TabIcon title="Solver" iconFontName={faHandshakeAngle} />,
+      tab: <TabIcon title="Solver Competition" iconFontName={faHandshakeAngle} />,
       content: <SolverCompetition orders={orders} networkId={networkId} txHash={txHash} />,
     },
   ]

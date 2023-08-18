@@ -280,7 +280,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
           <HeaderTitle>
             gas <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{formatNumbers(gas)}</HeaderValue>
+          <HeaderValue>{gas} WEI</HeaderValue>
         </td>
         <td>
           <IconButton className={'mediumUp'} aria-label="expand row" size="small" onClick={(): void => setOpen(!open)}>
@@ -344,29 +344,12 @@ const Solutions: React.FC<Props> = (props) => {
       header={
         <tr>
           <th>#</th>
-          <th>
-            Name <HelpTooltip tooltip={tooltip.name} />
-          </th>
-          <th>
-            Total
-            <HelpTooltip tooltip={tooltip.total} />
-          </th>
-          <th>
-            Surplus
-            <HelpTooltip tooltip={tooltip.surplus} />
-          </th>
-          <th>
-            Fees
-            <HelpTooltip tooltip={tooltip.fees} />
-          </th>
-          <th>
-            Cost
-            <HelpTooltip tooltip={tooltip.cost} />
-          </th>
-          <th>
-            Gas
-            <HelpTooltip tooltip={tooltip.gas} />
-          </th>
+          <th>Name </th>
+          <th>Total</th>
+          <th>Surplus</th>
+          <th>Fees</th>
+          <th>Cost</th>
+          <th>Gas</th>
           <th></th>
         </tr>
       }

@@ -47,7 +47,7 @@ const Item: React.FC<ItemProps> = (props) => {
   return (
     <div key={token?.address}>
       <TokenImg address={tokenImage} />
-      {`1 ${tokenNames[0]}`} ={formattedPrice} {`${tokenNames[1]}`}
+      {`1 ${tokenNames[0]}`} = {formattedPrice} {`${tokenNames[1]}`}
       {<Icon icon={faExchangeAlt} onClick={(): void => setInvertedPrice(!invertedPrice)} />}
     </div>
   )

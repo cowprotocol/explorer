@@ -70,7 +70,8 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
           <>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip} /> Auction Id
+                <HelpTooltip tooltip={<div>Unique identifier for the auction.</div>} />
+                Auction Id
               </td>
               <td colSpan={2}>
                 {data.auctionId && (
@@ -84,7 +85,8 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip} /> Auction Start Block
+                <HelpTooltip tooltip={<div>Block number at which the auction was initiated.</div>} />
+                Auction Start Block
               </td>
               <td colSpan={2}>
                 {data.auctionStartBlock && (
@@ -98,7 +100,8 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip} /> Liquidity Collected Block
+                <HelpTooltip tooltip={<div>Block number at which liquidity was collected for the auction.</div>} />
+                Liquidity Collected Block
               </td>
               <td colSpan={2}>
                 {data.liquidityCollectedBlock && (
@@ -112,7 +115,8 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip} /> Competition Block
+                <HelpTooltip tooltip={<div>Block number marking the start of the solver competition.</div>} />
+                Competition Block
               </td>
               <td colSpan={2}>
                 {data?.auctionId && (
@@ -126,7 +130,8 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
             </tr>
             <tr className={'auction'}>
               <td>
-                <HelpTooltip tooltip={tooltip} /> Auction Orders
+                <HelpTooltip tooltip={<div>Lists all the orders placed for the auction.</div>} />
+                Auction Orders
               </td>
               <td className={'orders'}>
                 <p>
@@ -136,7 +141,7 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
                   {orders &&
                     orders.map((order, key, array) => (
                       <span key={order.uid}>
-                        <LinkWithPrefixNetwork to={`/orders/${order}`} rel="noopener noreferrer" target="_self">
+                        <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
                           {abbreviateString(order.uid, 6, 4)}
                         </LinkWithPrefixNetwork>{' '}
                         {key + 1 != array.length && <>,</>}
@@ -165,7 +170,8 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
             </tr>
             <tr>
               <td>
-                <HelpTooltip tooltip={tooltip} /> Clearing Price
+                <HelpTooltip tooltip={<div>Prices at which orders were cleared during the auction.</div>} />
+                Clearing Prices
               </td>
               <td colSpan={2}>
                 {data.auction?.prices && orders && <ClearingPrices orders={orders} prices={data.auction?.prices} />}
