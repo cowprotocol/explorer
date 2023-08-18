@@ -22,10 +22,7 @@ interface SolverCompetitionParams {
   networkId: Network | undefined
   orders: Order[] | undefined
 }
-const tooltip = {
-  auctionID: 'A unique identifier ID for this auction.',
-  startBlock: 'Start block ID for this auction',
-}
+
 interface StatusType {
   type: string
 }
