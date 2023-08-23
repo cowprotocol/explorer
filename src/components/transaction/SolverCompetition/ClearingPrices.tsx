@@ -11,7 +11,7 @@ import { invertPrice } from '@gnosis.pm/dex-js/build-esm/utils/price'
 import Icon from 'components/Icon'
 import { faExchangeAlt } from '@fortawesome/free-solid-svg-icons'
 import BigNumber from 'bignumber.js'
-import { TEN_BIG_NUMBER } from 'const'
+import { NATIVE_TOKEN_PER_NETWORK, TEN_BIG_NUMBER } from 'const'
 import { Order } from 'api/operator'
 import { AuctionPrices } from '@cowprotocol/cow-sdk'
 
@@ -28,6 +28,7 @@ type ItemProps = {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Item: React.FC<ItemProps> = (props) => {
   const { token, network, amount } = props
+
   const [invertedPrice, setInvertedPrice] = useState<boolean>(false)
   console.log(token, amount.toNumber())
   const calculatedPrice = amount.div(TEN_BIG_NUMBER.exponentiatedBy(36 - token.decimals.valueOf()))
@@ -43,7 +44,9 @@ const Item: React.FC<ItemProps> = (props) => {
   const tokenImage = getImageAddress(token?.address ?? '', network)
   const tokenSymbol = token && safeTokenName(token)
 
-  const tokenNames = !invertedPrice ? [tokenSymbol, 'ETH'] : ['ETH', tokenSymbol]
+  const tokenNames = !invertedPrice
+    ? [tokenSymbol, NATIVE_TOKEN_PER_NETWORK[network].symbol]
+    : [NATIVE_TOKEN_PER_NETWORK[network].symbol, tokenSymbol]
   return (
     <div key={token?.address}>
       <TokenImg address={tokenImage} />

@@ -26,7 +26,7 @@ import TokenImg from 'components/common/TokenImg'
 import { getImageAddress } from 'utils'
 import { useNetworkId } from 'state/network'
 import ExplorerTabs from 'apps/explorer/components/common/ExplorerTabs/ExplorerTabs'
-import { TEN_BIG_NUMBER } from 'const'
+import { NATIVE_TOKEN_PER_NETWORK, TEN_BIG_NUMBER } from 'const'
 import { HIGH_PRECISION_SMALL_LIMIT, NO_ADJUSTMENT_NEEDED_PRECISION } from 'apps/explorer/const'
 import { useMediaBreakpoint } from 'hooks/useMediaBreakPoint'
 
@@ -231,6 +231,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
   const { ranking, solver, solverAddress } = solution ?? {}
   const [open, setOpen] = useState<boolean>(false)
   const isMobile = useMediaBreakpoint(['xs', 'sm'])
+  const network = useNetworkId() || 1
   const { total, surplus, fees, cost, gas } = solution?.objective || {}
   return (
     <>
@@ -239,7 +240,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
           <HeaderTitle>
             Ranking <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{ranking} </HeaderValue>
+          <HeaderValue>{ranking}</HeaderValue>
         </td>
         <td>
           <HeaderTitle>
@@ -256,31 +257,41 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
           <HeaderTitle>
             Total <HelpTooltip tooltip={tooltip.total} />
           </HeaderTitle>
-          <HeaderValue>{formatNumbers(total)} ETH</HeaderValue>
+          <HeaderValue>
+            {formatNumbers(total)} {NATIVE_TOKEN_PER_NETWORK[network].symbol}
+          </HeaderValue>
         </td>
         <td>
           <HeaderTitle>
             Surplus <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{formatNumbers(surplus)} ETH</HeaderValue>
+          <HeaderValue>
+            {formatNumbers(surplus)} {NATIVE_TOKEN_PER_NETWORK[network].symbol}
+          </HeaderValue>
         </td>
         <td>
           <HeaderTitle>
             Fees <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{formatNumbers(fees)} ETH</HeaderValue>
+          <HeaderValue>
+            {formatNumbers(fees)} {NATIVE_TOKEN_PER_NETWORK[network].symbol}
+          </HeaderValue>
         </td>
         <td>
           <HeaderTitle>
             Fees <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{formatNumbers(cost)} ETH</HeaderValue>
+          <HeaderValue>
+            {formatNumbers(cost)} {NATIVE_TOKEN_PER_NETWORK[network].symbol}
+          </HeaderValue>
         </td>
         <td>
           <HeaderTitle>
             gas <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>{gas} WEI</HeaderValue>
+          <HeaderValue>
+            {formatNumbers(gas)} {NATIVE_TOKEN_PER_NETWORK[network].symbol}
+          </HeaderValue>
         </td>
         <td>
           <IconButton className={'mediumUp'} aria-label="expand row" size="small" onClick={(): void => setOpen(!open)}>
