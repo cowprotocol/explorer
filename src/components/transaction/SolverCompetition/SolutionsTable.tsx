@@ -289,9 +289,7 @@ const RowSolution: React.FC<RowProps> = ({ solution, orders }) => {
           <HeaderTitle>
             gas <HelpTooltip tooltip={tooltip.surplus} />
           </HeaderTitle>
-          <HeaderValue>
-            {formatNumbers(gas)} {NATIVE_TOKEN_PER_NETWORK[network].symbol}
-          </HeaderValue>
+          <HeaderValue>{formatNumbers(gas)} WEI</HeaderValue>
         </td>
         <td>
           <IconButton className={'mediumUp'} aria-label="expand row" size="small" onClick={(): void => setOpen(!open)}>
