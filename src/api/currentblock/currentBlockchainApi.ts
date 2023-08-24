@@ -53,7 +53,7 @@ export class CurrentBlockApiImpl {
   public async getETHCurrentBlock(): Promise<ETHCurrentBlock> {
     const response = await fetch(ETH_BLOCKCHAIN_URL, {
       method: 'GET',
-      mode: 'no-cors',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -64,7 +64,7 @@ export class CurrentBlockApiImpl {
   public async getXDaiCurrentBlock(): Promise<XDAICurrentBlock> {
     const response = await fetch(XDAI_BLOCKCHAIN_URL, {
       method: 'GET',
-      mode: 'no-cors',
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
       },

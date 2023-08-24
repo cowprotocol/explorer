@@ -46,7 +46,7 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
       </EmptyItemWrapper>
     )
   }
-  if (!trace?.block_number || (trace?.block_number && trace?.block_number + 65 < currentBlock)) {
+  if (!trace?.block_number || (trace?.block_number && trace?.block_number + 65 >= currentBlock)) {
     return (
       <EmptyItemWrapper>
         <p>Data not available yet</p>
