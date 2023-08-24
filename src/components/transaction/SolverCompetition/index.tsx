@@ -16,6 +16,8 @@ import { abbreviateString } from 'utils'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import ClearingPrices from './ClearingPrices'
 import { Title } from 'apps/explorer/pages/styled'
+import { useCurrentBlock } from 'hooks/useCurrentBlock'
+import { useTransactionData } from 'hooks/useTransactionData'
 
 interface SolverCompetitionParams {
   txHash: string
@@ -34,10 +36,29 @@ const StatusIcon = ({ type }: StatusType): JSX.Element => {
 }
 
 export function SolverCompetition(params: SolverCompetitionParams): JSX.Element {
+  const { networkId, txHash } = params
+  const { isLoading, currentBlock } = useCurrentBlock()
+  const { isLoading: isLoadingTransactionData, trace } = useTransactionData(networkId, txHash)
+  if (isLoading || isLoadingTransactionData || !currentBlock) {
+    return (
+      <EmptyItemWrapper>
+        <CowLoading />
+      </EmptyItemWrapper>
+    )
+  }
+  if (!trace?.block_number || (trace?.block_number && trace?.block_number + 65 < currentBlock)) {
+    return (
+      <EmptyItemWrapper>
+        <p>Data not available yet</p>
+      </EmptyItemWrapper>
+    )
+  }
+  return <SolverCompetitionElement {...params} />
+}
+export function SolverCompetitionElement(params: SolverCompetitionParams): JSX.Element {
   const { networkId, txHash, orders } = params
   const { data, isLoading, error } = useGetSolverCompetition(txHash, networkId)
 
-  console.log(orders)
   const onCopy = (label: string): void =>
     sendEvent({
       category: 'Transaction Solve Competition screen',

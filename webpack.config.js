@@ -12,7 +12,6 @@ const baseUrl = isProduction ? '' : '/'
 
 // FIXME: The apps right now depend on config they don't, se below attempt to check what was required. One example of something that is required but we don't need is --> for some reason "createTheGraphApi" it's being executed
 const CONFIG = loadConfig()
-
 const config = overrideEnvConfig(CONFIG)
 const EXPLORER_APP = {
   name: 'explorer',
