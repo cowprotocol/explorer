@@ -39,14 +39,14 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
   const { networkId, txHash } = params
   const { isLoading, currentBlock } = useCurrentBlock()
   const { isLoading: isLoadingTransactionData, trace } = useTransactionData(networkId, txHash)
-  if (isLoading || isLoadingTransactionData || !currentBlock) {
+  if (isLoading || isLoadingTransactionData) {
     return (
       <EmptyItemWrapper>
         <CowLoading />
       </EmptyItemWrapper>
     )
   }
-  if (!trace?.block_number || (trace?.block_number && trace?.block_number + 65 >= currentBlock)) {
+  if (currentBlock && trace?.block_number && trace?.block_number + 65 >= currentBlock) {
     return (
       <EmptyItemWrapper>
         <p>Data not available yet</p>
