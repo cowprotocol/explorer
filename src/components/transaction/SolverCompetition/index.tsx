@@ -46,7 +46,7 @@ export function SolverCompetition(params: SolverCompetitionParams): JSX.Element 
       setCurrentBlock(await web3.eth.getBlockNumber())
     }
     getCurrentBlock()
-  }, [])
+  }, [web3])
   if (isLoadingTransactionData || !currentBlock) {
     return (
       <EmptyItemWrapper>
