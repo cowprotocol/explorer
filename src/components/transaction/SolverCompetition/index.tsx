@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { EmptyItemWrapper } from 'components/common/StyledUserDetailsTable'
 import CowLoading from 'components/common/CowLoading'
 import { Network } from 'types'
@@ -16,8 +16,8 @@ import { abbreviateString } from 'utils'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import ClearingPrices from './ClearingPrices'
 import { Title } from 'apps/explorer/pages/styled'
-import { useCurrentBlock } from 'hooks/useCurrentBlock'
 import { useTransactionData } from 'hooks/useTransactionData'
+import { useWeb3 } from 'api/web3/hooks'
 
 interface SolverCompetitionParams {
   txHash: string
@@ -37,9 +37,17 @@ const StatusIcon = ({ type }: StatusType): JSX.Element => {
 
 export function SolverCompetition(params: SolverCompetitionParams): JSX.Element {
   const { networkId, txHash } = params
-  const { isLoading, currentBlock } = useCurrentBlock()
+  const web3 = useWeb3()
+  const [currentBlock, setCurrentBlock] = useState<number | undefined>()
   const { isLoading: isLoadingTransactionData, trace } = useTransactionData(networkId, txHash)
-  if (isLoading || isLoadingTransactionData) {
+
+  useEffect(() => {
+    const getCurrentBlock = async (): Promise<void> => {
+      setCurrentBlock(await web3.eth.getBlockNumber())
+    }
+    getCurrentBlock()
+  }, [])
+  if (isLoadingTransactionData || !currentBlock) {
     return (
       <EmptyItemWrapper>
         <CowLoading />
