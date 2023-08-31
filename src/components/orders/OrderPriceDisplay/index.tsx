@@ -84,8 +84,7 @@ export function OrderPriceDisplay(props: Props): JSX.Element {
   return (
     <Wrapper>
       <span>
-        <span>{formattedPrice}</span>
-        <span>{quoteSymbol}</span>
+        <span>{formattedPrice}</span> &nbsp;<span>{quoteSymbol}</span>
       </span>
       <span>
         for {baseSymbol}
