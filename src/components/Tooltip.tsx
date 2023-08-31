@@ -269,7 +269,7 @@ const HelperSpan = styled.span`
   cursor: pointer;
   transition: color 0.1s;
   display: flex;
-  padding: 0 0.6rem 0 0;
+  padding: 0 0.6rem;
 
   .default-icon-tooltip {
     color: ${({ theme }): string => theme.grey};
