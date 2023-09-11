@@ -4136,9 +4136,9 @@
     "@types/cytoscape" "*"
 
 "@types/cytoscape@*", "@types/cytoscape@^3.19.4":
-  version "3.19.10"
-  resolved "https://registry.yarnpkg.com/@types/cytoscape/-/cytoscape-3.19.10.tgz#f4540749d68cd3db6f89da5197f7ec2a2ca516ee"
-  integrity sha512-PLsKQcsUd05nz4PYyulIhjkLnlq9oD2WYpswrWOjoqtFZEuuBje0f9fi2zTG5/yfTf5+Gpllf/MPcFmfDzZ24w==
+  version "3.19.11"
+  resolved "https://registry.yarnpkg.com/@types/cytoscape/-/cytoscape-3.19.11.tgz#69cc512c4cbadfcd2e84a1f7b84593dc4b8fb258"
+  integrity sha512-ny4i4BOoZxdc9DrSa9RrasXHPRFgt0PeINgj/CegzKu7CJO+UQP0KnjebYJ+KoLymyUbCX86vmqz5B3LK10w5Q==
 
 "@types/enzyme-adapter-react-16@^1.0.5":
   version "1.0.6"
