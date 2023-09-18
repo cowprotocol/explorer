@@ -4194,9 +4194,9 @@
     "@types/node" "*"
 
 "@types/flexsearch@^0.7.3":
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/@types/flexsearch/-/flexsearch-0.7.3.tgz#ee79b1618035c82284278e05652e91116765b634"
-  integrity sha512-HXwADeHEP4exXkCIwy2n1+i0f1ilP1ETQOH5KDOugjkTFZPntWo0Gr8stZOaebkxsdx+k0X/K6obU/+it07ocg==
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@types/flexsearch/-/flexsearch-0.7.4.tgz#6e72bf21a8cc838d6d3449ddadc2745bcee3e239"
+  integrity sha512-R5ZZmhxOBquntySny8dWYLDGdPJlX9K6p6vcj1w5NWGQ33X4V8MEtdQXK5KFFR1j6o0RhbPMdLSVg5XULVn3oA==
 
 "@types/glob@*", "@types/glob@^7.1.1":
   version "7.1.4"
