@@ -4418,9 +4418,9 @@
     "@types/react" "*"
 
 "@types/react-cytoscapejs@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@types/react-cytoscapejs/-/react-cytoscapejs-1.2.2.tgz#e2d27dc11b2bac61fd3e64efe2004ab65958344f"
-  integrity sha512-Z+CeQLw4XyQOrS/SdbcUCdYfWqYmaPS/WT+gNy33KYR09BtVzekx1jeNU5kNDvXCv8/8jGlhSrSk0uO7ocGuFg==
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@types/react-cytoscapejs/-/react-cytoscapejs-1.2.3.tgz#2657131a0d0105e1b83facf953a916d6f78c0fcd"
+  integrity sha512-/NsK/rpfw1YP37UFgxhihylR2yl0bzNk1yl5Q43SkNMr6tOs12ac9YKAFAa+Xu739Jya9C7pPjDNQyU0yUS9eA==
   dependencies:
     "@types/cytoscape" "*"
     "@types/react" "*"
