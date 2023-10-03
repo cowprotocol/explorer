@@ -4549,9 +4549,9 @@
     csstype "^3.0.2"
 
 "@types/styled-theming@^2.2.5":
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/@types/styled-theming/-/styled-theming-2.2.5.tgz#3942caf3fc03550a8501b56bc1e326137172c136"
-  integrity sha512-7Rxu3Oj2nFG40+barPjt/5hzexlZTjWKDHfngrprxO2+y9RhxtzJ2wSiZrY9+kwtC0mmlI0poVW4PxTiobv1qQ==
+  version "2.2.6"
+  resolved "https://registry.yarnpkg.com/@types/styled-theming/-/styled-theming-2.2.6.tgz#f7ebec38810d42f09f47c70c560313f7500a589c"
+  integrity sha512-KOGqoeEF/cstuuqWE7V56h/otnkz8dUQyeqZdIiOpsEYYYuza00+40k6UdEPEMeyIrpH4OUQJlOm1T7pN1taZw==
   dependencies:
     "@types/styled-components" "*"
     csstype "^3.0.2"
