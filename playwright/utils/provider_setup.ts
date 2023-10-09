@@ -6,8 +6,7 @@ import { compileInjects, fileExists } from './build_injects'
 import { INFURA_ID } from 'const'
 
 // get connection data from CONFIG
-const { config } = CONFIG.defaultProviderConfig
-const providerURL = 'ethNodeUrl' in config ? config.ethNodeUrl : 'https://rinkeby.infura.io/v3/' + INFURA_ID
+const providerURL = 'https://rinkeby.infura.io/v3/' + INFURA_ID
 
 declare global {
   interface Window {
