@@ -3,10 +3,11 @@ import Web3EthAccounts, { Accounts as AccountsType } from 'web3-eth-accounts'
 
 import { context } from './test_setup'
 import { compileInjects, fileExists } from './build_injects'
+import { INFURA_ID } from 'const'
 
 // get connection data from CONFIG
 const { config } = CONFIG.defaultProviderConfig
-const providerURL = 'ethNodeUrl' in config ? config.ethNodeUrl : 'https://rinkeby.infura.io/v3/' + config.infuraId
+const providerURL = 'ethNodeUrl' in config ? config.ethNodeUrl : 'https://rinkeby.infura.io/v3/' + INFURA_ID
 
 declare global {
   interface Window {
@@ -14,7 +15,7 @@ declare global {
   }
 }
 // workaround for wrong types
-const accountCreator = new ((Web3EthAccounts as unknown) as typeof AccountsType)()
+const accountCreator = new (Web3EthAccounts as unknown as typeof AccountsType)()
 // random account
 export const account = accountCreator.create()
 

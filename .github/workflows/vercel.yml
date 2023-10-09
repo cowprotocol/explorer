@@ -40,6 +40,8 @@ jobs:
 
       - name: Build Project Artifacts
         run: >
+          ETH_NODE_URL: ${{ secrets.ETH_NODE_URL }}
+          INFURA_ID: ${{ secrets.INFURA_ID }}
           REACT_APP_IPFS_READ_URI=${{ secrets.REACT_APP_IPFS_READ_URI }}
           REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
           REACT_APP_SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}

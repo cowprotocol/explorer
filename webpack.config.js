@@ -19,6 +19,7 @@ const EXPLORER_APP = {
   title: 'CoW Protocol Explorer',
   filename: 'index.html',
   envVars: {
+    ETH_NODE_URL: process.env.ETH_NODE_URL,
     INFURA_ID: process.env.INFURA_ID,
 
     EXPLORER_APP_DOMAIN_REGEX_DEV:
