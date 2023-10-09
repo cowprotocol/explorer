@@ -57,7 +57,7 @@ dexPriceEstimator:
     - networkId: 100
       url_production: https://dex-price-estimator.xdai.gnosis.io
       url_develop: https://price-estimate-xdai.dev.gnosisdev.com
-      
+
 # Subgraph abstraction, used for getting the last price
 theGraphApi:
   type: 'the-graph' # choices: the-graph
@@ -76,7 +76,7 @@ defaultProviderConfig:
   type: 'infura' # Choices: infura | url
   config:
     # It'll be appended to `infuraEndpoint`
-    infuraId: e941376b017d4dada26dc7891456fa3b
+    infuraId: 2af29cd5ac554ae3b8d991afe1ba4b7d
     infuraEndpoint: wss://mainnet.infura.io/ws/v3/
   #
   # Example for type `url`
@@ -184,7 +184,7 @@ initialTokenList:
     decimals: 18
     addressByNetwork:
       '1': '0x0000000000085d4780B73119b644AE5ecd22b376'
-      '4': '0x0000000000085d4780B73119b644AE5ecd22b376'      
+      '4': '0x0000000000085d4780B73119b644AE5ecd22b376'
 
   - id: 4
     name: USD Coin
@@ -297,7 +297,7 @@ initialTokenList:
     decimals: 18
     addressByNetwork:
       '1': '0x0ae055097c6d159879521c384f1d2123d1f195e6'
-      '100': '0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e'      
+      '100': '0xb7D311E2Eb55F2f68a9440da38e7989210b9A05e'
 
   - id: 21
     name: Wrapped xDAI
@@ -305,7 +305,6 @@ initialTokenList:
     decimals: 18
     addressByNetwork:
       '100': '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
-        
 
   - id: 0
     name: OWL
