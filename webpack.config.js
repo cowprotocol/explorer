@@ -19,6 +19,8 @@ const EXPLORER_APP = {
   title: 'CoW Protocol Explorer',
   filename: 'index.html',
   envVars: {
+    INFURA_ID: process.env.INFURA_ID,
+
     EXPLORER_APP_DOMAIN_REGEX_DEV:
       '^dev\\.explorer\\.cow\\.fi|^(explorer-dev-git-[\\w\\d-]+|explorer-\\w{9}-)cowswap\\.vercel\\.app|^explorer-dev\\.vercel\\.app|^localhost:\\d{2,5}|^pr\\d+--explorer\\.review',
     EXPLORER_APP_DOMAIN_REGEX_STAGING: '^staging\\.explorer\\.cow\\.fi|^explorer-staging\\.vercel\\.app',
