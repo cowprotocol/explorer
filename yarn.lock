@@ -4128,9 +4128,9 @@
     "@types/node" "*"
 
 "@types/combine-reducers@^1.0.0":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@types/combine-reducers/-/combine-reducers-1.0.2.tgz#4bc5a8dcfcc5c2e43960974011d6cef6a03f78b1"
-  integrity sha512-Cz9br6+ZqZKimGxo4CnC0zoAAY3Pv0VgYK/ECsKFZ+HLr+P9/uaXET6FACO6fbLkBss5z48NeWdRfeP4CALvHw==
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/combine-reducers/-/combine-reducers-1.0.3.tgz#48b5fb914656cfd7193a124afa5143f3147ba107"
+  integrity sha512-ps4cvVVEo0TD2iFsTH2r6E+ex+i/JDoWDcRNfO6B9/kkbF4IEvPH9nVxHMy01PEtaKhYgTUZS3j+pwEzD1pJbg==
 
 "@types/cytoscape-popper@^2.0.0":
   version "2.0.2"
