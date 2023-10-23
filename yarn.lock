@@ -4503,9 +4503,9 @@
     csstype "^3.0.2"
 
 "@types/resize-observer-browser@^0.1.7":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@types/resize-observer-browser/-/resize-observer-browser-0.1.8.tgz#db41a93f9f37dad8e6f0c7bd2f5bbc042bf714d1"
-  integrity sha512-OpjAd26fD1G2OWlYzkrapJ12n+kyi0znYgE2AHfNccHY/am3kG+lfJ5brfcZ7+1CIybkPWGKrW+Wm97kbcOQaQ==
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@types/resize-observer-browser/-/resize-observer-browser-0.1.9.tgz#d3ee469602efb847f9bba12a3868522398f2673b"
+  integrity sha512-ZwouFyOzXjycRUA+30EJM+8f8OPjKtrod8g0NY27v07r3IxDFG+3Ux3LMOajX8/hxUwOmS50duuPEe3+P9SKDQ==
 
 "@types/scheduler@*":
   version "0.16.2"
