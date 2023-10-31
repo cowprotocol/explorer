@@ -26,16 +26,11 @@ export type FormProps = Record<string, any>
 
 export const getSchema = async (): Promise<JSONSchema7> => {
   const latestSchema = (await metadataApiSDK.getAppDataSchema(LATEST_APP_DATA_VERSION)) as JSONSchema7
-  deleteAllPropertiesByName(latestSchema, 'examples')
-  deleteAllPropertiesByName(latestSchema, '$id')
-  return formatSchema(latestSchema)
+
+  return makeSchemaCopy(latestSchema)
 }
 
-const formatSchema = (schema: JSONSchema7): JSONSchema7 => {
-  const formattedSchema = structuredClone(schema)
-
-  return formattedSchema
-}
+const makeSchemaCopy = (schema: JSONSchema7): JSONSchema7 => structuredClone(schema)
 
 export const transformErrors = (errors: AjvError[]): AjvError[] => {
   return errors.reduce((errorsList, error) => {
@@ -67,47 +62,8 @@ export const handleErrors = (
 ): FormValidation => {
   if (!ref.current) return errors
   const { errors: formErrors } = ref.current?.state as FormProps
-  handler(formErrors.length > 0)
+  handler(Array.isArray(formErrors) && formErrors?.length > 0)
   return errors
-}
-
-const deleteAllPropertiesByName = (schema: JSONSchema7, property: string): void => {
-  if (schema[property]) {
-    deletePropertyPath(schema, property)
-  }
-  if (!schema.properties) return
-
-  for (const field in schema.properties) {
-    deleteAllPropertiesByName(schema.properties[field] as JSONSchema7, property)
-  }
-}
-
-export const deletePropertyPath = (obj: any, path: any): void => {
-  if (!obj || !path) {
-    return
-  }
-
-  if (typeof path === 'string') {
-    path = path.split('.')
-  }
-
-  for (let i = 0; i < path.length - 1; i++) {
-    obj = obj[path[i]]
-
-    if (typeof obj === 'undefined') {
-      return
-    }
-  }
-
-  const propName = path.pop()
-  if (!propName) {
-    return
-  }
-
-  const propConfigurable = Object.getOwnPropertyDescriptor(obj, propName)?.configurable || false
-  if (propConfigurable) {
-    delete obj[propName]
-  }
 }
 
 // export const ipfsSchema: JSONSchema7 = {
