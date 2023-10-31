@@ -402,7 +402,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
         {error && !isDocUploaded && (
           <Notification type="error" message={error} closable={false} appendMessage={false} />
         )}
-      </div> 
+      </div>
       */}
     </>
   )
