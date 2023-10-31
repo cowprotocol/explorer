@@ -8,13 +8,13 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import AppDataWrapper from 'components/common/AppDataWrapper'
 
 import {
-  INITIAL_FORM_VALUES,
-  getSchema,
-  transformErrors,
-  handleErrors,
-  uiSchema,
   CustomField,
   FormProps,
+  getSchema,
+  handleErrors,
+  INITIAL_FORM_VALUES,
+  transformErrors,
+  uiSchema,
 } from './config'
 import { TabData } from '.'
 import { metadataApiSDK } from 'cowSdk'
