@@ -4447,9 +4447,9 @@
     "@types/react" "*"
 
 "@types/react-is@^16.7.1":
-  version "16.7.3"
-  resolved "https://registry.yarnpkg.com/@types/react-is/-/react-is-16.7.3.tgz#b119dd13446093931ab3431f711ba863e996cd17"
-  integrity sha512-IsK+KO7fwVbH5E7MA/IuWttNqCr+eLHxwpMuu7SNnrVFM/qQCqBDq5eB7vcOqdlDEPLkMAJVOQALMZo0Jfq3Ng==
+  version "16.7.4"
+  resolved "https://registry.yarnpkg.com/@types/react-is/-/react-is-16.7.4.tgz#1e39a2c784548b4fec8770b45d97993855156a48"
+  integrity sha512-j2I6mK6HN9hu4NeQJkRRNru4WyVGeBQPeEHX15qchL5IjNqVLo3R/FVPxYfIjZOi+V31M4IR950KhUFeOPfIlQ==
   dependencies:
     "@types/react" "^16"
 
