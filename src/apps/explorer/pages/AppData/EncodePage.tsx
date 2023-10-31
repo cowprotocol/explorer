@@ -201,7 +201,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
           orders. This is useful for giving context to your orders, like crediting the order to a specific UI, adding
           affiliate information, or even signalling your order should be treated in a special way.
         </p>
-        <p>This field is the hexadecimal digest of an IPFS document’s CID of a JSON file.</p>
+        <p>This field is the hexadecimal digest of a JSON file.</p>
         <p>
           The JSON file follows a
           <a target="_blank" href="https://json-schema.org" rel="noreferrer">
