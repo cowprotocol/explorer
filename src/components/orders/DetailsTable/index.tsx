@@ -103,20 +103,19 @@ const tooltip = {
         <li>
           <strong>Partial execution</strong>: The order can be executed partially, as long as the limit price is
           respected. (This could be relevant if a price were to become available for some but not all of an order.)
-          Support for partial orders is coming soon!
         </li>
       </ul>
     </div>
   ),
   amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
   priceLimit:
-    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deduced from the sell amount',
+    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deducted from the sell amount.',
   priceExecution:
-    'The actual price at which this order has been matched and executed, after deducting the fees from the sold amount.',
+    'The actual price at which this order has been matched and executed, after deducting fees from the amount sold.',
   surplus:
     'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
   filled:
-    'Indicates what percentage amount this order has been filled and the amount sold/bought. Sold amount includes the fee.',
+    'Indicates what percentage amount this order has been filled and the amount sold/bought. Amount sold includes the fee.',
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
 }
 
