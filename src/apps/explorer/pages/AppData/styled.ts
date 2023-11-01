@@ -119,6 +119,25 @@ export const Wrapper = styled(WrapperTemplate)`
       line-height: 1.6rem;
     }
 
+    i.glyphicon {
+      display: none;
+    }
+    .btn-add::after {
+      content: 'Add';
+    }
+    .array-item-copy::after {
+      content: 'Copy';
+    }
+    .array-item-move-up::after {
+      content: 'Move Up';
+    }
+    .array-item-move-down::after {
+      content: 'Move Down';
+    }
+    .array-item-remove::after {
+      content: 'Remove';
+    }
+
     .hidden-content {
       ${media.desktop} {
         position: sticky;
