@@ -4433,9 +4433,9 @@
     "@types/react" "*"
 
 "@types/react-dom@^16.9.5":
-  version "16.9.21"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.21.tgz#4f937ae64f39c2766401750e069319224348306c"
-  integrity sha512-QdKxI502bJXRfFR8/pH0iCyt51EcPf1+hgCIZKJ9SBunj0NZpKK5j1FDoCGeGj/6ROK8gUesj41V3C64Rz2kHw==
+  version "16.9.22"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-16.9.22.tgz#707f6806866d41d58f30ac348cc9be696c716e77"
+  integrity sha512-x7T/NHsYiKfbIwZDzBTThTF3a3UPNLanOY4wbEe4Hy44hf0tWIZTu8VZJTkB/FKcr4cbfDq0E7y3jSLJh4cpow==
   dependencies:
     "@types/react" "^16"
 
