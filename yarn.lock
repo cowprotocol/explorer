@@ -4133,9 +4133,9 @@
   integrity sha512-bMzTDiZeJBfVARAea4xr3iu0WPBKDCJhoQLaXJ5a7ygwEG7VUnV1ghODkG48JO7jA/Uze1yxJUFxaCOMM5EOZw==
 
 "@types/cytoscape-popper@^2.0.0":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@types/cytoscape-popper/-/cytoscape-popper-2.0.3.tgz#f46e2900e05a451c81e641cd8e8f022855169bbd"
-  integrity sha512-YjwaWd0B+fDnGQIvLwwBdc7qamoAXQNXlBZeg5MEAUZIuMkRIiBZB8baBjeLMu4KA+QTCCa2R5ADUnggXty+Kg==
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@types/cytoscape-popper/-/cytoscape-popper-2.0.4.tgz#cd1e81d28b202e2bfc5608e0e60ae53c908bf0e3"
+  integrity sha512-vGRiAMXeEIoY5ziPO0NrS8xmJyVkT8j8ARzvyD/x6CXciAO1+80Q2/Triyd9/+5I4PeatGo1Pch5YBwDMB1D6A==
   dependencies:
     "@popperjs/core" "^2.0.0"
     "@types/cytoscape" "*"
