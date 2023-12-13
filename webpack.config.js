@@ -42,6 +42,8 @@ const EXPLORER_APP = {
     REACT_APP_SUBGRAPH_URL_MAINNET: undefined,
     REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN: undefined,
     REACT_APP_SUBGRAPH_URL_GOERLI: undefined,
+
+    REACT_APP_ORDER_BOOK_URLS: undefined,
   },
 }
 const ALL_APPS = [EXPLORER_APP]
