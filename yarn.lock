@@ -4440,9 +4440,9 @@
     "@types/react" "^16"
 
 "@types/react-helmet@^6.1.5":
-  version "6.1.8"
-  resolved "https://registry.yarnpkg.com/@types/react-helmet/-/react-helmet-6.1.8.tgz#92942afbf620435602de1f500cd9b47d3c09a218"
-  integrity sha512-UyJFvbGWO8xKvfCPFTt/DG/vsgkMqyXbUQAa1pSPco1Whw85Z3ypMEqoHtCDfoW4Qu8XgJp63jyXEhOa4te5Kw==
+  version "6.1.11"
+  resolved "https://registry.yarnpkg.com/@types/react-helmet/-/react-helmet-6.1.11.tgz#8cafcafff38f75361f451563ba7b406b0c5d3907"
+  integrity sha512-0QcdGLddTERotCXo3VFlUSWO3ztraw8nZ6e3zJSgG7apwV5xt+pJUS8ewPBqT4NYB1optGLprNQzFleIY84u/g==
   dependencies:
     "@types/react" "*"
 
