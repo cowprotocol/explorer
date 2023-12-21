@@ -9,8 +9,8 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 
 const ZERO_DOT_ZERO_ONE = new BigNumber('0.01')
 const TEN_PERCENT = new BigNumber('0.1')
-const TWENTY_PERCENT = new BigNumber('0.2')
 const TWENTY_FIVE_PERCENT = new BigNumber('0.25')
+const TWENTY = new BigNumber('20')
 
 describe('getOrderSurplus', () => {
   describe('Buy order', () => {
@@ -39,9 +39,9 @@ describe('getOrderSurplus', () => {
           kind: OrderKind.BUY,
           sellAmount: '100',
           executedBuyAmount: '100',
-          executedSellAmountBeforeFees: '99',
+          executedSellAmountBeforeFees: '80',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
+        expect(getOrderSurplus(order)).toEqual({ amount: TWENTY, percentage: TWENTY_FIVE_PERCENT })
       })
       test('With fees > 0', () => {
         const order = {
@@ -49,10 +49,10 @@ describe('getOrderSurplus', () => {
           kind: OrderKind.BUY,
           sellAmount: '100',
           executedBuyAmount: '100',
-          executedSellAmountBeforeFees: '99',
+          executedSellAmountBeforeFees: '80',
           totalFee: '10',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
+        expect(getOrderSurplus(order)).toEqual({ amount: TWENTY, percentage: TWENTY_FIVE_PERCENT })
       })
     })
     describe('partiallyFillable', () => {
@@ -78,7 +78,7 @@ describe('getOrderSurplus', () => {
           sellAmount: '100',
           executedSellAmountBeforeFees: '40',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
+        expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_FIVE_PERCENT })
       })
       test('Full match no surplus', () => {
         const order = {
@@ -96,9 +96,9 @@ describe('getOrderSurplus', () => {
           buyAmount: '100',
           executedBuyAmount: '100',
           sellAmount: '100',
-          executedSellAmountBeforeFees: '90',
+          executedSellAmountBeforeFees: '80',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TEN_PERCENT })
+        expect(getOrderSurplus(order)).toEqual({ amount: TWENTY, percentage: TWENTY_FIVE_PERCENT })
       })
     })
   })
