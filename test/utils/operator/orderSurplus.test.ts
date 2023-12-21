@@ -1,16 +1,16 @@
 import BigNumber from 'bignumber.js'
 
-import { ONE_BIG_NUMBER, TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
+import { TEN_BIG_NUMBER, ZERO_BIG_NUMBER } from 'const'
 
 import { getOrderSurplus, ZERO_SURPLUS } from 'utils'
 
 import { RAW_ORDER } from '../../data'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
-const ZERO_DOT_ZERO_ONE = new BigNumber('0.01')
-const TEN_PERCENT = new BigNumber('0.1')
+const TWENTY_PERCENT = new BigNumber('0.2')
 const TWENTY_FIVE_PERCENT = new BigNumber('0.25')
 const TWENTY = new BigNumber('20')
+const TWENTY_FIVE = new BigNumber('25')
 
 describe('getOrderSurplus', () => {
   describe('Buy order', () => {
@@ -128,20 +128,20 @@ describe('getOrderSurplus', () => {
           ...RAW_ORDER,
           kind: OrderKind.SELL,
           buyAmount: '100',
-          executedBuyAmount: '101',
+          executedBuyAmount: '125',
           executedSellAmountBeforeFees: '100',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
+        expect(getOrderSurplus(order)).toEqual({ amount: TWENTY_FIVE, percentage: TWENTY_PERCENT })
       })
       test('With fees > 0', () => {
         const order = {
           ...RAW_ORDER,
           kind: OrderKind.SELL,
           buyAmount: '100',
-          executedBuyAmount: '101',
+          executedBuyAmount: '125',
           executedSellAmountBeforeFees: '100',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: ONE_BIG_NUMBER, percentage: ZERO_DOT_ZERO_ONE })
+        expect(getOrderSurplus(order)).toEqual({ amount: TWENTY_FIVE, percentage: TWENTY_PERCENT })
       })
     })
     describe('partiallyFillable', () => {
@@ -171,7 +171,7 @@ describe('getOrderSurplus', () => {
           sellAmount: '100',
           executedSellAmountBeforeFees: '40',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_FIVE_PERCENT })
+        expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TWENTY_PERCENT })
       })
       test('Full match no surplus', () => {
         const order = {
@@ -187,11 +187,11 @@ describe('getOrderSurplus', () => {
         const order = {
           ...ORDER,
           buyAmount: '100',
-          executedBuyAmount: '110',
+          executedBuyAmount: '125',
           sellAmount: '100',
           executedSellAmountBeforeFees: '100',
         }
-        expect(getOrderSurplus(order)).toEqual({ amount: TEN_BIG_NUMBER, percentage: TEN_PERCENT })
+        expect(getOrderSurplus(order)).toEqual({ amount: TWENTY_FIVE, percentage: TWENTY_PERCENT })
       })
     })
   })

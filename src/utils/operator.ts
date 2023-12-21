@@ -129,7 +129,7 @@ function _getFillOrKillSellSurplus(order: RawOrder): Surplus | null {
 
   const amount = difference.gt(ZERO_BIG_NUMBER) ? difference : ZERO_BIG_NUMBER
 
-  const percentage = amount.dividedBy(buyAmountBigNumber)
+  const percentage = amount.dividedBy(executedBuyAmountBigNumber)
 
   return { amount, percentage }
 }
@@ -164,7 +164,7 @@ function _getPartialFillSellSurplus(params: PartialFillSurplusParams): Surplus |
   const amount = executedBuyAmountBigNumber.minus(minimumBuyAmount)
 
   // The percentage is based on the amount you would receive, if executed at limit price
-  const percentage = amount.dividedBy(minimumBuyAmount)
+  const percentage = amount.dividedBy(executedBuyAmountBigNumber)
 
   return { amount, percentage }
 }
