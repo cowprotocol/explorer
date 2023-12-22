@@ -40,11 +40,12 @@ export function GasFeeDisplay(props: Props): JSX.Element | null {
     quoteSymbol = safeTokenName(sellToken)
   }
 
+  // In case: the order hasn't had any fills OR it had but the fee hasn't been reported yet in the API
+  const noFee = feeAmount.isZero() && totalFee.isZero()
+
   return (
     <Wrapper>
-      <span>
-        {formattedExecutedFee} {quoteSymbol}
-      </span>
+      <span>{noFee ? '-' : `${formattedExecutedFee} ${quoteSymbol}`}</span>
       {/* <UsdAmount>(~${totalFeeUSD})</UsdAmount> */}
       {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
         <>

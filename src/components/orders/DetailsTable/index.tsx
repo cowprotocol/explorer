@@ -116,7 +116,7 @@ const tooltip = {
     'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
   filled:
     'Indicates what percentage amount this order has been filled and the amount sold/bought. Amount sold includes the fee.',
-  fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills.',
+  fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills. Might take a few minutes to show the final value.',
 }
 
 export const Wrapper = styled.div`
