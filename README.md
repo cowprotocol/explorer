@@ -1,13 +1,12 @@
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/cowprotocol/explorer)
-
-[![Coverage Status](https://coveralls.io/repos/github/cowprotocol/explorer/badge.svg?branch=main)](https://coveralls.io/github/cowprotocol/explorer?branch=main)
-
-Develop:
-[![Coverage Status](https://coveralls.io/repos/github/cowprotocol/explorer/badge.svg?branch=develop)](https://coveralls.io/github/cowprotocol/explorer?branch=develop)
-
 # CoW Protocol Explorer
 
 Allows you to explore the protocol orders and trades.
+
+## ⚠️ Attention ⚠️
+
+This repository is deprecated.
+
+All the relevant code has migrated to [CoW Swap repo](https://github.com/cowprotocol/cowswap/) under the [explorer app](https://github.com/cowprotocol/cowswap/tree/develop/apps/explorer).
 
 ## 🧪 Install dependencies
 ```bash
